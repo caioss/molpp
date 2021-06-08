@@ -1,0 +1,65 @@
+#ifndef ATOM_HPP
+#define ATOM_HPP
+
+#include "core/AtomData.hpp"
+#include <memory>
+
+namespace mol {
+
+class Atom
+{
+public:
+    Atom(size_t const index, std::shared_ptr<internal::AtomData> data)
+    : m_index { index },
+      m_data { data }
+    {}
+
+    size_t index() { return m_index; }
+
+    int resid() { return m_data->m_resid[m_index]; }
+    void set_resid(int const &resid) { m_data->m_resid[m_index] = resid; }
+
+    int atomic() { return m_data->m_atomic[m_index]; }
+    void set_atomic(int const &atomic) { m_data->m_atomic[m_index] = atomic; }
+
+    float occupancy() { return m_data->m_occupancy[m_index]; }
+    void set_occupancy(float const &occupancy) { m_data->m_occupancy[m_index] = occupancy; }
+
+    float tempfactor() { return m_data->m_tempfactor[m_index]; }
+    void set_tempfactor(float const &tempfactor) { m_data->m_tempfactor[m_index] = tempfactor; }
+
+    float mass() { return m_data->m_mass[m_index]; }
+    void set_mass(float const &mass) { m_data->m_mass[m_index] = mass; }
+
+    float charge() { return m_data->m_charge[m_index]; }
+    void set_charge(float const &charge) { m_data->m_charge[m_index] = charge; }
+
+    float radius() { return m_data->m_radius[m_index]; }
+    void set_radius(float const &radius) { m_data->m_radius[m_index] = radius; }
+
+    std::string name() { return m_data->m_name[m_index]; }
+    void set_name(std::string const &name) { m_data->m_name[m_index] = name; }
+
+    std::string type() { return m_data->m_type[m_index]; }
+    void set_type(std::string const &type) { m_data->m_type[m_index] = type; }
+
+    std::string resname() { return m_data->m_resname[m_index]; }
+    void set_resname(std::string const &resname) { m_data->m_resname[m_index] = resname; }
+
+    std::string segid() { return m_data->m_segid[m_index]; }
+    void set_segid(std::string const &segid) { m_data->m_segid[m_index] = segid; }
+
+    std::string chain() { return m_data->m_chain[m_index]; }
+    void set_chain(std::string const &chain) { m_data->m_chain[m_index] = chain; }
+
+    std::string altloc() { return m_data->m_altloc[m_index]; }
+    void set_altloc(std::string const &altloc) { m_data->m_altloc[m_index] = altloc; }
+
+private:
+    size_t m_index;
+    std::shared_ptr<internal::AtomData> m_data;
+};
+
+} // namespace mol::internal
+
+#endif // ATOM_HPP
