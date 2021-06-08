@@ -1,0 +1,64 @@
+ 26-10-2019 14:15:56:895 [56231] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 14:15:56:895 [56231] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 14:24:27:848 [56491] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 14:24:27:848 [56491] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 14:25:58:868 [56558] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 14:25:58:868 [56558] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 14:36:12:583 [56859] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 14:36:12:583 [56859] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:06:22:295 [58456] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:06:22:295 [58456] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:10:03:202 [58559] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:10:03:202 [58559] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:10:59:779 [58627] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:10:59:779 [58627] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:13:28:835 [58713] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:13:28:835 [58713] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:17:44:666 [58833] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:17:44:666 [58833] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:18:07:358 [58889] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:18:07:359 [58889] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:19:00:448 [58947] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:19:00:448 [58947] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:19:42:654 [59002] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:19:42:654 [59002] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:20:08:963 [59046] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:20:08:963 [59046] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:20:24:941 [59094] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:20:24:941 [59094] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:21:55:366 [59189] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:21:55:366 [59189] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:24:28:370 [59279] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:24:28:370 [59279] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:24:28:370 [59279] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:24:28:370 [59279] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:24:28:370 [59279] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:24:28:370 [59279] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:24:28:370 [59279] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:24:28:370 [59279] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:24:52:482 [59336] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:24:52:482 [59336] ERROR  1000:1573 invalid CUfilehandle to cuFileRead
+ 26-10-2019 15:25:26:814 [59386] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:25:26:814 [59386] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:26:02:74 [59438] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:26:02:74 [59438] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:30:57:835 [59563] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:30:57:835 [59563] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:31:17:528 [59618] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:31:17:528 [59618] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:31:46:506 [59665] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:31:46:507 [59665] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:32:36:553 [59721] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:32:36:554 [59721] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:34:53:303 [59801] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:34:53:303 [59801] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:37:12:479 [59971] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:37:12:480 [59971] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:38:36:233 [60079] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:38:36:234 [60079] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:39:42:299 [60138] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:39:42:300 [60138] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 26-10-2019 15:41:18:981 [60251] ERROR  1000:779 invalid cufile handle
+ 26-10-2019 15:41:18:982 [60251] ERROR  1000:1034 invalid CUfilehandle to destroy
+ 27-10-2019 00:54:35:709 [74319] ERROR  1000:779 invalid cufile handle
+ 27-10-2019 00:54:35:709 [74319] ERROR  1000:1034 invalid CUfilehandle to destroy
