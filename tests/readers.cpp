@@ -1,11 +1,14 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
+#include "matchers.hpp"
 #include "MolError.hpp"
+#include "Atom.hpp"
 #include "core/AtomData.hpp"
 #include "readers/MolReader.hpp"
 #include "readers/MolfileReader.hpp"
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 using namespace testing;
+using namespace mol;
 using namespace mol::internal;
 
 TEST(molfile_structure, BasicAssertions) {
@@ -13,26 +16,43 @@ TEST(molfile_structure, BasicAssertions) {
 
     MolfileReader reader("pdb");
     ASSERT_TRUE(reader.open("tiny.pdb"));
-    auto atoms = reader.read_atoms();
+    auto data = reader.read_atoms();
     reader.close();
 
     // Size
-    ASSERT_THAT(atoms, NotNull());
-    ASSERT_EQ(atoms->size(), 6);
+    ASSERT_THAT(data, NotNull());
+    ASSERT_EQ(data->size(), 6);
 
     // Properties
-    ASSERT_THAT(atoms->resids(), ElementsAre(3, 339, 201, 801, 85, 85));
-    ASSERT_THAT(atoms->atomics(), ElementsAre(7, 7, 8, 8, 7, 7));
-    ASSERT_THAT(atoms->occupancies(), ElementsAre(999, 1, 1, 1, 1, 1));
-    ASSERT_THAT(atoms->tempfactors(), ElementsAre(-99, -1, -1, -1, -1, -1));
-    ASSERT_THAT(atoms->masses(), ElementsAre(FloatEq(14.0067), FloatEq(14.0067), FloatEq(15.9994), FloatEq(15.9994), FloatEq(14.0067), FloatEq(14.0067)));
-    ASSERT_THAT(atoms->radii(), ElementsAre(FloatEq(1.55), FloatEq(1.55), FloatEq(1.52), FloatEq(1.52), FloatEq(1.55), FloatEq(1.55)));
-    ASSERT_THAT(atoms->names(), ElementsAre("N", "NA", "O1", "O22", "ND", "ND"));
-    ASSERT_THAT(atoms->types(), ElementsAre("N", "NA", "O1", "O22", "ND", "ND"));
-    ASSERT_THAT(atoms->resnames(), ElementsAre("GLY", "ASP", "HOH", "HOH", "ASP", "ASP"));
-    ASSERT_THAT(atoms->segids(), ElementsAre("SEG1", "SEG2", "SEG1", "SEG2", "SEG1", "SEG1"));
-    ASSERT_THAT(atoms->chains(), ElementsAre("A", "B", "A", "B", "A", "A"));
-    ASSERT_THAT(atoms->altlocs(), ElementsAre(" ", " ", " ", " ", "A", "B"));
+    std::vector<mol::Atom> atoms;
+    for (size_t i = 0; i < data->size(); ++i)
+    {
+        atoms.push_back(data->index(i));
+    }
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid),
+                                 {3, 339, 201, 801, 85, 85}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::atomic),
+                                 {7, 7, 8, 8, 7, 7}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::occupancy),
+                                 {999, 1, 1, 1, 1, 1}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::tempfactor),
+                                 {-99, -1, -1, -1, -1, -1}));
+    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::mass, 1e-5),
+                                 {14.0067, 14.0067, 15.9994, 15.9994, 14.0067, 14.0067}));
+    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::radius, 1e-5),
+                                 {1.55, 1.55, 1.52, 1.52, 1.55, 1.55}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::name),
+                                 {"N", "NA", "O1", "O22", "ND", "ND"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::type),
+                                 {"N", "NA", "O1", "O22", "ND", "ND"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resname),
+                                 {"GLY", "ASP", "HOH", "HOH", "ASP", "ASP"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::segid),
+                                 {"SEG1", "SEG2", "SEG1", "SEG2", "SEG1", "SEG1"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::chain),
+                                 {"A", "B", "A", "B", "A", "A"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::altloc),
+                                 {" ", " ", " ", " ", "A", "B"}));
 
     // TODO add test to charges
 }
@@ -97,7 +117,8 @@ TEST(molreader, BasicAssertions) {
     ASSERT_THAT(atoms, NotNull());
     EXPECT_EQ(atoms->size(), 2);
     // Fast check. The complete reading test is in the plugins tests
-    EXPECT_THAT(atoms->names(), ElementsAre("N", "CA"));
+    EXPECT_EQ(atoms->index(0).name(), "N");
+    EXPECT_EQ(atoms->index(1).name(), "CA");
 
     EXPECT_TRUE(pdb_reader->read_trajectory("traj.pdb", atoms));
     EXPECT_EQ(atoms->num_frames(), 4);

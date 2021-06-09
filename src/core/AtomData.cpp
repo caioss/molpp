@@ -5,7 +5,7 @@
 using namespace mol::internal;
 
 AtomData::AtomData(size_t const num_atoms)
-: m_index(num_atoms),
+: m_num_atoms { num_atoms },
   m_resid(num_atoms, -1),
   m_residue(num_atoms, -1),
   m_atomic(num_atoms, 0),
@@ -21,11 +21,6 @@ AtomData::AtomData(size_t const num_atoms)
   m_chain(num_atoms),
   m_altloc(num_atoms)
 {
-    for (size_t i = 0; i < num_atoms; ++i)
-    {
-        m_index[i] = i;
-    }
-
 }
 
 std::shared_ptr<AtomData> AtomData::create(size_t const num_atoms)
