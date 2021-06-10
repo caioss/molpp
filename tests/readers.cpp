@@ -27,7 +27,7 @@ TEST(molfile_structure, BasicAssertions) {
     std::vector<mol::Atom> atoms;
     for (size_t i = 0; i < data->size(); ++i)
     {
-        atoms.push_back(data->index(i));
+        atoms.push_back(data->index(i, 0));
     }
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid),
                                  {3, 339, 201, 801, 85, 85}));
@@ -117,8 +117,8 @@ TEST(molreader, BasicAssertions) {
     ASSERT_THAT(atoms, NotNull());
     EXPECT_EQ(atoms->size(), 2);
     // Fast check. The complete reading test is in the plugins tests
-    EXPECT_EQ(atoms->index(0).name(), "N");
-    EXPECT_EQ(atoms->index(1).name(), "CA");
+    EXPECT_EQ(atoms->index(0, 0).name(), "N");
+    EXPECT_EQ(atoms->index(1, 0).name(), "CA");
 
     EXPECT_TRUE(pdb_reader->read_trajectory("traj.pdb", atoms));
     EXPECT_EQ(atoms->num_frames(), 4);
@@ -129,4 +129,6 @@ TEST(molreader, BasicAssertions) {
     EXPECT_TRUE(pdb_reader->read_trajectory("traj.pdb", atoms, 2, 0));
     EXPECT_TRUE(pdb_reader->read_trajectory("traj.pdb", atoms, -2, 0, 2));
     EXPECT_EQ(atoms->num_frames(), 6);
+
+    auto atom = atoms->index(0, 0);
 }

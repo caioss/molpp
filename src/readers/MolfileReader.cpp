@@ -139,7 +139,7 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
     {
         molfile_atom_t const &mol_atom = molfile_atoms[i];
 
-        Atom atom = atom_data->index(i);
+        Atom atom = atom_data->index(i, 0);
         atom.set_name(mol_atom.name);
         atom.set_type(mol_atom.type);
         atom.set_resname(mol_atom.resname);

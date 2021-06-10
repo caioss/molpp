@@ -2,6 +2,7 @@
 #define ATOM_HPP
 
 #include "core/AtomData.hpp"
+#include <Eigen/Dense>
 #include <memory>
 
 namespace mol {
@@ -9,10 +10,14 @@ namespace mol {
 class Atom
 {
 public:
-    Atom(size_t const index, std::shared_ptr<internal::AtomData> data)
+    Atom(size_t const index, size_t const frame,
+         std::shared_ptr<internal::AtomData> data)
     : m_index { index },
+      m_frame { frame },
       m_data { data }
     {}
+
+    bool operator==(Atom const &other) const { return m_data == other.m_data && m_index == other.m_index && m_frame == other.m_frame; }
 
     size_t index() { return m_index; }
 
@@ -55,8 +60,11 @@ public:
     std::string altloc() const { return m_data->m_altloc[m_index]; }
     void set_altloc(std::string const &altloc) { m_data->m_altloc[m_index] = altloc; }
 
+    Eigen::Ref<Eigen::Vector3f> coords() { return m_data->m_timestep[m_frame].coords().col(m_index); }
+
 private:
     size_t m_index;
+    size_t m_frame;
     std::shared_ptr<internal::AtomData> m_data;
 };
 
