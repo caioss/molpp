@@ -14,7 +14,7 @@ using namespace mol::internal;
 TEST(molfile_structure, BasicAssertions) {
     EXPECT_THROW(MolfileReader(""), mol::MolError);
 
-    MolfileReader reader("pdb");
+    MolfileReader reader(".pdb");
     ASSERT_TRUE(reader.open("tiny.pdb"));
     auto data = reader.read_atoms();
     reader.close();
@@ -58,7 +58,7 @@ TEST(molfile_structure, BasicAssertions) {
 }
 
 TEST(molfile_trajectory, BasicAssertions) {
-    MolfileReader reader("pdb");
+    MolfileReader reader(".pdb");
     ASSERT_TRUE(reader.open("traj.pdb"));
     auto atoms = reader.read_atoms();
     reader.close();
@@ -95,24 +95,23 @@ TEST(molfile_trajectory, BasicAssertions) {
 }
 
 TEST(PDB_plugin_types, BasicAssertions) {
-    MolfileReader reader("pdb");
+    MolfileReader reader(".pdb");
     EXPECT_TRUE(reader.has_topology());
     EXPECT_TRUE(reader.has_trajectory());
     EXPECT_FALSE(reader.has_trajectory_metadata());
     EXPECT_TRUE(reader.has_bonds());
-    EXPECT_TRUE(reader.can_read("4lad.pdb"));
-    EXPECT_TRUE(reader.can_read("dummy.ent"));
-    EXPECT_TRUE(reader.can_read("dummy.dummy.pdb"));
-    EXPECT_FALSE(reader.can_read("dummy.psf"));
-    EXPECT_FALSE(reader.can_read("dummy.pd"));
-    EXPECT_FALSE(reader.can_read("dummypdb"));
+    EXPECT_TRUE(reader.can_read(".pdb"));
+    EXPECT_TRUE(reader.can_read(".ent"));
+    EXPECT_FALSE(reader.can_read(".psf"));
+    EXPECT_FALSE(reader.can_read(".pd"));
+    EXPECT_FALSE(reader.can_read(""));
 }
 
 TEST(molreader, BasicAssertions) {
-    EXPECT_THAT(MolReader::from_file("dummy.unk"), IsNull());
-    EXPECT_THAT(MolReader::from_file("dummy.pdb"), NotNull());
+    EXPECT_THAT(MolReader::from_file_ext(".unk"), IsNull());
+    EXPECT_THAT(MolReader::from_file_ext(".pdb"), NotNull());
 
-    auto pdb_reader = MolReader::from_file("traj.pdb");
+    auto pdb_reader = MolReader::from_file_ext(".pdb");
     auto atoms = pdb_reader->read_topology("traj.pdb");
     ASSERT_THAT(atoms, NotNull());
     EXPECT_EQ(atoms->size(), 2);

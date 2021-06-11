@@ -12,9 +12,9 @@ class MolfileReader : public MolReader
 {
 public:
     MolfileReader() = delete;
-    MolfileReader(std::string const &name);
+    MolfileReader(std::string const &file_ext);
     ~MolfileReader();
-    bool can_read(std::string const &filename) const override;
+    static bool can_read(std::string const &file_ext);
     bool has_topology() const override;
     bool has_trajectory() const override;
     bool has_bonds() const override;
@@ -30,7 +30,6 @@ private:
     void *m_handle;
     std::string m_name;
     molfile_plugin_t *m_plugin;
-    std::unordered_set<std::string> m_extensions;
 };
 
 } // namespace mol::internal

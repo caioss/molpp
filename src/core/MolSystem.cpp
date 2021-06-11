@@ -1,13 +1,16 @@
 #include "MolSystem.hpp"
 #include "AtomData.hpp"
-#include "readers/MolReader.hpp"
+#include "AtomSel.hpp"
 #include "MolError.hpp"
+#include "readers/MolReader.hpp"
+#include <filesystem>
 
+using namespace mol;
 using namespace mol::internal;
 
-mol::MolSystem::MolSystem(std::string const& topology)
+MolSystem::MolSystem(std::string const &topology)
 {
-    auto reader = MolReader::from_file(topology);
+    auto reader = MolReader::from_file_ext(std::filesystem::path(topology).extension());
     if (!reader)
     {
         throw mol::MolError("No reader for file " + topology);

@@ -1,17 +1,13 @@
 #include "MolReader.hpp"
 #include "MolfileReader.hpp"
-#include <filesystem>
 
 using namespace mol::internal;
 
-std::shared_ptr<MolReader> MolReader::from_file(const std::string &file_name)
+std::shared_ptr<MolReader> MolReader::from_file_ext(const std::string &file_ext)
 {
-    for (auto reader : m_readers)
+    if (MolfileReader::can_read(file_ext))
     {
-        if (reader->can_read(file_name))
-        {
-            return reader;
-        }
+        return std::make_shared<MolfileReader>(file_ext);
     }
 
     return nullptr;
@@ -67,13 +63,3 @@ bool MolReader::read_trajectory(std::string const &file_name, std::shared_ptr<At
     close();
     return true;
 }
-
-std::vector<std::shared_ptr<MolReader>> init_readers()
-{
-    std::vector<std::shared_ptr<MolReader>> readers;
-    readers.push_back(std::make_shared<MolfileReader>("pdb"));
-
-    return readers;
-}
-
-std::vector<std::shared_ptr<MolReader>> MolReader::m_readers = init_readers();

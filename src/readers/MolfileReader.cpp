@@ -5,7 +5,6 @@
 #include "molfile.h"
 #include <regex>
 #include <string>
-#include <filesystem>
 #include <unordered_map>
 
 using namespace mol::internal;
@@ -23,12 +22,35 @@ public:
         static MolfilePlugins instance;
         return instance;
     }
-    std::unordered_map<std::string, molfile_plugin_t *> plugins;
+    molfile_plugin_t *find_plugin(std::string file_ext)
+    {
+        auto it = m_extensions.find(file_ext);
+        return (it == m_extensions.end()) ? nullptr : it->second;
+    }
+    bool has_extension(std::string file_ext)
+    {
+        return m_extensions.count(file_ext);
+    }
 
 private:
     MolfilePlugins()
     {
+        // Register plugins
         if (pdbplugin_init() == VMDPLUGIN_SUCCESS) pdbplugin_register(this, register_cb);
+
+        // Register extensions
+        std::regex regexz(",");
+        std::sregex_token_iterator end;
+
+        for (molfile_plugin_t *plugin : m_plugins)
+        {
+            std::string const plugin_ext(plugin->filename_extension);
+            std::sregex_token_iterator ext_iter(plugin_ext.begin(), plugin_ext.end(), regexz, -1);
+            while (ext_iter != end)
+            {
+                m_extensions.insert({"." + std::string(*ext_iter++), plugin});
+            }
+        }
     }
 
     static int register_cb(void *c_pointer, vmdplugin_t *p)
@@ -39,34 +61,26 @@ private:
         }
         MolfilePlugins *self = static_cast<MolfilePlugins *>(c_pointer);
         molfile_plugin_t *plugin = (molfile_plugin_t *)p;
-        self->plugins[plugin->name] = plugin;
+        self->m_plugins.push_back(plugin);
         return VMDPLUGIN_SUCCESS;
     }
+
+    std::vector<molfile_plugin_t *> m_plugins;
+    std::unordered_multimap<std::string, molfile_plugin_t *> m_extensions;
+
 };
 
-MolfileReader::MolfileReader(std::string const &name)
+MolfileReader::MolfileReader(std::string const &file_ext)
 : m_num_atoms { 0 },
-  m_handle { nullptr },
-  m_name(name)
+  m_handle { nullptr }
 {
     // Find correspondent plugin
-    MolfilePlugins &plugins = MolfilePlugins::getInstance();
-    if (plugins.plugins.count(name) == 0)
+    m_plugin = MolfilePlugins::getInstance().find_plugin(file_ext);
+    if (!m_plugin)
     {
-        throw mol::MolError("Unknown plugin: " + name);
+        throw mol::MolError("Unknown plugin: " + file_ext);
     }
-    m_plugin = plugins.plugins[name];
-
-    // Populate (real) extensions
-    std::regex regexz(",");
-    std::string const extensions(m_plugin->filename_extension);
-    std::sregex_token_iterator ext_iter(extensions.begin(), extensions.end(),
-                                        regexz, -1);
-    std::sregex_token_iterator end;
-    while (ext_iter != end)
-    {
-        m_extensions.insert("." + std::string(*ext_iter++));
-    }
+    m_name = m_plugin->name;
 }
 
 MolfileReader::~MolfileReader()
@@ -74,10 +88,9 @@ MolfileReader::~MolfileReader()
     close();
 }
 
-bool MolfileReader::can_read(const std::string &file_name) const
+bool MolfileReader::can_read(const std::string &file_ext)
 {
-    std::string file_ext(std::filesystem::path(file_name).extension());
-    return m_extensions.count(file_ext);
+    return MolfilePlugins::getInstance().has_extension(file_ext);
 }
 
 bool MolfileReader::has_topology() const
