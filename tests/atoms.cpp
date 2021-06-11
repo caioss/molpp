@@ -18,7 +18,9 @@ TEST(atoms, BasicAssertions) {
     // Sizes
     ASSERT_EQ(data->size(), 2);
 
-    // Properties
+    /*
+     * Properties
+     */
     EXPECT_EQ(atom.index(), 1);
 
     atom.set_resid(20);
@@ -60,10 +62,15 @@ TEST(atoms, BasicAssertions) {
     atom.set_altloc("B");
     EXPECT_EQ(atom.altloc(), "B");
 
-    // Coordinates
+    /*
+     * Coordinates
+     */
     Timestep ts(2);
     ts.coords() << 1, 2, 3, 4, 5, 6;
+
+    ASSERT_EQ(data->num_frames(), 0);
     data->add_timestep(std::move(ts));
+    ASSERT_EQ(data->num_frames(), 1);
 
     EXPECT_THAT(atom.coords(), ElementsAre(2, 4, 6));
     atom.coords() *= 2;

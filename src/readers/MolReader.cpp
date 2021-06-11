@@ -15,7 +15,7 @@ std::shared_ptr<MolReader> MolReader::from_file_ext(const std::string &file_ext)
 
 std::shared_ptr<AtomData> MolReader::read_topology(std::string const &file_name)
 {
-    if (!(has_topology() && open(file_name)))
+    if (!has_topology() || open(file_name) != SUCCESS)
     {
         return nullptr;
     }
@@ -25,35 +25,55 @@ std::shared_ptr<AtomData> MolReader::read_topology(std::string const &file_name)
     return atom_data;
 }
 
-bool MolReader::read_trajectory(std::string const &file_name, std::shared_ptr<AtomData> atom_data, int begin, int end, int step)
+MolReader::Status MolReader::read_trajectory(std::string const &file_name, std::shared_ptr<AtomData> atom_data, int begin, int end, int step)
 {
-    if (!(has_trajectory() && open(file_name)))
+    // Sanity checks
+    if (!has_trajectory())
     {
-        return false;
+        return INVALID;
     }
 
+    Status status = open(file_name);
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    status = check_timestep_read(atom_data);
+    if (status != SUCCESS)
+    {
+        close();
+        return status;
+    }
+
+    // Initial skip
     begin = (begin < 0) ? 0 : begin;
     step = (step < 1) ? 1 : step;
     int current;
     for (current = 0; current < begin; ++current)
     {
-        if (!skip_timestep(atom_data))
+        status = skip_timestep(atom_data);
+        if (status != SUCCESS)
         {
             close();
-            return true;
+            return (status == END) ? SUCCESS : status;
         }
     }
 
+    // Read frames
+    status = SUCCESS;
     while (end < 0 || current++ < end)
     {
-        if (!read_timestep(atom_data))
+        status = read_timestep(atom_data);
+        if (status != SUCCESS)
         {
             break;
         }
 
         for (int i = 1; i < step; ++i, ++current)
         {
-            if (!skip_timestep(atom_data))
+            status = skip_timestep(atom_data);
+            if (status != SUCCESS)
             {
                 break;
             }
@@ -61,5 +81,5 @@ bool MolReader::read_trajectory(std::string const &file_name, std::shared_ptr<At
     }
 
     close();
-    return true;
+    return (status == END) ? SUCCESS : status;
 }

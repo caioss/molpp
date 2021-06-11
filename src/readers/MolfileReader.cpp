@@ -78,7 +78,7 @@ MolfileReader::MolfileReader(std::string const &file_ext)
     m_plugin = MolfilePlugins::getInstance().find_plugin(file_ext);
     if (!m_plugin)
     {
-        throw mol::MolError("Unknown plugin: " + file_ext);
+        throw mol::MolError("Unknown plugin for extension " + file_ext);
     }
     m_name = m_plugin->name;
 }
@@ -113,18 +113,22 @@ bool MolfileReader::has_bonds() const
     return m_plugin->read_bonds != nullptr;
 }
 
-bool MolfileReader::open(const std::string &file_name)
+MolReader::Status MolfileReader::open(const std::string &file_name)
 {
-    m_handle = m_plugin->open_file_read(file_name.c_str(),
-                                        m_name.c_str(),
-                                        &m_num_atoms);
-    if (!m_handle || m_num_atoms <= 0)
+    if (m_handle)
     {
-        m_num_atoms = 0;
-        return false;
+        return MolReader::INVALID;
     }
 
-    return true;
+    m_handle = m_plugin->open_file_read(file_name.c_str(), m_name.c_str(), &m_num_atoms);
+
+    if (!m_handle || m_num_atoms <= 0)
+    {
+        close();
+        return MolReader::FAILED;
+    }
+
+    return MolReader::SUCCESS;
 }
 
 void MolfileReader::close()
@@ -139,6 +143,11 @@ void MolfileReader::close()
 
 std::shared_ptr<AtomData> MolfileReader::read_atoms()
 {
+    if (!m_handle)
+    {
+        throw mol::MolError("No opened file");
+    }
+
     std::vector<molfile_atom_t> molfile_atoms(m_num_atoms);
     int flags = MOLFILE_BADOPTIONS;
     if (m_plugin->read_structure(m_handle, &flags, molfile_atoms.data())
@@ -205,24 +214,56 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
     return atom_data;
 }
 
-bool MolfileReader::skip_timestep(std::shared_ptr<AtomData> atom_data)
+MolReader::Status MolfileReader::check_timestep_read(std::shared_ptr<AtomData> atom_data)
 {
-    return m_plugin->read_next_timestep(m_handle, atom_data->size(), nullptr) == MOLFILE_SUCCESS;
+    if (!m_handle)
+    {
+        return INVALID;
+    }
+
+    if (atom_data->size() != (size_t)m_num_atoms)
+    {
+        return WRONG_ATOMS;
+    }
+
+    return SUCCESS;
 }
 
-bool MolfileReader::read_timestep(std::shared_ptr<AtomData> atom_data)
+MolReader::Status MolfileReader::skip_timestep(std::shared_ptr<AtomData> atom_data)
+{
+    switch (m_plugin->read_next_timestep(m_handle, atom_data->size(), nullptr))
+    {
+        case MOLFILE_SUCCESS:
+            return SUCCESS;
+
+        case MOLFILE_EOF:
+            return END;
+
+        default:
+            return FAILED;
+    }
+}
+
+MolReader::Status MolfileReader::read_timestep(std::shared_ptr<AtomData> atom_data)
 {
     Timestep ts(atom_data->size());
     molfile_timestep_t mol_ts;
     mol_ts.coords = ts.coords().data();
     mol_ts.physical_time = 0.0;
-    int rc = m_plugin->read_next_timestep(m_handle, atom_data->size(), &mol_ts);
-    if (rc != MOLFILE_SUCCESS)
+
+    switch (m_plugin->read_next_timestep(m_handle, atom_data->size(), &mol_ts))
     {
-        return false;
+        case MOLFILE_SUCCESS:
+            break;
+
+        case MOLFILE_EOF:
+            return END;
+
+        default:
+            return FAILED;
     }
 
     atom_data->add_timestep(std::move(ts));
 
-    return true;
+    return SUCCESS;
 }

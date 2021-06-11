@@ -11,19 +11,25 @@ using namespace testing;
 using namespace mol;
 using namespace mol::internal;
 
-TEST(molfile_structure, BasicAssertions) {
-    EXPECT_THROW(MolfileReader(""), mol::MolError);
+TEST(molfile, BasicAssertions) {
+    EXPECT_THROW(MolfileReader(""), MolError);
 
     MolfileReader reader(".pdb");
-    ASSERT_TRUE(reader.open("tiny.pdb"));
+
+    // Sanity checks
+    EXPECT_THROW(reader.read_atoms(), MolError); // Not open
+    ASSERT_EQ(reader.open("tiny.pdb"), MolReader::SUCCESS);
+    ASSERT_EQ(reader.open("tiny.pdb"), MolReader::INVALID); // Re-open
+
     auto data = reader.read_atoms();
     reader.close();
 
-    // Size
     ASSERT_THAT(data, NotNull());
     ASSERT_EQ(data->size(), 6);
 
-    // Properties
+    /*
+     * Properties
+     */
     std::vector<mol::Atom> atoms;
     for (size_t i = 0; i < data->size(); ++i)
     {
@@ -55,41 +61,40 @@ TEST(molfile_structure, BasicAssertions) {
                                  {" ", " ", " ", " ", "A", "B"}));
 
     // TODO add test to charges
-}
 
-TEST(molfile_trajectory, BasicAssertions) {
-    MolfileReader reader(".pdb");
-    ASSERT_TRUE(reader.open("traj.pdb"));
-    auto atoms = reader.read_atoms();
+    /*
+     * Trajectory
+     */
+    ASSERT_EQ(reader.open("traj.pdb"), MolReader::SUCCESS);
+    data = reader.read_atoms();
     reader.close();
+    ASSERT_THAT(data, NotNull());
+    ASSERT_EQ(data->size(), 2);
 
-    // Size
-    ASSERT_THAT(atoms, NotNull());
-    ASSERT_EQ(atoms->size(), 2);
+    // Sanity checks
+    reader.open("tiny.pdb"); // Wrong number of atoms
+    EXPECT_EQ(reader.check_timestep_read(data), MolReader::WRONG_ATOMS);
+    reader.close(); // No file handle
+    EXPECT_EQ(reader.check_timestep_read(data), MolReader::INVALID);
 
-    // Trajectory
-    ASSERT_EQ(atoms->num_frames(), 0);
-    atoms->add_timestep(Timestep(atoms->size()));
-    ASSERT_EQ(atoms->num_frames(), 1);
+    reader.open("traj.pdb");
 
-    ASSERT_TRUE(reader.open("traj.pdb"));
+    ASSERT_EQ(reader.skip_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(data->num_frames(), 0);
 
-    ASSERT_TRUE(reader.skip_timestep(atoms));
-    ASSERT_EQ(atoms->num_frames(), 1);
+    ASSERT_EQ(reader.read_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(data->num_frames(), 1);
+    EXPECT_THAT(data->timestep(0).coords().reshaped(), ElementsAre(2, -2, 0, 4, -4, 2));
 
-    ASSERT_TRUE(reader.read_timestep(atoms));
-    ASSERT_EQ(atoms->num_frames(), 2);
-    EXPECT_THAT(atoms->timestep(1).coords().reshaped(), ElementsAre(2, -2, 0, 4, -4, 2));
+    ASSERT_EQ(reader.skip_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(data->num_frames(), 1);
 
-    ASSERT_TRUE(reader.skip_timestep(atoms));
-    ASSERT_EQ(atoms->num_frames(), 2);
+    ASSERT_EQ(reader.read_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(data->num_frames(), 2);
+    EXPECT_THAT(data->timestep(1).coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
 
-    ASSERT_TRUE(reader.read_timestep(atoms));
-    ASSERT_EQ(atoms->num_frames(), 3);
-    EXPECT_THAT(atoms->timestep(2).coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
-
-    ASSERT_FALSE(reader.read_timestep(atoms));
-    ASSERT_FALSE(reader.skip_timestep(atoms));
+    ASSERT_EQ(reader.read_timestep(data), MolReader::END);
+    ASSERT_EQ(reader.skip_timestep(data), MolReader::END);
 
     reader.close();
 }
@@ -119,14 +124,19 @@ TEST(molreader, BasicAssertions) {
     EXPECT_EQ(atoms->index(0, 0).name(), "N");
     EXPECT_EQ(atoms->index(1, 0).name(), "CA");
 
-    EXPECT_TRUE(pdb_reader->read_trajectory("traj.pdb", atoms));
+    // Sanity checks
+    // EXPECT_EQ(MolReader::from_file_ext(".psf")->read_trajectory("traj.pdb", atoms), MolReader::INVALID); // TODO enable when PSF reader becomes available
+    EXPECT_EQ(pdb_reader->read_trajectory("", atoms), MolReader::FAILED);
+    EXPECT_EQ(pdb_reader->read_trajectory("tiny.pdb", atoms), MolReader::WRONG_ATOMS);
+
+    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms), MolReader::SUCCESS);
     EXPECT_EQ(atoms->num_frames(), 4);
-    EXPECT_TRUE(pdb_reader->read_trajectory("traj.pdb", atoms, 0, 1, 0));
+    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, 0, 1, 0), MolReader::SUCCESS);
     EXPECT_EQ(atoms->num_frames(), 5);
-    EXPECT_TRUE(pdb_reader->read_trajectory("traj.pdb", atoms, 1, 2, 2));
+    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, 1, 2, 2), MolReader::SUCCESS);
     EXPECT_EQ(atoms->num_frames(), 6);
-    EXPECT_TRUE(pdb_reader->read_trajectory("traj.pdb", atoms, 2, 0));
-    EXPECT_TRUE(pdb_reader->read_trajectory("traj.pdb", atoms, -2, 0, 2));
+    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, 2, 0), MolReader::SUCCESS);
+    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, -2, 0, 2), MolReader::SUCCESS);
     EXPECT_EQ(atoms->num_frames(), 6);
 
     auto atom = atoms->index(0, 0);
