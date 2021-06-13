@@ -12,6 +12,7 @@ enable_testing()
 add_executable(tests
     atoms.cpp
     readers.cpp
+    system.cpp
 )
 
 target_include_directories(tests

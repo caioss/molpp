@@ -68,6 +68,6 @@ private:
     std::shared_ptr<internal::AtomData> m_data;
 };
 
-} // namespace mol::internal
+} // namespace mol
 
 #endif // ATOM_HPP
