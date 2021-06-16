@@ -10,6 +10,8 @@ namespace mol {
 class Atom
 {
 public:
+    using coords_type = Eigen::Ref<Eigen::Vector3f>;
+
     Atom(size_t const index, size_t const frame,
          std::shared_ptr<internal::AtomData> data)
     : m_index { index },
@@ -19,7 +21,7 @@ public:
 
     bool operator==(Atom const &other) const { return m_data == other.m_data && m_index == other.m_index && m_frame == other.m_frame; }
 
-    size_t index() { return m_index; }
+    size_t index() const { return m_index; }
 
     int resid() const { return m_data->m_resid[m_index]; }
     void set_resid(int const &resid) { m_data->m_resid[m_index] = resid; }
@@ -60,7 +62,7 @@ public:
     std::string altloc() const { return m_data->m_altloc[m_index]; }
     void set_altloc(std::string const &altloc) { m_data->m_altloc[m_index] = altloc; }
 
-    Eigen::Ref<Eigen::Vector3f> coords() { return m_data->m_timestep[m_frame].coords().col(m_index); }
+    coords_type coords() { return m_data->m_timestep[m_frame].coords().col(m_index); }
 
 private:
     size_t m_index;

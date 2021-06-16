@@ -9,6 +9,8 @@ namespace mol::internal
 class Timestep
 {
 public:
+    using coords_type = Eigen::Matrix3Xf;
+
     Timestep();
     Timestep(size_t const num_atoms);
     Timestep(const Timestep &src) = delete;
@@ -17,11 +19,11 @@ public:
     Timestep &operator=(Timestep &&rhs);
     void swap(Timestep &rhs);
 
-    Eigen::Matrix3Xf &coords() { return m_coords; }
+    coords_type &coords() { return m_coords; }
 
 private:
     size_t m_num_atoms;
-    Eigen::Matrix3Xf m_coords;
+    coords_type m_coords;
 };
 
 } // namespace mol::internal
