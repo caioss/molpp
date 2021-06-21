@@ -1,68 +1,63 @@
 #ifndef ATOM_HPP
 #define ATOM_HPP
 
-#include "core/AtomData.hpp"
-#include <Eigen/Dense>
+#include "MolppCore.hpp"
 #include <memory>
 
 namespace mol {
 
+namespace internal {
+    class AtomData;
+}
+
 class Atom
 {
 public:
-    using coords_type = Eigen::Ref<Eigen::Vector3f>;
+    Atom(size_t const index, size_t const frame,std::shared_ptr<internal::AtomData> data);
 
-    Atom(size_t const index, size_t const frame,
-         std::shared_ptr<internal::AtomData> data)
-    : m_index { index },
-      m_frame { frame },
-      m_data { data }
-    {}
+    bool operator==(Atom const &other) const;
+    size_t index() const;
 
-    bool operator==(Atom const &other) const { return m_data == other.m_data && m_index == other.m_index && m_frame == other.m_frame; }
+    int resid() const;
+    void set_resid(int const &resid);
 
-    size_t index() const { return m_index; }
+    int atomic() const;
+    void set_atomic(int const &atomic);
 
-    int resid() const { return m_data->m_resid[m_index]; }
-    void set_resid(int const &resid) { m_data->m_resid[m_index] = resid; }
+    float occupancy() const;
+    void set_occupancy(float const &occupancy);
 
-    int atomic() const { return m_data->m_atomic[m_index]; }
-    void set_atomic(int const &atomic) { m_data->m_atomic[m_index] = atomic; }
+    float tempfactor() const;
+    void set_tempfactor(float const &tempfactor);
 
-    float occupancy() const { return m_data->m_occupancy[m_index]; }
-    void set_occupancy(float const &occupancy) { m_data->m_occupancy[m_index] = occupancy; }
+    float mass() const;
+    void set_mass(float const &mass);
 
-    float tempfactor() const { return m_data->m_tempfactor[m_index]; }
-    void set_tempfactor(float const &tempfactor) { m_data->m_tempfactor[m_index] = tempfactor; }
+    float charge() const;
+    void set_charge(float const &charge);
 
-    float mass() const { return m_data->m_mass[m_index]; }
-    void set_mass(float const &mass) { m_data->m_mass[m_index] = mass; }
+    float radius() const;
+    void set_radius(float const &radius);
 
-    float charge() const { return m_data->m_charge[m_index]; }
-    void set_charge(float const &charge) { m_data->m_charge[m_index] = charge; }
+    std::string name() const;
+    void set_name(std::string const &name);
 
-    float radius() const { return m_data->m_radius[m_index]; }
-    void set_radius(float const &radius) { m_data->m_radius[m_index] = radius; }
+    std::string type() const;
+    void set_type(std::string const &type);
 
-    std::string name() const { return m_data->m_name[m_index]; }
-    void set_name(std::string const &name) { m_data->m_name[m_index] = name; }
+    std::string resname() const;
+    void set_resname(std::string const &resname);
 
-    std::string type() const { return m_data->m_type[m_index]; }
-    void set_type(std::string const &type) { m_data->m_type[m_index] = type; }
+    std::string segid() const;
+    void set_segid(std::string const &segid);
 
-    std::string resname() const { return m_data->m_resname[m_index]; }
-    void set_resname(std::string const &resname) { m_data->m_resname[m_index] = resname; }
+    std::string chain() const;
+    void set_chain(std::string const &chain);
 
-    std::string segid() const { return m_data->m_segid[m_index]; }
-    void set_segid(std::string const &segid) { m_data->m_segid[m_index] = segid; }
+    std::string altloc() const;
+    void set_altloc(std::string const &altloc);
 
-    std::string chain() const { return m_data->m_chain[m_index]; }
-    void set_chain(std::string const &chain) { m_data->m_chain[m_index] = chain; }
-
-    std::string altloc() const { return m_data->m_altloc[m_index]; }
-    void set_altloc(std::string const &altloc) { m_data->m_altloc[m_index] = altloc; }
-
-    coords_type coords() { return m_data->m_timestep[m_frame].coords().col(m_index); }
+    Eigen::Ref<Pos3> coords();
 
 private:
     size_t m_index;

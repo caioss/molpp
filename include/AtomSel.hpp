@@ -2,6 +2,7 @@
 #define ATOMSEL_HPP
 
 #include "Atom.hpp"
+#include "MolppCore.hpp"
 #include <vector>
 #include <memory>
 
@@ -20,7 +21,7 @@ public:
     using value_type = Atom;
     using iterator = Iterator<Atom>;
     using const_iterator = Iterator<const Atom>;
-    using coords_type = Eigen::IndexedView<internal::Timestep::coords_type, Eigen::internal::AllRange<3>, std::vector<size_t>>;
+    using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<size_t>>;
 
     AtomSel() = delete;
     AtomSel(std::shared_ptr<internal::AtomData> data);
@@ -62,7 +63,7 @@ public:
       m_data(data),
       m_current(begin)
     {}
-    value_type operator*() const { return m_data->index(*m_current, m_frame); }
+    value_type operator*() const;
     Iterator& operator++() { m_current++; return *this; }
     Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
     difference_type operator-(const Iterator& other) { return m_current - other.m_current; }

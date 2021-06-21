@@ -89,3 +89,15 @@ AtomSel::coords_type AtomSel::coords()
 {
     return m_data->timestep(m_frame).coords()(Eigen::all, m_indices);
 }
+
+template<>
+Atom AtomSel::Iterator<Atom>::operator*() const
+{
+    return m_data->index(*m_current, m_frame);
+}
+
+template<>
+const Atom AtomSel::Iterator<const Atom>::operator*() const
+{
+    return m_data->index(*m_current, m_frame);
+}
