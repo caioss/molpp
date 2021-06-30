@@ -2,12 +2,12 @@
 #include "MolError.hpp"
 #include "core/AtomData.hpp"
 #include <numeric>
-#include <algorithm>
 
 using namespace mol;
 
 AtomSel::AtomSel(std::shared_ptr<internal::AtomData> data)
 : m_frame { 0 },
+  m_selected(data->size(), true),
   m_indices(data->size()),
   m_data(data)
 {
@@ -16,22 +16,23 @@ AtomSel::AtomSel(std::shared_ptr<internal::AtomData> data)
 
 AtomSel::AtomSel(std::vector<size_t> const &indices, std::shared_ptr<internal::AtomData> data)
 : m_frame { 0 },
+  m_selected(data->size(), false),
   m_data(data)
 {
-    // Remove duplicates
     size_t num_atoms = 0;
     size_t const total_atoms = data->size();
-    std::vector<bool> selected(total_atoms, false);
+
+    // Remove duplicates
     for (size_t index : indices)
     {
         if (index >= total_atoms)
         {
             throw mol::MolError("Out of bounds selection index: " + std::to_string(index));
         }
-        if (!selected[index])
+        if (!m_selected[index])
         {
             ++num_atoms;
-            selected[index] = true;
+            m_selected[index] = true;
         }
     }
 
@@ -39,7 +40,7 @@ AtomSel::AtomSel(std::vector<size_t> const &indices, std::shared_ptr<internal::A
     m_indices.reserve(num_atoms);
     for (size_t index = 0; index < total_atoms; ++index)
     {
-        if (selected[index])
+        if (m_selected[index])
         {
             m_indices.push_back(index);
         }
@@ -82,7 +83,14 @@ void AtomSel::set_frame(size_t frame)
 
 bool AtomSel::contains(size_t const index) const
 {
-    return std::binary_search(m_indices.begin(), m_indices.end(), index);
+    if (index >= m_selected.size())
+    {
+        return false;
+    }
+    else
+    {
+        return m_selected[index];
+    }
 }
 
 AtomSel::coords_type AtomSel::coords()

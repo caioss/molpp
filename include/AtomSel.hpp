@@ -42,6 +42,7 @@ public:
 
 private:
     size_t m_frame;
+    std::vector<bool> m_selected;
     std::vector<size_t> m_indices;
     std::shared_ptr<internal::AtomData> m_data;
 
