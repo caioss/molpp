@@ -13,6 +13,7 @@ add_executable(tests
     atoms.cpp
     readers.cpp
     system.cpp
+    files.cpp
 )
 
 target_include_directories(tests

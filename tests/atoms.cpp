@@ -1,9 +1,9 @@
+#include "files.hpp"
 #include "matchers.hpp"
 #include "Atom.hpp"
 #include "AtomSel.hpp"
 #include "MolError.hpp"
 #include "core/AtomData.hpp"
-#include "readers/MolReader.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -101,12 +101,11 @@ TEST(timestep, BasicAssertions) {
     EXPECT_THAT(moved_again.coords().reshaped(), ElementsAre(1, 3, 5, 2, 4, 6));
 }
 
-TEST(atomsel, BasicAssertions) {
-    auto reader = MolReader::from_file_ext(".pdb");
-    auto atom_data = reader->read_topology("tiny.pdb");
-    reader->read_trajectory("tiny.pdb", atom_data);
+TEST(AtomSel, atoms) {
+    PDBFiles pdb;
+    pdb.check();
 
-    AtomSel all_sel(atom_data);
+    AtomSel all_sel(pdb.tiny);
     EXPECT_EQ(all_sel.size(), 6);
     EXPECT_EQ(all_sel.frame(), 0);
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
@@ -116,7 +115,7 @@ TEST(atomsel, BasicAssertions) {
     }
     EXPECT_FALSE(all_sel.contains(6));
 
-    AtomSel messy_sel({3, 1, 4, 3}, atom_data);
+    AtomSel messy_sel({3, 1, 4, 3}, pdb.tiny);
     EXPECT_EQ(messy_sel.size(), 3);
     EXPECT_EQ(messy_sel.frame(), 0);
     EXPECT_THAT(messy_sel.indices(), ElementsAre(1, 3, 4));
@@ -132,9 +131,7 @@ TEST(atomsel, BasicAssertions) {
     /*
      * Trajectory
      */
-    auto traj_data = reader->read_topology("traj.pdb");
-    reader->read_trajectory("traj.pdb", traj_data);
-    AtomSel traj_sel(traj_data);
+    AtomSel traj_sel(pdb.traj);
     EXPECT_THAT(traj_sel[0].coords().reshaped(), ElementsAre(1, -1, 0));
     traj_sel.set_frame(2);
     EXPECT_THAT(traj_sel[0].coords().reshaped(), ElementsAre(6, -6, 0));

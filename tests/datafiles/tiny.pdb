@@ -5,4 +5,5 @@ ATOM      3  O1  HOH A 201       3.000  -3.000  -2.000  1.00 -1.00      SEG1 O
 ATOM      4  O22 HOH B 801       4.000  -4.000  -3.000  1.00 -1.00      SEG2 O
 ATOM      5  ND AASP A  85       5.000  -5.000  -4.000  1.00 -1.00      SEG1 N
 ATOM      6  ND BASP A  85       6.000  -6.000  -5.000  1.00 -1.00      SEG1 N
+CONECT    1    4    3                                                           
 END
