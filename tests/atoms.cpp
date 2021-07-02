@@ -11,7 +11,7 @@ using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
-TEST(atoms, BasicAssertions) {
+TEST(Atoms, Atom) {
     auto data = AtomData::create(2);
     ASSERT_THAT(data, NotNull());
     auto atom = data->index(1, 0);
@@ -82,7 +82,7 @@ TEST(atoms, BasicAssertions) {
     EXPECT_THAT(atom.coords(), ElementsAre(4, 8, 12));
 }
 
-TEST(timestep, BasicAssertions) {
+TEST(Atoms, Timestep) {
     Timestep ts(2);
 
     ts.coords() << 1, 2, 3, 4, 5, 6;
@@ -101,7 +101,7 @@ TEST(timestep, BasicAssertions) {
     EXPECT_THAT(moved_again.coords().reshaped(), ElementsAre(1, 3, 5, 2, 4, 6));
 }
 
-TEST(AtomSel, atoms) {
+TEST(Atoms, AtomSel) {
     PDBFiles pdb;
     pdb.check();
 

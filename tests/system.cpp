@@ -7,8 +7,7 @@
 using namespace mol;
 using namespace testing;
 
-#include <iostream>
-TEST(molsystem, BasicAssertions) {
+TEST(System, MolSystem) {
     EXPECT_THROW(MolSystem(""), MolError);
     EXPECT_THROW(MolSystem("file.unk"), MolError);
     EXPECT_THROW(MolSystem("no_file.pdb"), MolError);

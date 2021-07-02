@@ -11,7 +11,7 @@ using namespace testing;
 using namespace mol;
 using namespace mol::internal;
 
-TEST(molfile, BasicAssertions) {
+TEST(Readers, MolfileReader) {
     EXPECT_THROW(MolfileReader(""), MolError);
 
     MolfileReader reader(".pdb");
@@ -99,7 +99,7 @@ TEST(molfile, BasicAssertions) {
     reader.close();
 }
 
-TEST(PDB_plugin_types, BasicAssertions) {
+TEST(Readers, PDB) {
     MolfileReader reader(".pdb");
     EXPECT_TRUE(reader.has_topology());
     EXPECT_TRUE(reader.has_trajectory());
@@ -112,7 +112,7 @@ TEST(PDB_plugin_types, BasicAssertions) {
     EXPECT_FALSE(reader.can_read(""));
 }
 
-TEST(molreader, BasicAssertions) {
+TEST(Readers, MolReader) {
     EXPECT_THAT(MolReader::from_file_ext(".unk"), IsNull());
     EXPECT_THAT(MolReader::from_file_ext(".pdb"), NotNull());
 
