@@ -27,6 +27,7 @@ TEST(Atoms, Atom) {
      * Properties
      */
     EXPECT_EQ(atom.index(), 1);
+    EXPECT_EQ(atom.frame(), 0);
 
     atom.set_resid(20);
     EXPECT_EQ(atom.resid(), 20);
@@ -132,10 +133,13 @@ TEST(Atoms, AtomSel) {
      * Trajectory
      */
     AtomSel traj_sel(pdb.traj);
+    EXPECT_EQ(traj_sel[0].frame(), 0);
     EXPECT_THAT(traj_sel[0].coords().reshaped(), ElementsAre(1, -1, 0));
     traj_sel.set_frame(2);
+    EXPECT_EQ(traj_sel[0].frame(), 2);
     EXPECT_THAT(traj_sel[0].coords().reshaped(), ElementsAre(6, -6, 0));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
+    EXPECT_EQ(traj_sel[0].frame(), 2);
 
     /*
      * Iterators

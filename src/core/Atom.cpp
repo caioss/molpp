@@ -20,6 +20,11 @@ size_t Atom::index() const
     return m_index;
 }
 
+size_t Atom::frame() const
+{
+    return m_frame;
+}
+
 int Atom::resid() const
 {
     return m_data->m_resid[m_index];

@@ -16,7 +16,9 @@ public:
     Atom(size_t const index, size_t const frame,std::shared_ptr<internal::AtomData> data);
 
     bool operator==(Atom const &other) const;
+
     size_t index() const;
+    size_t frame() const;
 
     int resid() const;
     void set_resid(int const &resid);
