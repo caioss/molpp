@@ -19,8 +19,6 @@ public:
     static std::shared_ptr<AtomData> create(size_t const num_atoms);
 
     size_t size() const { return m_num_atoms; };
-    mol::Atom index(size_t const index, size_t const frame);
-
     size_t num_frames() { return m_timestep.size(); }
     Timestep &timestep(size_t const index) { return m_timestep[index]; }
     void add_timestep(Timestep &&ts);

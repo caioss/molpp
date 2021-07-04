@@ -150,8 +150,7 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
 
     std::vector<molfile_atom_t> molfile_atoms(m_num_atoms);
     int flags = MOLFILE_BADOPTIONS;
-    if (m_plugin->read_structure(m_handle, &flags, molfile_atoms.data())
-        || flags == (int)MOLFILE_BADOPTIONS)
+    if (m_plugin->read_structure(m_handle, &flags, molfile_atoms.data()) != MOLFILE_SUCCESS || flags == (int)MOLFILE_BADOPTIONS)
     {
         return nullptr;
     }
@@ -161,7 +160,7 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
     {
         molfile_atom_t const &mol_atom = molfile_atoms[i];
 
-        Atom atom = atom_data->index(i, 0);
+        Atom atom(i, 0, atom_data);
         atom.set_name(mol_atom.name);
         atom.set_type(mol_atom.type);
         atom.set_resname(mol_atom.resname);

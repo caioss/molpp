@@ -69,7 +69,7 @@ AtomSel::const_iterator AtomSel::cend()
 
 Atom AtomSel::operator[](size_t const index)
 {
-    return m_data->index(index, m_frame);
+    return mol::Atom(m_indices[index], m_frame, m_data);
 }
 
 void AtomSel::set_frame(size_t frame)
@@ -101,11 +101,11 @@ AtomSel::coords_type AtomSel::coords()
 template<>
 Atom AtomSel::Iterator<Atom>::operator*() const
 {
-    return m_data->index(*m_current, m_frame);
+    return mol::Atom(*m_current, m_frame, m_data);
 }
 
 template<>
 const Atom AtomSel::Iterator<const Atom>::operator*() const
 {
-    return m_data->index(*m_current, m_frame);
+    return mol::Atom(*m_current, m_frame, m_data);
 }

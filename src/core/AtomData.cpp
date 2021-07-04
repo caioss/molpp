@@ -29,11 +29,6 @@ std::shared_ptr<AtomData> AtomData::create(size_t const num_atoms)
     return std::shared_ptr<AtomData>(new AtomData(num_atoms));
 }
 
-mol::Atom AtomData::index(size_t const index, size_t const frame)
-{
-    return mol::Atom(index, frame, shared_from_this());
-}
-
 void AtomData::add_timestep(Timestep &&ts)
 {
     m_timestep.push_back(std::forward<Timestep &&>(ts));

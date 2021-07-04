@@ -14,11 +14,10 @@ using namespace testing;
 TEST(Atoms, Atom) {
     auto data = AtomData::create(2);
     ASSERT_THAT(data, NotNull());
-    auto atom = data->index(1, 0);
 
     // Comparison
-    EXPECT_TRUE(data->index(1, 0) == data->index(1, 0));
-    EXPECT_FALSE(data->index(0, 0) == data->index(1, 0));
+    EXPECT_TRUE(Atom(1, 0, data) == Atom(1, 0, data));
+    EXPECT_FALSE(Atom(0, 0, data) == Atom(1, 0, data));
 
     // Sizes
     ASSERT_EQ(data->size(), 2);
@@ -26,6 +25,7 @@ TEST(Atoms, Atom) {
     /*
      * Properties
      */
+    Atom atom(1, 0, data);
     EXPECT_EQ(atom.index(), 1);
     EXPECT_EQ(atom.frame(), 0);
 
@@ -120,6 +120,9 @@ TEST(Atoms, AtomSel) {
     EXPECT_EQ(messy_sel.size(), 3);
     EXPECT_EQ(messy_sel.frame(), 0);
     EXPECT_THAT(messy_sel.indices(), ElementsAre(1, 3, 4));
+    EXPECT_EQ(messy_sel[0].index(), 1);
+    EXPECT_EQ(messy_sel[1].index(), 3);
+    EXPECT_EQ(messy_sel[2].index(), 4);
     for (size_t i : {1, 3, 4})
     {
         EXPECT_TRUE(messy_sel.contains(i)) << "Index " << i;
