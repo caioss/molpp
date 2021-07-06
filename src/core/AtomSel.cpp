@@ -2,6 +2,7 @@
 #include "MolError.hpp"
 #include "core/AtomData.hpp"
 #include <numeric>
+#include <algorithm>
 
 using namespace mol;
 
@@ -17,33 +18,34 @@ AtomSel::AtomSel(std::shared_ptr<internal::AtomData> data)
 AtomSel::AtomSel(std::vector<size_t> const &indices, std::shared_ptr<internal::AtomData> data)
 : m_frame { 0 },
   m_selected(data->size(), false),
+  m_indices(indices),
   m_data(data)
 {
-    size_t num_atoms = 0;
-    size_t const total_atoms = data->size();
+    update_indices();
+}
 
-    // Remove duplicates
-    for (size_t index : indices)
+AtomSel::AtomSel(std::vector<size_t> &&indices, std::shared_ptr<internal::AtomData> data)
+: m_frame { 0 },
+  m_selected(data->size(), false),
+  m_indices(0),
+  m_data(data)
+{
+    std::swap(m_indices, indices);
+    update_indices();
+}
+
+void AtomSel::update_indices()
+{
+    std::sort(m_indices.begin(), m_indices.end());
+    size_t const total_atoms = m_data->size();
+    for (size_t index : m_indices)
     {
         if (index >= total_atoms)
         {
             throw mol::MolError("Out of bounds selection index: " + std::to_string(index));
         }
-        if (!m_selected[index])
-        {
-            ++num_atoms;
-            m_selected[index] = true;
-        }
-    }
 
-    // Fill with sorted indices
-    m_indices.reserve(num_atoms);
-    for (size_t index = 0; index < total_atoms; ++index)
-    {
-        if (m_selected[index])
-        {
-            m_indices.push_back(index);
-        }
+        m_selected[index] = true;
     }
 }
 

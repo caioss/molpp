@@ -106,6 +106,7 @@ TEST(Atoms, AtomSel) {
     PDBFiles pdb;
     pdb.check();
 
+    // Default constructor
     AtomSel all_sel(pdb.tiny);
     EXPECT_EQ(all_sel.size(), 6);
     EXPECT_EQ(all_sel.frame(), 0);
@@ -116,20 +117,31 @@ TEST(Atoms, AtomSel) {
     }
     EXPECT_FALSE(all_sel.contains(6));
 
-    AtomSel messy_sel({3, 1, 4, 3}, pdb.tiny);
-    EXPECT_EQ(messy_sel.size(), 3);
-    EXPECT_EQ(messy_sel.frame(), 0);
-    EXPECT_THAT(messy_sel.indices(), ElementsAre(1, 3, 4));
-    EXPECT_EQ(messy_sel[0].index(), 1);
-    EXPECT_EQ(messy_sel[1].index(), 3);
-    EXPECT_EQ(messy_sel[2].index(), 4);
+    // Constructors accepting indexes
+    std::vector<size_t> indices = {4, 1, 3};
+    AtomSel some_sel(indices, pdb.tiny);
+    AtomSel rvalue_sel({4, 1, 3}, pdb.tiny);
+    EXPECT_EQ(some_sel.size(), 3);
+    EXPECT_EQ(rvalue_sel.size(), 3);
+    EXPECT_EQ(some_sel.frame(), 0);
+    EXPECT_EQ(rvalue_sel.frame(), 0);
+    EXPECT_THAT(some_sel.indices(), ElementsAre(1, 3, 4));
+    EXPECT_THAT(rvalue_sel.indices(), ElementsAre(1, 3, 4));
+    EXPECT_EQ(some_sel[0].index(), 1);
+    EXPECT_EQ(rvalue_sel[0].index(), 1);
+    EXPECT_EQ(some_sel[1].index(), 3);
+    EXPECT_EQ(rvalue_sel[1].index(), 3);
+    EXPECT_EQ(some_sel[2].index(), 4);
+    EXPECT_EQ(rvalue_sel[2].index(), 4);
     for (size_t i : {1, 3, 4})
     {
-        EXPECT_TRUE(messy_sel.contains(i)) << "Index " << i;
+        EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
+        EXPECT_TRUE(rvalue_sel.contains(i)) << "Index " << i;
     }
     for (size_t i : {0, 2, 5})
     {
-        EXPECT_FALSE(messy_sel.contains(i)) << "Index " << i;
+        EXPECT_FALSE(some_sel.contains(i)) << "Index " << i;
+        EXPECT_FALSE(rvalue_sel.contains(i)) << "Index " << i;
     }
 
     /*
@@ -147,10 +159,10 @@ TEST(Atoms, AtomSel) {
     /*
      * Iterators
      */
-    std::vector<Atom> atoms(messy_sel.begin(), messy_sel.end());
+    std::vector<Atom> atoms(some_sel.begin(), some_sel.end());
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid), {339, 801, 85}));
-    auto it = messy_sel.begin();
-    auto end = messy_sel.end();
+    auto it = some_sel.begin();
+    auto end = some_sel.end();
     EXPECT_EQ(end - it, 3);
     EXPECT_EQ((*it).resid(), 339);
     EXPECT_EQ((*++it).resid(), 801);

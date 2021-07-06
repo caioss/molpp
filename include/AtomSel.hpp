@@ -26,6 +26,7 @@ public:
     AtomSel() = delete;
     AtomSel(std::shared_ptr<internal::AtomData> data);
     AtomSel(std::vector<size_t> const &indices, std::shared_ptr<internal::AtomData> data);
+    AtomSel(std::vector<size_t> &&indices, std::shared_ptr<internal::AtomData> data);
 
     iterator begin();
     iterator end();
@@ -41,6 +42,8 @@ public:
     coords_type coords();
 
 private:
+    void update_indices();
+
     size_t m_frame;
     std::vector<bool> m_selected;
     std::vector<size_t> m_indices;
