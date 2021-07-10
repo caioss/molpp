@@ -19,7 +19,8 @@ AtomData::AtomData(size_t const num_atoms)
   m_resname(num_atoms),
   m_segid(num_atoms),
   m_chain(num_atoms),
-  m_altloc(num_atoms)
+  m_altloc(num_atoms),
+  m_bonds(num_atoms)
 {
 }
 

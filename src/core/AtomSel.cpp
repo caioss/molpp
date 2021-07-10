@@ -100,6 +100,16 @@ AtomSel::coords_type AtomSel::coords()
     return m_data->timestep(m_frame).coords()(Eigen::all, m_indices);
 }
 
+std::shared_ptr<AtomSel> AtomSel::bonded()
+{
+    return std::make_shared<AtomSel>(m_data->bonds().bonded(m_indices.begin(), m_indices.end()), m_data);
+}
+
+std::vector<std::shared_ptr<Bond>> AtomSel::bonds()
+{
+    return m_data->bonds().bonds(m_indices.begin(), m_indices.end());
+}
+
 template<>
 Atom AtomSel::Iterator<Atom>::operator*() const
 {

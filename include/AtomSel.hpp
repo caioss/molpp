@@ -41,6 +41,9 @@ public:
     std::vector<size_t> const &indices() const { return m_indices; }
     coords_type coords();
 
+    std::shared_ptr<AtomSel> bonded();
+    std::vector<std::shared_ptr<Bond>> bonds();
+
 private:
     void update_indices();
 

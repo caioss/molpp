@@ -25,4 +25,17 @@ public:
     static const std::shared_ptr<AtomData> traj;
 };
 
+class Mol2Files
+{
+public:
+    void check()
+    {
+        ASSERT_THAT(reader, NotNull());
+        ASSERT_THAT(flben, NotNull());
+    }
+
+    static std::shared_ptr<MolReader> reader;
+    static const std::shared_ptr<AtomData> flben;
+};
+
 #endif // FILES_HPP

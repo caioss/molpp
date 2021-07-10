@@ -13,6 +13,7 @@ add_executable(tests
     atoms.cpp
     readers.cpp
     system.cpp
+    bonds.cpp
     files.cpp
 )
 

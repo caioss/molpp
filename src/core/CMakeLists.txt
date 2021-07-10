@@ -4,4 +4,5 @@ target_sources(molpp PRIVATE
     AtomData.cpp
     Timestep.cpp
     AtomSel.cpp
+    BondGraph.cpp
 )

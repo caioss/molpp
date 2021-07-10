@@ -2,6 +2,7 @@
 #define ATOMDATA_HPP
 
 #include "Timestep.hpp"
+#include "BondGraph.hpp"
 #include <memory>
 #include <vector>
 #include <string>
@@ -23,6 +24,8 @@ public:
     Timestep &timestep(size_t const index) { return m_timestep[index]; }
     void add_timestep(Timestep &&ts);
 
+    BondGraph &bonds() { return m_bonds; }
+
 private:
     AtomData(size_t const num_atoms);
 
@@ -42,6 +45,7 @@ private:
     std::vector<std::string> m_chain;
     std::vector<std::string> m_altloc;
     std::vector<Timestep> m_timestep;
+    BondGraph m_bonds;
 
     friend class mol::Atom;
 };

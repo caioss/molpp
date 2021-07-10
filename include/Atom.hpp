@@ -6,6 +6,9 @@
 
 namespace mol {
 
+class AtomSel;
+class Bond;
+
 namespace internal {
     class AtomData;
 }
@@ -58,6 +61,11 @@ public:
 
     std::string altloc() const;
     void set_altloc(std::string const &altloc);
+
+    std::shared_ptr<Bond> add_bond(size_t const bonded_to);
+    std::shared_ptr<Bond> bond(size_t const other);
+    std::vector<std::shared_ptr<Bond>> bonds();
+    std::shared_ptr<AtomSel> bonded();
 
     Eigen::Ref<Pos3> coords();
 

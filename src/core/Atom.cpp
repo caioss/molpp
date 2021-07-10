@@ -1,4 +1,6 @@
 #include "Atom.hpp"
+#include "AtomSel.hpp"
+#include "MolError.hpp"
 #include "core/AtomData.hpp"
 
 using namespace mol;
@@ -152,6 +154,34 @@ std::string Atom::altloc() const
 void Atom::set_altloc(std::string const &altloc)
 {
     m_data->m_altloc[m_index] = altloc;
+}
+
+std::shared_ptr<Bond> Atom::add_bond(size_t const bonded_to)
+{
+    if (bonded_to == m_index)
+    {
+        throw mol::MolError("Atoms can't have bonds to themselves");
+    }
+    if (bonded_to >= m_data->size())
+    {
+        throw mol::MolError("Out of bounds index: " + std::to_string(bonded_to));
+    }
+    return m_data->bonds().add_bond(m_index, bonded_to);
+}
+
+std::shared_ptr<Bond> Atom::bond(size_t const other)
+{
+    return m_data->bonds().bond(m_index, other);
+}
+
+std::vector<std::shared_ptr<Bond>> Atom::bonds()
+{
+    return m_data->bonds().bonds(m_index);
+}
+
+std::shared_ptr<AtomSel> Atom::bonded()
+{
+    return std::make_shared<AtomSel>(m_data->bonds().bonded(m_index), m_data);
 }
 
 Eigen::Ref<Pos3> Atom::coords()

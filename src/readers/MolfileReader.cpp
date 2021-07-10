@@ -37,6 +37,7 @@ private:
     {
         // Register plugins
         if (pdbplugin_init() == VMDPLUGIN_SUCCESS) pdbplugin_register(this, register_cb);
+        if (mol2plugin_init() == VMDPLUGIN_SUCCESS) mol2plugin_register(this, register_cb);
 
         // Register extensions
         std::regex regexz(",");
@@ -207,7 +208,29 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
 
     if (has_bonds())
     {
-        // TODO
+        int num_bonds = 0, num_types = 0;
+        int *from = nullptr, *to = nullptr, *type = nullptr;
+        float *order = nullptr;
+        char **type_name = nullptr;
+
+        int rc = m_plugin->read_bonds(m_handle, &num_bonds, &from, &to, &order,
+                                      &type, &num_types, &type_name);
+        if (rc == MOLFILE_SUCCESS && num_bonds > 0)
+        {
+            BondGraph &bond_graph = atom_data->bonds();
+            bond_graph.set_incomplete(flags & MOLFILE_BONDSSPECIAL);
+
+            for (size_t i = 0; i < (size_t)num_bonds; ++i)
+            {
+                auto bond = bond_graph.add_bond(from[i] - 1, to[i] - 1);
+                bond->set_guessed(false);
+                if (order)
+                {
+                    bond->set_order(order[i]);
+                    bond->set_guessed_order(false);
+                }
+            }
+        }
     }
 
     return atom_data;
