@@ -6,20 +6,7 @@ using namespace mol::internal;
 
 AtomData::AtomData(size_t const num_atoms)
 : m_num_atoms { num_atoms },
-  m_resid(num_atoms, -1),
-  m_residue(num_atoms, -1),
-  m_atomic(num_atoms, 0),
-  m_occupancy(num_atoms, 0),
-  m_tempfactor(num_atoms, 0),
-  m_mass(num_atoms, 0),
-  m_charge(num_atoms, 0),
-  m_radius(num_atoms, 0),
-  m_name(num_atoms),
-  m_type(num_atoms),
-  m_resname(num_atoms),
-  m_segid(num_atoms),
-  m_chain(num_atoms),
-  m_altloc(num_atoms),
+  m_properties(num_atoms),
   m_bonds(num_atoms)
 {
 }

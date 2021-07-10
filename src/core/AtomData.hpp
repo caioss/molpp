@@ -1,17 +1,13 @@
 #ifndef ATOMDATA_HPP
 #define ATOMDATA_HPP
 
+#include "AtomProperties.hpp"
 #include "Timestep.hpp"
 #include "BondGraph.hpp"
 #include <memory>
 #include <vector>
-#include <string>
 
-namespace mol {
-
-class Atom;
-
-namespace internal {
+namespace mol::internal {
 
 class AtomData : public std::enable_shared_from_this<AtomData>
 {
@@ -20,37 +16,22 @@ public:
     static std::shared_ptr<AtomData> create(size_t const num_atoms);
 
     size_t size() const { return m_num_atoms; };
+    AtomProperties &properties() { return m_properties; }
+    BondGraph &bonds() { return m_bonds; }
+
     size_t num_frames() { return m_timestep.size(); }
     Timestep &timestep(size_t const index) { return m_timestep[index]; }
     void add_timestep(Timestep &&ts);
-
-    BondGraph &bonds() { return m_bonds; }
 
 private:
     AtomData(size_t const num_atoms);
 
     size_t m_num_atoms;
-    std::vector<int> m_resid;
-    std::vector<int> m_residue;
-    std::vector<int> m_atomic;
-    std::vector<float> m_occupancy;
-    std::vector<float> m_tempfactor;
-    std::vector<float> m_mass;
-    std::vector<float> m_charge;
-    std::vector<float> m_radius;
-    std::vector<std::string> m_name;
-    std::vector<std::string> m_type;
-    std::vector<std::string> m_resname;
-    std::vector<std::string> m_segid;
-    std::vector<std::string> m_chain;
-    std::vector<std::string> m_altloc;
+    AtomProperties m_properties;
     std::vector<Timestep> m_timestep;
     BondGraph m_bonds;
-
-    friend class mol::Atom;
 };
 
-} // namespace internal
-} // namespace mol
+} // namespace mol::internal
 
 #endif // ATOMDATA_HPP
