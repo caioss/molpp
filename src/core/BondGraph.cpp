@@ -54,7 +54,7 @@ std::shared_ptr<Bond> BondGraph::add_bond(size_t const atom1, size_t const atom2
     auto &atom2_adj = m_graph[atom2];
     if (atom1_adj.count(atom2) || atom2_adj.count(atom1))
     {
-        return nullptr;
+        return atom1_adj[atom2];
     }
 
     std::shared_ptr<Bond> data = std::make_shared<Bond>(atom1, atom2);

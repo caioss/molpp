@@ -89,6 +89,7 @@ TEST(Atoms, Atom) {
     ASSERT_THAT(atom.add_bond(2), NotNull());
     EXPECT_THROW(atom.add_bond(1), MolError);
     EXPECT_THROW(atom.add_bond(3), MolError);
+    EXPECT_EQ(atom.add_bond(2), atom.bond(2));
 
     EXPECT_THAT(atom0.bond(2), IsNull());
     EXPECT_THAT(atom.bond(3), IsNull());
