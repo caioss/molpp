@@ -3,6 +3,7 @@
 
 #include "MolppCore.hpp"
 #include <memory>
+#include <vector>
 
 namespace mol {
 
