@@ -181,7 +181,7 @@ std::vector<std::shared_ptr<Bond>> Atom::bonds()
 
 std::shared_ptr<AtomSel> Atom::bonded()
 {
-    return std::make_shared<AtomSel>(m_data->bonds().bonded(m_index), m_data);
+    return std::make_shared<AtomSel>(m_data->size(), m_data->bonds().bonded(m_index), m_data);
 }
 
 Eigen::Ref<Pos3> Atom::coords()

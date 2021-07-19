@@ -11,6 +11,7 @@ enable_testing()
 
 add_executable(tests
     atoms.cpp
+    selections.cpp
     readers.cpp
     system.cpp
     bonds.cpp
