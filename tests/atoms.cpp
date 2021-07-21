@@ -4,6 +4,7 @@
 #include "AtomSel.hpp"
 #include "MolError.hpp"
 #include "core/AtomData.hpp"
+#include "core/AtomProperties.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -150,4 +151,23 @@ TEST(Atoms, AtomData) {
     data->add_timestep(Timestep(3));
     EXPECT_EQ(data->num_frames(), 1);
     EXPECT_EQ(data->timestep(0).coords().cols(), 3);
+}
+
+TEST(Atoms, AtomProperties) {
+    AtomProperties props(1);
+    EXPECT_EQ(props.size(), 1);
+    EXPECT_EQ(props.resid(0), -1);
+    EXPECT_EQ(props.residue(0), -1);
+    EXPECT_EQ(props.atomic(0), 0);
+    EXPECT_EQ(props.occupancy(0), 0);
+    EXPECT_EQ(props.tempfactor(0), 0);
+    EXPECT_EQ(props.mass(0), 0);
+    EXPECT_EQ(props.charge(0), 0);
+    EXPECT_EQ(props.radius(0), 0);
+    EXPECT_EQ(props.name(0), "");
+    EXPECT_EQ(props.type(0), "");
+    EXPECT_EQ(props.resname(0), "");
+    EXPECT_EQ(props.segid(0), "");
+    EXPECT_EQ(props.chain(0), "");
+    EXPECT_EQ(props.altloc(0), "");
 }
