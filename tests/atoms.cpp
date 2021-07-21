@@ -72,13 +72,10 @@ TEST(Atoms, Atom) {
     /*
      * Coordinates
      */
-    Timestep ts(3);
-    ts.coords() << 1, 2, 3, 4, 5, 6, 7, 8, 9;
-
-    ASSERT_EQ(data->num_frames(), 0);
-    data->add_timestep(std::move(ts));
+    data->add_timestep(Timestep(3));
     ASSERT_EQ(data->num_frames(), 1);
 
+    data->timestep(0).coords() << 1, 2, 3, 4, 5, 6, 7, 8, 9;
     EXPECT_THAT(atom.coords(), ElementsAre(2, 5, 8));
     atom.coords() *= 2;
     EXPECT_THAT(atom.coords(), ElementsAre(4, 10, 16));
@@ -140,4 +137,17 @@ TEST(Atoms, bonds) {
     EXPECT_THAT(all_sel[0].bonded()->indices(), ElementsAre(2, 3));
     EXPECT_THAT(all_sel[2].bonded()->indices(), ElementsAre(0));
     EXPECT_THAT(all_sel[3].bonded()->indices(), ElementsAre(0));
+}
+
+TEST(Atoms, AtomData) {
+    auto data = AtomData::create(3);
+    ASSERT_THAT(data, NotNull());
+    EXPECT_EQ(data->size(), 3);
+    EXPECT_EQ(data->properties().size(), 3);
+    EXPECT_EQ(data->bonds().size(), 3);
+
+    EXPECT_EQ(data->num_frames(), 0);
+    data->add_timestep(Timestep(3));
+    EXPECT_EQ(data->num_frames(), 1);
+    EXPECT_EQ(data->timestep(0).coords().cols(), 3);
 }
