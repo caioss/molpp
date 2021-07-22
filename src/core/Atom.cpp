@@ -5,26 +5,9 @@
 
 using namespace mol;
 
-Atom::Atom(size_t const index, size_t const frame, std::shared_ptr<internal::AtomData> data)
-: m_index { index },
-  m_frame { frame },
-  m_data { data }
-{
-}
-
 bool Atom::operator==(Atom const &other) const
 {
     return m_data == other.m_data && m_index == other.m_index && m_frame == other.m_frame;
-}
-
-size_t Atom::index() const
-{
-    return m_index;
-}
-
-size_t Atom::frame() const
-{
-    return m_frame;
 }
 
 int Atom::resid() const

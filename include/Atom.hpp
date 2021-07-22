@@ -17,12 +17,23 @@ namespace internal {
 class Atom
 {
 public:
-    Atom(size_t const index, size_t const frame,std::shared_ptr<internal::AtomData> data);
+    Atom(size_t const index, size_t const frame,std::shared_ptr<internal::AtomData> data)
+    : m_index { index },
+      m_frame { frame },
+      m_data { data }
+    {}
 
     bool operator==(Atom const &other) const;
 
-    size_t index() const;
-    size_t frame() const;
+    size_t index() const
+    {
+        return m_index;
+    }
+
+    size_t frame() const
+    {
+        return m_frame;
+    }
 
     int resid() const;
     void set_resid(int const &resid);
