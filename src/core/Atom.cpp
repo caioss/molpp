@@ -1,23 +1,24 @@
 #include "Atom.hpp"
+#include "Residue.hpp"
 #include "AtomSel.hpp"
 #include "MolError.hpp"
 #include "core/AtomData.hpp"
 
 using namespace mol;
 
-bool Atom::operator==(Atom const &other) const
-{
-    return m_data == other.m_data && m_index == other.m_index && m_frame == other.m_frame;
-}
-
 int Atom::resid() const
 {
-    return m_data->properties().resid(m_index);
+    return m_data->residues().resid(residue_id());
 }
 
-void Atom::set_resid(int const &resid)
+Residue Atom::residue()
 {
-    m_data->properties().resid(m_index) = resid;
+    return Residue(residue_id(), m_frame, m_data);
+}
+
+size_t Atom::residue_id() const
+{
+    return m_data->properties().residue(m_index);
 }
 
 int Atom::atomic() const
@@ -101,32 +102,17 @@ void Atom::set_type(std::string const &type)
 
 std::string Atom::resname() const
 {
-    return m_data->properties().resname(m_index);
-}
-
-void Atom::set_resname(std::string const &resname)
-{
-    m_data->properties().resname(m_index) = resname;
+    return m_data->residues().resname(residue_id());
 }
 
 std::string Atom::segid() const
 {
-    return m_data->properties().segid(m_index);
-}
-
-void Atom::set_segid(std::string const &segid)
-{
-    m_data->properties().segid(m_index) = segid;
+    return m_data->residues().segid(residue_id());
 }
 
 std::string Atom::chain() const
 {
-    return m_data->properties().chain(m_index);
-}
-
-void Atom::set_chain(std::string const &chain)
-{
-    m_data->properties().chain(m_index) = chain;
+    return m_data->residues().chain(residue_id());
 }
 
 std::string Atom::altloc() const

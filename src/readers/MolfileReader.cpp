@@ -1,8 +1,11 @@
 #include "MolfileReader.hpp"
-#include "core/AtomData.hpp"
 #include "Atom.hpp"
+#include "Residue.hpp"
+#include "core/AtomData.hpp"
 #include "MolError.hpp"
 #include "molfile.h"
+#include <map>
+#include <tuple>
 #include <regex>
 #include <string>
 #include <unordered_map>
@@ -149,6 +152,7 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
         throw mol::MolError("No opened file");
     }
 
+    // Read data and allocate atoms
     std::vector<molfile_atom_t> molfile_atoms(m_num_atoms);
     int flags = MOLFILE_BADOPTIONS;
     if (m_plugin->read_structure(m_handle, &flags, molfile_atoms.data()) != MOLFILE_SUCCESS || flags == (int)MOLFILE_BADOPTIONS)
@@ -157,17 +161,32 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
     }
     std::shared_ptr<AtomData> atom_data = AtomData::create(m_num_atoms);
 
+    // Helpers for residues detection
+    struct Residue
+    {
+        size_t index;
+        size_t count;
+        int resid;
+        std::string resname;
+        std::string segid;
+        std::string chain;
+    };
+    std::map<std::tuple<int, std::string, std::string, std::string>, Residue> residue_index;
+    Residue current;
+    bool first = true;
+    auto it = residue_index.end();
+
+    // Loop over all atoms
     for (size_t i = 0; i < (size_t)m_num_atoms; ++i)
     {
+        /*
+         * Atoms properties
+         */
         molfile_atom_t const &mol_atom = molfile_atoms[i];
 
         Atom atom(i, 0, atom_data);
         atom.set_name(mol_atom.name);
         atom.set_type(mol_atom.type);
-        atom.set_resname(mol_atom.resname);
-        atom.set_resid(mol_atom.resid);
-        atom.set_segid(mol_atom.segid);
-        atom.set_chain(mol_atom.chain);
 
         if (flags & MOLFILE_INSERTION)
         {
@@ -204,8 +223,46 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
             atom.set_atomic(mol_atom.atomicnumber);
         }
 
+        /*
+         * Residues detection
+         */
+        if (first || current.resid != mol_atom.resid
+                  || current.resname != mol_atom.resname
+                  || current.segid != mol_atom.segid
+                  || current.chain != mol_atom.chain)
+        {
+            first = false;
+
+            size_t const index = residue_index.size();
+            current = {index, 0, mol_atom.resid, mol_atom.resname, mol_atom.segid, mol_atom.chain};
+
+            std::tuple const key{current.resid, current.resname, current.segid, current.chain};
+            it = residue_index.insert(std::pair(key, current)).first;
+        }
+
+        Residue &residue = (*it).second;
+        atom_data->properties().residue(i) = residue.index;
+        residue.count++;
     }
 
+    // Update residues data
+    atom_data->residues().resize(residue_index.size());
+    for (auto &item : residue_index)
+    {
+        Residue &residue = item.second;
+        atom_data->residues().indices(residue.index).reserve(residue.count);
+        atom_data->residues().set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
+    }
+
+    for (size_t index = 0; index < atom_data->size(); ++index)
+    {
+        size_t const residue_idx = atom_data->properties().residue(index);
+        atom_data->residues().indices(residue_idx).insert(index);
+    }
+
+    /*
+     * Bonds
+     */
     if (has_bonds())
     {
         int num_bonds = 0, num_types = 0;

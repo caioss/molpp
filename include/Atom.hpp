@@ -7,8 +7,9 @@
 
 namespace mol {
 
-class AtomSel;
 class Bond;
+class Residue;
+class AtomSel;
 
 namespace internal {
     class AtomData;
@@ -23,7 +24,10 @@ public:
       m_data { data }
     {}
 
-    bool operator==(Atom const &other) const;
+    bool operator==(Atom const &other) const
+    {
+        return m_data == other.m_data && m_index == other.m_index && m_frame == other.m_frame;
+    }
 
     size_t index() const
     {
@@ -36,7 +40,9 @@ public:
     }
 
     int resid() const;
-    void set_resid(int const &resid);
+
+    Residue residue();
+    size_t residue_id() const;
 
     int atomic() const;
     void set_atomic(int const &atomic);
@@ -63,13 +69,8 @@ public:
     void set_type(std::string const &type);
 
     std::string resname() const;
-    void set_resname(std::string const &resname);
-
     std::string segid() const;
-    void set_segid(std::string const &segid);
-
     std::string chain() const;
-    void set_chain(std::string const &chain);
 
     std::string altloc() const;
     void set_altloc(std::string const &altloc);

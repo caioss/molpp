@@ -54,6 +54,8 @@ TEST(Readers, MolfileReader) {
     }
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid),
                                  {3, 339, 201, 801, 85, 85}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::residue_id),
+                                 {0, 1, 2, 3, 4, 4}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::atomic),
                                  {7, 7, 8, 8, 7, 7}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::occupancy),
@@ -156,6 +158,34 @@ TEST(Readers, MolfileReader) {
     EXPECT_EQ(m2_atoms[5].bond(6)->order(), Bond::Aromatic);
     EXPECT_EQ(m2_atoms[5].bond(10)->order(), Bond::Single);
     EXPECT_EQ(m2_atoms[6].bond(11)->order(), Bond::Single);
+
+    /*
+     * Residue detection
+     */
+    reader = MolfileReader(".pdb");
+    ASSERT_EQ(reader.open("4lad.pdb"), MolReader::SUCCESS);
+    data = reader.read_atoms();
+    reader.close();
+    ASSERT_THAT(data, NotNull());
+    EXPECT_EQ(data->properties().residue(0), 0);
+    EXPECT_EQ(data->properties().residue(3), 0);
+    EXPECT_EQ(data->properties().residue(4), 1);
+    EXPECT_EQ(data->properties().residue(1230), 153);
+    EXPECT_EQ(data->properties().residue(1231), 154);
+    EXPECT_EQ(data->properties().residue(1561), 195);
+    EXPECT_EQ(data->properties().residue(1562), 196);
+    EXPECT_EQ(data->properties().residue(1790), 222);
+    EXPECT_EQ(data->properties().residue(1791), 223);
+    EXPECT_EQ(data->properties().residue(1792), 224);
+    EXPECT_EQ(data->properties().residue(1793), 225);
+    EXPECT_EQ(data->properties().residue(1798), 225);
+    EXPECT_EQ(data->properties().residue(1799), 226);
+    EXPECT_EQ(data->properties().residue(1804), 226);
+    // Water molecules
+    for (size_t i = 0; i < 39; ++i)
+    {
+        EXPECT_EQ(data->properties().residue(1805 + i), 227 + i);
+    }
 }
 
 TEST(Readers, PDB) {

@@ -1,9 +1,10 @@
 #ifndef ATOMDATA_HPP
 #define ATOMDATA_HPP
 
-#include "AtomProperties.hpp"
 #include "Timestep.hpp"
 #include "BondGraph.hpp"
+#include "ResidueData.hpp"
+#include "AtomProperties.hpp"
 #include <memory>
 #include <vector>
 
@@ -18,6 +19,7 @@ public:
     size_t size() const { return m_num_atoms; };
     AtomProperties &properties() { return m_properties; }
     BondGraph &bonds() { return m_bonds; }
+    ResidueData &residues() { return m_residues; }
 
     size_t num_frames() { return m_timestep.size(); }
     Timestep &timestep(size_t const index) { return m_timestep[index]; }
@@ -30,6 +32,7 @@ private:
     AtomProperties m_properties;
     std::vector<Timestep> m_timestep;
     BondGraph m_bonds;
+    ResidueData m_residues;
 };
 
 } // namespace mol::internal

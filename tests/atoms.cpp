@@ -1,6 +1,7 @@
 #include "files.hpp"
 #include "matchers.hpp"
 #include "Atom.hpp"
+#include "Residue.hpp"
 #include "AtomSel.hpp"
 #include "MolError.hpp"
 #include "core/AtomData.hpp"
@@ -13,8 +14,15 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(Atoms, Atom) {
-    auto data = AtomData::create(3);
+    // Construct data structures
+    size_t const num_atoms { 3 };
+    auto data = AtomData::create(num_atoms);
     ASSERT_THAT(data, NotNull());
+    data->residues().resize(1);
+    for (size_t i = 0; i < num_atoms; i++)
+    {
+        data->properties().residue(i) = 0;
+    }
 
     // Comparison
     EXPECT_TRUE(Atom(1, 0, data) == Atom(1, 0, data));
@@ -31,8 +39,10 @@ TEST(Atoms, Atom) {
     EXPECT_EQ(atom.index(), 1);
     EXPECT_EQ(atom.frame(), 0);
 
-    atom.set_resid(20);
-    EXPECT_EQ(atom.resid(), 20);
+    EXPECT_EQ(atom.resid(), -1);
+
+    EXPECT_EQ(atom.residue_id(), 0);
+    EXPECT_EQ(atom.residue(), Residue(0, 0, data));
 
     atom.set_atomic(2);
     EXPECT_EQ(atom.atomic(), 2);
@@ -58,14 +68,9 @@ TEST(Atoms, Atom) {
     atom.set_type("C");
     EXPECT_EQ(atom.type(), "C");
 
-    atom.set_resname("ARG");
-    EXPECT_EQ(atom.resname(), "ARG");
-
-    atom.set_segid("SEG1");
-    EXPECT_EQ(atom.segid(), "SEG1");
-
-    atom.set_chain("B");
-    EXPECT_EQ(atom.chain(), "B");
+    EXPECT_EQ(atom.resname(), "");
+    EXPECT_EQ(atom.segid(), "");
+    EXPECT_EQ(atom.chain(), "");
 
     atom.set_altloc("B");
     EXPECT_EQ(atom.altloc(), "B");
@@ -73,7 +78,7 @@ TEST(Atoms, Atom) {
     /*
      * Coordinates
      */
-    data->add_timestep(Timestep(3));
+    data->add_timestep(Timestep(num_atoms));
     ASSERT_EQ(data->num_frames(), 1);
 
     data->timestep(0).coords() << 1, 2, 3, 4, 5, 6, 7, 8, 9;
@@ -141,22 +146,23 @@ TEST(Atoms, bonds) {
 }
 
 TEST(Atoms, AtomData) {
-    auto data = AtomData::create(3);
+    size_t const num_atoms { 3 };
+    auto data = AtomData::create(num_atoms);
     ASSERT_THAT(data, NotNull());
-    EXPECT_EQ(data->size(), 3);
-    EXPECT_EQ(data->properties().size(), 3);
-    EXPECT_EQ(data->bonds().size(), 3);
+    EXPECT_EQ(data->size(), num_atoms);
+    EXPECT_EQ(data->properties().size(), num_atoms);
+    EXPECT_EQ(data->bonds().size(), num_atoms);
+    EXPECT_EQ(data->residues().size(), 0);
 
     EXPECT_EQ(data->num_frames(), 0);
-    data->add_timestep(Timestep(3));
+    data->add_timestep(Timestep(num_atoms));
     EXPECT_EQ(data->num_frames(), 1);
-    EXPECT_EQ(data->timestep(0).coords().cols(), 3);
+    EXPECT_EQ(data->timestep(0).coords().cols(), num_atoms);
 }
 
 TEST(Atoms, AtomProperties) {
     AtomProperties props(1);
     EXPECT_EQ(props.size(), 1);
-    EXPECT_EQ(props.resid(0), -1);
     EXPECT_EQ(props.residue(0), -1);
     EXPECT_EQ(props.atomic(0), 0);
     EXPECT_EQ(props.occupancy(0), 0);
@@ -166,8 +172,5 @@ TEST(Atoms, AtomProperties) {
     EXPECT_EQ(props.radius(0), 0);
     EXPECT_EQ(props.name(0), "");
     EXPECT_EQ(props.type(0), "");
-    EXPECT_EQ(props.resname(0), "");
-    EXPECT_EQ(props.segid(0), "");
-    EXPECT_EQ(props.chain(0), "");
     EXPECT_EQ(props.altloc(0), "");
 }

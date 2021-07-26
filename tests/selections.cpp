@@ -80,14 +80,14 @@ TEST(Selections, BaseSel) {
      * Iterators
      */
     std::vector<Atom> atoms(some_sel.begin(), some_sel.end());
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid), {339, 801, 85}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::name), {"NA", "O22", "ND"}));
     auto it = some_sel.begin();
     auto end = some_sel.end();
     EXPECT_EQ(end - it, 3);
-    EXPECT_EQ((*it).resid(), 339);
-    EXPECT_EQ((*++it).resid(), 801);
+    EXPECT_EQ((*it).name(), "NA");
+    EXPECT_EQ((*++it).name(), "O22");
     it++;
-    EXPECT_EQ((*it++).resid(), 85);
+    EXPECT_EQ((*it++).name(), "ND");
     EXPECT_TRUE(it == end);
     EXPECT_FALSE(it != end);
 }
