@@ -1,6 +1,6 @@
 #include "files.hpp"
 #include "matchers.hpp"
-#include "core/AtomData.hpp"
+#include "core/MolData.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <vector>

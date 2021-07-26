@@ -2,7 +2,7 @@
 #include "MolError.hpp"
 #include "Atom.hpp"
 #include "AtomSel.hpp"
-#include "core/AtomData.hpp"
+#include "core/MolData.hpp"
 #include "readers/MolReader.hpp"
 #include "readers/MolfileReader.hpp"
 #include <gtest/gtest.h>

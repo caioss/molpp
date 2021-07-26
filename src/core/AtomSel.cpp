@@ -1,5 +1,5 @@
 #include "AtomSel.hpp"
-#include "core/AtomData.hpp"
+#include "core/MolData.hpp"
 
 using namespace mol;
 

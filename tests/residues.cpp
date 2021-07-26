@@ -2,7 +2,7 @@
 #include "Atom.hpp"
 #include "Residue.hpp"
 #include "AtomSel.hpp"
-#include "core/AtomData.hpp"
+#include "core/MolData.hpp"
 #include "core/ResidueData.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -14,7 +14,7 @@ using namespace testing;
 TEST(Residues, Residue) {
     // Construct data structures
     size_t const num_atoms { 3 };
-    auto data = AtomData::create(num_atoms);
+    auto data = MolData::create(num_atoms);
     ASSERT_THAT(data, NotNull());
     data->residues().resize(3);
     for (size_t i = 0; i < num_atoms; i++)

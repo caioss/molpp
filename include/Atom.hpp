@@ -12,13 +12,13 @@ class Residue;
 class AtomSel;
 
 namespace internal {
-    class AtomData;
+    class MolData;
 }
 
 class Atom
 {
 public:
-    Atom(size_t const index, size_t const frame,std::shared_ptr<internal::AtomData> data)
+    Atom(size_t const index, size_t const frame,std::shared_ptr<internal::MolData> data)
     : m_index { index },
       m_frame { frame },
       m_data { data }
@@ -85,7 +85,7 @@ public:
 private:
     size_t m_index;
     size_t m_frame;
-    std::shared_ptr<internal::AtomData> m_data;
+    std::shared_ptr<internal::MolData> m_data;
 };
 
 } // namespace mol

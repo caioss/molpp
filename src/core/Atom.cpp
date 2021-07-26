@@ -2,7 +2,7 @@
 #include "Residue.hpp"
 #include "AtomSel.hpp"
 #include "MolError.hpp"
-#include "core/AtomData.hpp"
+#include "core/MolData.hpp"
 
 using namespace mol;
 

@@ -9,7 +9,7 @@
 namespace mol {
 
 namespace internal {
-class AtomData;
+class MolData;
 }
 
 class MolSystem
@@ -21,7 +21,7 @@ public:
     std::shared_ptr<AtomSel> select(std::vector<size_t> const &indices) const;
 
 private:
-    std::shared_ptr<internal::AtomData> m_data;
+    std::shared_ptr<internal::MolData> m_data;
     std::shared_ptr<AtomSel> m_all;
 };
 

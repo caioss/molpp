@@ -20,10 +20,10 @@ public:
     bool has_trajectory_metadata() const override;
     Status open(const std::string &file_name) override;
     void close() override;
-    std::shared_ptr<AtomData> read_atoms() override;
-    Status check_timestep_read(std::shared_ptr<AtomData> atom_data) override;
-    Status skip_timestep(std::shared_ptr<AtomData> atom_data) override;
-    Status read_timestep(std::shared_ptr<AtomData> atom_data) override;
+    std::shared_ptr<MolData> read_atoms() override;
+    Status check_timestep_read(std::shared_ptr<MolData> atom_data) override;
+    Status skip_timestep(std::shared_ptr<MolData> atom_data) override;
+    Status read_timestep(std::shared_ptr<MolData> atom_data) override;
 
 private:
     int m_num_atoms;

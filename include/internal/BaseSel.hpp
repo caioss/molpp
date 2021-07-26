@@ -8,9 +8,9 @@
 
 namespace mol::internal {
 
-class AtomData;
+class MolData;
 
-bool check_valid_frame(size_t const frame, std::shared_ptr<AtomData> data);
+bool check_valid_frame(size_t const frame, std::shared_ptr<MolData> data);
 
 template <class Type>
 class BaseSel
@@ -25,7 +25,7 @@ public:
     using const_iterator = Iterator<const Type>;
 
     BaseSel() = delete;
-    BaseSel(size_t const total_size, std::shared_ptr<AtomData> data)
+    BaseSel(size_t const total_size, std::shared_ptr<MolData> data)
     : m_data(data),
       m_frame { 0 },
       m_selected(total_size, true),
@@ -34,7 +34,7 @@ public:
         std::iota(m_indices.begin(), m_indices.end(), 0);
     }
 
-    BaseSel(size_t const total_size, std::vector<size_t> const &indices, std::shared_ptr<AtomData> data)
+    BaseSel(size_t const total_size, std::vector<size_t> const &indices, std::shared_ptr<MolData> data)
     : m_data(data),
       m_frame { 0 },
       m_selected(total_size, false),
@@ -43,7 +43,7 @@ public:
         update_indices(total_size);
     }
 
-    BaseSel(size_t const total_size, std::vector<size_t> &&indices, std::shared_ptr<AtomData> data)
+    BaseSel(size_t const total_size, std::vector<size_t> &&indices, std::shared_ptr<MolData> data)
     : m_data(data),
       m_frame { 0 },
       m_selected(total_size, false),
@@ -130,7 +130,7 @@ public:
     }
 
 protected:
-    std::shared_ptr<AtomData> m_data;
+    std::shared_ptr<MolData> m_data;
 
 private:
     void update_indices(size_t const total_size)
@@ -164,7 +164,7 @@ private:
         using pointer = ItType *;
         using reference = ItType &;
 
-        Iterator(std::shared_ptr<AtomData> data, indices_iterator begin, size_t frame)
+        Iterator(std::shared_ptr<MolData> data, indices_iterator begin, size_t frame)
         : m_frame { frame },
           m_data(data),
           m_current(begin)
@@ -205,7 +205,7 @@ private:
 
     private:
         size_t m_frame;
-        std::shared_ptr<AtomData> m_data;
+        std::shared_ptr<MolData> m_data;
         indices_iterator m_current;
     };
 };

@@ -4,8 +4,8 @@
 #include "Residue.hpp"
 #include "AtomSel.hpp"
 #include "MolError.hpp"
+#include "core/MolData.hpp"
 #include "core/AtomData.hpp"
-#include "core/AtomProperties.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -16,7 +16,7 @@ using namespace testing;
 TEST(Atoms, Atom) {
     // Construct data structures
     size_t const num_atoms { 3 };
-    auto data = AtomData::create(num_atoms);
+    auto data = MolData::create(num_atoms);
     ASSERT_THAT(data, NotNull());
     data->residues().resize(1);
     for (size_t i = 0; i < num_atoms; i++)
@@ -145,9 +145,9 @@ TEST(Atoms, bonds) {
     EXPECT_THAT(all_sel[3].bonded()->indices(), ElementsAre(0));
 }
 
-TEST(Atoms, AtomData) {
+TEST(Atoms, MolData) {
     size_t const num_atoms { 3 };
-    auto data = AtomData::create(num_atoms);
+    auto data = MolData::create(num_atoms);
     ASSERT_THAT(data, NotNull());
     EXPECT_EQ(data->size(), num_atoms);
     EXPECT_EQ(data->properties().size(), num_atoms);
@@ -160,8 +160,8 @@ TEST(Atoms, AtomData) {
     EXPECT_EQ(data->timestep(0).coords().cols(), num_atoms);
 }
 
-TEST(Atoms, AtomProperties) {
-    AtomProperties props(1);
+TEST(Atoms, AtomData) {
+    AtomData props(1);
     EXPECT_EQ(props.size(), 1);
     EXPECT_EQ(props.residue(0), -1);
     EXPECT_EQ(props.atomic(0), 0);

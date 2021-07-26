@@ -13,19 +13,19 @@ std::shared_ptr<MolReader> MolReader::from_file_ext(const std::string &file_ext)
     return nullptr;
 }
 
-std::shared_ptr<AtomData> MolReader::read_topology(std::string const &file_name)
+std::shared_ptr<MolData> MolReader::read_topology(std::string const &file_name)
 {
     if (!has_topology() || open(file_name) != SUCCESS)
     {
         return nullptr;
     }
 
-    std::shared_ptr<AtomData> atom_data = read_atoms();
+    std::shared_ptr<MolData> mol_data = read_atoms();
     close();
-    return atom_data;
+    return mol_data;
 }
 
-MolReader::Status MolReader::read_trajectory(std::string const &file_name, std::shared_ptr<AtomData> atom_data, int begin, int end, int step)
+MolReader::Status MolReader::read_trajectory(std::string const &file_name, std::shared_ptr<MolData> atom_data, int begin, int end, int step)
 {
     // Sanity checks
     if (!has_trajectory())

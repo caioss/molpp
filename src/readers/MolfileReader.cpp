@@ -1,7 +1,7 @@
 #include "MolfileReader.hpp"
 #include "Atom.hpp"
 #include "Residue.hpp"
-#include "core/AtomData.hpp"
+#include "core/MolData.hpp"
 #include "MolError.hpp"
 #include "molfile.h"
 #include <map>
@@ -145,7 +145,7 @@ void MolfileReader::close()
     m_num_atoms = 0;
 }
 
-std::shared_ptr<AtomData> MolfileReader::read_atoms()
+std::shared_ptr<MolData> MolfileReader::read_atoms()
 {
     if (!m_handle)
     {
@@ -159,7 +159,7 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
     {
         return nullptr;
     }
-    std::shared_ptr<AtomData> atom_data = AtomData::create(m_num_atoms);
+    std::shared_ptr<MolData> mol_data = MolData::create(m_num_atoms);
 
     // Helpers for residues detection
     struct Residue
@@ -184,7 +184,7 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
          */
         molfile_atom_t const &mol_atom = molfile_atoms[i];
 
-        Atom atom(i, 0, atom_data);
+        Atom atom(i, 0, mol_data);
         atom.set_name(mol_atom.name);
         atom.set_type(mol_atom.type);
 
@@ -241,23 +241,23 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
         }
 
         Residue &residue = (*it).second;
-        atom_data->properties().residue(i) = residue.index;
+        mol_data->properties().residue(i) = residue.index;
         residue.count++;
     }
 
     // Update residues data
-    atom_data->residues().resize(residue_index.size());
+    mol_data->residues().resize(residue_index.size());
     for (auto &item : residue_index)
     {
         Residue &residue = item.second;
-        atom_data->residues().indices(residue.index).reserve(residue.count);
-        atom_data->residues().set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
+        mol_data->residues().indices(residue.index).reserve(residue.count);
+        mol_data->residues().set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
     }
 
-    for (size_t index = 0; index < atom_data->size(); ++index)
+    for (size_t index = 0; index < mol_data->size(); ++index)
     {
-        size_t const residue_idx = atom_data->properties().residue(index);
-        atom_data->residues().indices(residue_idx).insert(index);
+        size_t const residue_idx = mol_data->properties().residue(index);
+        mol_data->residues().indices(residue_idx).insert(index);
     }
 
     /*
@@ -274,7 +274,7 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
                                       &type, &num_types, &type_name);
         if (rc == MOLFILE_SUCCESS && num_bonds > 0)
         {
-            BondGraph &bond_graph = atom_data->bonds();
+            BondGraph &bond_graph = mol_data->bonds();
             bond_graph.set_incomplete(flags & MOLFILE_BONDSSPECIAL);
 
             for (size_t i = 0; i < (size_t)num_bonds; ++i)
@@ -290,17 +290,17 @@ std::shared_ptr<AtomData> MolfileReader::read_atoms()
         }
     }
 
-    return atom_data;
+    return mol_data;
 }
 
-MolReader::Status MolfileReader::check_timestep_read(std::shared_ptr<AtomData> atom_data)
+MolReader::Status MolfileReader::check_timestep_read(std::shared_ptr<MolData> mol_data)
 {
     if (!m_handle)
     {
         return INVALID;
     }
 
-    if (atom_data->size() != (size_t)m_num_atoms)
+    if (mol_data->size() != (size_t)m_num_atoms)
     {
         return WRONG_ATOMS;
     }
@@ -308,9 +308,9 @@ MolReader::Status MolfileReader::check_timestep_read(std::shared_ptr<AtomData> a
     return SUCCESS;
 }
 
-MolReader::Status MolfileReader::skip_timestep(std::shared_ptr<AtomData> atom_data)
+MolReader::Status MolfileReader::skip_timestep(std::shared_ptr<MolData> mol_data)
 {
-    switch (m_plugin->read_next_timestep(m_handle, atom_data->size(), nullptr))
+    switch (m_plugin->read_next_timestep(m_handle, mol_data->size(), nullptr))
     {
         case MOLFILE_SUCCESS:
             return SUCCESS;
@@ -323,14 +323,14 @@ MolReader::Status MolfileReader::skip_timestep(std::shared_ptr<AtomData> atom_da
     }
 }
 
-MolReader::Status MolfileReader::read_timestep(std::shared_ptr<AtomData> atom_data)
+MolReader::Status MolfileReader::read_timestep(std::shared_ptr<MolData> mol_data)
 {
-    Timestep ts(atom_data->size());
+    Timestep ts(mol_data->size());
     molfile_timestep_t mol_ts;
     mol_ts.coords = ts.coords().data();
     mol_ts.physical_time = 0.0;
 
-    switch (m_plugin->read_next_timestep(m_handle, atom_data->size(), &mol_ts))
+    switch (m_plugin->read_next_timestep(m_handle, mol_data->size(), &mol_ts))
     {
         case MOLFILE_SUCCESS:
             break;
@@ -342,7 +342,7 @@ MolReader::Status MolfileReader::read_timestep(std::shared_ptr<AtomData> atom_da
             return FAILED;
     }
 
-    atom_data->add_timestep(std::move(ts));
+    mol_data->add_timestep(std::move(ts));
 
     return SUCCESS;
 }

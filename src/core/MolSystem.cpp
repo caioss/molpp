@@ -1,5 +1,5 @@
 #include "MolSystem.hpp"
-#include "AtomData.hpp"
+#include "MolData.hpp"
 #include "AtomSel.hpp"
 #include "MolError.hpp"
 #include "readers/MolReader.hpp"

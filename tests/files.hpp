@@ -1,7 +1,7 @@
 #ifndef FILES_HPP
 #define FILES_HPP
 
-#include "core/AtomData.hpp"
+#include "core/MolData.hpp"
 #include "readers/MolReader.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -21,8 +21,8 @@ public:
     }
 
     static std::shared_ptr<MolReader> reader;
-    static const std::shared_ptr<AtomData> tiny;
-    static const std::shared_ptr<AtomData> traj;
+    static const std::shared_ptr<MolData> tiny;
+    static const std::shared_ptr<MolData> traj;
 };
 
 class Mol2Files
@@ -35,7 +35,7 @@ public:
     }
 
     static std::shared_ptr<MolReader> reader;
-    static const std::shared_ptr<AtomData> flben;
+    static const std::shared_ptr<MolData> flben;
 };
 
 #endif // FILES_HPP
