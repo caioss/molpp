@@ -9,8 +9,8 @@ using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
-TEST(Bonds, BondGraph) {
-    BondGraph bond_graph(5);
+TEST(Bonds, BondData) {
+    BondData bond_graph(5);
 
     EXPECT_TRUE(bond_graph.incomplete());
     bond_graph.set_incomplete(false);

@@ -9,13 +9,13 @@
 
 namespace mol::internal {
 
-class BondGraph
+class BondData
 {
 public:
-    BondGraph() = delete;
-    BondGraph(size_t const num_atoms);
-    BondGraph(const BondGraph &src) = delete;
-    BondGraph &operator=(const BondGraph &rhs) = delete;
+    BondData() = delete;
+    BondData(size_t const num_atoms);
+    BondData(const BondData &src) = delete;
+    BondData &operator=(const BondData &rhs) = delete;
 
     bool incomplete() const { return m_incomplete; }
     void set_incomplete(bool const incomplete);
@@ -37,7 +37,7 @@ private:
 };
 
 template <class Iterator>
-std::vector<std::shared_ptr<Bond>> BondGraph::bonds(Iterator it, Iterator end)
+std::vector<std::shared_ptr<Bond>> BondData::bonds(Iterator it, Iterator end)
 {
     std::unordered_set<std::shared_ptr<Bond>> indices;
     while (it != end)
@@ -49,7 +49,7 @@ std::vector<std::shared_ptr<Bond>> BondGraph::bonds(Iterator it, Iterator end)
 }
 
 template <class Iterator>
-std::vector<size_t> BondGraph::bonded(Iterator it, Iterator end) const
+std::vector<size_t> BondData::bonded(Iterator it, Iterator end) const
 {
     std::unordered_set<size_t> indices;
     while (it != end)

@@ -3,7 +3,7 @@
 
 #include "core/Timestep.hpp"
 #include "core/AtomData.hpp"
-#include "core/BondGraph.hpp"
+#include "core/BondData.hpp"
 #include "core/ResidueData.hpp"
 #include <memory>
 #include <vector>
@@ -18,7 +18,7 @@ public:
 
     size_t size() const { return m_num_atoms; };
     AtomData &properties() { return m_properties; }
-    BondGraph &bonds() { return m_bonds; }
+    BondData &bonds() { return m_bonds; }
     ResidueData &residues() { return m_residues; }
 
     size_t num_frames() { return m_timestep.size(); }
@@ -31,7 +31,7 @@ private:
     size_t m_num_atoms;
     AtomData m_properties;
     std::vector<Timestep> m_timestep;
-    BondGraph m_bonds;
+    BondData m_bonds;
     ResidueData m_residues;
 };
 

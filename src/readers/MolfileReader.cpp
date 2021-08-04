@@ -274,7 +274,7 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
                                       &type, &num_types, &type_name);
         if (rc == MOLFILE_SUCCESS && num_bonds > 0)
         {
-            BondGraph &bond_graph = mol_data->bonds();
+            BondData &bond_graph = mol_data->bonds();
             bond_graph.set_incomplete(flags & MOLFILE_BONDSSPECIAL);
 
             for (size_t i = 0; i < (size_t)num_bonds; ++i)
