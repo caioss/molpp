@@ -16,6 +16,7 @@ add_executable(tests
     readers.cpp
     system.cpp
     bonds.cpp
+    tools.cpp
     files.cpp
 )
 
