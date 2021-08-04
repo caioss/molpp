@@ -53,6 +53,10 @@ template <class Iterator>
 class Range
 {
 public:
+    using value_type = typename Iterator::value_type;
+    using iterator = Iterator;
+    using const_iterator = const Iterator;
+
     Range() = delete;
 
     Range(Iterator const &begin, Iterator const &end)

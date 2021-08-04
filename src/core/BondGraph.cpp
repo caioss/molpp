@@ -4,9 +4,12 @@ using namespace mol;
 using namespace mol::internal;
 
 BondGraph::BondGraph(size_t const num_atoms)
-: m_incomplete { true },
-  m_graph(num_atoms)
+: m_incomplete { true }
 {
+    for (size_t i = 0; i < num_atoms; i++)
+    {
+        m_graph.add_node(i);
+    }
 }
 
 void BondGraph::set_incomplete(bool const incomplete)
@@ -16,57 +19,28 @@ void BondGraph::set_incomplete(bool const incomplete)
 
 std::vector<std::shared_ptr<Bond>> BondGraph::bonds(size_t const index)
 {
-    auto &adjacency = m_graph[index];
-    std::vector<std::shared_ptr<Bond>> bonded;
-    bonded.reserve(adjacency.size());
-    for (auto const &item : adjacency)
-    {
-        bonded.push_back(item.second);
-    }
-    return bonded;
+    auto range = m_graph.edges(index);
+    return {range.begin(), range.end()};
 }
 
 std::shared_ptr<Bond> BondGraph::bond(size_t const atom1, size_t const atom2)
 {
-    if (!m_graph[atom1].count(atom2))
+    auto range = m_graph.edge_at(atom1, atom2);
+    if (!range.is_valid())
     {
         return nullptr;
     }
-    // Note: operator[] may insert items.
-    // We're good because the presence of atom2 was already tested.
-    return m_graph[atom1][atom2];
+    return *(range.begin());
 }
 
 std::vector<size_t> BondGraph::bonded(size_t const index) const
 {
-    std::vector<size_t> indices;
-    indices.reserve(m_graph[index].size());
-    for (auto const &item : m_graph[index])
-    {
-        indices.push_back(item.first);
-    }
-    return indices;
+    auto const range = m_graph.adjacency(index);
+    return {range.begin(), range.end()};
 }
 
 std::shared_ptr<Bond> BondGraph::add_bond(size_t const atom1, size_t const atom2)
 {
-    auto &atom1_adj = m_graph[atom1];
-    auto &atom2_adj = m_graph[atom2];
-    if (atom1_adj.count(atom2) || atom2_adj.count(atom1))
-    {
-        return atom1_adj[atom2];
-    }
-
     std::shared_ptr<Bond> data = std::make_shared<Bond>(atom1, atom2);
-    if (!atom1_adj.insert(std::make_pair(atom2, data)).second)
-    {
-        return nullptr;
-    }
-    if (!atom2_adj.insert(std::make_pair(atom1, data)).second)
-    {
-        atom1_adj.erase(atom2);
-        return nullptr;
-    }
-
-    return data;
+    return *m_graph.add_edge(atom1, atom2, data);
 }

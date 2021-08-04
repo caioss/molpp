@@ -1,4 +1,5 @@
 #include "tools/iterators.hpp"
+#include "tools/Graph.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <vector>
@@ -41,4 +42,34 @@ TEST(Iterators, Range) {
     EXPECT_EQ(invalid.begin(), values.end());
     EXPECT_EQ(invalid.end(), values.end());
     EXPECT_FALSE(invalid.is_valid());
+}
+
+TEST(Graph, Graph) {
+    Graph<int, int> graph;
+
+    EXPECT_EQ(graph.size(), 0);
+    EXPECT_TRUE(graph.add_node(0));
+    EXPECT_FALSE(graph.add_node(0));
+    EXPECT_TRUE(graph.add_node(1));
+    EXPECT_TRUE(graph.add_node(2));
+    EXPECT_TRUE(graph.add_node(3));
+    EXPECT_EQ(graph.size(), 4);
+    EXPECT_TRUE(graph.contains(0));
+    EXPECT_FALSE(graph.contains(-1));
+
+    EXPECT_EQ(*graph.add_edge(0, 1, -1), -1);
+    EXPECT_EQ(*graph.add_edge(0, 2, -2), -2);
+
+    EXPECT_THAT(graph.adjacency(0), UnorderedElementsAre(1, 2));
+    EXPECT_THAT(graph.adjacency(1), UnorderedElementsAre(0));
+    EXPECT_THAT(graph.adjacency(2), UnorderedElementsAre(0));
+    EXPECT_THAT(graph.adjacency(3), UnorderedElementsAre());
+
+    EXPECT_THAT(graph.edges(0), UnorderedElementsAre(-1, -2));
+    EXPECT_THAT(graph.edges(1), UnorderedElementsAre(-1));
+    EXPECT_THAT(graph.edges(2), UnorderedElementsAre(-2));
+    EXPECT_THAT(graph.edges(3), UnorderedElementsAre());
+
+    EXPECT_THAT(graph.edge_at(1, 0), UnorderedElementsAre(-1));
+    EXPECT_THAT(graph.edge_at(2, 1), UnorderedElementsAre());
 }

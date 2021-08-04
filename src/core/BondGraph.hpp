@@ -2,10 +2,10 @@
 #define BONDGRAPH_HPP
 
 #include "Bond.hpp"
+#include "tools/Graph.hpp"
 #include <vector>
 #include <memory>
 #include <unordered_set>
-#include <unordered_map>
 
 namespace mol::internal {
 
@@ -33,7 +33,7 @@ public:
 
 private:
     bool m_incomplete;
-    std::vector<std::unordered_map<size_t, std::shared_ptr<Bond>>> m_graph;
+    Graph<size_t, std::shared_ptr<Bond>> m_graph;
 };
 
 template <class Iterator>
@@ -42,10 +42,8 @@ std::vector<std::shared_ptr<Bond>> BondGraph::bonds(Iterator it, Iterator end)
     std::unordered_set<std::shared_ptr<Bond>> indices;
     while (it != end)
     {
-        for (auto const &item : m_graph[*(it++)])
-        {
-            indices.insert(item.second);
-        }
+        auto range = m_graph.edges(*(it++));
+        indices.insert(range.begin(), range.end());
     }
     return std::vector<std::shared_ptr<Bond>>(indices.begin(), indices.end());
 }
@@ -57,14 +55,11 @@ std::vector<size_t> BondGraph::bonded(Iterator it, Iterator end) const
     while (it != end)
     {
         size_t const index = *(it++);
-        auto const &adjacency = m_graph[index];
-        if (adjacency.size())
+        auto const range = m_graph.adjacency(index);
+        if (range.is_valid())
         {
             indices.insert(index);
-        }
-        for (auto const &item : adjacency)
-        {
-            indices.insert(item.first);
+            indices.insert(range.begin(), range.end());
         }
     }
     return std::vector<size_t>(indices.begin(), indices.end());

@@ -103,7 +103,7 @@ TEST(Atoms, Atom) {
 
     EXPECT_EQ(atom0.bonds().size(), 0);
     auto bond_list = atom.bonds();
-    EXPECT_EQ(bond_list.size(), 1);
+    ASSERT_EQ(bond_list.size(), 1);
     EXPECT_EQ(bond_list[0]->atom1(), 1);
     EXPECT_EQ(bond_list[0]->atom2(), 2);
 
