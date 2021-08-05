@@ -20,7 +20,7 @@ TEST(Residues, Residue) {
     for (size_t i = 0; i < num_atoms; i++)
     {
         data->properties().residue(i) = i;
-        data->residues().indices(i).insert(i);
+        data->residues().add_atom(i, i);
     }
 
     // Comparison
@@ -80,7 +80,6 @@ TEST(Residues, ResidueData) {
     props.resize(1);
     EXPECT_EQ(props.size(), 1);
 
-    EXPECT_EQ(props.indices(0).size(), 0);
     EXPECT_EQ(props.resid(0), -1);
     EXPECT_EQ(props.resname(0), "");
     EXPECT_EQ(props.segid(0), "");
@@ -91,4 +90,20 @@ TEST(Residues, ResidueData) {
     EXPECT_EQ(props.resname(0), "A");
     EXPECT_EQ(props.segid(0), "B");
     EXPECT_EQ(props.chain(0), "C");
+
+    EXPECT_EQ(props.size(0), 0);
+    EXPECT_THAT(props.indices(0), UnorderedElementsAre());
+
+    props.add_atom(0, 0);
+    props.add_atom(0, 1);
+    EXPECT_EQ(props.size(0), 2);
+    EXPECT_THAT(props.indices(0), UnorderedElementsAre(0, 1));
+
+    props.remove_atom(0, 1);
+    EXPECT_EQ(props.size(0), 1);
+    EXPECT_THAT(props.indices(0), UnorderedElementsAre(0));
+
+    props.reset(0);
+    EXPECT_EQ(props.size(0), 0);
+    EXPECT_THAT(props.indices(0), UnorderedElementsAre());
 }

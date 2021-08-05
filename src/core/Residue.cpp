@@ -47,8 +47,8 @@ void Residue::set_chain(std::string const &chain)
 void Residue::add_atom(size_t index)
 {
     size_t const old_res = m_data->properties().residue(index);
-    m_data->residues().indices(old_res).erase(index);
-    m_data->residues().indices(m_index).insert(index);
+    m_data->residues().remove_atom(old_res, index);
+    m_data->residues().add_atom(m_index, index);
     m_data->properties().residue(index) = m_index;
 }
 
@@ -59,11 +59,11 @@ void Residue::add_atom(Atom &atom)
 
 std::shared_ptr<AtomSel> Residue::atoms()
 {
-    std::unordered_set<size_t> &indices = m_data->residues().indices(m_index);
+    auto indices = m_data->residues().indices(m_index);
     return std::make_shared<AtomSel>(m_data->size(), std::vector<size_t>(indices.begin(), indices.end()), m_data);
 }
 
 size_t Residue::size() const
 {
-    return m_data->residues().indices(m_index).size();
+    return m_data->residues().size(m_index);
 }

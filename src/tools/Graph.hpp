@@ -56,19 +56,19 @@ public:
     Range<ConstNodeIt> adjacency(Node const &node) const
     {
         adjacency_list const &adj = m_adjacency.at(node);
-        return Range(ConstNodeIt(adj.cbegin()), ConstNodeIt(adj.cend()));
+        return {ConstNodeIt(adj.cbegin()), ConstNodeIt(adj.cend())};
     }
 
     Range<EdgeIt> edges(Node const &node)
     {
         adjacency_list &adj = m_adjacency.at(node);
-        return Range(EdgeIt(adj.begin()), EdgeIt(adj.end()));
+        return {EdgeIt(adj.begin()), EdgeIt(adj.end())};
     }
 
     Range<EdgeIt> edge_at(Node const &node1, Node const &node2)
     {
         adjacency_list &adj = m_adjacency.at(node1);
-        return Range(EdgeIt(adj.find(node2)), EdgeIt(adj.end()));
+        return {EdgeIt(adj.find(node2)), EdgeIt(adj.end())};
     }
 
     EdgeIt add_edge(Node const &node1, Node const &node2, Edge const &data)

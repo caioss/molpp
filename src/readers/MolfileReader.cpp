@@ -250,14 +250,14 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
     for (auto &item : residue_index)
     {
         Residue &residue = item.second;
-        mol_data->residues().indices(residue.index).reserve(residue.count);
+        mol_data->residues().reset(residue.index, residue.count);
         mol_data->residues().set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
     }
 
     for (size_t index = 0; index < mol_data->size(); ++index)
     {
         size_t const residue_idx = mol_data->properties().residue(index);
-        mol_data->residues().indices(residue_idx).insert(index);
+        mol_data->residues().add_atom(residue_idx, index);
     }
 
     /*

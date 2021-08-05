@@ -1,6 +1,7 @@
 #ifndef RESIDUEDATA_HPP
 #define RESIDUEDATA_HPP
 
+#include "tools/iterators.hpp"
 #include <vector>
 #include <string>
 #include <unordered_set>
@@ -9,7 +10,12 @@ namespace mol::internal {
 
 class ResidueData
 {
+private:
+    using indices_type = std::unordered_set<size_t>;
+
 public:
+    using indices_iterator = indices_type::const_iterator;
+
     ResidueData()
     {}
 
@@ -21,27 +27,38 @@ public:
         chain(index) = chain_id;
     }
 
-    size_t size() const {
+    size_t size() const
+    {
         return m_indices.size();
     }
 
-    int &resid(size_t const index) {
+    size_t size(size_t const index) const
+    {
+        return m_indices[index].size();
+    }
+
+    int &resid(size_t const index)
+    {
         return m_resid[index];
     }
 
-    std::string &resname(size_t const index) {
+    std::string &resname(size_t const index)
+    {
         return m_resname[index];
     }
 
-    std::string &segid(size_t const index) {
+    std::string &segid(size_t const index)
+    {
         return m_segid[index];
     }
 
-    std::string &chain(size_t const index) {
+    std::string &chain(size_t const index)
+    {
         return m_chain[index];
     }
 
-    void resize(size_t const size) {
+    void resize(size_t const size)
+    {
         m_indices.resize(size);
         m_resid.resize(size, -1);
         m_resname.resize(size);
@@ -49,8 +66,27 @@ public:
         m_chain.resize(size);
     }
 
-    std::unordered_set<size_t> &indices(size_t const index) {
-        return m_indices[index];
+    Range<indices_iterator> indices(size_t const index) const
+    {
+        indices_type const &residue = m_indices[index];
+        return {residue.cbegin(), residue.cend()};
+    }
+
+    void reset(size_t const index, size_t const new_size=0)
+    {
+        indices_type &residue = m_indices[index];
+        residue.clear();
+        residue.reserve(new_size);
+    }
+
+    void add_atom(size_t const residue, size_t const atom)
+    {
+        m_indices[residue].insert(atom);
+    }
+
+    void remove_atom(size_t const residue, size_t const atom)
+    {
+        m_indices[residue].erase(atom);
     }
 
 private:
@@ -58,7 +94,7 @@ private:
     std::vector<std::string> m_resname;
     std::vector<std::string> m_segid;
     std::vector<std::string> m_chain;
-    std::vector<std::unordered_set<size_t>> m_indices;
+    std::vector<indices_type> m_indices;
 };
 
 } // namespace mol::internal
