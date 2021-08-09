@@ -1,4 +1,5 @@
 #include "tools/iterators.hpp"
+#include "tools/algorithms.hpp"
 #include "tools/Graph.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -72,4 +73,39 @@ TEST(Graph, Graph) {
 
     EXPECT_THAT(graph.edge_at(1, 0), UnorderedElementsAre(-1));
     EXPECT_THAT(graph.edge_at(2, 1), UnorderedElementsAre());
+}
+
+TEST(Algorithms, BreadthFirstSearch) {
+    using GraphInt = Graph<int, int>;
+    GraphInt graph;
+
+    for (int i = 0; i < 6; ++i)
+    {
+        ASSERT_TRUE(graph.add_node(i));
+    }
+    graph.add_edge(0, 1, 0);
+    graph.add_edge(0, 2, 0);
+    graph.add_edge(2, 3, 0);
+    graph.add_edge(1, 4, 0);
+    graph.add_edge(4, 5, 0);
+    graph.add_edge(5, 3, 0);
+
+    BFS<GraphInt> bfs;
+    EXPECT_THAT(bfs.mask(), ElementsAre());
+    EXPECT_TRUE(bfs.run(graph, 0, 3));
+    // Node 4 may or may not be present (STL-implementation-dependent)
+    EXPECT_THAT(bfs.visited(), IsSupersetOf({0, 1, 2, 3}));
+    EXPECT_THAT(bfs.visited(), IsSubsetOf({0, 1, 2, 3, 4}));
+    EXPECT_THAT(bfs.parent_map(), IsSupersetOf({Pair(3, 2), Pair(2, 0), Pair(1, 0)}));
+    EXPECT_THAT(bfs.parent_map(), IsSubsetOf({Pair(3, 2), Pair(2, 0), Pair(4, 1), Pair(1, 0)}));
+
+    // Search using a mask (without node 4)
+    bfs.set_mask({0, 1, 2, 3, 5});
+    EXPECT_TRUE(bfs.run(graph, 0, 3));
+    EXPECT_THAT(bfs.mask(), UnorderedElementsAre(0, 1, 2, 3, 5));
+    EXPECT_THAT(bfs.visited(), UnorderedElementsAre(0, 1, 2, 3));
+    EXPECT_THAT(bfs.parent_map(), UnorderedElementsAre(Pair(3, 2), Pair(2, 0), Pair(1, 0)));
+
+    bfs.set_mask({0, 3, 5});
+    EXPECT_FALSE(bfs.run(graph, 0, 3));
 }
