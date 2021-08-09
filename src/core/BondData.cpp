@@ -41,6 +41,11 @@ std::vector<size_t> BondData::bonded(size_t const index) const
 
 std::shared_ptr<Bond> BondData::add_bond(size_t const atom1, size_t const atom2)
 {
+    if (atom1 == atom2)
+    {
+        return nullptr;
+    }
+
     std::shared_ptr<Bond> data = std::make_shared<Bond>(atom1, atom2);
     return *m_graph.add_edge(atom1, atom2, data);
 }

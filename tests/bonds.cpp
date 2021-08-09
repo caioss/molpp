@@ -20,6 +20,7 @@ TEST(Bonds, BondData) {
     EXPECT_EQ(bond_graph.add_bond(2, 1), bond_graph.bond(1, 2));
     EXPECT_THAT(bond_graph.add_bond(3, 1), NotNull());
     EXPECT_THAT(bond_graph.add_bond(4, 3), NotNull());
+    EXPECT_THAT(bond_graph.add_bond(1, 1), IsNull());
 
     EXPECT_EQ(bond_graph.bonded(0).size(), 0);
     EXPECT_EQ(bond_graph.bonded(1).size(), 2);
