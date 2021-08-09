@@ -246,18 +246,19 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
     }
 
     // Update residues data
-    mol_data->residues().resize(residue_index.size());
+    ResidueData &residues_data = mol_data->residues();
+    residues_data.resize(residue_index.size());
     for (auto &item : residue_index)
     {
         Residue &residue = item.second;
-        mol_data->residues().reset(residue.index, residue.count);
-        mol_data->residues().set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
+        residues_data.reset(residue.index, residue.count);
+        residues_data.set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
     }
 
     for (size_t index = 0; index < mol_data->size(); ++index)
     {
         size_t const residue_idx = mol_data->properties().residue(index);
-        mol_data->residues().add_atom(residue_idx, index);
+        residues_data.add_atom(residue_idx, index);
     }
 
     /*
