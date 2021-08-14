@@ -17,6 +17,7 @@ add_executable(tests
     system.cpp
     bonds.cpp
     tools.cpp
+    tables.cpp
     files.cpp
 )
 
