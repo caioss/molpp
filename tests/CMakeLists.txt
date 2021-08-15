@@ -31,7 +31,6 @@ target_link_libraries(
     gtest_main
     gmock_main
     molpp
-    molfile_plugin
 )
 
 target_compile_features(tests

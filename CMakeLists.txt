@@ -9,6 +9,12 @@ option(USE_SYSTEM_EIGEN "Use system's Eigen installation." OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(BUILD_TESTING "Build library tests." OFF)
 
+# The library
+add_library(molpp)
+
+# Source files
+add_subdirectory("src")
+
 # Third-party
 add_subdirectory("thirdparty/molfile_plugin")
 include(FetchContent)
@@ -23,11 +29,15 @@ else()
     FetchContent_MakeAvailable(Eigen3)
 endif()
 
-# The library
-add_library(molpp)
-
-# Source files
-add_subdirectory("src")
+# Molfile_plugin definitions. Must be set in the same
+# file as the molpp declaration.
+foreach(FILE ${MOLFILE_SOURCES})
+    get_filename_component(NAME ${FILE} NAME_WLE)
+    set_property(SOURCE ${FILE} PROPERTY
+        COMPILE_DEFINITIONS
+            VMDPLUGIN=${NAME}
+    )
+endforeach(FILE)
 
 # Include dirs
 target_include_directories(molpp
@@ -43,7 +53,6 @@ target_link_libraries(molpp
     PUBLIC
         Eigen3::Eigen
     PRIVATE
-        molfile_plugin
 )
 
 # Compiler options
