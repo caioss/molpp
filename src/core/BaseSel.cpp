@@ -1,5 +1,5 @@
-#include "internal/BaseSel.hpp"
 #include "core/MolData.hpp"
+#include <molpp/internal/BaseSel.hpp>
 
 using namespace mol::internal;
 

@@ -1,10 +1,10 @@
 #include "matchers.hpp"
-#include "MolError.hpp"
-#include "Atom.hpp"
-#include "AtomSel.hpp"
-#include "core/MolData.hpp"
 #include "readers/MolReader.hpp"
 #include "readers/MolfileReader.hpp"
+#include "core/MolData.hpp"
+#include <molpp/MolError.hpp>
+#include <molpp/Atom.hpp>
+#include <molpp/AtomSel.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 

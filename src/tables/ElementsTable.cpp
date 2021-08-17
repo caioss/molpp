@@ -1,4 +1,4 @@
-#include "ElementsTable.hpp"
+#include <molpp/ElementsTable.hpp>
 
 using namespace mol;
 

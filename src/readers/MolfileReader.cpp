@@ -1,9 +1,9 @@
-#include "MolfileReader.hpp"
-#include "Atom.hpp"
-#include "Residue.hpp"
-#include "core/MolData.hpp"
-#include "MolError.hpp"
 #include "molfile.h"
+#include "MolfileReader.hpp"
+#include "core/MolData.hpp"
+#include <molpp/Atom.hpp>
+#include <molpp/Residue.hpp>
+#include <molpp/MolError.hpp>
 #include <map>
 #include <tuple>
 #include <regex>

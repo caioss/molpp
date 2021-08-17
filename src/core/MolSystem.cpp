@@ -1,8 +1,8 @@
-#include "MolSystem.hpp"
 #include "MolData.hpp"
-#include "AtomSel.hpp"
-#include "MolError.hpp"
 #include "readers/MolReader.hpp"
+#include <molpp/MolSystem.hpp>
+#include <molpp/AtomSel.hpp>
+#include <molpp/MolError.hpp>
 #include <filesystem>
 
 using namespace mol;

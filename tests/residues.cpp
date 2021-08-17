@@ -1,9 +1,9 @@
 #include "matchers.hpp"
-#include "Atom.hpp"
-#include "Residue.hpp"
-#include "AtomSel.hpp"
 #include "core/MolData.hpp"
 #include "core/ResidueData.hpp"
+#include <molpp/Atom.hpp>
+#include <molpp/Residue.hpp>
+#include <molpp/AtomSel.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 

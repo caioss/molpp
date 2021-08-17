@@ -1,9 +1,9 @@
 #include "files.hpp"
 #include "matchers.hpp"
-#include "Atom.hpp"
-#include "AtomSel.hpp"
-#include "MolError.hpp"
-#include "internal/BaseSel.hpp"
+#include <molpp/Atom.hpp>
+#include <molpp/AtomSel.hpp>
+#include <molpp/MolError.hpp>
+#include <molpp/internal/BaseSel.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 

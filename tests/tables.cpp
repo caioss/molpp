@@ -1,4 +1,4 @@
-#include "ElementsTable.hpp"
+#include <molpp/ElementsTable.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 

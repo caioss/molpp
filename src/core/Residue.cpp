@@ -1,6 +1,6 @@
-#include "Residue.hpp"
-#include "AtomSel.hpp"
 #include "core/MolData.hpp"
+#include <molpp/Residue.hpp>
+#include <molpp/AtomSel.hpp>
 
 using namespace mol;
 

@@ -1,7 +1,7 @@
 #ifndef TIMESTEP_HPP
 #define TIMESTEP_HPP
 
-#include "MolppCore.hpp"
+#include <molpp/MolppCore.hpp>
 
 namespace mol::internal
 {

@@ -1,8 +1,8 @@
 #ifndef BONDGRAPH_HPP
 #define BONDGRAPH_HPP
 
-#include "Bond.hpp"
 #include "tools/Graph.hpp"
+#include <molpp/Bond.hpp>
 #include <vector>
 #include <memory>
 #include <unordered_set>

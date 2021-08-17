@@ -1,7 +1,7 @@
 #ifndef BASESEL_HPP
 #define BASESEL_HPP
 
-#include "MolError.hpp"
+#include <molpp/MolError.hpp>
 #include <memory>
 #include <numeric>
 #include <algorithm>

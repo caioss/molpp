@@ -1,7 +1,7 @@
 #ifndef ATOM_HPP
 #define ATOM_HPP
 
-#include "MolppCore.hpp"
+#include <molpp/MolppCore.hpp>
 #include <memory>
 #include <vector>
 

@@ -1,7 +1,7 @@
 #ifndef RESIDUE_HPP
 #define RESIDUE_HPP
 
-#include "MolppCore.hpp"
+#include <molpp/MolppCore.hpp>
 #include <memory>
 
 namespace mol {

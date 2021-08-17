@@ -1,8 +1,8 @@
-#include "Atom.hpp"
-#include "Residue.hpp"
-#include "AtomSel.hpp"
-#include "MolError.hpp"
 #include "core/MolData.hpp"
+#include <molpp/Atom.hpp>
+#include <molpp/Residue.hpp>
+#include <molpp/AtomSel.hpp>
+#include <molpp/MolError.hpp>
 
 using namespace mol;
 

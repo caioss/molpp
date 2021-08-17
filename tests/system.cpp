@@ -1,6 +1,6 @@
-#include "MolSystem.hpp"
-#include "Atom.hpp"
-#include "MolError.hpp"
+#include <molpp/Atom.hpp>
+#include <molpp/MolSystem.hpp>
+#include <molpp/MolError.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 

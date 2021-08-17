@@ -1,7 +1,7 @@
 #ifndef MOLSYSTEM_HPP
 #define MOLSYSTEM_HPP
 
-#include "AtomSel.hpp"
+#include <molpp/AtomSel.hpp>
 #include <string>
 #include <memory>
 #include <vector>

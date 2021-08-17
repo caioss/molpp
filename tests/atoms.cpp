@@ -1,11 +1,11 @@
 #include "files.hpp"
 #include "matchers.hpp"
-#include "Atom.hpp"
-#include "Residue.hpp"
-#include "AtomSel.hpp"
-#include "MolError.hpp"
 #include "core/MolData.hpp"
 #include "core/AtomData.hpp"
+#include <molpp/Atom.hpp>
+#include <molpp/Residue.hpp>
+#include <molpp/AtomSel.hpp>
+#include <molpp/MolError.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
