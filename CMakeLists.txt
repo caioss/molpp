@@ -17,9 +17,10 @@ add_subdirectory("src")
 
 # Third-party
 add_subdirectory("thirdparty/molfile_plugin")
+
 include(FetchContent)
 if(USE_SYSTEM_EIGEN)
-    find_package (Eigen3 3.4 REQUIRED NO_MODULE)
+    find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 else()
     FetchContent_Declare(
         Eigen3
@@ -75,3 +76,49 @@ target_compile_options(molpp
 if(BUILD_TESTING)
     add_subdirectory(tests)
 endif()
+
+# Exporting files
+export(TARGETS molpp NAMESPACE Molpp:: FILE MolppTargets.cmake)
+configure_file(cmake/MolppConfig.cmake.in MolppConfig.cmake @ONLY)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    MolppConfigVersion.cmake
+    VERSION
+        ${PACKAGE_VERSION}
+    COMPATIBILITY
+        AnyNewerVersion
+)
+
+# Installation
+install(TARGETS molpp
+    EXPORT
+        MolppTargets
+    LIBRARY
+        DESTINATION lib
+    ARCHIVE
+        DESTINATION lib
+)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION include
+)
+
+install(
+    EXPORT
+        MolppTargets
+    FILE
+        MolppTargets.cmake
+    NAMESPACE
+        Molpp::
+    DESTINATION
+        lib/cmake/Molpp
+)
+
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/MolppConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/MolppConfigVersion.cmake"
+    DESTINATION
+        lib/cmake/Molpp
+)
