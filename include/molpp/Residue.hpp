@@ -2,41 +2,17 @@
 #define RESIDUE_HPP
 
 #include <molpp/MolppCore.hpp>
-#include <memory>
+#include <molpp/internal/AtomAggregate.hpp>
 
 namespace mol {
 
 class Atom;
-class Bond;
-class AtomSel;
 
-namespace internal {
-    class MolData;
-}
-
-class Residue
+class Residue : public internal::AtomAggregate<Residue>
 {
 public:
-    Residue(size_t const index, size_t const frame,std::shared_ptr<internal::MolData> data)
-    : m_index { index },
-      m_frame { frame },
-      m_data { data }
-    {}
-
-    bool operator==(Residue const &other) const
-    {
-        return m_data == other.m_data && m_index == other.m_index && m_frame == other.m_frame;
-    }
-
-    size_t index() const
-    {
-        return m_index;
-    }
-
-    size_t frame() const
-    {
-        return m_frame;
-    }
+    Residue() = delete;
+    using internal::AtomAggregate<Residue>::AtomAggregate;
 
     int resid() const;
     void set_resid(int const &resid);
@@ -51,14 +27,10 @@ public:
     void set_chain(std::string const &chain);
 
     void add_atom(size_t index);
-    void add_atom(Atom &atom);
-    std::shared_ptr<AtomSel> atoms();
+    void add_atom(Atom const &atom);
     size_t size() const;
 
-private:
-    size_t m_index;
-    size_t m_frame;
-    std::shared_ptr<internal::MolData> m_data;
+    std::vector<size_t> atom_indices() const;
 };
 
 } // namespace mol

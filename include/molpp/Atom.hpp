@@ -2,45 +2,23 @@
 #define ATOM_HPP
 
 #include <molpp/MolppCore.hpp>
+#include <molpp/internal/AtomAggregate.hpp>
 #include <memory>
 #include <vector>
+#include <optional>
 
 namespace mol {
 
 class Bond;
 class Residue;
-class AtomSel;
 
-namespace internal {
-    class MolData;
-}
-
-class Atom
+class Atom : public internal::AtomAggregate<Atom>
 {
 public:
-    Atom(size_t const index, size_t const frame,std::shared_ptr<internal::MolData> data)
-    : m_index { index },
-      m_frame { frame },
-      m_data { data }
-    {}
-
-    bool operator==(Atom const &other) const
-    {
-        return m_data == other.m_data && m_index == other.m_index && m_frame == other.m_frame;
-    }
-
-    size_t index() const
-    {
-        return m_index;
-    }
-
-    size_t frame() const
-    {
-        return m_frame;
-    }
+    Atom() = delete;
+    using internal::AtomAggregate<Atom>::AtomAggregate;
 
     int resid() const;
-
     Residue residue();
     size_t residue_id() const;
 
@@ -77,15 +55,11 @@ public:
 
     std::shared_ptr<Bond> add_bond(size_t const bonded_to);
     std::shared_ptr<Bond> bond(size_t const other);
-    std::vector<std::shared_ptr<Bond>> bonds();
-    std::shared_ptr<AtomSel> bonded();
 
-    Eigen::Ref<Pos3> coords();
-
-private:
-    size_t m_index;
-    size_t m_frame;
-    std::shared_ptr<internal::MolData> m_data;
+    std::vector<size_t> atom_indices() const
+    {
+        return {index()};
+    }
 };
 
 } // namespace mol

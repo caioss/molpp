@@ -1,5 +1,6 @@
 #include "files.hpp"
 #include "matchers.hpp"
+#include "auxiliary.hpp"
 #include "core/MolData.hpp"
 #include "core/AtomData.hpp"
 #include <molpp/Atom.hpp>
@@ -14,35 +15,27 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(Atoms, Atom) {
-    // Construct data structures
-    size_t const num_atoms { 3 };
-    auto data = MolData::create(num_atoms);
-    ASSERT_THAT(data, NotNull());
-    data->residues().resize(1);
-    for (size_t i = 0; i < num_atoms; i++)
-    {
-        data->properties().residue(i) = 0;
-    }
+    auto data = aux_moldata();
 
     // Comparison
     EXPECT_TRUE(Atom(1, 0, data) == Atom(1, 0, data));
     EXPECT_FALSE(Atom(0, 0, data) == Atom(1, 0, data));
-
-    // Sizes
-    ASSERT_EQ(data->size(), 3);
+    EXPECT_FALSE(Atom(1, std::nullopt, data) == Atom(1, 0, data));
+    EXPECT_FALSE(Atom(1, 0, data) == Atom(1, 0, nullptr));
 
     /*
      * Properties
      */
-    Atom atom0(0, 0, data);
+    Atom atom0(0, std::nullopt, data);
     Atom atom(1, 0, data);
     EXPECT_EQ(atom.index(), 1);
     EXPECT_EQ(atom.frame(), 0);
+    EXPECT_EQ(atom0.frame(), std::nullopt);
 
     EXPECT_EQ(atom.resid(), -1);
 
-    EXPECT_EQ(atom.residue_id(), 0);
-    EXPECT_EQ(atom.residue(), Residue(0, 0, data));
+    EXPECT_EQ(atom.residue_id(), 1);
+    EXPECT_EQ(atom.residue(), Residue(1, 0, data));
 
     atom.set_atomic(2);
     EXPECT_EQ(atom.atomic(), 2);
@@ -78,13 +71,11 @@ TEST(Atoms, Atom) {
     /*
      * Coordinates
      */
-    data->add_timestep(Timestep(num_atoms));
-    ASSERT_EQ(data->num_frames(), 1);
-
-    data->timestep(0).coords() << 1, 2, 3, 4, 5, 6, 7, 8, 9;
-    EXPECT_THAT(atom.coords(), ElementsAre(2, 5, 8));
+    EXPECT_THAT(atom.coords().reshaped(), ElementsAre(2, 5, 8));
     atom.coords() *= 2;
-    EXPECT_THAT(atom.coords(), ElementsAre(4, 10, 16));
+    EXPECT_THAT(atom.coords().reshaped(), ElementsAre(4, 10, 16));
+
+    EXPECT_THROW(Atom(1, std::nullopt, data).coords(), MolError);
 
     /*
      * Bonds
@@ -94,23 +85,32 @@ TEST(Atoms, Atom) {
     EXPECT_THROW(atom.add_bond(3), MolError);
     EXPECT_EQ(atom.add_bond(2), atom.bond(2));
 
-    EXPECT_THAT(atom0.bond(2), IsNull());
+    EXPECT_THAT(atom0.bond(2), NotNull());
     EXPECT_THAT(atom.bond(3), IsNull());
     auto bond = atom.bond(2);
     ASSERT_THAT(bond, NotNull());
     EXPECT_EQ(bond->atom1(), 1);
     EXPECT_EQ(bond->atom2(), 2);
 
-    EXPECT_EQ(atom0.bonds().size(), 0);
+    EXPECT_EQ(atom0.bonds().size(), 1);
     auto bond_list = atom.bonds();
     ASSERT_EQ(bond_list.size(), 1);
     EXPECT_EQ(bond_list[0]->atom1(), 1);
     EXPECT_EQ(bond_list[0]->atom2(), 2);
 
-    EXPECT_EQ(atom0.bonded()->size(), 0);
+    EXPECT_EQ(atom0.bonded()->size(), 2);
     auto bond_sel = atom.bonded();
-    EXPECT_EQ(bond_sel->size(), 1);
-    EXPECT_THAT(bond_sel->indices(), ElementsAre(2));
+    EXPECT_EQ(bond_sel->size(), 2);
+    EXPECT_THAT(bond_sel->indices(), ElementsAre(1, 2));
+
+    /*
+     * Conversions
+     */
+    auto sel = atom.atoms();
+    ASSERT_THAT(sel, NotNull());
+    ASSERT_EQ(sel->size(), 1);
+    EXPECT_EQ(sel->frame(), atom.frame());
+    EXPECT_EQ((*sel)[0].index(), atom.index());
 }
 
 TEST(Atoms, Timestep) {
@@ -135,14 +135,14 @@ TEST(Atoms, Timestep) {
 TEST(Atoms, bonds) {
     PDBFiles pdb;
     pdb.check();
-    AtomSel all_sel(pdb.tiny->size(), pdb.tiny);
+    AtomSel all_sel(pdb.tiny);
 
     EXPECT_EQ(all_sel[1].bonded()->size(), 0);
     EXPECT_EQ(all_sel[4].bonded()->size(), 0);
     EXPECT_EQ(all_sel[5].bonded()->size(), 0);
-    EXPECT_THAT(all_sel[0].bonded()->indices(), ElementsAre(2, 3));
-    EXPECT_THAT(all_sel[2].bonded()->indices(), ElementsAre(0));
-    EXPECT_THAT(all_sel[3].bonded()->indices(), ElementsAre(0));
+    EXPECT_THAT(all_sel[0].bonded()->indices(), ElementsAre(0, 2, 3));
+    EXPECT_THAT(all_sel[2].bonded()->indices(), ElementsAre(0, 2));
+    EXPECT_THAT(all_sel[3].bonded()->indices(), ElementsAre(0, 3));
 }
 
 TEST(Atoms, MolData) {

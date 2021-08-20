@@ -6,5 +6,7 @@ target_sources(molpp PRIVATE
     Timestep.cpp
     AtomSel.cpp
     BondData.cpp
+    ResidueSel.cpp
     BaseSel.cpp
+    BaseAtomAggregate.cpp
 )

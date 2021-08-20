@@ -59,7 +59,7 @@ target_link_libraries(molpp
 # Compiler options
 target_compile_features(molpp
     PUBLIC
-        cxx_std_17
+        cxx_std_20
 )
 set_target_properties(molpp PROPERTIES
     CXX_EXTENSIONS OFF

@@ -22,16 +22,11 @@ TEST(Bonds, BondData) {
     EXPECT_THAT(bond_graph.add_bond(4, 3), NotNull());
     EXPECT_THAT(bond_graph.add_bond(1, 1), IsNull());
 
-    EXPECT_EQ(bond_graph.bonded(0).size(), 0);
-    EXPECT_EQ(bond_graph.bonded(1).size(), 2);
-    EXPECT_EQ(bond_graph.bonded(2).size(), 1);
-    EXPECT_EQ(bond_graph.bonded(3).size(), 2);
-    EXPECT_EQ(bond_graph.bonded(4).size(), 1);
-
-    EXPECT_THAT(bond_graph.bonded(1), UnorderedElementsAre(2, 3));
-    EXPECT_THAT(bond_graph.bonded(2), ElementsAre(1));
-    EXPECT_THAT(bond_graph.bonded(3), UnorderedElementsAre(1, 4));
-    EXPECT_THAT(bond_graph.bonded(4), ElementsAre(3));
+    EXPECT_THAT(bond_graph.bonded(0), UnorderedElementsAre());
+    EXPECT_THAT(bond_graph.bonded(1), UnorderedElementsAre(1, 2, 3));
+    EXPECT_THAT(bond_graph.bonded(2), UnorderedElementsAre(1, 2));
+    EXPECT_THAT(bond_graph.bonded(3), UnorderedElementsAre(1, 3, 4));
+    EXPECT_THAT(bond_graph.bonded(4), ElementsAre(3, 4));
 
     size_t indices[3] = {1, 0, 4};
     auto bonded = bond_graph.bonds(indices, indices + 3);

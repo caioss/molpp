@@ -1,19 +1,19 @@
-#include "core/MolData.hpp"
 #include <molpp/AtomSel.hpp>
+#include "core/MolData.hpp"
 
 using namespace mol;
 
-AtomSel::coords_type AtomSel::coords()
+AtomSel AtomSel::from_atom_indices(std::vector<size_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> data)
 {
-    return m_data->timestep(frame()).coords()(Eigen::all, indices());
+    return AtomSel(std::forward<std::vector<size_t>&&>(atom_indices), data);
 }
 
-std::shared_ptr<AtomSel> AtomSel::bonded()
+std::vector<size_t> AtomSel::atom_indices() const
 {
-    return std::make_shared<AtomSel>(m_data->size(), m_data->bonds().bonded(indices().begin(), indices().end()), m_data);
+    return indices();
 }
 
-std::vector<std::shared_ptr<Bond>> AtomSel::bonds()
+size_t AtomSel::max_size(std::shared_ptr<mol::internal::MolData> data)
 {
-    return m_data->bonds().bonds(indices().begin(), indices().end());
+    return data->size();
 }

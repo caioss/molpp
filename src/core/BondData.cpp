@@ -36,7 +36,14 @@ std::shared_ptr<Bond> BondData::bond(size_t const atom1, size_t const atom2)
 std::vector<size_t> BondData::bonded(size_t const index) const
 {
     auto const range = m_graph.adjacency(index);
-    return {range.begin(), range.end()};
+    if (!range.is_valid())
+    {
+        return {};
+    }
+
+    std::vector<size_t> indices{range.begin(), range.end()};
+    indices.push_back(index);
+    return indices;
 }
 
 std::shared_ptr<Bond> BondData::add_bond(size_t const atom1, size_t const atom2)

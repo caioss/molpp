@@ -7,6 +7,7 @@
 #include <molpp/AtomSel.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <optional>
 
 using namespace testing;
 using namespace mol;
@@ -50,7 +51,7 @@ TEST(Readers, MolfileReader) {
     std::vector<mol::Atom> m2_atoms;
     for (size_t i = 0; i < m2_data->size(); ++i)
     {
-        m2_atoms.push_back(Atom(i, 0, m2_data));
+        m2_atoms.push_back(Atom(i, std::nullopt, m2_data));
     }
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid),
                                  {3, 339, 201, 801, 85, 85}));
@@ -124,18 +125,18 @@ TEST(Readers, MolfileReader) {
      * Bonds and charges
      */
     // Bond partners
-    EXPECT_THAT(m2_atoms[0].bonded()->indices(), ElementsAre(1));
-    EXPECT_THAT(m2_atoms[1].bonded()->indices(), ElementsAre(0, 2, 3));
-    EXPECT_THAT(m2_atoms[2].bonded()->indices(), ElementsAre(1, 4, 7));
-    EXPECT_THAT(m2_atoms[3].bonded()->indices(), ElementsAre(1, 5, 8));
-    EXPECT_THAT(m2_atoms[4].bonded()->indices(), ElementsAre(2, 6, 9));
-    EXPECT_THAT(m2_atoms[5].bonded()->indices(), ElementsAre(3, 6, 10));
-    EXPECT_THAT(m2_atoms[6].bonded()->indices(), ElementsAre(4, 5, 11));
-    EXPECT_THAT(m2_atoms[7].bonded()->indices(), ElementsAre(2));
-    EXPECT_THAT(m2_atoms[8].bonded()->indices(), ElementsAre(3));
-    EXPECT_THAT(m2_atoms[9].bonded()->indices(), ElementsAre(4));
-    EXPECT_THAT(m2_atoms[10].bonded()->indices(), ElementsAre(5));
-    EXPECT_THAT(m2_atoms[11].bonded()->indices(), ElementsAre(6));
+    EXPECT_THAT(m2_atoms[0].bonded()->indices(), ElementsAre(0, 1));
+    EXPECT_THAT(m2_atoms[1].bonded()->indices(), ElementsAre(0, 1, 2, 3));
+    EXPECT_THAT(m2_atoms[2].bonded()->indices(), ElementsAre(1, 2, 4, 7));
+    EXPECT_THAT(m2_atoms[3].bonded()->indices(), ElementsAre(1, 3, 5, 8));
+    EXPECT_THAT(m2_atoms[4].bonded()->indices(), ElementsAre(2, 4, 6, 9));
+    EXPECT_THAT(m2_atoms[5].bonded()->indices(), ElementsAre(3, 5, 6, 10));
+    EXPECT_THAT(m2_atoms[6].bonded()->indices(), ElementsAre(4, 5, 6, 11));
+    EXPECT_THAT(m2_atoms[7].bonded()->indices(), ElementsAre(2, 7));
+    EXPECT_THAT(m2_atoms[8].bonded()->indices(), ElementsAre(3, 8));
+    EXPECT_THAT(m2_atoms[9].bonded()->indices(), ElementsAre(4, 9));
+    EXPECT_THAT(m2_atoms[10].bonded()->indices(), ElementsAre(5, 10));
+    EXPECT_THAT(m2_atoms[11].bonded()->indices(), ElementsAre(6, 11));
 
     // Bond orders
     for (Atom &atom : m2_atoms)

@@ -3,6 +3,7 @@
 
 #include "tools/iterators.hpp"
 #include <list>
+#include <cstddef>
 #include <unordered_map>
 
 namespace mol::internal {
@@ -36,8 +37,8 @@ public:
     Graph()
     {}
 
-    Graph(const Graph &src) = delete;
-    Graph &operator=(const Graph &rhs) = delete;
+    Graph(Graph const &src) = delete;
+    Graph &operator=(Graph const &rhs) = delete;
 
     size_t size() const {
         return m_adjacency.size();

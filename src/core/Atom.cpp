@@ -8,152 +8,137 @@ using namespace mol;
 
 int Atom::resid() const
 {
-    return m_data->residues().resid(residue_id());
+    return cdata()->residues().resid(residue_id());
 }
 
 Residue Atom::residue()
 {
-    return Residue(residue_id(), m_frame, m_data);
+    return Residue(residue_id(), frame(), data());
 }
 
 size_t Atom::residue_id() const
 {
-    return m_data->properties().residue(m_index);
+    return cdata()->properties().residue(index());
 }
 
 int Atom::atomic() const
 {
-    return m_data->properties().atomic(m_index);
+    return cdata()->properties().atomic(index());
 }
 
 void Atom::set_atomic(int const &atomic)
 {
-    m_data->properties().atomic(m_index) = atomic;
+    data()->properties().atomic(index()) = atomic;
 }
 
 float Atom::occupancy() const
 {
-    return m_data->properties().occupancy(m_index);
+    return cdata()->properties().occupancy(index());
 }
 
 void Atom::set_occupancy(float const &occupancy)
 {
-    m_data->properties().occupancy(m_index) = occupancy;
+    data()->properties().occupancy(index()) = occupancy;
 }
 
 float Atom::tempfactor() const
 {
-    return m_data->properties().tempfactor(m_index);
+    return cdata()->properties().tempfactor(index());
 }
 
 void Atom::set_tempfactor(float const &tempfactor)
 {
-    m_data->properties().tempfactor(m_index) = tempfactor;
+    data()->properties().tempfactor(index()) = tempfactor;
 }
 
 float Atom::mass() const
 {
-    return m_data->properties().mass(m_index);
+    return cdata()->properties().mass(index());
 }
 
 void Atom::set_mass(float const &mass)
 {
-    m_data->properties().mass(m_index) = mass;
+    data()->properties().mass(index()) = mass;
 }
 
 float Atom::charge() const
 {
-    return m_data->properties().charge(m_index);
+    return cdata()->properties().charge(index());
 }
 
 void Atom::set_charge(float const &charge)
 {
-    m_data->properties().charge(m_index) = charge;
+    data()->properties().charge(index()) = charge;
 }
 
 float Atom::radius() const
 {
-    return m_data->properties().radius(m_index);
+    return cdata()->properties().radius(index());
 }
 
 void Atom::set_radius(float const &radius)
 {
-    m_data->properties().radius(m_index) = radius;
+    data()->properties().radius(index()) = radius;
 }
 
 std::string Atom::name() const
 {
-    return m_data->properties().name(m_index);
+    return cdata()->properties().name(index());
 }
 
 void Atom::set_name(std::string const &name) {
-    m_data->properties().name(m_index) = name;
+    data()->properties().name(index()) = name;
 }
 
 std::string Atom::type() const
 {
-    return m_data->properties().type(m_index);
+    return cdata()->properties().type(index());
 }
 
 void Atom::set_type(std::string const &type)
 {
-    m_data->properties().type(m_index) = type;
+    data()->properties().type(index()) = type;
 }
 
 std::string Atom::resname() const
 {
-    return m_data->residues().resname(residue_id());
+    return cdata()->residues().resname(residue_id());
 }
 
 std::string Atom::segid() const
 {
-    return m_data->residues().segid(residue_id());
+    return cdata()->residues().segid(residue_id());
 }
 
 std::string Atom::chain() const
 {
-    return m_data->residues().chain(residue_id());
+    return cdata()->residues().chain(residue_id());
 }
 
 std::string Atom::altloc() const
 {
-    return m_data->properties().altloc(m_index);
+    return cdata()->properties().altloc(index());
 }
 
 void Atom::set_altloc(std::string const &altloc)
 {
-    m_data->properties().altloc(m_index) = altloc;
+    data()->properties().altloc(index()) = altloc;
 }
 
 std::shared_ptr<Bond> Atom::add_bond(size_t const bonded_to)
 {
-    if (bonded_to == m_index)
+    if (bonded_to == index())
     {
         throw mol::MolError("Atoms can't have bonds to themselves");
     }
-    if (bonded_to >= m_data->size())
+    if (bonded_to >= data()->size())
     {
         throw mol::MolError("Out of bounds index: " + std::to_string(bonded_to));
     }
-    return m_data->bonds().add_bond(m_index, bonded_to);
+    return data()->bonds().add_bond(index(), bonded_to);
 }
 
 std::shared_ptr<Bond> Atom::bond(size_t const other)
 {
-    return m_data->bonds().bond(m_index, other);
-}
-
-std::vector<std::shared_ptr<Bond>> Atom::bonds()
-{
-    return m_data->bonds().bonds(m_index);
-}
-
-std::shared_ptr<AtomSel> Atom::bonded()
-{
-    return std::make_shared<AtomSel>(m_data->size(), m_data->bonds().bonded(m_index), m_data);
-}
-
-Eigen::Ref<Pos3> Atom::coords()
-{
-    return m_data->timestep(m_frame).coords().col(m_index);
+    return data()->bonds().bond(index(), other);
 }

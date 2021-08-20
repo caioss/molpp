@@ -1,10 +1,12 @@
 #include "matchers.hpp"
+#include "auxiliary.hpp"
 #include "core/MolData.hpp"
 #include "core/ResidueData.hpp"
 #include "readers/ResidueDetect.hpp"
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/AtomSel.hpp>
+#include <molpp/MolError.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -13,23 +15,13 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(Residues, Residue) {
-    // Construct data structures
-    size_t const num_atoms { 3 };
-    auto data = MolData::create(num_atoms);
-    ASSERT_THAT(data, NotNull());
-    data->residues().resize(3);
-    for (size_t i = 0; i < num_atoms; i++)
-    {
-        data->properties().residue(i) = i;
-        data->residues().add_atom(i, i);
-    }
+    auto data = aux_moldata();
 
     // Comparison
     EXPECT_TRUE(Residue(1, 0, data) == Residue(1, 0, data));
     EXPECT_FALSE(Residue(0, 0, data) == Residue(1, 0, data));
-
-    // Sizes
-    ASSERT_EQ(data->size(), 3);
+    EXPECT_FALSE(Residue(1, std::nullopt, data) == Residue(1, 0, data));
+    EXPECT_FALSE(Residue(1, 0, data) == Residue(1, 0, nullptr));
 
     /*
      * Properties
@@ -51,17 +43,40 @@ TEST(Residues, Residue) {
     EXPECT_EQ(res.chain(), "B");
 
     /*
-     * Atoms
+     * Coordinates
+     */
+    EXPECT_THAT(res.coords().reshaped(), ElementsAre(2, 5, 8));
+    res.coords() *= 2;
+    EXPECT_THAT(res.coords().reshaped(), ElementsAre(4, 10, 16));
+
+    EXPECT_THROW(Residue(1, std::nullopt, data).coords(), MolError);
+
+    /*
+     * Bonds
+     */
+    auto bond_list = Residue(0, 0, data).bonds();
+    ASSERT_EQ(bond_list.size(), 1);
+    EXPECT_EQ(bond_list[0]->atom1(), 0);
+    EXPECT_EQ(bond_list[0]->atom2(), 2);
+
+    auto bond_sel = Residue(0, 0, data).bonded();
+    EXPECT_EQ(bond_sel->size(), 2);
+    EXPECT_THAT(bond_sel->indices(), ElementsAre(0, 2));
+
+    /*
+     * Conversions
      */
     ASSERT_EQ(res.size(), 1);
     auto sel = res.atoms();
     ASSERT_THAT(sel, NotNull());
     ASSERT_EQ(sel->size(), 1);
+    EXPECT_EQ(sel->frame(), res.frame());
     EXPECT_EQ((*sel)[0].index(), 1);
     EXPECT_EQ((*sel)[0].residue_id(), 1);
-    EXPECT_NE(Atom(0, 0, data).residue_id(), 1);
-    EXPECT_NE(Atom(2, 0, data).residue_id(), 1);
 
+    /*
+     * Addition/removal
+     */
     Atom atom = Atom(0, 0, data);
     res.add_atom(atom);
     res.add_atom(2);
