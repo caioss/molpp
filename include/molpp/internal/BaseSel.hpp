@@ -24,7 +24,6 @@ public:
     BaseSel() = delete;
     BaseSel(size_t const max_size, std::shared_ptr<MolData> data);
     BaseSel(size_t const max_size, std::vector<size_t> const &indices, std::shared_ptr<MolData> data);
-    BaseSel(size_t const max_size, std::vector<size_t> &&indices, std::shared_ptr<MolData> data);
 
     std::optional<size_t> frame() const
     {
@@ -82,7 +81,6 @@ protected:
     };
 
 private:
-    void update_indices(size_t const total_size);
     void init_frame();
 
     std::optional<size_t> m_frame;

@@ -17,20 +17,34 @@ BaseSel::BaseSel(size_t const max_size, std::shared_ptr<MolData> data)
 
 BaseSel::BaseSel(size_t const max_size, std::vector<size_t> const &indices, std::shared_ptr<MolData> data)
 : m_data(data),
-  m_selected(max_size, false),
-  m_indices(indices)
+  m_selected(max_size, false)
 {
-    update_indices(max_size);
-    init_frame();
-}
+    // Fill m_selected
+    size_t count = 0;
+    for (size_t index : indices)
+    {
+        if (index >= max_size)
+        {
+            throw mol::MolError("Out of bounds selection index: " + std::to_string(index));
+        }
 
-BaseSel::BaseSel(size_t const max_size, std::vector<size_t> &&indices, std::shared_ptr<MolData> data)
-: m_data(data),
-  m_selected(max_size, false),
-  m_indices(0)
-{
-    std::swap(m_indices, indices);
-    update_indices(max_size);
+        if (!m_selected[index])
+        {
+            m_selected[index] = true;
+            count++;
+        }
+    }
+
+    // Fill m_indices with sorted and non-duplicated values
+    m_indices.reserve(count);
+    for (size_t i = 0; i < max_size; i++)
+    {
+        if (m_selected[i])
+        {
+            m_indices.push_back(i);
+        }
+    }
+
     init_frame();
 }
 
@@ -67,20 +81,6 @@ std::shared_ptr<AtomSel> BaseSel::atoms(std::vector<size_t> &&atom_indices)
     auto sel = std::make_shared<AtomSel>(AtomSel::from_atom_indices(std::forward<std::vector<size_t>&&>(atom_indices), m_data));
     sel->set_frame(m_frame);
     return sel;
-}
-
-void BaseSel::update_indices(size_t const total_size)
-{
-    std::sort(m_indices.begin(), m_indices.end());
-    for (size_t index : m_indices)
-    {
-        if (index >= total_size)
-        {
-            throw mol::MolError("Out of bounds selection index: " + std::to_string(index));
-        }
-
-        m_selected[index] = true;
-    }
 }
 
 void BaseSel::init_frame()

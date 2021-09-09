@@ -31,11 +31,11 @@ TEST(Selections, BaseSel) {
     EXPECT_FALSE(all_sel.contains(6));
 
     // Constructors accepting indexes
-    std::vector<size_t> indices{4, 1, 3};
+    std::vector<size_t> indices{4, 1, 1, 3};
     BaseSel some_sel(pdb.tiny->size(), indices, pdb.tiny);
-    BaseSel rvalue_sel(pdb.tiny->size(), {4, 1, 3}, pdb.tiny);
-    EXPECT_EQ(some_sel.size(), indices.size());
-    EXPECT_EQ(rvalue_sel.size(), indices.size());
+    BaseSel rvalue_sel(pdb.tiny->size(), {4, 1, 1, 3}, pdb.tiny);
+    EXPECT_EQ(some_sel.size(), indices.size() - 1);
+    EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
     EXPECT_FALSE(rvalue_sel.frame());
     EXPECT_THAT(some_sel.indices(), ElementsAre(1, 3, 4));
@@ -86,11 +86,11 @@ TEST(Selections, Sel) {
     EXPECT_FALSE(all_sel.contains(6));
 
     // Constructors accepting indexes
-    std::vector<size_t> indices{4, 1, 3};
+    std::vector<size_t> indices{4, 1, 1, 3};
     Sel<Atom, AtomSel> some_sel(indices, pdb.tiny);
-    Sel<Atom, AtomSel> rvalue_sel({4, 1, 3}, pdb.tiny);
-    EXPECT_EQ(some_sel.size(), indices.size());
-    EXPECT_EQ(rvalue_sel.size(), indices.size());
+    Sel<Atom, AtomSel> rvalue_sel({4, 1, 1, 3}, pdb.tiny);
+    EXPECT_EQ(some_sel.size(), indices.size() - 1);
+    EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
     EXPECT_FALSE(rvalue_sel.frame());
     EXPECT_THAT(some_sel.indices(), ElementsAre(1, 3, 4));
@@ -229,7 +229,7 @@ TEST(Selections, AtomSel) {
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     EXPECT_THAT(all_sel.atom_indices(), ElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_THAT(AtomSel::from_atom_indices({0, 4, 1}, pdb.tiny).indices(), ElementsAre(0, 1, 4));
+    EXPECT_THAT(AtomSel::from_atom_indices({0, 4, 0, 1}, pdb.tiny).indices(), ElementsAre(0, 1, 4));
     EXPECT_THAT(all_sel.selected(), ElementsAre(true, true, true, true, true, true));
     for (size_t i = 0; i < 6; ++i)
     {
@@ -238,11 +238,11 @@ TEST(Selections, AtomSel) {
     EXPECT_FALSE(all_sel.contains(6));
 
     // Constructors accepting indexes
-    std::vector<size_t> indices{4, 1, 3};
+    std::vector<size_t> indices{4, 1, 1, 3};
     AtomSel some_sel(indices, pdb.tiny);
-    AtomSel rvalue_sel({4, 1, 3}, pdb.tiny);
-    EXPECT_EQ(some_sel.size(), indices.size());
-    EXPECT_EQ(rvalue_sel.size(), indices.size());
+    AtomSel rvalue_sel({4, 1, 1, 3}, pdb.tiny);
+    EXPECT_EQ(some_sel.size(), indices.size() - 1);
+    EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
     EXPECT_FALSE(rvalue_sel.frame());
     EXPECT_THAT(some_sel.indices(), ElementsAre(1, 3, 4));
