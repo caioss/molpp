@@ -16,8 +16,3 @@ std::shared_ptr<MolData> MolData::create(size_t const num_atoms)
     // Use *new* to access the private constructor
     return std::shared_ptr<MolData>(new MolData(num_atoms));
 }
-
-void MolData::add_timestep(Timestep &&ts)
-{
-    m_timestep.push_back(std::forward<Timestep &&>(ts));
-}

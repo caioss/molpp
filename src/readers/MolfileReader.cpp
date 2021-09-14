@@ -299,7 +299,7 @@ MolReader::Status MolfileReader::read_timestep(std::shared_ptr<MolData> mol_data
             return FAILED;
     }
 
-    mol_data->add_timestep(std::move(ts));
+    mol_data->trajectory().add_timestep(std::move(ts));
 
     return SUCCESS;
 }

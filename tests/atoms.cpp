@@ -153,11 +153,19 @@ TEST(Atoms, MolData) {
     EXPECT_EQ(data->properties().size(), num_atoms);
     EXPECT_EQ(data->bonds().size(), num_atoms);
     EXPECT_EQ(data->residues().size(), 0);
+    EXPECT_EQ(data->trajectory().num_frames(), 0);
+}
 
-    EXPECT_EQ(data->num_frames(), 0);
-    data->add_timestep(Timestep(num_atoms));
-    EXPECT_EQ(data->num_frames(), 1);
-    EXPECT_EQ(data->timestep(0).coords().cols(), num_atoms);
+TEST(Atoms, TrajData) {
+    size_t const num_atoms { 3 };
+    auto data = MolData::create(num_atoms);
+    ASSERT_THAT(data, NotNull());
+
+    TrajData &traj_data = data->trajectory();
+    EXPECT_EQ(traj_data.num_frames(), 0);
+    traj_data.add_timestep(Timestep(num_atoms));
+    EXPECT_EQ(traj_data.num_frames(), 1);
+    EXPECT_EQ(traj_data.timestep(0).coords().cols(), num_atoms);
 }
 
 TEST(Atoms, AtomData) {

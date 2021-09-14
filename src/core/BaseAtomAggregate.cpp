@@ -24,7 +24,7 @@ BaseAtomAggregate::coords_type BaseAtomAggregate::coords(std::vector<size_t> &&a
     {
         throw mol::MolError("Invalid frame");
     }
-    return m_data->timestep(*m_frame).coords()(Eigen::all, std::forward<std::vector<size_t>&&>(atom_indices));
+    return m_data->trajectory().timestep(*m_frame).coords()(Eigen::all, std::forward<std::vector<size_t> &&>(atom_indices));
 }
 
 std::vector<std::shared_ptr<Bond>> BaseAtomAggregate::bonds(std::vector<size_t> const &atom_indices)

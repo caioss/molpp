@@ -51,7 +51,7 @@ BaseSel::BaseSel(size_t const max_size, std::vector<size_t> const &indices, std:
 
 void BaseSel::set_frame(std::optional<size_t> frame)
 {
-    if (frame && frame >= m_data->num_frames())
+    if (frame && frame >= m_data->trajectory().num_frames())
     {
         throw mol::MolError("Out of bounds frame: " + std::to_string(*frame));
     }
@@ -64,7 +64,7 @@ BaseSel::coords_type BaseSel::coords(std::vector<size_t> const &atom_indices)
     {
         throw mol::MolError("Invalid frame");
     }
-    return m_data->timestep(*m_frame).coords()(Eigen::all, atom_indices);
+    return m_data->trajectory().timestep(*m_frame).coords()(Eigen::all, atom_indices);
 }
 
 std::vector<size_t> BaseSel::bonded(std::vector<size_t> const &atom_indices) const
@@ -93,7 +93,7 @@ std::shared_ptr<ResidueSel> BaseSel::residues(std::vector<size_t> &&atom_indices
 
 void BaseSel::init_frame()
 {
-    if (m_data->num_frames())
+    if (m_data->trajectory().num_frames())
     {
         m_frame = 0;
     }

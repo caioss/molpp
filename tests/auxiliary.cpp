@@ -16,7 +16,7 @@ std::shared_ptr<MolData> aux_moldata()
 
     data->bonds().add_bond(0, 2);
 
-    data->add_timestep(Timestep(num_atoms));
-    data->timestep(0).coords() << 1, 2, 3, 4, 5, 6, 7, 8, 9;
+    data->trajectory().add_timestep(Timestep(num_atoms));
+    data->trajectory().timestep(0).coords() << 1, 2, 3, 4, 5, 6, 7, 8, 9;
     return data;
 }

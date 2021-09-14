@@ -21,8 +21,6 @@ MolSystem::MolSystem(std::string const &topology)
     {
         throw mol::MolError("Error reading file " + topology);
     }
-
-    m_all = std::make_shared<AtomSel>(m_data);
 }
 
 void MolSystem::add_trajectory(std::string const &file_name, int begin, int end, int step)
@@ -48,9 +46,9 @@ void MolSystem::add_trajectory(std::string const &file_name, int begin, int end,
     }
 }
 
-std::shared_ptr<AtomSel> MolSystem::all() const
+std::shared_ptr<AtomSel> MolSystem::atoms() const
 {
-    return m_all;
+    return std::make_shared<AtomSel>(m_data);
 }
 
 std::shared_ptr<AtomSel> MolSystem::select(std::vector<size_t> const &indices) const

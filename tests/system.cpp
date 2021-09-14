@@ -18,7 +18,7 @@ TEST(System, MolSystem) {
     EXPECT_THROW(mol.add_trajectory("no_file.pdb"), MolError);
     EXPECT_NO_THROW(mol.add_trajectory("traj.pdb"));
 
-    auto all_sel = mol.all();
+    auto all_sel = mol.atoms();
     ASSERT_THAT(all_sel, NotNull());
     EXPECT_EQ(all_sel->size(), 2);
 

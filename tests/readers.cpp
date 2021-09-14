@@ -103,18 +103,18 @@ TEST(Readers, MolfileReader) {
     reader.open("traj.pdb");
 
     ASSERT_EQ(reader.skip_timestep(data), MolReader::SUCCESS);
-    ASSERT_EQ(data->num_frames(), 0);
+    ASSERT_EQ(data->trajectory().num_frames(), 0);
 
     ASSERT_EQ(reader.read_timestep(data), MolReader::SUCCESS);
-    ASSERT_EQ(data->num_frames(), 1);
-    EXPECT_THAT(data->timestep(0).coords().reshaped(), ElementsAre(2, -2, 0, 4, -4, 2));
+    ASSERT_EQ(data->trajectory().num_frames(), 1);
+    EXPECT_THAT(data->trajectory().timestep(0).coords().reshaped(), ElementsAre(2, -2, 0, 4, -4, 2));
 
     ASSERT_EQ(reader.skip_timestep(data), MolReader::SUCCESS);
-    ASSERT_EQ(data->num_frames(), 1);
+    ASSERT_EQ(data->trajectory().num_frames(), 1);
 
     ASSERT_EQ(reader.read_timestep(data), MolReader::SUCCESS);
-    ASSERT_EQ(data->num_frames(), 2);
-    EXPECT_THAT(data->timestep(1).coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
+    ASSERT_EQ(data->trajectory().num_frames(), 2);
+    EXPECT_THAT(data->trajectory().timestep(1).coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
 
     ASSERT_EQ(reader.read_timestep(data), MolReader::END);
     ASSERT_EQ(reader.skip_timestep(data), MolReader::END);
@@ -232,12 +232,12 @@ TEST(Readers, MolReader) {
     EXPECT_EQ(pdb_reader->read_trajectory("tiny.pdb", atoms), MolReader::WRONG_ATOMS);
 
     EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms), MolReader::SUCCESS);
-    EXPECT_EQ(atoms->num_frames(), 4);
+    EXPECT_EQ(atoms->trajectory().num_frames(), 4);
     EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, 0, 1, 0), MolReader::SUCCESS);
-    EXPECT_EQ(atoms->num_frames(), 5);
+    EXPECT_EQ(atoms->trajectory().num_frames(), 5);
     EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, 1, 2, 2), MolReader::SUCCESS);
-    EXPECT_EQ(atoms->num_frames(), 6);
+    EXPECT_EQ(atoms->trajectory().num_frames(), 6);
     EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, 2, 0), MolReader::SUCCESS);
     EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, -2, 0, 2), MolReader::SUCCESS);
-    EXPECT_EQ(atoms->num_frames(), 6);
+    EXPECT_EQ(atoms->trajectory().num_frames(), 6);
 }
