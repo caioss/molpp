@@ -11,6 +11,7 @@ namespace mol {
 
 class Bond;
 class AtomSel;
+class ResidueSel;
 
 namespace internal {
 
@@ -64,6 +65,7 @@ protected:
     std::vector<size_t> bonded(std::vector<size_t> const &atom_indices) const;
     std::vector<std::shared_ptr<mol::Bond>> bonds(std::vector<size_t> const &atom_indices);
     std::shared_ptr<AtomSel> atoms(std::vector<size_t> &&atom_indices);
+    std::shared_ptr<ResidueSel> residues(std::vector<size_t> &&atom_indices);
 
     std::vector<size_t>::iterator indices_begin()
     {
@@ -74,6 +76,11 @@ protected:
     {
         return m_indices.end();
     }
+
+    std::shared_ptr<MolData> const cdata() const
+    {
+        return m_data;
+    };
 
     std::shared_ptr<MolData> data()
     {

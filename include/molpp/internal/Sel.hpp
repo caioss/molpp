@@ -7,7 +7,13 @@
 #include <optional>
 #include <concepts>
 
-namespace mol::internal {
+namespace mol {
+
+class Bond;
+class AtomSel;
+class ResidueSel;
+
+namespace internal {
 
 class MolData;
 
@@ -19,7 +25,7 @@ concept is_Sel = requires(Derived t)
 {
     std::derived_from<Derived, Sel<Type, Derived>>;
     {t.atom_indices()} -> std::same_as<std::vector<size_t>>;
-    {t.from_atom_indices({}, nullptr)} -> std::same_as<Derived>;
+    {Derived::from_atom_indices({}, nullptr)} -> std::same_as<Derived>;
 };
 
 template <class Type, class Derived>
@@ -113,11 +119,18 @@ public:
         return atoms(derived.atom_indices());
     }
 
+    std::shared_ptr<ResidueSel> residues()
+    {
+        Derived &derived = static_cast<Derived &>(*this);
+        return residues(derived.atom_indices());
+    }
+
 protected:
     using BaseSel::coords;
     using BaseSel::bonded;
     using BaseSel::bonds;
     using BaseSel::atoms;
+    using BaseSel::residues;
 
 private:
     template <class ItType>
@@ -179,6 +192,7 @@ private:
     };
 };
 
-} // namespace mol::internal
+} // namespace internal
+} // namespace mol
 
 #endif // SEL_HPP

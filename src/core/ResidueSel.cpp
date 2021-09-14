@@ -2,50 +2,40 @@
 #include <molpp/ResidueSel.hpp>
 
 using namespace mol;
+using namespace mol::internal;
 
-ResidueSel ResidueSel::from_atom_indices(std::vector<size_t> &&indices, std::shared_ptr<mol::internal::MolData> data)
+std::vector<size_t> ResidueSel::atom_indices() const
 {
-    std::unordered_set<size_t> residues;
-    for (auto const &index : indices)
-    {
-        residues.insert(data->properties().residue(index));
-    }
-
-    return ResidueSel(std::vector<size_t>(residues.begin(), residues.end()), data);
-}
-
-#if 0
-std::vector<size_t> ResidueSel::from_atom_indices(std::vector<size_t> &&indices)
-{
-    std::unordered_set<size_t> residues;
-    for (auto const &index : indices)
-    {
-        residues.insert(data->properties().residue(index));
-    }
-
-    return {residues.begin(), residues.end()};
-}
-#endif
-
-std::vector<size_t> ResidueSel::atom_indices()
-{
+    ResidueData const &residues = cdata()->residues();
     size_t num_atoms = 0;
-    for (auto &res : indices())
+    for (auto const res : indices())
     {
-        num_atoms += data()->residues().size(res);
+        num_atoms += residues.size(res);
     }
 
     std::vector<size_t> atoms;
     atoms.reserve(num_atoms);
-    for (auto const &res : indices())
+    for (auto const res : indices())
     {
-        for (auto &index : data()->residues().indices(res))
+        for (auto const index : residues.indices(res))
         {
             atoms.push_back(index);
         }
     }
 
     return atoms;
+}
+
+ResidueSel ResidueSel::from_atom_indices(std::vector<size_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> data)
+{
+    AtomData &properties = data->properties();
+    std::unordered_set<size_t> residues;
+    for (auto const index : atom_indices)
+    {
+        residues.insert(properties.residue(index));
+    }
+
+    return ResidueSel(std::vector<size_t>(residues.begin(), residues.end()), data);
 }
 
 size_t ResidueSel::max_size(std::shared_ptr<mol::internal::MolData> data)

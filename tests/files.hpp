@@ -17,11 +17,13 @@ public:
     {
         ASSERT_THAT(reader, NotNull());
         ASSERT_THAT(tiny, NotNull());
+        ASSERT_THAT(big, NotNull());
         ASSERT_THAT(traj, NotNull());
     }
 
     static std::shared_ptr<MolReader> reader;
     static const std::shared_ptr<MolData> tiny;
+    static const std::shared_ptr<MolData> big;
     static const std::shared_ptr<MolData> traj;
 };
 
