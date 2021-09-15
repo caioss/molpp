@@ -24,7 +24,7 @@ BaseAtomAggregate::coords_type BaseAtomAggregate::coords(std::vector<size_t> &&a
     {
         throw mol::MolError("Invalid frame");
     }
-    return m_data->trajectory().timestep(*m_frame).coords()(Eigen::all, std::forward<std::vector<size_t> &&>(atom_indices));
+    return m_data->trajectory().timestep(*m_frame).coords()(Eigen::all, std::forward<std::vector<size_t>>(atom_indices));
 }
 
 std::vector<std::shared_ptr<Bond>> BaseAtomAggregate::bonds(std::vector<size_t> const &atom_indices)
@@ -35,14 +35,14 @@ std::vector<std::shared_ptr<Bond>> BaseAtomAggregate::bonds(std::vector<size_t> 
 std::shared_ptr<AtomSel> BaseAtomAggregate::bonded(std::vector<size_t> const &atom_indices)
 {
     auto &&bonded = m_data->bonds().bonded(atom_indices.begin(), atom_indices.end());
-    auto sel = std::make_shared<AtomSel>(std::forward<std::vector<size_t>&&>(bonded), m_data);
+    auto sel = std::make_shared<AtomSel>(std::forward<std::vector<size_t>>(bonded), m_data);
     sel->set_frame(frame());
     return sel;
 }
 
 std::shared_ptr<AtomSel> BaseAtomAggregate::atoms(std::vector<size_t> &&atom_indices)
 {
-    auto sel = std::make_shared<AtomSel>(std::forward<std::vector<size_t>&&>(atom_indices), m_data);
+    auto sel = std::make_shared<AtomSel>(std::forward<std::vector<size_t>>(atom_indices), m_data);
     sel->set_frame(frame());
     return sel;
 }

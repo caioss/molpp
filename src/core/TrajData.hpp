@@ -22,7 +22,7 @@ public:
 
     void add_timestep(Timestep &&ts)
     {
-        m_timestep.push_back(std::forward<Timestep &&>(ts));
+        m_timestep.push_back(std::forward<Timestep>(ts));
     }
 
 private:

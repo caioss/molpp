@@ -79,14 +79,14 @@ std::vector<std::shared_ptr<mol::Bond>> BaseSel::bonds(std::vector<size_t> const
 
 std::shared_ptr<AtomSel> BaseSel::atoms(std::vector<size_t> &&atom_indices)
 {
-    auto sel = std::make_shared<AtomSel>(AtomSel::from_atom_indices(std::forward<std::vector<size_t>&&>(atom_indices), m_data));
+    auto sel = std::make_shared<AtomSel>(AtomSel::from_atom_indices(std::forward<std::vector<size_t>>(atom_indices), m_data));
     sel->set_frame(m_frame);
     return sel;
 }
 
 std::shared_ptr<ResidueSel> BaseSel::residues(std::vector<size_t> &&atom_indices)
 {
-    auto sel = std::make_shared<ResidueSel>(ResidueSel::from_atom_indices(std::forward<std::vector<size_t>&&>(atom_indices), m_data));
+    auto sel = std::make_shared<ResidueSel>(ResidueSel::from_atom_indices(std::forward<std::vector<size_t>>(atom_indices), m_data));
     sel->set_frame(m_frame);
     return sel;
 }

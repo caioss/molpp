@@ -55,7 +55,7 @@ public:
 
     Sel(std::vector<size_t> &&indices, std::shared_ptr<MolData> data)
     requires is_Sel<Type, Derived>
-    : BaseSel(Derived::max_size(data), std::forward<std::vector<size_t>&&>(indices), data)
+    : BaseSel(Derived::max_size(data), std::forward<std::vector<size_t>>(indices), data)
     {}
 
     iterator begin()
