@@ -1,6 +1,8 @@
 #include "tools/iterators.hpp"
 #include "tools/algorithms.hpp"
 #include "tools/Graph.hpp"
+#include "tools/SpatialSearch.hpp"
+#include <molpp/MolppCore.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <vector>
@@ -45,7 +47,7 @@ TEST(Iterators, Range) {
     EXPECT_FALSE(invalid.is_valid());
 }
 
-TEST(Graph, Graph) {
+TEST(DataStructures, Graph) {
     Graph<int, int> graph;
 
     EXPECT_EQ(graph.size(), 0);
@@ -108,4 +110,19 @@ TEST(Algorithms, BreadthFirstSearch) {
 
     bfs.set_mask({0, 3, 5});
     EXPECT_FALSE(bfs.run(graph, 0, 3));
+}
+
+TEST(DataStructures, SpatialSearch) {
+    Eigen::Matrix3Xf points(3, 10);
+    points << 0.394864, -1.92212, 0.507918, -1.10244, 2.86075, -2.68154, 2.28578, 2.88865, -1.65935, 2.21034, 0.665579, 1.90012, -0.467064, -2.63234, 2.86835, -1.38607, 0.375439, 2.77146, -1.7135, -1.00928, 0.0346084, -1.89917, -2.84799, -2.49805, 2.24333, -2.44597, 0.981083, -2.16332, -2.92808, 0.216672;
+
+    SpatialSearch search(points, 3.5);
+
+    EXPECT_THAT(search.query(3, 3.0), UnorderedElementsAre(2, 3, 5, 8));
+    EXPECT_THAT(search.query(3, 5.0), UnorderedElementsAre(0, 1, 2, 3, 5, 8, 9));
+
+    EXPECT_THAT(search.pairs(3.0), UnorderedElementsAre(Pair(3, 2), Pair(5, 3), Pair(6, 0), Pair(6, 4), Pair(8, 2), Pair(8, 3), Pair(8, 5), Pair(9, 0), Pair(9, 6)));
+    EXPECT_THAT(search.pairs(4.0), UnorderedElementsAre(Pair(1, 0), Pair(2, 0), Pair(2, 1), Pair(3, 2), Pair(4, 0), Pair(5, 1), Pair(5, 2), Pair(5, 3), Pair(6, 0), Pair(6, 4), Pair(7, 0), Pair(7, 6), Pair(8, 1), Pair(8, 2), Pair(8, 3), Pair(8, 5), Pair(9, 0), Pair(9, 2), Pair(9, 6)));
+
+
 }

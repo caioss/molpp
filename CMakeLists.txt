@@ -25,7 +25,7 @@ else()
     FetchContent_Declare(
         Eigen3
         GIT_REPOSITORY https://gitlab.com/libeigen/eigen
-        GIT_TAG 3.4-rc1
+        GIT_TAG 3.4.0
     )
     FetchContent_MakeAvailable(Eigen3)
 endif()
