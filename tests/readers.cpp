@@ -144,21 +144,32 @@ TEST(Readers, MolfileReader) {
         for (auto bond : atom.bonds())
         {
             EXPECT_FALSE(bond->guessed());
-            EXPECT_FALSE(bond->guessed_order());
         }
     }
-    EXPECT_EQ(m2_atoms[0].bond(1)->order(), Bond::Single);
-    EXPECT_EQ(m2_atoms[1].bond(2)->order(), Bond::Aromatic);
-    EXPECT_EQ(m2_atoms[1].bond(3)->order(), Bond::Aromatic);
-    EXPECT_EQ(m2_atoms[2].bond(4)->order(), Bond::Aromatic);
-    EXPECT_EQ(m2_atoms[2].bond(7)->order(), Bond::Single);
-    EXPECT_EQ(m2_atoms[3].bond(5)->order(), Bond::Aromatic);
-    EXPECT_EQ(m2_atoms[3].bond(8)->order(), Bond::Single);
-    EXPECT_EQ(m2_atoms[4].bond(6)->order(), Bond::Aromatic);
-    EXPECT_EQ(m2_atoms[4].bond(9)->order(), Bond::Single);
-    EXPECT_EQ(m2_atoms[5].bond(6)->order(), Bond::Aromatic);
-    EXPECT_EQ(m2_atoms[5].bond(10)->order(), Bond::Single);
-    EXPECT_EQ(m2_atoms[6].bond(11)->order(), Bond::Single);
+    EXPECT_EQ(m2_atoms[0].bond(1)->order(), 1);
+    EXPECT_FALSE(m2_atoms[0].bond(1)->guessed_order());
+    EXPECT_EQ(m2_atoms[1].bond(2)->order(), 0);
+    EXPECT_TRUE(m2_atoms[1].bond(2)->guessed_order());
+    EXPECT_EQ(m2_atoms[1].bond(3)->order(), 0);
+    EXPECT_TRUE(m2_atoms[1].bond(3)->guessed_order());
+    EXPECT_EQ(m2_atoms[2].bond(4)->order(), 0);
+    EXPECT_TRUE(m2_atoms[2].bond(4)->guessed_order());
+    EXPECT_EQ(m2_atoms[2].bond(7)->order(), 1);
+    EXPECT_FALSE(m2_atoms[2].bond(7)->guessed_order());
+    EXPECT_EQ(m2_atoms[3].bond(5)->order(), 0);
+    EXPECT_TRUE(m2_atoms[3].bond(5)->guessed_order());
+    EXPECT_EQ(m2_atoms[3].bond(8)->order(), 1);
+    EXPECT_FALSE(m2_atoms[3].bond(8)->guessed_order());
+    EXPECT_EQ(m2_atoms[4].bond(6)->order(), 0);
+    EXPECT_TRUE(m2_atoms[4].bond(6)->guessed_order());
+    EXPECT_EQ(m2_atoms[4].bond(9)->order(), 1);
+    EXPECT_FALSE(m2_atoms[4].bond(9)->guessed_order());
+    EXPECT_EQ(m2_atoms[5].bond(6)->order(), 0);
+    EXPECT_TRUE(m2_atoms[5].bond(6)->guessed_order());
+    EXPECT_EQ(m2_atoms[5].bond(10)->order(), 1);
+    EXPECT_FALSE(m2_atoms[5].bond(10)->guessed_order());
+    EXPECT_EQ(m2_atoms[6].bond(11)->order(), 1);
+    EXPECT_FALSE(m2_atoms[6].bond(11)->guessed_order());
 
     /*
      * Residue detection

@@ -240,8 +240,18 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
                 bond->set_guessed(false);
                 if (order)
                 {
-                    bond->set_order(order[i]);
-                    bond->set_guessed_order(false);
+                    float const atom_order = order[i];
+                    if (atom_order > 1 && atom_order < 2)
+                    {
+                        bond->set_order(0);
+                        bond->set_aromatic(true);
+                    }
+                    else
+                    {
+                        bond->set_order(atom_order);
+                        bond->set_guessed_order(false);
+                    }
+
                 }
             }
         }

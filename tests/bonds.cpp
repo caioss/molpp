@@ -58,7 +58,8 @@ TEST(Bonds, BondData) {
     EXPECT_EQ(bond, bond_graph.bond(1, 2));
     EXPECT_EQ(bond->atom1(), 1);
     EXPECT_EQ(bond->atom2(), 2);
-    EXPECT_EQ(bond->order(), Bond::Unknown);
+    EXPECT_EQ(bond->order(), 0);
+    EXPECT_FALSE(bond->aromatic());
     EXPECT_TRUE(bond->guessed());
     EXPECT_TRUE(bond->guessed_order());
 }
@@ -66,9 +67,9 @@ TEST(Bonds, BondData) {
 TEST(Bonds, Bond) {
     Bond bond(2, 1);
 
-    EXPECT_EQ(bond.order(), Bond::Unknown);
-    bond.set_order(Bond::Single);
-    EXPECT_EQ(bond.order(), Bond::Single);
+    EXPECT_EQ(bond.order(), 0);
+    bond.set_order(1);
+    EXPECT_EQ(bond.order(), 1);
 
     EXPECT_TRUE(bond.guessed());
     bond.set_guessed(false);
@@ -77,6 +78,10 @@ TEST(Bonds, Bond) {
     EXPECT_TRUE(bond.guessed_order());
     bond.set_guessed_order(false);
     EXPECT_FALSE(bond.guessed_order());
+
+    EXPECT_FALSE(bond.aromatic());
+    bond.set_aromatic(true);
+    EXPECT_TRUE(bond.aromatic());
 
     EXPECT_EQ(bond.atom1(), 1);
     EXPECT_EQ(bond.atom2(), 2);
