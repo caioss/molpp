@@ -54,7 +54,9 @@ public:
     void set_altloc(std::string const &altloc);
 
     std::shared_ptr<Bond> add_bond(size_t const bonded_to);
+    std::shared_ptr<Bond> add_bond(Atom const &bonded_to);
     std::shared_ptr<Bond> bond(size_t const other);
+    std::shared_ptr<Bond> bond(Atom const &other);
 
     std::vector<size_t> atom_indices() const
     {
