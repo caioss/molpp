@@ -40,8 +40,30 @@ public:
     Graph(Graph const &src) = delete;
     Graph &operator=(Graph const &rhs) = delete;
 
-    size_t size() const {
+    size_t size() const
+    {
         return m_adjacency.size();
+    }
+
+    size_t edges_size() const
+    {
+        return m_edges.size();
+    }
+
+    void clear()
+    {
+        m_adjacency.clear();
+        m_edges.clear();
+    }
+
+    void clear_edges()
+    {
+        for (auto &[node, adjacency] : m_adjacency)
+        {
+            adjacency.clear();
+        }
+
+        m_edges.clear();
     }
 
     bool contains(Node const &node) const

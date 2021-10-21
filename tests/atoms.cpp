@@ -152,7 +152,7 @@ TEST(Atoms, MolData) {
     ASSERT_THAT(data, NotNull());
     EXPECT_EQ(data->size(), num_atoms);
     EXPECT_EQ(data->properties().size(), num_atoms);
-    EXPECT_EQ(data->bonds().size(), num_atoms);
+    EXPECT_EQ(data->bonds().size(), 0);
     EXPECT_EQ(data->residues().size(), 0);
     EXPECT_EQ(data->trajectory().num_frames(), 0);
 }

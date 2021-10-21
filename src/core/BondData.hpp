@@ -20,7 +20,7 @@ public:
     bool incomplete() const { return m_incomplete; }
     void set_incomplete(bool const incomplete);
 
-    size_t size() const { return m_graph.size(); }
+    size_t size() const { return m_graph.edges_size(); }
 
     template <class Iterator>
     std::vector<std::shared_ptr<Bond>> bonds(Iterator it, Iterator end);
@@ -30,6 +30,7 @@ public:
     std::shared_ptr<Bond> bond(size_t const atom1, size_t const atom2);
     std::vector<size_t> bonded(size_t const index) const;
     std::shared_ptr<Bond> add_bond(size_t const atom1, size_t const atom2);
+    void clear();
 
 private:
     bool m_incomplete;
