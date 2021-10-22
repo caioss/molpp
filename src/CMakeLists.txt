@@ -1,4 +1,5 @@
 add_subdirectory("core")
 add_subdirectory("readers")
 add_subdirectory("tables")
+add_subdirectory("guessers")
 add_subdirectory("tools")

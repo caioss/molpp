@@ -19,6 +19,8 @@ public:
     void add_trajectory(std::string const& file_name, int begin=0, int end=-1, int step=1);
     std::shared_ptr<AtomSel> atoms() const;
     std::shared_ptr<AtomSel> select(std::vector<size_t> const &indices) const;
+    void reset_bonds();
+    void guess_bonds();
 
 private:
     std::shared_ptr<internal::MolData> m_data;

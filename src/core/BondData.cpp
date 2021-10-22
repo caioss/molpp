@@ -56,3 +56,8 @@ std::shared_ptr<Bond> BondData::add_bond(size_t const atom1, size_t const atom2)
     std::shared_ptr<Bond> data = std::make_shared<Bond>(atom1, atom2);
     return *m_graph.add_edge(atom1, atom2, data);
 }
+
+void BondData::clear()
+{
+    m_graph.clear_edges();
+}

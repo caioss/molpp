@@ -1,8 +1,11 @@
 #include "MolData.hpp"
-#include "readers/MolReader.hpp"
 #include <molpp/MolSystem.hpp>
 #include <molpp/AtomSel.hpp>
+#include <molpp/ResidueSel.hpp>
 #include <molpp/MolError.hpp>
+#include "readers/MolReader.hpp"
+#include "guessers/ResidueBondGuesser.hpp"
+#include "guessers/AtomBondGuesser.hpp"
 #include <filesystem>
 
 using namespace mol;
@@ -54,4 +57,26 @@ std::shared_ptr<AtomSel> MolSystem::atoms() const
 std::shared_ptr<AtomSel> MolSystem::select(std::vector<size_t> const &indices) const
 {
     return std::make_shared<AtomSel>(indices, m_data);
+}
+
+void MolSystem::reset_bonds()
+{
+    m_data->bonds().clear();
+}
+
+void MolSystem::guess_bonds()
+{
+    std::shared_ptr<AtomSel> all_atoms = atoms();
+    std::shared_ptr<ResidueSel> all_residues = all_atoms->residues();
+
+    // Fill tabulated bonds first
+    ResidueBondGuesser res_guesser;
+    res_guesser.apply(all_residues);
+
+    // Bond heuristics are the last step
+    if (m_data->trajectory().num_frames())
+    {
+        AtomBondGuesser atom_guesser;
+        atom_guesser.apply(all_atoms);
+    }
 }

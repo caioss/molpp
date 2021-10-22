@@ -26,3 +26,45 @@ TEST(System, MolSystem) {
     ASSERT_THAT(index_sel, NotNull());
     EXPECT_EQ(index_sel->size(), 1);
 }
+
+TEST(System, Bonds) {
+    MolSystem mol("4lad.pdb");
+    mol.add_trajectory("4lad.pdb");
+    auto atoms = mol.atoms();
+
+    ASSERT_THAT(atoms, NotNull());
+    ASSERT_EQ(atoms->size(), 1844);
+    ASSERT_TRUE(atoms->frame());
+
+    // Pre-condition
+    auto bond = (*atoms)[650].bond(648); // TYR80A-CZ-CE1
+    EXPECT_THAT(bond, IsNull());
+    bond = (*atoms)[1108].bond(1101); // PHE151A-N-GLN150A-C
+    EXPECT_THAT(bond, IsNull());
+    bond = (*atoms)[1798].bond(1794); // OXL703B
+    EXPECT_THAT(bond, NotNull());
+    bond = (*atoms)[1791].bond(1407); // HIS361B-ND1-ZN701B
+    EXPECT_THAT(bond, NotNull());
+
+    // Reset bonds
+    mol.reset_bonds();
+    bond = (*atoms)[650].bond(648); // TYR80A-CZ-CE1
+    EXPECT_THAT(bond, IsNull());
+    bond = (*atoms)[1108].bond(1101); // PHE151A-N-GLN150A-C
+    EXPECT_THAT(bond, IsNull());
+    bond = (*atoms)[1798].bond(1794); // OXL703B
+    EXPECT_THAT(bond, IsNull());
+    bond = (*atoms)[1791].bond(1407); // HIS361B-ND1-ZN701B
+    EXPECT_THAT(bond, IsNull());
+
+    // Guess bonds
+    mol.guess_bonds();
+    bond = (*atoms)[650].bond(648); // TYR80A-CZ-CE1
+    EXPECT_THAT(bond, NotNull());
+    bond = (*atoms)[1108].bond(1101); // PHE151A-N-GLN150A-C
+    EXPECT_THAT(bond, NotNull());
+    bond = (*atoms)[1798].bond(1794); // OXL703B
+    EXPECT_THAT(bond, NotNull());
+    bond = (*atoms)[1791].bond(1407); // HIS361B-ND1-ZN701B
+    EXPECT_THAT(bond, NotNull());
+}

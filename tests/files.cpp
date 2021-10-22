@@ -17,7 +17,7 @@ std::shared_ptr<MolData> load_trajectory(std::shared_ptr<MolReader> reader, std:
  */
 std::shared_ptr<MolReader> PDBFiles::reader = MolReader::from_file_ext(".pdb");
 const std::shared_ptr<MolData> PDBFiles::tiny = load_topology(PDBFiles::reader, "tiny.pdb");
-const std::shared_ptr<MolData> PDBFiles::big = load_topology(PDBFiles::reader, "4lad.pdb");
+const std::shared_ptr<MolData> PDBFiles::big = load_trajectory(PDBFiles::reader, "4lad.pdb", load_topology(PDBFiles::reader, "4lad.pdb"));
 const std::shared_ptr<MolData> PDBFiles::traj = load_trajectory(PDBFiles::reader, "traj.pdb", load_topology(PDBFiles::reader, "traj.pdb"));
 
 /*

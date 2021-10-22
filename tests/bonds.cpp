@@ -1,6 +1,10 @@
+#include <molpp/AtomSel.hpp>
+#include <molpp/ResidueSel.hpp>
+#include "core/MolData.hpp"
+#include "guessers/ResidueBondGuesser.hpp"
+#include "guessers/AtomBondGuesser.hpp"
 #include "files.hpp"
 #include "matchers.hpp"
-#include "core/MolData.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <vector>
@@ -92,4 +96,133 @@ TEST(Bonds, Bond) {
     bond = Bond(1, 2);
     EXPECT_EQ(bond.atom1(), 1);
     EXPECT_EQ(bond.atom2(), 2);
+}
+
+TEST(Bonds, Guessers) {
+    std::shared_ptr<MolReader> reader = MolReader::from_file_ext(".pdb");
+    ASSERT_THAT(reader, NotNull());
+
+    /*
+     * Residue-based guesser
+     */
+    auto res_data = reader->read_topology("4lad.pdb");
+    ASSERT_THAT(res_data, NotNull());
+
+    std::shared_ptr<AtomSel> res_atoms = std::make_shared<AtomSel>(res_data);
+    std::shared_ptr<ResidueSel> res = std::make_shared<ResidueSel>(res_data);
+    ResidueBondGuesser res_guesser;
+    res_guesser.apply(res);
+
+    auto res_bond = (*res_atoms)[650].bond(648); // TYR80A-CZ-CE1
+    ASSERT_THAT(res_bond, NotNull());
+    EXPECT_EQ(res_bond->order(), 2);
+    EXPECT_TRUE(res_bond->aromatic());
+    EXPECT_TRUE(res_bond->guessed());
+    EXPECT_TRUE(res_bond->guessed_order());
+    res_bond = (*res_atoms)[1117].bond(1118); // PHE151A-CE3-CZ
+    ASSERT_THAT(res_bond, NotNull());
+    EXPECT_EQ(res_bond->order(), 1);
+    EXPECT_TRUE(res_bond->aromatic());
+    EXPECT_TRUE(res_bond->guessed());
+    EXPECT_TRUE(res_bond->guessed_order());
+    res_bond = (*res_atoms)[1109].bond(1112); // PHE151A-CA-CB
+    ASSERT_THAT(res_bond, NotNull());
+    EXPECT_EQ(res_bond->order(), 1);
+    EXPECT_FALSE(res_bond->aromatic());
+    EXPECT_TRUE(res_bond->guessed());
+    EXPECT_TRUE(res_bond->guessed_order());
+    res_bond = (*res_atoms)[1493].bond(1494); // GLN371B-CD-OE1
+    ASSERT_THAT(res_bond, NotNull());
+    EXPECT_EQ(res_bond->order(), 2);
+    EXPECT_FALSE(res_bond->aromatic());
+    EXPECT_TRUE(res_bond->guessed());
+    EXPECT_TRUE(res_bond->guessed_order());
+    res_bond = (*res_atoms)[1429].bond(1430); // CYS364B-CB-SG
+    ASSERT_THAT(res_bond, NotNull());
+    EXPECT_EQ(res_bond->order(), 1);
+    EXPECT_FALSE(res_bond->aromatic());
+    EXPECT_TRUE(res_bond->guessed());
+    EXPECT_TRUE(res_bond->guessed_order());
+    res_bond = (*res_atoms)[1108].bond(1101); // PHE151A-N-GLN150A-C
+    ASSERT_THAT(res_bond, IsNull());
+
+    /*
+     * Atom-based guesser
+     */
+    auto atom_data = reader->read_topology("4lad.pdb");
+    ASSERT_THAT(atom_data, NotNull());
+    atom_data->bonds().clear();
+    reader->read_trajectory("4lad.pdb", atom_data);
+
+    std::shared_ptr<AtomSel> atoms_sel = std::make_shared<AtomSel>(atom_data);
+    AtomBondGuesser atom_guesser;
+    atom_guesser.apply(atoms_sel);
+
+    // Peptide bond
+    auto atom_bond = (*atoms_sel)[705].bond(711); // ILE90A-C-SER91A-N
+    ASSERT_THAT(atom_bond, NotNull());
+    EXPECT_EQ(atom_bond->order(), 1);
+    EXPECT_FALSE(atom_bond->aromatic());
+    EXPECT_TRUE(atom_bond->guessed());
+    EXPECT_TRUE(atom_bond->guessed_order());
+
+    // Metals
+    atom_bond = (*atoms_sel)[1791].bond(1407); // HIS361B-ND1-ZN701B
+    ASSERT_THAT(atom_bond, NotNull());
+    EXPECT_EQ(atom_bond->order(), 1);
+    EXPECT_FALSE(atom_bond->aromatic());
+    EXPECT_TRUE(atom_bond->guessed());
+    EXPECT_TRUE(atom_bond->guessed_order());
+
+    atom_bond = (*atoms_sel)[1791].bond(1430); // CYS364B-SG-ZN701B
+    ASSERT_THAT(atom_bond, NotNull());
+    EXPECT_EQ(atom_bond->order(), 1);
+    EXPECT_FALSE(atom_bond->aromatic());
+    EXPECT_TRUE(atom_bond->guessed());
+    EXPECT_TRUE(atom_bond->guessed_order());
+
+    // Extra molecules
+    atom_bond = (*atoms_sel)[1798].bond(1794); // OXL703B
+    ASSERT_THAT(atom_bond, NotNull());
+    EXPECT_EQ(atom_bond->order(), 1);
+    EXPECT_FALSE(atom_bond->aromatic());
+    EXPECT_TRUE(atom_bond->guessed());
+    EXPECT_TRUE(atom_bond->guessed_order());
+    atom_bond = (*atoms_sel)[1796].bond(1794); // OXL703B
+    ASSERT_THAT(atom_bond, NotNull());
+    EXPECT_EQ(atom_bond->order(), 1);
+    EXPECT_FALSE(atom_bond->aromatic());
+    EXPECT_TRUE(atom_bond->guessed());
+    EXPECT_TRUE(atom_bond->guessed_order());
+    atom_bond = (*atoms_sel)[1793].bond(1794); // OXL703B
+    ASSERT_THAT(atom_bond, NotNull());
+    EXPECT_EQ(atom_bond->order(), 1);
+    EXPECT_FALSE(atom_bond->aromatic());
+    EXPECT_TRUE(atom_bond->guessed());
+    EXPECT_TRUE(atom_bond->guessed_order());
+    atom_bond = (*atoms_sel)[1793].bond(1797); // OXL703B
+    ASSERT_THAT(atom_bond, NotNull());
+    EXPECT_EQ(atom_bond->order(), 1);
+    EXPECT_FALSE(atom_bond->aromatic());
+    EXPECT_TRUE(atom_bond->guessed());
+    EXPECT_TRUE(atom_bond->guessed_order());
+    atom_bond = (*atoms_sel)[1793].bond(1795); // OXL703B
+    ASSERT_THAT(atom_bond, NotNull());
+    EXPECT_EQ(atom_bond->order(), 1);
+    EXPECT_FALSE(atom_bond->aromatic());
+    EXPECT_TRUE(atom_bond->guessed());
+    EXPECT_TRUE(atom_bond->guessed_order());
+
+    // Water
+    atom_bond = (*atoms_sel)[978].bond(1830); // GLY135A-N-HOH226
+    EXPECT_THAT(atom_bond, IsNull());
+
+    // Compare against tabulated residues and PDB's CONECT records
+    for (auto ref_bond : res_atoms->bonds())
+    {
+        size_t const atom1 = ref_bond->atom1();
+        size_t const atom2 = ref_bond->atom2();
+        auto bonded = (*atoms_sel)[atom1].bond(atom2);
+        ASSERT_THAT(bonded, NotNull()) << atom1 << "-" << atom2;
+    }
 }
