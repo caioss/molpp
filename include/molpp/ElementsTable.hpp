@@ -52,12 +52,24 @@ public:
         return m_name[atomic];
     }
 
+    float max_VDW_radius() const
+    {
+        return m_max_vdw;
+    }
+
+    float max_covalent_radius() const
+    {
+        return m_max_covalent;
+    }
+
     Element operator()(int const atomic) const
     {
         return {m_atomic[atomic], m_mass[atomic], m_covalent[atomic], m_vdw[atomic], m_symbol[atomic], m_name[atomic]};
     }
 
 private:
+    float m_max_vdw;
+    float m_max_covalent;
     std::vector<int> m_atomic;
     std::vector<float> m_mass;
     std::vector<float> m_covalent;

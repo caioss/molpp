@@ -20,10 +20,12 @@ TEST(Tables, Elements) {
     EXPECT_FLOAT_EQ(ELEMENTS_TABLE.covalent_radius(0), 0);
     EXPECT_FLOAT_EQ(ELEMENTS_TABLE.covalent_radius(6), 0.77);
     EXPECT_FLOAT_EQ(ELEMENTS_TABLE.covalent_radius(118), 0);
+    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.max_covalent_radius(), 2.25);
 
     EXPECT_FLOAT_EQ(ELEMENTS_TABLE.VDW_radius(0), 0);
     EXPECT_FLOAT_EQ(ELEMENTS_TABLE.VDW_radius(6), 1.7);
     EXPECT_FLOAT_EQ(ELEMENTS_TABLE.VDW_radius(118), 0);
+    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.max_VDW_radius(), 3.0);
 
     EXPECT_EQ(ELEMENTS_TABLE.symbol(0), "Xx");
     EXPECT_EQ(ELEMENTS_TABLE.symbol(6), "C");

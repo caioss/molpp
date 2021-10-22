@@ -1,8 +1,11 @@
 #include <molpp/ElementsTable.hpp>
+#include <algorithm>
 
 using namespace mol;
 
 ElementsTable::ElementsTable(std::initializer_list<Element> data)
+: m_max_vdw{0},
+  m_max_covalent{0}
 {
     m_atomic.reserve(data.size());
     m_mass.reserve(data.size());
@@ -19,6 +22,8 @@ ElementsTable::ElementsTable(std::initializer_list<Element> data)
         m_vdw.push_back(element.VDW_radius);
         m_symbol.push_back(element.symbol);
         m_name.push_back(element.name);
+        m_max_covalent = std::max(m_max_covalent, element.covalent_radius);
+        m_max_vdw = std::max(m_max_vdw, element.VDW_radius);
     }
 }
 
