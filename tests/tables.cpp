@@ -1,8 +1,10 @@
 #include <molpp/ElementsTable.hpp>
+#include "tables/ResiduesTable.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
 using namespace mol;
+using namespace mol::internal;
 using namespace testing;
 
 TEST(Tables, Elements) {
@@ -38,4 +40,24 @@ TEST(Tables, Elements) {
     EXPECT_FLOAT_EQ(carbon.VDW_radius, 1.7);
     EXPECT_EQ(carbon.symbol, "C");
     EXPECT_EQ(carbon.name, "Carbon");
+
+}
+
+TEST(Tables, Residues) {
+    EXPECT_FALSE(RESIDUES_TABLE.contains("UNX"));
+    EXPECT_TRUE(RESIDUES_TABLE.contains("PHE"));
+    EXPECT_THAT(RESIDUES_TABLE.max_atoms(), Gt(0));
+
+    EXPECT_EQ(RESIDUES_TABLE["GLY"].atoms.size(), 10);
+    auto const &glycine = RESIDUES_TABLE["GLY"];
+    EXPECT_EQ(glycine.atoms.size(), 10);
+    EXPECT_EQ(glycine.atom_index("H2"), 6);
+    EXPECT_EQ(glycine.atom_index("UNK"), -1);
+    EXPECT_EQ(glycine.bonds.size(), 9);
+
+    auto const &bond = glycine.bonds[0];
+    EXPECT_FALSE(bond.aromatic);
+    EXPECT_EQ(bond.order, 1);
+    EXPECT_EQ(bond.atom1, 0);
+    EXPECT_EQ(bond.atom2, 1);
 }
