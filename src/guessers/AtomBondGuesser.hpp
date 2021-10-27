@@ -12,7 +12,7 @@ namespace internal {
 class AtomBondGuesser
 {
 public:
-    void apply(std::shared_ptr<AtomSel> atoms) const;
+    void apply(AtomSel &atoms) const;
 
 private:
 };

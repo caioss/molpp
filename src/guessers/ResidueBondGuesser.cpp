@@ -7,11 +7,11 @@
 
 using namespace mol::internal;
 
-void ResidueBondGuesser::apply(std::shared_ptr<ResidueSel> residues) const
+void ResidueBondGuesser::apply(ResidueSel &residues) const
 {
     std::vector<int> bonds_map(RESIDUES_TABLE.max_atoms());
 
-    for (Residue res : *residues)
+    for (Residue res : residues)
     {
         if (!RESIDUES_TABLE.contains(res.resname()))
         {

@@ -13,16 +13,16 @@ T pow2(T value)
     return value * value;
 }
 
-void AtomBondGuesser::apply(std::shared_ptr<AtomSel> atoms) const
+void AtomBondGuesser::apply(AtomSel &atoms) const
 {
-    auto const coords = atoms->coords();
+    auto const coords = atoms.coords();
     float const max_bond_length = 3.0;
     SpatialSearch<AtomSel::coords_type> search(coords, max_bond_length + 0.1);
 
     for (auto &[atom1, atom2, distance_sq] : search.pairs(max_bond_length))
     {
-        int const atomic1 = (*atoms)[atom1].atomic();
-        int const atomic2 = (*atoms)[atom2].atomic();
+        int const atomic1 = atoms[atom1].atomic();
+        int const atomic2 = atoms[atom2].atomic();
 
         if (atomic1 == 0 || atomic2 == 0)
         {
@@ -37,11 +37,11 @@ void AtomBondGuesser::apply(std::shared_ptr<AtomSel> atoms) const
         float const coff_sq = pow2(radius1 + radius2 + 0.4);
         if (distance_sq > 0.16 && distance_sq < coff_sq)
         {
-            auto bond = (*atoms)[atom1].bond((*atoms)[atom2]);
+            auto bond = atoms[atom1].bond(atoms[atom2]);
             if (!bond)
             {
                 // Add a guessed bond
-                bond = (*atoms)[atom1].add_bond((*atoms)[atom2]);
+                bond = atoms[atom1].add_bond(atoms[atom2]);
                 bond->set_guessed(true);
                 bond->set_order(1);
                 bond->set_guessed_order(true);

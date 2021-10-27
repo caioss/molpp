@@ -71,12 +71,12 @@ void MolSystem::guess_bonds()
 
     // Fill tabulated bonds first
     ResidueBondGuesser res_guesser;
-    res_guesser.apply(all_residues);
+    res_guesser.apply(*all_residues);
 
     // Bond heuristics are the last step
     if (m_data->trajectory().num_frames())
     {
         AtomBondGuesser atom_guesser;
-        atom_guesser.apply(all_atoms);
+        atom_guesser.apply(*all_atoms);
     }
 }
