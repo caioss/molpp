@@ -12,13 +12,13 @@ class ResidueSel : public internal::Sel<Residue, ResidueSel>
 public:
     ResidueSel() = delete;
     using internal::Sel<Residue, ResidueSel>::Sel;
-
     std::vector<size_t> atom_indices() const;
-    static ResidueSel from_atom_indices(std::vector<size_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> data);
 
 protected:
-    static size_t max_size(std::shared_ptr<mol::internal::MolData> data);
+    static std::vector<size_t> from_atom_indices(std::vector<size_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> const data);
+    static size_t max_size(std::shared_ptr<mol::internal::MolData> const data);
 
+    friend class internal::BaseSel;
     friend class internal::Sel<Residue, ResidueSel>;
 };
 

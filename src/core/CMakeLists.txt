@@ -9,4 +9,5 @@ target_sources(molpp PRIVATE
     ResidueSel.cpp
     BaseSel.cpp
     BaseAtomAggregate.cpp
+    SelIndex.cpp
 )

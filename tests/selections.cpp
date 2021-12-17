@@ -13,6 +13,52 @@ using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
+TEST(Selections, SelIndex) {
+    PDBFiles pdb;
+    pdb.check();
+
+    /*
+     * Construction
+     */
+    SelIndex all(5);
+    EXPECT_EQ(all.size(), 5);
+    EXPECT_THAT(all.indices(), ElementsAre(0, 1, 2, 3, 4));
+    EXPECT_THAT(all.selected(), ElementsAre(true, true, true, true, true));
+    for (size_t i = 0; i < 5; ++i)
+    {
+        EXPECT_TRUE(all.contains(i)) << "index " << i;
+    }
+    EXPECT_FALSE(all.contains(6));
+    EXPECT_TRUE(all.indices_begin() != all.indices_end());
+    EXPECT_EQ(all.indices_end() - all.indices_begin(), 5);
+
+    // Constructors accepting indexes
+    std::vector<size_t> indices{4, 1, 1, 3};
+    SelIndex some(indices, 5);
+    SelIndex rvalue({4, 1, 1, 3}, 5);
+    EXPECT_THROW(SelIndex({4, 1, 1, 3}, 1), MolError);
+    EXPECT_EQ(some.size(), 3);
+    EXPECT_EQ(rvalue.size(), 3);
+    EXPECT_THAT(some.indices(), ElementsAre(1, 3, 4));
+    EXPECT_THAT(rvalue.indices(), ElementsAre(1, 3, 4));
+    EXPECT_THAT(some.selected(), ElementsAre(false, true, false, true, true));
+    EXPECT_THAT(rvalue.selected(), ElementsAre(false, true, false, true, true));
+    for (size_t i : {1, 3, 4})
+    {
+        EXPECT_TRUE(some.contains(i)) << "Index " << i;
+        EXPECT_TRUE(rvalue.contains(i)) << "Index " << i;
+    }
+    for (size_t i : {0, 2, 5})
+    {
+        EXPECT_FALSE(some.contains(i)) << "Index " << i;
+        EXPECT_FALSE(rvalue.contains(i)) << "Index " << i;
+    }
+    EXPECT_TRUE(some.indices_begin() != some.indices_end());
+    EXPECT_EQ(some.indices_end() - some.indices_begin(), 3);
+    EXPECT_TRUE(rvalue.indices_begin() != rvalue.indices_end());
+    EXPECT_EQ(rvalue.indices_end() - rvalue.indices_begin(), 3);
+}
+
 TEST(Selections, BaseSel) {
     PDBFiles pdb;
     pdb.check();
@@ -20,7 +66,7 @@ TEST(Selections, BaseSel) {
     /*
      * Construction
      */
-    BaseSel all_sel(pdb.tiny->size(), pdb.tiny);
+    BaseSel all_sel(SelIndex(pdb.tiny->size()), pdb.tiny);
     EXPECT_EQ(all_sel.size(), pdb.tiny->size());
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
@@ -33,8 +79,8 @@ TEST(Selections, BaseSel) {
 
     // Constructors accepting indexes
     std::vector<size_t> indices{4, 1, 1, 3};
-    BaseSel some_sel(pdb.tiny->size(), indices, pdb.tiny);
-    BaseSel rvalue_sel(pdb.tiny->size(), {4, 1, 1, 3}, pdb.tiny);
+    BaseSel some_sel(SelIndex(indices, pdb.tiny->size()), pdb.tiny);
+    BaseSel rvalue_sel(SelIndex({4, 1, 1, 3}, pdb.tiny->size()), pdb.tiny);
     EXPECT_EQ(some_sel.size(), indices.size() - 1);
     EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
@@ -57,7 +103,7 @@ TEST(Selections, BaseSel) {
     /*
      * Trajectory
      */
-    BaseSel traj_sel(pdb.traj->size(), pdb.traj);
+    BaseSel traj_sel(SelIndex(pdb.traj->size()), pdb.traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
     traj_sel.set_frame(3);
@@ -232,7 +278,6 @@ TEST(Selections, AtomSel) {
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     EXPECT_THAT(all_sel.atom_indices(), ElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_THAT(AtomSel::from_atom_indices({0, 4, 0, 1}, pdb.tiny).indices(), ElementsAre(0, 1, 4));
     EXPECT_THAT(all_sel.selected(), ElementsAre(true, true, true, true, true, true));
     for (size_t i = 0; i < 6; ++i)
     {
@@ -388,7 +433,6 @@ TEST(Selections, ResidueSel) {
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4));
     EXPECT_THAT(all_sel.atom_indices(), UnorderedElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_THAT(AtomSel::from_atom_indices({0, 4, 0, 1}, pdb.tiny).indices(), ElementsAre(0, 1, 4));
     EXPECT_THAT(all_sel.selected(), ElementsAre(true, true, true, true, true));
     for (size_t i = 0; i < 5; ++i)
     {

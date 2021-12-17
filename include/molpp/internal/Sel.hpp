@@ -25,7 +25,8 @@ concept is_Sel = requires(Derived t)
 {
     std::derived_from<Derived, Sel<Type, Derived>>;
     {t.atom_indices()} -> std::same_as<std::vector<size_t>>;
-    {Derived::from_atom_indices({}, nullptr)} -> std::same_as<Derived>;
+    {t.from_atom_indices({}, nullptr)} -> std::same_as<std::vector<size_t>>;
+    {t.max_size(nullptr)} -> std::same_as<size_t>;
 };
 
 template <class Type, class Derived>
@@ -45,17 +46,12 @@ public:
 
     Sel(std::shared_ptr<MolData> data)
     requires is_Sel<Type, Derived>
-    : BaseSel(Derived::max_size(data), data)
+    : BaseSel(SelIndex(Derived::max_size(data)), data)
     {}
 
     Sel(std::vector<size_t> const &indices, std::shared_ptr<MolData> data)
     requires is_Sel<Type, Derived>
-    : BaseSel(Derived::max_size(data), indices, data)
-    {}
-
-    Sel(std::vector<size_t> &&indices, std::shared_ptr<MolData> data)
-    requires is_Sel<Type, Derived>
-    : BaseSel(Derived::max_size(data), std::forward<std::vector<size_t>>(indices), data)
+    : BaseSel(SelIndex(indices, Derived::max_size(data)), data)
     {}
 
     iterator begin()
@@ -102,7 +98,7 @@ public:
     std::shared_ptr<Derived> bonded()
     {
         Derived &derived = static_cast<Derived &>(*this);
-        auto sel = std::make_shared<Derived>(Derived::from_atom_indices(bonded(derived.atom_indices()), data()));
+        auto sel = std::make_shared<Derived>(Derived::from_atom_indices(bonded(derived.atom_indices()), cdata()), cdata());
         sel->set_frame(frame());
         return sel;
     }
@@ -131,13 +127,14 @@ protected:
     using BaseSel::bonds;
     using BaseSel::atoms;
     using BaseSel::residues;
+    using BaseSel::cdata;
 
 private:
     template <class ItType>
     class Iterator
     {
     private:
-        using indices_iterator = std::vector<size_t>::iterator;
+        using indices_iterator = SelIndex::iterator;
 
     public:
         using iterator_category = indices_iterator::iterator_category;
