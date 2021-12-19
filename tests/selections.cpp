@@ -1,6 +1,7 @@
 #include "files.hpp"
 #include "matchers.hpp"
 #include <molpp/Atom.hpp>
+#include <molpp/Residue.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/ResidueSel.hpp>
 #include <molpp/MolError.hpp>
@@ -156,6 +157,25 @@ TEST(Selections, Sel) {
     }
 
     /*
+     * Conversions
+     */
+    Sel<Atom, AtomSel> from_atom(all_sel[0]);
+    EXPECT_EQ(from_atom.frame(), all_sel.frame());
+    EXPECT_THAT(from_atom.indices(), ElementsAre(0));
+
+    Sel<Atom, AtomSel> from_residue(all_sel[0].residue());
+    EXPECT_EQ(from_residue.frame(), all_sel.frame());
+    EXPECT_THAT(from_residue.indices(), ElementsAre(0));
+
+    Sel<Atom, AtomSel> from_atomsel{AtomSel(all_sel[0])};
+    EXPECT_EQ(from_atomsel.frame(), all_sel.frame());
+    EXPECT_THAT(from_atomsel.indices(), ElementsAre(0));
+
+    Sel<Atom, AtomSel> from_residuesel{ResidueSel(all_sel[0])};
+    EXPECT_EQ(from_residuesel.frame(), all_sel.frame());
+    EXPECT_THAT(from_residuesel.indices(), ElementsAre(0));
+
+    /*
      * Atoms getters
      */
     EXPECT_EQ(some_sel[0].index(), 1);
@@ -237,10 +257,10 @@ TEST(Selections, Sel) {
     /*
      * Bonds
      */
-    EXPECT_THAT(all_sel.bonded()->indices(), ElementsAre(0, 2, 3));
-    EXPECT_EQ(all_sel.bonded()->frame(), all_sel.frame());
-    EXPECT_THAT(some_sel.bonded()->indices(), ElementsAre(0, 3));
-    EXPECT_EQ(some_sel.bonded()->frame(), some_sel.frame());
+    EXPECT_THAT(all_sel.bonded().indices(), ElementsAre(0, 2, 3));
+    EXPECT_EQ(all_sel.bonded().frame(), all_sel.frame());
+    EXPECT_THAT(some_sel.bonded().indices(), ElementsAre(0, 3));
+    EXPECT_EQ(some_sel.bonded().frame(), some_sel.frame());
 
     auto bonds = some_sel.bonds();
     EXPECT_EQ(bonds.size(), 1);
@@ -256,14 +276,6 @@ TEST(Selections, Sel) {
         bond_indices.push_back(b->atom2());
     }
     EXPECT_THAT(bond_indices, UnorderedElementsAre(0, 2, 0, 3));
-
-    /*
-     * Conversions
-     */
-    EXPECT_THAT(all_sel.atoms()->indices(), ElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_EQ(all_sel.atoms()->frame(), all_sel.frame());
-    EXPECT_THAT(all_sel.residues()->indices(), ElementsAre(0, 1, 2, 3, 4));
-    EXPECT_EQ(all_sel.residues()->frame(), all_sel.frame());
 }
 
 TEST(Selections, AtomSel) {
@@ -309,6 +321,25 @@ TEST(Selections, AtomSel) {
         EXPECT_FALSE(some_sel.contains(i)) << "Index " << i;
         EXPECT_FALSE(rvalue_sel.contains(i)) << "Index " << i;
     }
+
+    /*
+     * Conversions
+     */
+    AtomSel from_atom(all_sel[0]);
+    EXPECT_EQ(from_atom.frame(), all_sel.frame());
+    EXPECT_THAT(from_atom.indices(), ElementsAre(0));
+
+    AtomSel from_residue(all_sel[0].residue());
+    EXPECT_EQ(from_residue.frame(), all_sel.frame());
+    EXPECT_THAT(from_residue.indices(), ElementsAre(0));
+
+    AtomSel from_atomsel(all_sel);
+    EXPECT_EQ(from_atomsel.frame(), all_sel.frame());
+    EXPECT_THAT(from_atomsel.indices(), ContainerEq(all_sel.indices()));
+
+    AtomSel from_residuesel{ResidueSel(all_sel[0])};
+    EXPECT_EQ(from_residuesel.frame(), all_sel.frame());
+    EXPECT_THAT(from_residuesel.indices(), ElementsAre(0));
 
     /*
      * Atoms getters
@@ -392,10 +423,10 @@ TEST(Selections, AtomSel) {
     /*
      * Bonds
      */
-    EXPECT_THAT(all_sel.bonded()->indices(), ElementsAre(0, 2, 3));
-    EXPECT_EQ(all_sel.bonded()->frame(), all_sel.frame());
-    EXPECT_THAT(some_sel.bonded()->indices(), ElementsAre(0, 3));
-    EXPECT_EQ(some_sel.bonded()->frame(), some_sel.frame());
+    EXPECT_THAT(all_sel.bonded().indices(), ElementsAre(0, 2, 3));
+    EXPECT_EQ(all_sel.bonded().frame(), all_sel.frame());
+    EXPECT_THAT(some_sel.bonded().indices(), ElementsAre(0, 3));
+    EXPECT_EQ(some_sel.bonded().frame(), some_sel.frame());
 
     auto bonds = some_sel.bonds();
     EXPECT_EQ(bonds.size(), 1);
@@ -411,14 +442,6 @@ TEST(Selections, AtomSel) {
         bond_indices.push_back(b->atom2());
     }
     EXPECT_THAT(bond_indices, UnorderedElementsAre(0, 2, 0, 3));
-
-    /*
-     * Conversions
-     */
-    EXPECT_THAT(all_sel.atoms()->indices(), ElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_EQ(all_sel.atoms()->frame(), all_sel.frame());
-    EXPECT_THAT(all_sel.residues()->indices(), ElementsAre(0, 1, 2, 3, 4));
-    EXPECT_EQ(all_sel.residues()->frame(), all_sel.frame());
 }
 
 TEST(Selections, ResidueSel) {
@@ -464,6 +487,25 @@ TEST(Selections, ResidueSel) {
         EXPECT_FALSE(some_sel.contains(i)) << "Index " << i;
         EXPECT_FALSE(rvalue_sel.contains(i)) << "Index " << i;
     }
+
+    /*
+     * Conversions
+     */
+    ResidueSel from_atomsel{AtomSel(all_sel)};
+    EXPECT_EQ(from_atomsel.frame(), all_sel.frame());
+    EXPECT_THAT(from_atomsel.indices(), ElementsAre(0, 1, 2, 3, 4));
+
+    ResidueSel from_residuesel(all_sel);
+    EXPECT_EQ(from_residuesel.frame(), all_sel.frame());
+    EXPECT_THAT(from_residuesel.indices(), ContainerEq(all_sel.indices()));
+
+    ResidueSel from_atom(from_atomsel[0]);
+    EXPECT_EQ(from_atom.frame(), all_sel.frame());
+    EXPECT_THAT(from_atom.indices(), ElementsAre(0));
+
+    ResidueSel from_residue(all_sel[0]);
+    EXPECT_EQ(from_residue.frame(), all_sel.frame());
+    EXPECT_THAT(from_residue.indices(), ElementsAre(0));
 
     /*
      * Indexing
@@ -547,10 +589,10 @@ TEST(Selections, ResidueSel) {
     /*
      * Bonds
      */
-    EXPECT_THAT(all_sel.bonded()->indices(), ElementsAre(0, 2, 3));
-    EXPECT_EQ(all_sel.bonded()->frame(), all_sel.frame());
-    EXPECT_THAT(some_sel.bonded()->indices(), ElementsAre(0, 3));
-    EXPECT_EQ(some_sel.bonded()->frame(), some_sel.frame());
+    EXPECT_THAT(all_sel.bonded().indices(), ElementsAre(0, 2, 3));
+    EXPECT_EQ(all_sel.bonded().frame(), all_sel.frame());
+    EXPECT_THAT(some_sel.bonded().indices(), ElementsAre(0, 3));
+    EXPECT_EQ(some_sel.bonded().frame(), some_sel.frame());
 
     auto bonds = some_sel.bonds();
     EXPECT_EQ(bonds.size(), 1);
@@ -566,12 +608,4 @@ TEST(Selections, ResidueSel) {
         bond_indices.push_back(b->atom2());
     }
     EXPECT_THAT(bond_indices, UnorderedElementsAre(0, 2, 0, 3));
-
-    /*
-     * Conversions
-     */
-    EXPECT_THAT(all_sel.atoms()->indices(), ElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_EQ(all_sel.atoms()->frame(), all_sel.frame());
-    EXPECT_THAT(all_sel.residues()->indices(), ElementsAre(0, 1, 2, 3, 4));
-    EXPECT_EQ(all_sel.residues()->frame(), all_sel.frame());
 }

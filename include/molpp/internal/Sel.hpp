@@ -1,8 +1,9 @@
 #ifndef SEL_HPP
 #define SEL_HPP
 
-#include <molpp/internal/BaseSel.hpp>
 #include <molpp/MolError.hpp>
+#include <molpp/internal/BaseSel.hpp>
+#include <molpp/internal/AtomAggregate.hpp>
 #include <memory>
 #include <optional>
 #include <concepts>
@@ -10,8 +11,6 @@
 namespace mol {
 
 class Bond;
-class AtomSel;
-class ResidueSel;
 
 namespace internal {
 
@@ -20,13 +19,19 @@ class MolData;
 template <class Type, class Derived>
 class Sel;
 
-template <class Type, class Derived>
-concept is_Sel = requires(Derived t)
+template <class Derived>
+concept SelDerived = requires(Derived t)
 {
-    std::derived_from<Derived, Sel<Type, Derived>>;
+    std::derived_from<Derived, Sel<typename Derived::value_type, Derived>>;
     {t.atom_indices()} -> std::same_as<std::vector<size_t>>;
     {t.from_atom_indices({}, nullptr)} -> std::same_as<std::vector<size_t>>;
     {t.max_size(nullptr)} -> std::same_as<size_t>;
+};
+
+template <class Type>
+concept SelConvertible = requires(Type t)
+{
+    SelDerived<Type> || AtomAggregateDerived<Type>;
 };
 
 template <class Type, class Derived>
@@ -44,13 +49,21 @@ public:
 
     Sel() = delete;
 
+    template <SelConvertible Other>
+    Sel(Other &&other)
+    requires SelDerived<Derived>
+    : Sel(Derived::from_atom_indices(other.atom_indices(), other.cdata()), other.data())
+    {
+        set_frame(other.frame());
+    }
+
     Sel(std::shared_ptr<MolData> data)
-    requires is_Sel<Type, Derived>
+    requires SelDerived<Derived>
     : BaseSel(SelIndex(Derived::max_size(data)), data)
     {}
 
     Sel(std::vector<size_t> const &indices, std::shared_ptr<MolData> data)
-    requires is_Sel<Type, Derived>
+    requires SelDerived<Derived>
     : BaseSel(SelIndex(indices, Derived::max_size(data)), data)
     {}
 
@@ -95,11 +108,11 @@ public:
         return coords(derived.atom_indices());
     }
 
-    std::shared_ptr<Derived> bonded()
+    Derived bonded()
     {
         Derived &derived = static_cast<Derived &>(*this);
-        auto sel = std::make_shared<Derived>(Derived::from_atom_indices(bonded(derived.atom_indices()), cdata()), cdata());
-        sel->set_frame(frame());
+        Derived sel(Derived::from_atom_indices(bonded(derived.atom_indices()), cdata()), data());
+        sel.set_frame(frame());
         return sel;
     }
 
@@ -109,24 +122,11 @@ public:
         return bonds(derived.atom_indices());
     }
 
-    std::shared_ptr<AtomSel> atoms()
-    {
-        Derived &derived = static_cast<Derived &>(*this);
-        return atoms(derived.atom_indices());
-    }
-
-    std::shared_ptr<ResidueSel> residues()
-    {
-        Derived &derived = static_cast<Derived &>(*this);
-        return residues(derived.atom_indices());
-    }
-
 protected:
     using BaseSel::coords;
     using BaseSel::bonded;
     using BaseSel::bonds;
-    using BaseSel::atoms;
-    using BaseSel::residues;
+    using BaseSel::data;
     using BaseSel::cdata;
 
 private:

@@ -49,14 +49,14 @@ void MolSystem::add_trajectory(std::string const &file_name, int begin, int end,
     }
 }
 
-std::shared_ptr<AtomSel> MolSystem::atoms() const
+AtomSel MolSystem::atoms() const
 {
-    return std::make_shared<AtomSel>(m_data);
+    return AtomSel(m_data);
 }
 
-std::shared_ptr<AtomSel> MolSystem::select(std::vector<size_t> const &indices) const
+AtomSel MolSystem::select(std::vector<size_t> const &indices) const
 {
-    return std::make_shared<AtomSel>(indices, m_data);
+    return AtomSel(indices, m_data);
 }
 
 void MolSystem::reset_bonds()
@@ -66,17 +66,17 @@ void MolSystem::reset_bonds()
 
 void MolSystem::guess_bonds()
 {
-    std::shared_ptr<AtomSel> all_atoms = atoms();
-    std::shared_ptr<ResidueSel> all_residues = all_atoms->residues();
+    AtomSel all_atoms = atoms();
+    ResidueSel all_residues(all_atoms);
 
     // Fill tabulated bonds first
     ResidueBondGuesser res_guesser;
-    res_guesser.apply(*all_residues);
+    res_guesser.apply(all_residues);
 
     // Bond heuristics are the last step
     if (m_data->trajectory().num_frames())
     {
         AtomBondGuesser atom_guesser;
-        atom_guesser.apply(*all_atoms);
+        atom_guesser.apply(all_atoms);
     }
 }

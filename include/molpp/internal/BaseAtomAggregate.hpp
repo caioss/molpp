@@ -9,7 +9,6 @@
 namespace mol {
 
 class Bond;
-class AtomSel;
 
 namespace internal {
 
@@ -21,7 +20,11 @@ public:
     using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<size_t>>;
 
     BaseAtomAggregate() = delete;
-    BaseAtomAggregate(size_t const index, std::optional<size_t> const frame,std::shared_ptr<internal::MolData> data);
+    BaseAtomAggregate(size_t const index, std::optional<size_t> const frame, std::shared_ptr<internal::MolData> data)
+    : m_index { index },
+      m_frame(frame),
+      m_data(data)
+    {}
 
     bool operator==(BaseAtomAggregate const &other) const;
 
@@ -39,8 +42,6 @@ public:
 protected:
     coords_type coords(std::vector<size_t> &&atom_indices);
     std::vector<std::shared_ptr<Bond>> bonds(std::vector<size_t> const &atom_indices);
-    std::shared_ptr<AtomSel> bonded(std::vector<size_t> const &atom_indices);
-    std::shared_ptr<AtomSel> atoms(std::vector<size_t> &&atom_indices);
 
     std::shared_ptr<internal::MolData> data()
     {

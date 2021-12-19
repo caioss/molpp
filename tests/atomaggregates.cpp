@@ -52,14 +52,4 @@ TEST(AtomAggregates, AtomAggregate) {
     EXPECT_THAT(aggr.coords().reshaped(), ElementsAre(4, 10, 16));
 
     EXPECT_THROW(Aggregate(1, std::nullopt, data).coords(), MolError);
-
-    /*
-     * Conversions
-     */
-    auto sel = aggr.atoms();
-    ASSERT_THAT(sel, NotNull());
-    ASSERT_EQ(sel->size(), 1);
-    EXPECT_EQ(sel->frame(), aggr.frame());
-    EXPECT_EQ((*sel)[0].index(), 1);
-    EXPECT_EQ((*sel)[0].residue_id(), 1);
 }

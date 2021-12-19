@@ -59,34 +59,18 @@ TEST(Residues, Residue) {
     EXPECT_EQ(bond_list[0]->atom1(), 0);
     EXPECT_EQ(bond_list[0]->atom2(), 2);
 
-    auto bond_sel = Residue(0, 0, data).bonded();
-    EXPECT_EQ(bond_sel->size(), 2);
-    EXPECT_THAT(bond_sel->indices(), ElementsAre(0, 2));
-
-    /*
-     * Conversions
-     */
-    ASSERT_EQ(res.size(), 1);
-    auto sel = res.atoms();
-    ASSERT_THAT(sel, NotNull());
-    ASSERT_EQ(sel->size(), 1);
-    EXPECT_EQ(sel->frame(), res.frame());
-    EXPECT_EQ((*sel)[0].index(), 1);
-    EXPECT_EQ((*sel)[0].residue_id(), 1);
-
     /*
      * Addition/removal
      */
     Atom atom = Atom(0, 0, data);
     res.add_atom(atom);
     res.add_atom(2);
-    sel = res.atoms();
-    ASSERT_THAT(sel, NotNull());
-    ASSERT_EQ(sel->size(), 3);
+    AtomSel atomsel(res);
+    ASSERT_EQ(atomsel.size(), 3);
     for (size_t i = 0; i < 3; i++)
     {
-        EXPECT_EQ((*sel)[i].index(), i);
-        EXPECT_EQ((*sel)[i].residue_id(), 1);
+        EXPECT_EQ(atomsel[i].index(), i);
+        EXPECT_EQ(atomsel[i].residue_id(), 1);
     }
 }
 

@@ -125,18 +125,18 @@ TEST(Readers, MolfileReader) {
      * Bonds and charges
      */
     // Bond partners
-    EXPECT_THAT(m2_atoms[0].bonded()->indices(), ElementsAre(0, 1));
-    EXPECT_THAT(m2_atoms[1].bonded()->indices(), ElementsAre(0, 1, 2, 3));
-    EXPECT_THAT(m2_atoms[2].bonded()->indices(), ElementsAre(1, 2, 4, 7));
-    EXPECT_THAT(m2_atoms[3].bonded()->indices(), ElementsAre(1, 3, 5, 8));
-    EXPECT_THAT(m2_atoms[4].bonded()->indices(), ElementsAre(2, 4, 6, 9));
-    EXPECT_THAT(m2_atoms[5].bonded()->indices(), ElementsAre(3, 5, 6, 10));
-    EXPECT_THAT(m2_atoms[6].bonded()->indices(), ElementsAre(4, 5, 6, 11));
-    EXPECT_THAT(m2_atoms[7].bonded()->indices(), ElementsAre(2, 7));
-    EXPECT_THAT(m2_atoms[8].bonded()->indices(), ElementsAre(3, 8));
-    EXPECT_THAT(m2_atoms[9].bonded()->indices(), ElementsAre(4, 9));
-    EXPECT_THAT(m2_atoms[10].bonded()->indices(), ElementsAre(5, 10));
-    EXPECT_THAT(m2_atoms[11].bonded()->indices(), ElementsAre(6, 11));
+    EXPECT_THAT(AtomSel(m2_atoms[0]).bonded().indices(), ElementsAre(0, 1));
+    EXPECT_THAT(AtomSel(m2_atoms[1]).bonded().indices(), ElementsAre(0, 1, 2, 3));
+    EXPECT_THAT(AtomSel(m2_atoms[2]).bonded().indices(), ElementsAre(1, 2, 4, 7));
+    EXPECT_THAT(AtomSel(m2_atoms[3]).bonded().indices(), ElementsAre(1, 3, 5, 8));
+    EXPECT_THAT(AtomSel(m2_atoms[4]).bonded().indices(), ElementsAre(2, 4, 6, 9));
+    EXPECT_THAT(AtomSel(m2_atoms[5]).bonded().indices(), ElementsAre(3, 5, 6, 10));
+    EXPECT_THAT(AtomSel(m2_atoms[6]).bonded().indices(), ElementsAre(4, 5, 6, 11));
+    EXPECT_THAT(AtomSel(m2_atoms[7]).bonded().indices(), ElementsAre(2, 7));
+    EXPECT_THAT(AtomSel(m2_atoms[8]).bonded().indices(), ElementsAre(3, 8));
+    EXPECT_THAT(AtomSel(m2_atoms[9]).bonded().indices(), ElementsAre(4, 9));
+    EXPECT_THAT(AtomSel(m2_atoms[10]).bonded().indices(), ElementsAre(5, 10));
+    EXPECT_THAT(AtomSel(m2_atoms[11]).bonded().indices(), ElementsAre(6, 11));
 
     // Bond orders
     for (Atom &atom : m2_atoms)

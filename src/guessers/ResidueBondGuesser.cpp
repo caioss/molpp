@@ -21,10 +21,10 @@ void ResidueBondGuesser::apply(ResidueSel &residues) const
         auto const &res_info = RESIDUES_TABLE[res.resname()];
         std::fill(bonds_map.begin(), bonds_map.end(), -1);
 
-        auto atoms = res.atoms();
-        for (size_t i = 0; i < (*atoms).size(); i++)
+        AtomSel atoms(res);
+        for (size_t i = 0; i < atoms.size(); i++)
         {
-            Atom const atom = (*atoms)[i];
+            Atom const atom = atoms[i];
             int const atom_index = res_info.atom_index(atom.name());
             if (atom_index >= 0)
             {
@@ -43,11 +43,11 @@ void ResidueBondGuesser::apply(ResidueSel &residues) const
                 continue;
             }
 
-            auto bond = (*atoms)[atom1].bond((*atoms)[atom2]);
+            auto bond = atoms[atom1].bond(atoms[atom2]);
             if (!bond)
             {
                 // Add a guessed bond
-                bond = (*atoms)[atom1].add_bond((*atoms)[atom2]);
+                bond = atoms[atom1].add_bond(atoms[atom2]);
                 bond->set_guessed(true);
                 bond->set_order(bond_info.order);
                 bond->set_guessed_order(true);

@@ -18,8 +18,8 @@ protected:
     static std::vector<size_t> from_atom_indices(std::vector<size_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> const data);
     static size_t max_size(std::shared_ptr<mol::internal::MolData> const data);
 
-    friend class internal::BaseSel;
-    friend class internal::Sel<Residue, ResidueSel>;
+    template <class, class>
+    friend class internal::Sel;
 };
 
 } // namespace mol

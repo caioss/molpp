@@ -1,6 +1,5 @@
 #include <molpp/internal/BaseSel.hpp>
-#include <molpp/AtomSel.hpp>
-#include <molpp/ResidueSel.hpp>
+#include <molpp/MolError.hpp>
 #include "core/MolData.hpp"
 #include <numeric>
 
@@ -40,20 +39,6 @@ std::vector<size_t> BaseSel::bonded(std::vector<size_t> const &atom_indices) con
 std::vector<std::shared_ptr<mol::Bond>> BaseSel::bonds(std::vector<size_t> const &atom_indices)
 {
     return m_data->bonds().bonds(atom_indices.begin(), atom_indices.end());
-}
-
-std::shared_ptr<AtomSel> BaseSel::atoms(std::vector<size_t> &&atom_indices)
-{
-    auto sel = std::make_shared<AtomSel>(AtomSel::from_atom_indices(std::forward<std::vector<size_t>>(atom_indices), m_data), m_data);
-    sel->set_frame(m_frame);
-    return sel;
-}
-
-std::shared_ptr<ResidueSel> BaseSel::residues(std::vector<size_t> &&atom_indices)
-{
-    auto sel = std::make_shared<ResidueSel>(ResidueSel::from_atom_indices(std::forward<std::vector<size_t>>(atom_indices), m_data), m_data);
-    sel->set_frame(m_frame);
-    return sel;
 }
 
 void BaseSel::init_frame()

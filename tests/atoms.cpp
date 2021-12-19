@@ -98,20 +98,6 @@ TEST(Atoms, Atom) {
     ASSERT_EQ(bond_list.size(), 1);
     EXPECT_EQ(bond_list[0]->atom1(), 1);
     EXPECT_EQ(bond_list[0]->atom2(), 2);
-
-    EXPECT_EQ(atom0.bonded()->size(), 2);
-    auto bond_sel = atom.bonded();
-    EXPECT_EQ(bond_sel->size(), 2);
-    EXPECT_THAT(bond_sel->indices(), ElementsAre(1, 2));
-
-    /*
-     * Conversions
-     */
-    auto sel = atom.atoms();
-    ASSERT_THAT(sel, NotNull());
-    ASSERT_EQ(sel->size(), 1);
-    EXPECT_EQ(sel->frame(), atom.frame());
-    EXPECT_EQ((*sel)[0].index(), atom.index());
 }
 
 TEST(Atoms, Timestep) {
@@ -131,19 +117,6 @@ TEST(Atoms, Timestep) {
     EXPECT_THAT(moved.coords().data(), IsNull());
     ASSERT_EQ(moved_again.coords().data(), data);
     EXPECT_THAT(moved_again.coords().reshaped(), ElementsAre(1, 3, 5, 2, 4, 6));
-}
-
-TEST(Atoms, bonds) {
-    PDBFiles pdb;
-    pdb.check();
-    AtomSel all_sel(pdb.tiny);
-
-    EXPECT_EQ(all_sel[1].bonded()->size(), 0);
-    EXPECT_EQ(all_sel[4].bonded()->size(), 0);
-    EXPECT_EQ(all_sel[5].bonded()->size(), 0);
-    EXPECT_THAT(all_sel[0].bonded()->indices(), ElementsAre(0, 2, 3));
-    EXPECT_THAT(all_sel[2].bonded()->indices(), ElementsAre(0, 2));
-    EXPECT_THAT(all_sel[3].bonded()->indices(), ElementsAre(0, 3));
 }
 
 TEST(Atoms, MolData) {
