@@ -1,6 +1,7 @@
 #ifndef ALGORITHMS_HPP
 #define ALGORITHMS_HPP
 
+#include <list>
 #include <queue>
 #include <concepts>
 #include <unordered_set>
@@ -69,6 +70,51 @@ public:
 private:
     std::unordered_set<node_type> m_visited;
     std::unordered_map<node_type, node_type> m_parent;
+};
+
+template <class Container>
+class ConnectedComponents
+{
+public:
+    using node_type = typename Container::node_type;
+
+    template <std::invocable<node_type const&> Predicate>
+    size_t run(Container const &container, Predicate filter)
+    {
+        auto const container_nodes = container.nodes();
+        std::unordered_set<node_type> not_visited(container_nodes.begin(), container_nodes.end());
+        m_components.clear();
+        BreadthFirstTraversal<Container> bfs;
+
+        while (!not_visited.empty())
+        {
+            node_type const start = *(not_visited.begin());
+            if (!filter(start))
+            {
+                not_visited.erase(start);
+                continue;
+            }
+
+            bfs.run(container, start, [](auto){return false;}, filter);
+
+            for (auto const &node : bfs.visited())
+            {
+                not_visited.erase(node);
+            }
+
+            m_components.push_back(bfs.visited());
+        }
+
+        return m_components.size();
+    }
+
+    std::list<std::unordered_set<node_type>> const &components()
+    {
+        return m_components;
+    }
+
+private:
+    std::list<std::unordered_set<node_type>> m_components;
 };
 
 } // namespace mol::internal
