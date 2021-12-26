@@ -1,3 +1,4 @@
+#include "auxiliary.hpp"
 #include "tools/iterators.hpp"
 #include "tools/algorithms.hpp"
 #include "tools/Graph.hpp"
@@ -31,22 +32,6 @@ TEST(Iterators, IteratorWrapper) {
     EXPECT_EQ(iter1 - iter2, 2);
 }
 
-TEST(Iterators, Range) {
-    using iter_type = typename std::vector<int>::iterator;
-    using RangeInt = mol::internal::Range<iter_type>;
-    std::vector<int> values(1);
-
-    RangeInt range(values.begin(), values.end());
-    EXPECT_EQ(range.begin(), values.begin());
-    EXPECT_EQ(range.end(), values.end());
-    EXPECT_TRUE(range.is_valid());
-
-    RangeInt invalid(values.end(), values.end());
-    EXPECT_EQ(invalid.begin(), values.end());
-    EXPECT_EQ(invalid.end(), values.end());
-    EXPECT_FALSE(invalid.is_valid());
-}
-
 TEST(DataStructures, Graph) {
     Graph<int, int> graph;
 
@@ -61,22 +46,24 @@ TEST(DataStructures, Graph) {
     EXPECT_FALSE(graph.contains(-1));
 
     EXPECT_EQ(graph.edges_size(), 0);
-    EXPECT_EQ(*graph.add_edge(0, 1, -1), -1);
-    EXPECT_EQ(*graph.add_edge(0, 2, -2), -2);
+    EXPECT_EQ(graph.add_edge(0, 1, -1), -1);
+    EXPECT_EQ(graph.add_edge(0, 2, -2), -2);
     EXPECT_EQ(graph.edges_size(), 2);
 
-    EXPECT_THAT(graph.adjacency(0), UnorderedElementsAre(1, 2));
-    EXPECT_THAT(graph.adjacency(1), UnorderedElementsAre(0));
-    EXPECT_THAT(graph.adjacency(2), UnorderedElementsAre(0));
-    EXPECT_THAT(graph.adjacency(3), UnorderedElementsAre());
+    EXPECT_THAT(view2vector<int>(graph.adjacency(0)), UnorderedElementsAre(1, 2));
+    EXPECT_THAT(view2vector<int>(graph.adjacency(1)), UnorderedElementsAre(0));
+    EXPECT_THAT(view2vector<int>(graph.adjacency(2)), UnorderedElementsAre(0));
+    EXPECT_FALSE(graph.adjacency(3));
 
-    EXPECT_THAT(graph.edges(0), UnorderedElementsAre(-1, -2));
-    EXPECT_THAT(graph.edges(1), UnorderedElementsAre(-1));
-    EXPECT_THAT(graph.edges(2), UnorderedElementsAre(-2));
-    EXPECT_THAT(graph.edges(3), UnorderedElementsAre());
+    EXPECT_THAT(view2vector<int>(graph.nodes()), UnorderedElementsAre(0, 1, 2, 3));
 
-    EXPECT_THAT(graph.edge_at(1, 0), UnorderedElementsAre(-1));
-    EXPECT_THAT(graph.edge_at(2, 1), UnorderedElementsAre());
+    EXPECT_THAT(view2vector<int>(graph.edges(0)), UnorderedElementsAre(-1, -2));
+    EXPECT_THAT(view2vector<int>(graph.edges(1)), UnorderedElementsAre(-1));
+    EXPECT_THAT(view2vector<int>(graph.edges(2)), UnorderedElementsAre(-2));
+    EXPECT_FALSE(graph.edges(3));
+
+    EXPECT_THAT(view2vector<int>(graph.edge_at(1, 0)), UnorderedElementsAre(-1));
+    EXPECT_FALSE(graph.edge_at(2, 1));
 
     EXPECT_EQ(graph.edges_size(), 2);
     EXPECT_EQ(graph.size(), 4);

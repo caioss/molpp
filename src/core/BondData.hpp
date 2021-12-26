@@ -17,10 +17,16 @@ public:
     BondData(const BondData &src) = delete;
     BondData &operator=(const BondData &rhs) = delete;
 
-    bool incomplete() const { return m_incomplete; }
+    bool incomplete() const
+    {
+        return m_incomplete;
+    }
     void set_incomplete(bool const incomplete);
 
-    size_t size() const { return m_graph.edges_size(); }
+    size_t size() const
+    {
+        return m_graph.edges_size();
+    }
 
     template <class Iterator>
     std::vector<std::shared_ptr<Bond>> bonds(Iterator it, Iterator end);
@@ -57,7 +63,7 @@ std::vector<size_t> BondData::bonded(Iterator it, Iterator end) const
     {
         size_t const index = *(it++);
         auto const range = m_graph.adjacency(index);
-        if (range.is_valid())
+        if (range)
         {
             indices.insert(index);
             indices.insert(range.begin(), range.end());

@@ -49,41 +49,6 @@ protected:
     Iterator m_iterator;
 };
 
-template <class Iterator>
-class Range
-{
-public:
-    using value_type = typename Iterator::value_type;
-    using iterator = Iterator;
-    using const_iterator = const Iterator;
-
-    Range() = delete;
-
-    Range(Iterator const &begin, Iterator const &end)
-    : m_begin(begin),
-      m_end(end)
-    {}
-
-    Iterator const &begin() const
-    {
-        return m_begin;
-    }
-
-    Iterator const &end() const
-    {
-        return m_end;
-    }
-
-    bool is_valid() const
-    {
-        return m_begin != m_end;
-    }
-
-private:
-    Iterator const m_begin;
-    Iterator const m_end;
-};
-
 } // namespace mol::internal
 
 #endif // ITERATORS_HPP

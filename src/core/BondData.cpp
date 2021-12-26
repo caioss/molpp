@@ -26,7 +26,7 @@ std::vector<std::shared_ptr<Bond>> BondData::bonds(size_t const index)
 std::shared_ptr<Bond> BondData::bond(size_t const atom1, size_t const atom2)
 {
     auto range = m_graph.edge_at(atom1, atom2);
-    if (!range.is_valid())
+    if (!range)
     {
         return nullptr;
     }
@@ -36,7 +36,7 @@ std::shared_ptr<Bond> BondData::bond(size_t const atom1, size_t const atom2)
 std::vector<size_t> BondData::bonded(size_t const index) const
 {
     auto const range = m_graph.adjacency(index);
-    if (!range.is_valid())
+    if (!range)
     {
         return {};
     }
@@ -54,7 +54,7 @@ std::shared_ptr<Bond> BondData::add_bond(size_t const atom1, size_t const atom2)
     }
 
     std::shared_ptr<Bond> data = std::make_shared<Bond>(atom1, atom2);
-    return *m_graph.add_edge(atom1, atom2, data);
+    return m_graph.add_edge(atom1, atom2, data);
 }
 
 void BondData::clear()

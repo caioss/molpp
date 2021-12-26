@@ -4,6 +4,7 @@
 #include "tools/iterators.hpp"
 #include <vector>
 #include <string>
+#include <ranges>
 #include <unordered_set>
 
 namespace mol::internal {
@@ -66,10 +67,9 @@ public:
         m_chain.resize(size);
     }
 
-    Range<indices_iterator> indices(size_t const index) const
+    auto const indices(size_t const index) const
     {
-        indices_type const &residue = m_indices[index];
-        return {residue.cbegin(), residue.cend()};
+        return std::ranges::views::all(m_indices[index]);
     }
 
     void reset(size_t const index, size_t const new_size=0)
