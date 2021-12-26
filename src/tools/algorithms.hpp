@@ -1,9 +1,9 @@
 #ifndef ALGORITHMS_HPP
 #define ALGORITHMS_HPP
 
-#include <set>
 #include <queue>
 #include <concepts>
+#include <unordered_set>
 #include <unordered_map>
 
 namespace mol::internal {
@@ -19,6 +19,10 @@ public:
     {
         m_visited.clear();
         m_parent.clear();
+        if (!filter(start))
+        {
+            return false;
+        }
         std::queue<node_type> queue;
         queue.push(start);
         m_visited.insert(start);
@@ -52,7 +56,7 @@ public:
         return false;
     }
 
-    std::set<node_type> const &visited() const
+    std::unordered_set<node_type> const &visited() const
     {
         return m_visited;
     }
@@ -63,7 +67,7 @@ public:
     }
 
 private:
-    std::set<node_type> m_visited;
+    std::unordered_set<node_type> m_visited;
     std::unordered_map<node_type, node_type> m_parent;
 };
 

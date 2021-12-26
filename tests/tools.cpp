@@ -108,6 +108,13 @@ TEST(Algorithms, BreadthFirstSearch) {
     EXPECT_THAT(bfs.visited(), UnorderedElementsAre(0, 1, 2, 3));
     EXPECT_THAT(bfs.parent_map(), UnorderedElementsAre(Pair(3, 2), Pair(2, 0), Pair(1, 0)));
 
+    // Repeat search but starting at node 4
+    EXPECT_FALSE(bfs.run(graph, 4, [](int const &node) {
+        return node == 3;
+    }, [](int const &node){
+        return node != 4;
+    }));
+
     // Search not possible
     EXPECT_FALSE(bfs.run(graph, 0, [](int const &node) {
         return node == 3;
