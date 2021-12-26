@@ -87,8 +87,8 @@ TEST(Algorithms, BreadthFirstSearch) {
     graph.add_edge(4, 5, 0);
     graph.add_edge(5, 3, 0);
 
-    BreadthFirstTraversal<GraphInt> bfs;
-    EXPECT_TRUE(bfs.run(graph, 0, [](int const &node) {
+    BreadthFirstTraversal bfs(graph);
+    EXPECT_TRUE(bfs.run(0, [](int const &node) {
         return node == 3;
     }, [](auto){
         return true;
@@ -100,7 +100,7 @@ TEST(Algorithms, BreadthFirstSearch) {
     EXPECT_THAT(bfs.parent_map(), IsSubsetOf({Pair(3, 2), Pair(2, 0), Pair(4, 1), Pair(1, 0)}));
 
     // Search using a mask (without node 4)
-    EXPECT_TRUE(bfs.run(graph, 0, [](int const &node) {
+    EXPECT_TRUE(bfs.run(0, [](int const &node) {
         return node == 3;
     }, [](int const &node){
         return node != 4;
@@ -109,14 +109,14 @@ TEST(Algorithms, BreadthFirstSearch) {
     EXPECT_THAT(bfs.parent_map(), UnorderedElementsAre(Pair(3, 2), Pair(2, 0), Pair(1, 0)));
 
     // Repeat search but starting at node 4
-    EXPECT_FALSE(bfs.run(graph, 4, [](int const &node) {
+    EXPECT_FALSE(bfs.run(4, [](int const &node) {
         return node == 3;
     }, [](int const &node){
         return node != 4;
     }));
 
     // Search not possible
-    EXPECT_FALSE(bfs.run(graph, 0, [](int const &node) {
+    EXPECT_FALSE(bfs.run(0, [](int const &node) {
         return node == 3;
     }, [](int const &node){
         return node == 0 || node == 3 || node == 5;
@@ -132,10 +132,10 @@ TEST(Algorithms, ConnectedComponents) {
         ASSERT_TRUE(graph.add_node(i));
     }
 
-    ConnectedComponents<GraphInt> components;
+    ConnectedComponents components(graph);
 
     // Without edges
-    EXPECT_EQ(components.run(graph, [](auto){return true;}), 7);
+    EXPECT_EQ(components.run([](auto){return true;}), 7);
     EXPECT_THAT(components.components(), UnorderedElementsAre(ElementsAre(0), ElementsAre(1), ElementsAre(2), ElementsAre(3), ElementsAre(4), ElementsAre(5), ElementsAre(6)));
 
     graph.add_edge(0, 1, 0);
@@ -144,11 +144,11 @@ TEST(Algorithms, ConnectedComponents) {
     graph.add_edge(4, 5, 0);
 
     // With edges
-    EXPECT_EQ(components.run(graph, [](auto){return true;}), 3);
+    EXPECT_EQ(components.run([](auto){return true;}), 3);
     EXPECT_THAT(components.components(), UnorderedElementsAre(UnorderedElementsAre(0, 1, 2, 3), UnorderedElementsAre(4, 5), ElementsAre(6)));
 
     // Filter out node 2
-    EXPECT_EQ(components.run(graph, [](auto const &node){return node != 2;}), 4);
+    EXPECT_EQ(components.run([](auto const &node){return node != 2;}), 4);
     EXPECT_THAT(components.components(), UnorderedElementsAre(UnorderedElementsAre(0, 1), ElementsAre(3), UnorderedElementsAre(4, 5), ElementsAre(6)));
 }
 

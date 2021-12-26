@@ -15,8 +15,12 @@ class BreadthFirstTraversal
 public:
     using node_type = typename Container::node_type;
 
+    BreadthFirstTraversal(Container const &container)
+    : m_container(container)
+    {}
+
     template <std::invocable<node_type const&> StopPredicate, std::invocable<node_type const&> FilterPredicate>
-    bool run(Container const &container, node_type const &start, StopPredicate stop, FilterPredicate filter)
+    bool run(node_type const &start, StopPredicate stop, FilterPredicate filter)
     {
         m_visited.clear();
         m_parent.clear();
@@ -38,7 +42,7 @@ public:
                 return true;
             }
 
-            for (node_type const &node : container.adjacency(current))
+            for (node_type const &node : m_container.adjacency(current))
             {
                 if (!filter(node))
                 {
@@ -68,6 +72,7 @@ public:
     }
 
 private:
+    Container const &m_container;
     std::unordered_set<node_type> m_visited;
     std::unordered_map<node_type, node_type> m_parent;
 };
@@ -78,13 +83,17 @@ class ConnectedComponents
 public:
     using node_type = typename Container::node_type;
 
+    ConnectedComponents(Container const &container)
+    : m_container(container)
+    {}
+
     template <std::invocable<node_type const&> Predicate>
-    size_t run(Container const &container, Predicate filter)
+    size_t run(Predicate filter)
     {
-        auto const container_nodes = container.nodes();
+        auto const container_nodes = m_container.nodes();
         std::unordered_set<node_type> not_visited(container_nodes.begin(), container_nodes.end());
         m_components.clear();
-        BreadthFirstTraversal<Container> bfs;
+        BreadthFirstTraversal bfs(m_container);
 
         while (!not_visited.empty())
         {
@@ -95,7 +104,7 @@ public:
                 continue;
             }
 
-            bfs.run(container, start, [](auto){return false;}, filter);
+            bfs.run(start, [](auto){return false;}, filter);
 
             for (auto const &node : bfs.visited())
             {
@@ -114,6 +123,7 @@ public:
     }
 
 private:
+    Container const &m_container;
     std::list<std::unordered_set<node_type>> m_components;
 };
 
