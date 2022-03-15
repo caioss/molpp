@@ -16,7 +16,7 @@ add_library(molpp)
 add_subdirectory("src")
 
 # Third-party
-add_subdirectory("thirdparty/molfile_plugin")
+add_subdirectory("thirdparty")
 
 include(FetchContent)
 if(USE_SYSTEM_EIGEN)
@@ -50,10 +50,14 @@ target_include_directories(molpp
 )
 
 # Linkings
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads)
+
 target_link_libraries(molpp
     PUBLIC
         Eigen3::Eigen
     PRIVATE
+        Threads::Threads
 )
 
 # Compiler options

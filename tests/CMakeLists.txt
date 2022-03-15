@@ -26,13 +26,19 @@ add_executable(tests
 target_include_directories(tests
     PRIVATE
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/thirdparty/cpp-peglib>
 )
+
+# Needed by cpp-peblib
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads)
 
 target_link_libraries(
     tests
     gtest_main
     gmock_main
     molpp
+    Threads::Threads
 )
 
 target_compile_features(tests
