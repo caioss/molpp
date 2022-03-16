@@ -2,6 +2,7 @@
 #include "tools/iterators.hpp"
 #include "tools/algorithms.hpp"
 #include "tools/Graph.hpp"
+#include "tools/math.hpp"
 #include "tools/SpatialSearch.hpp"
 #include <molpp/MolppCore.hpp>
 #include <gtest/gtest.h>
@@ -192,4 +193,9 @@ TEST(DataStructures, SpatialSearch) {
         FieldsAre(9, 0, FloatNear(6.1342, 0.0001)),
         FieldsAre(9, 2, FloatNear(12.5844, 0.0001)),
         FieldsAre(9, 6, FloatNear(2.5074, 0.0001))));
+}
+
+TEST(Math, Comparison) {
+    EXPECT_TRUE(approximately_equal(95.1, 100.0, 0.05));
+    EXPECT_FALSE(essentially_equal(95.1, 100.0, 0.05));
 }
