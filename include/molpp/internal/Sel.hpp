@@ -52,7 +52,7 @@ public:
     template <SelConvertible Other>
     Sel(Other &&other)
     requires SelDerived<Derived>
-    : Sel(Derived::from_atom_indices(other.atom_indices(), other.cdata()), other.data())
+    : Sel(Derived::from_atom_indices(other.atom_indices(), other.data()), other.data())
     {
         set_frame(other.frame());
     }
@@ -77,12 +77,12 @@ public:
         return iterator(data(), indices_end(), frame());
     }
 
-    const_iterator cbegin()
+    const_iterator begin() const
     {
         return const_iterator(data(), indices_begin(), frame());
     }
 
-    const_iterator cend()
+    const_iterator end() const
     {
         return const_iterator(data(), indices_end(), frame());
     }
@@ -111,7 +111,7 @@ public:
     Derived bonded()
     {
         Derived &derived = static_cast<Derived &>(*this);
-        Derived sel(Derived::from_atom_indices(bonded(derived.atom_indices()), cdata()), data());
+        Derived sel(Derived::from_atom_indices(bonded(derived.atom_indices()), data()), data());
         sel.set_frame(frame());
         return sel;
     }
@@ -127,7 +127,6 @@ protected:
     using BaseSel::bonded;
     using BaseSel::bonds;
     using BaseSel::data;
-    using BaseSel::cdata;
 
 private:
     template <class ItType>

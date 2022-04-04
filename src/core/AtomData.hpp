@@ -27,15 +27,25 @@ public:
 
     size_t size() const { return m_num_atoms; }
     size_t &residue(size_t const index) { return m_residue[index]; }
+    size_t const &residue(size_t const index) const { return m_residue[index]; }
     size_t &atomic(size_t const index) { return m_atomic[index]; }
+    size_t const &atomic(size_t const index) const { return m_atomic[index]; }
     float &occupancy(size_t const index) { return m_occupancy[index]; }
+    float const &occupancy(size_t const index) const { return m_occupancy[index]; }
     float &tempfactor(size_t const index) { return m_tempfactor[index]; }
+    float const &tempfactor(size_t const index) const { return m_tempfactor[index]; }
     float &mass(size_t const index) { return m_mass[index]; }
+    float const &mass(size_t const index) const { return m_mass[index]; }
     float &charge(size_t const index) { return m_charge[index]; }
+    float const &charge(size_t const index) const { return m_charge[index]; }
     float &radius(size_t const index) { return m_radius[index]; }
+    float const &radius(size_t const index) const { return m_radius[index]; }
     std::string &name(size_t const index) { return m_name[index]; }
+    std::string const &name(size_t const index) const { return m_name[index]; }
     std::string &type(size_t const index) { return m_type[index]; }
+    std::string const &type(size_t const index) const { return m_type[index]; }
     std::string &altloc(size_t const index) { return m_altloc[index]; }
+    std::string const &altloc(size_t const index) const { return m_altloc[index]; }
 
 private:
     size_t m_num_atoms;

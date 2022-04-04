@@ -48,7 +48,7 @@ protected:
         return m_data;
     }
 
-    std::shared_ptr<internal::MolData> const cdata() const
+    std::shared_ptr<internal::MolData> const data() const
     {
         return m_data;
     }

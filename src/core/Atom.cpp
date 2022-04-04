@@ -8,7 +8,7 @@ using namespace mol;
 
 int Atom::resid() const
 {
-    return cdata()->residues().resid(residue_id());
+    return data()->residues().resid(residue_id());
 }
 
 Residue Atom::residue()
@@ -18,12 +18,12 @@ Residue Atom::residue()
 
 size_t Atom::residue_id() const
 {
-    return cdata()->properties().residue(index());
+    return data()->properties().residue(index());
 }
 
 int Atom::atomic() const
 {
-    return cdata()->properties().atomic(index());
+    return data()->properties().atomic(index());
 }
 
 void Atom::set_atomic(int const &atomic)
@@ -33,7 +33,7 @@ void Atom::set_atomic(int const &atomic)
 
 float Atom::occupancy() const
 {
-    return cdata()->properties().occupancy(index());
+    return data()->properties().occupancy(index());
 }
 
 void Atom::set_occupancy(float const &occupancy)
@@ -43,7 +43,7 @@ void Atom::set_occupancy(float const &occupancy)
 
 float Atom::tempfactor() const
 {
-    return cdata()->properties().tempfactor(index());
+    return data()->properties().tempfactor(index());
 }
 
 void Atom::set_tempfactor(float const &tempfactor)
@@ -53,7 +53,7 @@ void Atom::set_tempfactor(float const &tempfactor)
 
 float Atom::mass() const
 {
-    return cdata()->properties().mass(index());
+    return data()->properties().mass(index());
 }
 
 void Atom::set_mass(float const &mass)
@@ -63,7 +63,7 @@ void Atom::set_mass(float const &mass)
 
 float Atom::charge() const
 {
-    return cdata()->properties().charge(index());
+    return data()->properties().charge(index());
 }
 
 void Atom::set_charge(float const &charge)
@@ -73,7 +73,7 @@ void Atom::set_charge(float const &charge)
 
 float Atom::radius() const
 {
-    return cdata()->properties().radius(index());
+    return data()->properties().radius(index());
 }
 
 void Atom::set_radius(float const &radius)
@@ -83,7 +83,7 @@ void Atom::set_radius(float const &radius)
 
 std::string Atom::name() const
 {
-    return cdata()->properties().name(index());
+    return data()->properties().name(index());
 }
 
 void Atom::set_name(std::string const &name) {
@@ -92,7 +92,7 @@ void Atom::set_name(std::string const &name) {
 
 std::string Atom::type() const
 {
-    return cdata()->properties().type(index());
+    return data()->properties().type(index());
 }
 
 void Atom::set_type(std::string const &type)
@@ -102,22 +102,22 @@ void Atom::set_type(std::string const &type)
 
 std::string Atom::resname() const
 {
-    return cdata()->residues().resname(residue_id());
+    return data()->residues().resname(residue_id());
 }
 
 std::string Atom::segid() const
 {
-    return cdata()->residues().segid(residue_id());
+    return data()->residues().segid(residue_id());
 }
 
 std::string Atom::chain() const
 {
-    return cdata()->residues().chain(residue_id());
+    return data()->residues().chain(residue_id());
 }
 
 std::string Atom::altloc() const
 {
-    return cdata()->properties().altloc(index());
+    return data()->properties().altloc(index());
 }
 
 void Atom::set_altloc(std::string const &altloc)

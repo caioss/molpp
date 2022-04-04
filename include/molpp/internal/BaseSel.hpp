@@ -59,17 +59,27 @@ protected:
         return m_index.indices_begin();
     }
 
+    SelIndex::iterator indices_begin() const
+    {
+        return m_index.indices_begin();
+    }
+
     SelIndex::iterator indices_end()
     {
         return m_index.indices_end();
     }
 
-    std::shared_ptr<MolData> const cdata() const
+    SelIndex::iterator indices_end() const
+    {
+        return m_index.indices_end();
+    }
+
+    std::shared_ptr<MolData> data()
     {
         return m_data;
     };
 
-    std::shared_ptr<MolData> data()
+    std::shared_ptr<MolData> const data() const
     {
         return m_data;
     };

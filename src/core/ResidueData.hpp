@@ -20,7 +20,7 @@ public:
     ResidueData()
     {}
 
-    void set(size_t const index, int const res_id, std::string const res_name, std::string const seg_id, std::string const chain_id)
+    void set(size_t const index, int const res_id, std::string const& res_name, std::string const& seg_id, std::string const& chain_id)
     {
         resid(index) = res_id;
         resname(index) = res_name;
@@ -43,7 +43,17 @@ public:
         return m_resid[index];
     }
 
+    int const& resid(size_t const index) const
+    {
+        return m_resid[index];
+    }
+
     std::string &resname(size_t const index)
+    {
+        return m_resname[index];
+    }
+
+    std::string const& resname(size_t const index) const
     {
         return m_resname[index];
     }
@@ -53,7 +63,17 @@ public:
         return m_segid[index];
     }
 
+    std::string const& segid(size_t const index) const
+    {
+        return m_segid[index];
+    }
+
     std::string &chain(size_t const index)
+    {
+        return m_chain[index];
+    }
+
+    std::string const& chain(size_t const index) const
     {
         return m_chain[index];
     }

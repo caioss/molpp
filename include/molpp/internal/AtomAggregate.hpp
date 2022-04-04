@@ -47,7 +47,6 @@ protected:
     using BaseAtomAggregate::coords;
     using BaseAtomAggregate::bonds;
     using BaseAtomAggregate::data;
-    using BaseAtomAggregate::cdata;
 
     template <class, class>
     friend class Sel;

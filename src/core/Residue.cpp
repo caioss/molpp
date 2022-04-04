@@ -6,7 +6,7 @@ using namespace mol;
 
 int Residue::resid() const
 {
-    return cdata()->residues().resid(index());
+    return data()->residues().resid(index());
 }
 
 void Residue::set_resid(int const &resid)
@@ -16,7 +16,7 @@ void Residue::set_resid(int const &resid)
 
 std::string Residue::resname() const
 {
-    return cdata()->residues().resname(index());
+    return data()->residues().resname(index());
 }
 
 void Residue::set_resname(std::string const &resname)
@@ -26,7 +26,7 @@ void Residue::set_resname(std::string const &resname)
 
 std::string Residue::segid() const
 {
-    return cdata()->residues().segid(index());
+    return data()->residues().segid(index());
 }
 
 void Residue::set_segid(std::string const &segid)
@@ -36,7 +36,7 @@ void Residue::set_segid(std::string const &segid)
 
 std::string Residue::chain() const
 {
-    return cdata()->residues().chain(index());
+    return data()->residues().chain(index());
 }
 
 void Residue::set_chain(std::string const &chain)
@@ -61,11 +61,11 @@ void Residue::add_atom(Atom const &atom)
 
 size_t Residue::size() const
 {
-    return cdata()->residues().size(index());
+    return data()->residues().size(index());
 }
 
 std::vector<size_t> Residue::atom_indices() const
 {
-    auto const indices = cdata()->residues().indices(index());
+    auto const indices = data()->residues().indices(index());
     return {indices.begin(), indices.end()};
 }

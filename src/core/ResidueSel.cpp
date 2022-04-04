@@ -6,7 +6,7 @@ using namespace mol::internal;
 
 std::vector<size_t> ResidueSel::atom_indices() const
 {
-    ResidueData const &residues = cdata()->residues();
+    ResidueData const &residues = data()->residues();
     size_t num_atoms = 0;
     for (auto const res : indices())
     {

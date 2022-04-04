@@ -18,6 +18,7 @@ public:
     void swap(Timestep &rhs);
 
     Coord3 &coords() { return m_coords; }
+    Coord3 const& coords() const { return m_coords; }
 
 private:
     size_t m_num_atoms;

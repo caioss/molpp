@@ -12,11 +12,15 @@ public:
     TrajData()
     {}
 
-    size_t num_frames() {
+    size_t num_frames() const {
         return m_timestep.size();
     }
 
     Timestep &timestep(size_t const index) {
+        return m_timestep[index];
+    }
+
+    Timestep const& timestep(size_t const index) const {
         return m_timestep[index];
     }
 
