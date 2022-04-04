@@ -15,7 +15,7 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(Atoms, Atom) {
-    auto data = aux_moldata();
+    auto data = create_moldata(3, 1, 1, 1, 1);
 
     // Comparison
     EXPECT_TRUE(Atom(1, 0, data) == Atom(1, 0, data));
@@ -32,7 +32,7 @@ TEST(Atoms, Atom) {
     EXPECT_EQ(atom.frame(), 0);
     EXPECT_EQ(atom0.frame(), std::nullopt);
 
-    EXPECT_EQ(atom.resid(), -1);
+    EXPECT_EQ(atom.resid(), 1);
 
     EXPECT_EQ(atom.residue_id(), 1);
     EXPECT_EQ(atom.residue(), Residue(1, 0, data));
@@ -61,9 +61,9 @@ TEST(Atoms, Atom) {
     atom.set_type("C");
     EXPECT_EQ(atom.type(), "C");
 
-    EXPECT_EQ(atom.resname(), "");
-    EXPECT_EQ(atom.segid(), "");
-    EXPECT_EQ(atom.chain(), "");
+    EXPECT_EQ(atom.resname(), "B");
+    EXPECT_EQ(atom.segid(), "A");
+    EXPECT_EQ(atom.chain(), "A");
 
     atom.set_altloc("B");
     EXPECT_EQ(atom.altloc(), "B");
@@ -71,9 +71,9 @@ TEST(Atoms, Atom) {
     /*
      * Coordinates
      */
-    EXPECT_THAT(atom.coords().reshaped(), ElementsAre(2, 5, 8));
+    EXPECT_THAT(atom.coords().reshaped(), ElementsAre(1, 1, 1));
     atom.coords() *= 2;
-    EXPECT_THAT(atom.coords().reshaped(), ElementsAre(4, 10, 16));
+    EXPECT_THAT(atom.coords().reshaped(), ElementsAre(2, 2, 2));
 
     EXPECT_THROW(Atom(1, std::nullopt, data).coords(), MolError);
 
@@ -86,18 +86,18 @@ TEST(Atoms, Atom) {
     EXPECT_EQ(atom.add_bond(2), atom.bond(2));
     EXPECT_EQ(atom.add_bond(Atom(2, 0, data)), atom.bond(Atom(2, 0, data)));
 
-    EXPECT_THAT(atom0.bond(2), NotNull());
-    EXPECT_THAT(atom.bond(3), IsNull());
+    EXPECT_THAT(atom0.bond(1), NotNull());
+    EXPECT_THAT(atom.bond(2), NotNull());
     auto bond = atom.bond(2);
     ASSERT_THAT(bond, NotNull());
     EXPECT_EQ(bond->atom1(), 1);
     EXPECT_EQ(bond->atom2(), 2);
 
     EXPECT_EQ(atom0.bonds().size(), 1);
-    auto bond_list = atom.bonds();
+    auto bond_list = atom0.bonds();
     ASSERT_EQ(bond_list.size(), 1);
-    EXPECT_EQ(bond_list[0]->atom1(), 1);
-    EXPECT_EQ(bond_list[0]->atom2(), 2);
+    EXPECT_EQ(bond_list[0]->atom1(), 0);
+    EXPECT_EQ(bond_list[0]->atom2(), 1);
 }
 
 TEST(Atoms, Timestep) {

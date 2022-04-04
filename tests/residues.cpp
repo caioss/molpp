@@ -15,7 +15,7 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(Residues, Residue) {
-    auto data = aux_moldata();
+    auto data = create_moldata(3, 1, 1, 1, 1);
 
     // Comparison
     EXPECT_TRUE(Residue(1, 0, data) == Residue(1, 0, data));
@@ -45,9 +45,9 @@ TEST(Residues, Residue) {
     /*
      * Coordinates
      */
-    EXPECT_THAT(res.coords().reshaped(), ElementsAre(2, 5, 8));
+    EXPECT_THAT(res.coords().reshaped(), ElementsAre(1, 1, 1));
     res.coords() *= 2;
-    EXPECT_THAT(res.coords().reshaped(), ElementsAre(4, 10, 16));
+    EXPECT_THAT(res.coords().reshaped(), ElementsAre(2, 2, 2));
 
     EXPECT_THROW(Residue(1, std::nullopt, data).coords(), MolError);
 
@@ -57,7 +57,7 @@ TEST(Residues, Residue) {
     auto bond_list = Residue(0, 0, data).bonds();
     ASSERT_EQ(bond_list.size(), 1);
     EXPECT_EQ(bond_list[0]->atom1(), 0);
-    EXPECT_EQ(bond_list[0]->atom2(), 2);
+    EXPECT_EQ(bond_list[0]->atom2(), 1);
 
     /*
      * Addition/removal

@@ -11,7 +11,7 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(AtomAggregates, BaseAtomAggregate) {
-    auto data = aux_moldata();
+    auto data = create_moldata(3, 1, 1, 1, 0);
 
     // Comparison
     EXPECT_TRUE(BaseAtomAggregate(1, 0, data) == BaseAtomAggregate(1, 0, data));
@@ -29,7 +29,7 @@ TEST(AtomAggregates, BaseAtomAggregate) {
 
 TEST(AtomAggregates, AtomAggregate) {
     using Aggregate = AtomAggregate<Residue>;
-    auto data = aux_moldata();
+    auto data = create_moldata(3, 1, 1, 1, 1);
 
     // Comparison
     EXPECT_TRUE(Aggregate(1, 0, data) == Aggregate(1, 0, data));
@@ -47,9 +47,9 @@ TEST(AtomAggregates, AtomAggregate) {
     /*
      * Coordinates
      */
-    EXPECT_THAT(aggr.coords().reshaped(), ElementsAre(2, 5, 8));
+    EXPECT_THAT(aggr.coords().reshaped(), ElementsAre(1, 1, 1));
     aggr.coords() *= 2;
-    EXPECT_THAT(aggr.coords().reshaped(), ElementsAre(4, 10, 16));
+    EXPECT_THAT(aggr.coords().reshaped(), ElementsAre(2, 2, 2));
 
     EXPECT_THROW(Aggregate(1, std::nullopt, data).coords(), MolError);
 }
