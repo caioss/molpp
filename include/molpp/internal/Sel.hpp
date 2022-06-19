@@ -2,9 +2,11 @@
 #define SEL_HPP
 
 #include <molpp/MolError.hpp>
+#include <molpp/MolppCore.hpp>
 #include <molpp/internal/BaseSel.hpp>
 #include <molpp/internal/AtomAggregate.hpp>
 #include <memory>
+#include <ranges>
 #include <optional>
 #include <concepts>
 
@@ -62,8 +64,9 @@ public:
     : BaseSel(SelIndex(Derived::max_size(data)), data)
     {}
 
-    Sel(std::vector<size_t> const &indices, std::shared_ptr<MolData> data)
-    requires SelDerived<Derived>
+    template <class T>
+    Sel(T const &indices, std::shared_ptr<MolData> data)
+    requires SelDerived<Derived> && SelIndexCompatible<T>
     : BaseSel(SelIndex(indices, Derived::max_size(data)), data)
     {}
 

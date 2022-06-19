@@ -44,11 +44,6 @@ public:
         return m_index.indices();
     }
 
-    std::vector<bool> const &selected() const
-    {
-        return m_index.selected();
-    }
-
 protected:
     coords_type coords(std::vector<size_t> &&atom_indices);
     std::vector<size_t> bonded(std::vector<size_t> const &atom_indices) const;

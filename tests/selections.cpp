@@ -24,7 +24,6 @@ TEST(Selections, SelIndex) {
     SelIndex all(5);
     EXPECT_EQ(all.size(), 5);
     EXPECT_THAT(all.indices(), ElementsAre(0, 1, 2, 3, 4));
-    EXPECT_THAT(all.selected(), ElementsAre(true, true, true, true, true));
     for (size_t i = 0; i < 5; ++i)
     {
         EXPECT_TRUE(all.contains(i)) << "index " << i;
@@ -36,14 +35,12 @@ TEST(Selections, SelIndex) {
     // Constructors accepting indexes
     std::vector<size_t> indices{4, 1, 1, 3};
     SelIndex some(indices, 5);
-    SelIndex rvalue({4, 1, 1, 3}, 5);
-    EXPECT_THROW(SelIndex({4, 1, 1, 3}, 1), MolError);
+    SelIndex rvalue(std::vector<size_t>{4, 1, 1, 3}, 5);
+    EXPECT_THROW(SelIndex(std::vector<size_t>{4, 1, 1, 3}, 1), MolError);
     EXPECT_EQ(some.size(), 3);
     EXPECT_EQ(rvalue.size(), 3);
     EXPECT_THAT(some.indices(), ElementsAre(1, 3, 4));
     EXPECT_THAT(rvalue.indices(), ElementsAre(1, 3, 4));
-    EXPECT_THAT(some.selected(), ElementsAre(false, true, false, true, true));
-    EXPECT_THAT(rvalue.selected(), ElementsAre(false, true, false, true, true));
     for (size_t i : {1, 3, 4})
     {
         EXPECT_TRUE(some.contains(i)) << "Index " << i;
@@ -71,7 +68,6 @@ TEST(Selections, BaseSel) {
     EXPECT_EQ(all_sel.size(), pdb.tiny->size());
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_THAT(all_sel.selected(), ElementsAre(true, true, true, true, true, true));
     for (size_t i = 0; i < 6; ++i)
     {
         EXPECT_TRUE(all_sel.contains(i)) << "index " << i;
@@ -81,15 +77,13 @@ TEST(Selections, BaseSel) {
     // Constructors accepting indexes
     std::vector<size_t> indices{4, 1, 1, 3};
     BaseSel some_sel(SelIndex(indices, pdb.tiny->size()), pdb.tiny);
-    BaseSel rvalue_sel(SelIndex({4, 1, 1, 3}, pdb.tiny->size()), pdb.tiny);
+    BaseSel rvalue_sel(SelIndex(std::vector<size_t>{4, 1, 1, 3}, pdb.tiny->size()), pdb.tiny);
     EXPECT_EQ(some_sel.size(), indices.size() - 1);
     EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
     EXPECT_FALSE(rvalue_sel.frame());
     EXPECT_THAT(some_sel.indices(), ElementsAre(1, 3, 4));
     EXPECT_THAT(rvalue_sel.indices(), ElementsAre(1, 3, 4));
-    EXPECT_THAT(some_sel.selected(), ElementsAre(false, true, false, true, true, false));
-    EXPECT_THAT(rvalue_sel.selected(), ElementsAre(false, true, false, true, true, false));
     for (size_t i : {1, 3, 4})
     {
         EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
@@ -126,7 +120,6 @@ TEST(Selections, Sel) {
     EXPECT_FALSE(all_sel.frame());
     EXPECT_EQ(all_sel.size(), pdb.tiny->size());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_THAT(all_sel.selected(), ElementsAre(true, true, true, true, true, true));
     for (size_t i = 0; i < 6; ++i)
     {
         EXPECT_TRUE(all_sel.contains(i)) << "index " << i;
@@ -136,15 +129,13 @@ TEST(Selections, Sel) {
     // Constructors accepting indexes
     std::vector<size_t> indices{4, 1, 1, 3};
     Sel<Atom, AtomSel> some_sel(indices, pdb.tiny);
-    Sel<Atom, AtomSel> rvalue_sel({4, 1, 1, 3}, pdb.tiny);
+    Sel<Atom, AtomSel> rvalue_sel(std::vector<size_t>{4, 1, 1, 3}, pdb.tiny);
     EXPECT_EQ(some_sel.size(), indices.size() - 1);
     EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
     EXPECT_FALSE(rvalue_sel.frame());
     EXPECT_THAT(some_sel.indices(), ElementsAre(1, 3, 4));
     EXPECT_THAT(rvalue_sel.indices(), ElementsAre(1, 3, 4));
-    EXPECT_THAT(some_sel.selected(), ElementsAre(false, true, false, true, true, false));
-    EXPECT_THAT(rvalue_sel.selected(), ElementsAre(false, true, false, true, true, false));
     for (size_t i : {1, 3, 4})
     {
         EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
@@ -290,7 +281,6 @@ TEST(Selections, AtomSel) {
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     EXPECT_THAT(all_sel.atom_indices(), ElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_THAT(all_sel.selected(), ElementsAre(true, true, true, true, true, true));
     for (size_t i = 0; i < 6; ++i)
     {
         EXPECT_TRUE(all_sel.contains(i)) << "index " << i;
@@ -300,7 +290,7 @@ TEST(Selections, AtomSel) {
     // Constructors accepting indexes
     std::vector<size_t> indices{4, 1, 1, 3};
     AtomSel some_sel(indices, pdb.tiny);
-    AtomSel rvalue_sel({4, 1, 1, 3}, pdb.tiny);
+    AtomSel rvalue_sel(std::vector<size_t>{4, 1, 1, 3}, pdb.tiny);
     EXPECT_EQ(some_sel.size(), indices.size() - 1);
     EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
@@ -309,8 +299,6 @@ TEST(Selections, AtomSel) {
     EXPECT_THAT(rvalue_sel.indices(), ElementsAre(1, 3, 4));
     EXPECT_THAT(some_sel.atom_indices(), ElementsAre(1, 3, 4));
     EXPECT_THAT(rvalue_sel.atom_indices(), ElementsAre(1, 3, 4));
-    EXPECT_THAT(some_sel.selected(), ElementsAre(false, true, false, true, true, false));
-    EXPECT_THAT(rvalue_sel.selected(), ElementsAre(false, true, false, true, true, false));
     for (size_t i : {1, 3, 4})
     {
         EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
@@ -456,7 +444,6 @@ TEST(Selections, ResidueSel) {
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4));
     EXPECT_THAT(all_sel.atom_indices(), UnorderedElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_THAT(all_sel.selected(), ElementsAre(true, true, true, true, true));
     for (size_t i = 0; i < 5; ++i)
     {
         EXPECT_TRUE(all_sel.contains(i)) << "index " << i;
@@ -466,7 +453,7 @@ TEST(Selections, ResidueSel) {
     // Constructors accepting indexes
     std::vector<size_t> indices{4, 1, 1, 3};
     ResidueSel some_sel(indices, pdb.tiny);
-    ResidueSel rvalue_sel({4, 1, 1, 3}, pdb.tiny);
+    ResidueSel rvalue_sel(std::vector<size_t>{4, 1, 1, 3}, pdb.tiny);
     EXPECT_EQ(some_sel.size(), indices.size() - 1);
     EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
@@ -475,8 +462,6 @@ TEST(Selections, ResidueSel) {
     EXPECT_THAT(rvalue_sel.indices(), ElementsAre(1, 3, 4));
     EXPECT_THAT(some_sel.atom_indices(), UnorderedElementsAre(1, 3, 4, 5));
     EXPECT_THAT(rvalue_sel.atom_indices(), UnorderedElementsAre(1, 3, 4, 5));
-    EXPECT_THAT(some_sel.selected(), ElementsAre(false, true, false, true, true));
-    EXPECT_THAT(rvalue_sel.selected(), ElementsAre(false, true, false, true, true));
     for (size_t i : {1, 3, 4})
     {
         EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
