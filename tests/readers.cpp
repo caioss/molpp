@@ -179,24 +179,24 @@ TEST(Readers, MolfileReader) {
     data = reader.read_atoms();
     reader.close();
     ASSERT_THAT(data, NotNull());
-    EXPECT_EQ(data->properties().residue(0), 0);
-    EXPECT_EQ(data->properties().residue(3), 0);
-    EXPECT_EQ(data->properties().residue(4), 1);
-    EXPECT_EQ(data->properties().residue(1230), 153);
-    EXPECT_EQ(data->properties().residue(1231), 154);
-    EXPECT_EQ(data->properties().residue(1561), 195);
-    EXPECT_EQ(data->properties().residue(1562), 196);
-    EXPECT_EQ(data->properties().residue(1790), 222);
-    EXPECT_EQ(data->properties().residue(1791), 223);
-    EXPECT_EQ(data->properties().residue(1792), 224);
-    EXPECT_EQ(data->properties().residue(1793), 225);
-    EXPECT_EQ(data->properties().residue(1798), 225);
-    EXPECT_EQ(data->properties().residue(1799), 226);
-    EXPECT_EQ(data->properties().residue(1804), 226);
+    EXPECT_EQ(data->atoms().residue(0), 0);
+    EXPECT_EQ(data->atoms().residue(3), 0);
+    EXPECT_EQ(data->atoms().residue(4), 1);
+    EXPECT_EQ(data->atoms().residue(1230), 153);
+    EXPECT_EQ(data->atoms().residue(1231), 154);
+    EXPECT_EQ(data->atoms().residue(1561), 195);
+    EXPECT_EQ(data->atoms().residue(1562), 196);
+    EXPECT_EQ(data->atoms().residue(1790), 222);
+    EXPECT_EQ(data->atoms().residue(1791), 223);
+    EXPECT_EQ(data->atoms().residue(1792), 224);
+    EXPECT_EQ(data->atoms().residue(1793), 225);
+    EXPECT_EQ(data->atoms().residue(1798), 225);
+    EXPECT_EQ(data->atoms().residue(1799), 226);
+    EXPECT_EQ(data->atoms().residue(1804), 226);
     // Water molecules
     for (size_t i = 0; i < 39; ++i)
     {
-        EXPECT_EQ(data->properties().residue(1805 + i), 227 + i);
+        EXPECT_EQ(data->atoms().residue(1805 + i), 227 + i);
     }
 }
 

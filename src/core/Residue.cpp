@@ -46,7 +46,7 @@ void Residue::set_chain(std::string const &chain)
 
 void Residue::add_atom(size_t atom_index)
 {
-    mol::internal::AtomData &properties = data()->properties();
+    mol::internal::AtomData &properties = data()->atoms();
     mol::internal::ResidueData &residues = data()->residues();
     size_t const old_res = properties.residue(atom_index);
     residues.remove_atom(old_res, atom_index);

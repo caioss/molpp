@@ -137,7 +137,7 @@ TEST(Residues, ResidueDetect) {
     ASSERT_THAT(data, NotNull());
     for (size_t i = 0; i < 10; i++)
     {
-        data->properties().residue(i) = index[i];
+        data->atoms().residue(i) = index[i];
     }
 
     detect.update_residue_data(*data);

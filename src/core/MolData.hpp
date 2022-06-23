@@ -16,7 +16,7 @@ public:
     static std::shared_ptr<MolData> create(size_t const num_atoms);
 
     size_t size() const { return m_num_atoms; };
-    AtomData &properties() { return m_properties; }
+    AtomData &atoms() { return m_properties; }
     AtomData const &properties() const { return m_properties; }
     BondData &bonds() { return m_bonds; }
     BondData const& bonds() const { return m_bonds; }

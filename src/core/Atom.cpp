@@ -18,86 +18,86 @@ Residue Atom::residue()
 
 size_t Atom::residue_id() const
 {
-    return data()->properties().residue(index());
+    return data()->atoms().residue(index());
 }
 
 int Atom::atomic() const
 {
-    return data()->properties().atomic(index());
+    return data()->atoms().atomic(index());
 }
 
 void Atom::set_atomic(int const &atomic)
 {
-    data()->properties().atomic(index()) = atomic;
+    data()->atoms().atomic(index()) = atomic;
 }
 
 float Atom::occupancy() const
 {
-    return data()->properties().occupancy(index());
+    return data()->atoms().occupancy(index());
 }
 
 void Atom::set_occupancy(float const &occupancy)
 {
-    data()->properties().occupancy(index()) = occupancy;
+    data()->atoms().occupancy(index()) = occupancy;
 }
 
 float Atom::tempfactor() const
 {
-    return data()->properties().tempfactor(index());
+    return data()->atoms().tempfactor(index());
 }
 
 void Atom::set_tempfactor(float const &tempfactor)
 {
-    data()->properties().tempfactor(index()) = tempfactor;
+    data()->atoms().tempfactor(index()) = tempfactor;
 }
 
 float Atom::mass() const
 {
-    return data()->properties().mass(index());
+    return data()->atoms().mass(index());
 }
 
 void Atom::set_mass(float const &mass)
 {
-    data()->properties().mass(index()) = mass;
+    data()->atoms().mass(index()) = mass;
 }
 
 float Atom::charge() const
 {
-    return data()->properties().charge(index());
+    return data()->atoms().charge(index());
 }
 
 void Atom::set_charge(float const &charge)
 {
-    data()->properties().charge(index()) = charge;
+    data()->atoms().charge(index()) = charge;
 }
 
 float Atom::radius() const
 {
-    return data()->properties().radius(index());
+    return data()->atoms().radius(index());
 }
 
 void Atom::set_radius(float const &radius)
 {
-    data()->properties().radius(index()) = radius;
+    data()->atoms().radius(index()) = radius;
 }
 
 std::string Atom::name() const
 {
-    return data()->properties().name(index());
+    return data()->atoms().name(index());
 }
 
 void Atom::set_name(std::string const &name) {
-    data()->properties().name(index()) = name;
+    data()->atoms().name(index()) = name;
 }
 
 std::string Atom::type() const
 {
-    return data()->properties().type(index());
+    return data()->atoms().type(index());
 }
 
 void Atom::set_type(std::string const &type)
 {
-    data()->properties().type(index()) = type;
+    data()->atoms().type(index()) = type;
 }
 
 std::string Atom::resname() const
@@ -117,12 +117,12 @@ std::string Atom::chain() const
 
 std::string Atom::altloc() const
 {
-    return data()->properties().altloc(index());
+    return data()->atoms().altloc(index());
 }
 
 void Atom::set_altloc(std::string const &altloc)
 {
-    data()->properties().altloc(index()) = altloc;
+    data()->atoms().altloc(index()) = altloc;
 }
 
 std::shared_ptr<Bond> Atom::add_bond(size_t const bonded_to)

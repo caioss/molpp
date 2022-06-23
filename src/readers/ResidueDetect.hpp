@@ -64,7 +64,7 @@ public:
 
         for (size_t index = 0; index < mol_data.size(); ++index)
         {
-            size_t const residue_idx = mol_data.properties().residue(index);
+            size_t const residue_idx = mol_data.atoms().residue(index);
             residues_data.add_atom(residue_idx, index);
         }
     }

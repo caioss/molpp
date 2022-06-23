@@ -28,7 +28,7 @@ std::vector<size_t> ResidueSel::atom_indices() const
 
 std::vector<size_t> ResidueSel::from_atom_indices(std::vector<size_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> const data)
 {
-    AtomData &properties = data->properties();
+    AtomData &properties = data->atoms();
     std::unordered_set<size_t> residues;
     for (auto const index : atom_indices)
     {

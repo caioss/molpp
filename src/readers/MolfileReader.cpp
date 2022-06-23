@@ -211,7 +211,7 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
         }
 
         // Detect residues
-        mol_data->properties().residue(i) = residues.register_atom(mol_atom.resid, mol_atom.resname, mol_atom.segid, mol_atom.chain);
+        mol_data->atoms().residue(i) = residues.register_atom(mol_atom.resid, mol_atom.resname, mol_atom.segid, mol_atom.chain);
         }
 
     // Update residues data

@@ -13,7 +13,7 @@ std::shared_ptr<MolData> create_moldata(size_t const num_res, size_t const num_r
 {
     size_t const num_atoms { num_res * num_res_atoms };
     auto data = MolData::create(num_atoms);
-    AtomData& atom_data = data->properties();
+    AtomData& atom_data = data->atoms();
     ResidueData& res_data = data->residues();
     data->residues().resize(num_res);
     std::string const letters("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -72,7 +72,7 @@ TEST(Auxiliary, create_moldata) {
     EXPECT_EQ(data->size(), 6);
 
     // Atoms
-    EXPECT_EQ(data->properties().size(), 6);
+    EXPECT_EQ(data->atoms().size(), 6);
     std::vector<mol::Atom> atoms;
     for (size_t i = 0; i < data->size(); ++i)
     {
