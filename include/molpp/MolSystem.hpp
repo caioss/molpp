@@ -2,6 +2,7 @@
 #define MOLSYSTEM_HPP
 
 #include <molpp/AtomSel.hpp>
+#include <molpp/AtomSelector.hpp>
 #include <string>
 #include <memory>
 #include <vector>
@@ -19,6 +20,8 @@ public:
     void add_trajectory(std::string const& file_name, int begin=0, int end=-1, int step=1);
     AtomSel atoms() const;
     AtomSel select(std::vector<size_t> const &indices) const;
+    AtomSel select(std::string const &selection, std::optional<size_t> frame = std::nullopt) const;
+    AtomSelector selector(std::string const& selection) const;
     void reset_bonds();
     void guess_bonds();
 

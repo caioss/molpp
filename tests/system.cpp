@@ -1,4 +1,5 @@
 #include <molpp/Atom.hpp>
+#include <molpp/AtomSelector.hpp>
 #include <molpp/MolSystem.hpp>
 #include <molpp/MolError.hpp>
 #include <gtest/gtest.h>
@@ -18,11 +19,29 @@ TEST(System, MolSystem) {
     EXPECT_THROW(mol.add_trajectory("no_file.pdb"), MolError);
     EXPECT_NO_THROW(mol.add_trajectory("traj.pdb"));
 
-    AtomSel all_sel{mol.atoms()};
-    EXPECT_EQ(all_sel.size(), 2);
+}
 
-    AtomSel index_sel{mol.select({0})};
-    EXPECT_EQ(index_sel.size(), 1);
+TEST(System, Selection) {
+    MolSystem mol("4lad.pdb");
+    mol.add_trajectory("4lad.pdb");
+
+    AtomSel all_sel{mol.atoms()};
+    EXPECT_EQ(all_sel.size(), 1844);
+
+    // From indices
+    AtomSel index_sel{mol.select(std::vector<size_t>{0, 2})};
+    EXPECT_THAT(index_sel.indices(), ElementsAre(0, 2));
+
+    // From strings
+    AtomSel water = mol.select("resid 203:205 or resid 900:910", 0);
+    EXPECT_THAT(water.indices(), ElementsAre(1807, 1808, 1809));
+    EXPECT_EQ(water.frame(), 0);
+
+    // Selector
+    AtomSelector selector = mol.selector("resid 203:205 or resid 900:910");
+    water = selector.apply(0);
+    EXPECT_THAT(water.indices(), ElementsAre(1807, 1808, 1809));
+    EXPECT_EQ(water.frame(), 0);
 }
 
 TEST(System, Bonds) {

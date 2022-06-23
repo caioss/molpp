@@ -1,11 +1,11 @@
-#include "MolData.hpp"
-#include <molpp/MolSystem.hpp>
 #include <molpp/AtomSel.hpp>
-#include <molpp/ResidueSel.hpp>
 #include <molpp/MolError.hpp>
+#include <molpp/MolSystem.hpp>
+#include <molpp/ResidueSel.hpp>
+#include "MolData.hpp"
 #include "readers/MolReader.hpp"
-#include "guessers/ResidueBondGuesser.hpp"
 #include "guessers/AtomBondGuesser.hpp"
+#include "guessers/ResidueBondGuesser.hpp"
 #include <filesystem>
 
 using namespace mol;
@@ -54,9 +54,19 @@ AtomSel MolSystem::atoms() const
     return AtomSel(m_data);
 }
 
-AtomSel MolSystem::select(std::vector<size_t> const &indices) const
+AtomSel MolSystem::select(std::vector<size_t> const& indices) const
 {
     return AtomSel(indices, m_data);
+}
+
+AtomSel MolSystem::select(std::string const& selection, std::optional<size_t> frame) const
+{
+    return selector(selection).apply(frame);
+}
+
+AtomSelector MolSystem::selector(std::string const& selection) const
+{
+    return AtomSelector(selection, m_data);
 }
 
 void MolSystem::reset_bonds()

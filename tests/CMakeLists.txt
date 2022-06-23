@@ -14,6 +14,7 @@ add_executable(tests
     residues.cpp
     atomaggregates.cpp
     selections.cpp
+    selectors.cpp
     readers.cpp
     system.cpp
     bonds.cpp
