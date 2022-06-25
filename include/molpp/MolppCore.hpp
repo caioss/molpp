@@ -1,6 +1,7 @@
 #ifndef MOLPPCORE_HPP
 #define MOLPPCORE_HPP
 
+#include "MolError.hpp"
 #include <Eigen/Dense>
 #include <ranges>
 

@@ -1,0 +1,12 @@
+// Core
+#include "MolppCore.hpp"
+#include "MolSystem.hpp"
+
+// Selections
+#include "AtomSel.hpp"
+#include "AtomSelector.hpp"
+#include "ResidueSel.hpp"
+
+// Atom aggregates
+#include "Atom.hpp"
+#include "Residue.hpp"
