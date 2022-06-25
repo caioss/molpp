@@ -11,6 +11,7 @@ option(MOLPP_BUILD_TESTING "Build library tests." OFF)
 
 # The library
 add_library(molpp)
+add_library(Molpp::Molpp ALIAS molpp)
 
 # Source files
 add_subdirectory("src")
