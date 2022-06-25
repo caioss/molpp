@@ -5,9 +5,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(libmolpp VERSION 0.1.0)
 
 # Options
-option(USE_SYSTEM_EIGEN "Use system's Eigen installation." OFF)
+option(MOLPP_USE_SYSTEM_EIGEN "Use system's Eigen installation." OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
-option(BUILD_TESTING "Build library tests." OFF)
+option(MOLPP_BUILD_TESTING "Build library tests." OFF)
 
 # The library
 add_library(molpp)
@@ -19,7 +19,7 @@ add_subdirectory("src")
 add_subdirectory("thirdparty")
 
 include(FetchContent)
-if(USE_SYSTEM_EIGEN)
+if(MOLPP_USE_SYSTEM_EIGEN)
     find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 else()
     FetchContent_Declare(
@@ -77,7 +77,7 @@ target_compile_options(molpp
 )
 
 # Testing
-if(BUILD_TESTING)
+if(MOLPP_BUILD_TESTING)
     add_subdirectory(tests)
 endif()
 
