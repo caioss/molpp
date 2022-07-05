@@ -10,6 +10,8 @@ namespace mol::internal {
 class SelIndex
 {
 public:
+    using value_type = size_t;
+    using type = std::vector<value_type>;
     using iterator = std::vector<size_t>::const_iterator;
 
     SelIndex() = delete;
@@ -70,7 +72,7 @@ public:
     bool contains(size_t const index) const;
 
 private:
-    std::vector<size_t> m_indices;
+    type m_indices;
 };
 
 } // namespace mol::internal
