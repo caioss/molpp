@@ -203,15 +203,16 @@ TEST(Math, Comparison) {
     EXPECT_FALSE(essentially_equal(95.1, 100.0, 0.05));
 }
 
-TEST(Views, VectorView) {
+TEST(Views, SequenceView) {
     // Supporting data
     std::vector<int> vec(5);
     std::iota(vec.begin(), vec.end(), 10);
     std::vector<size_t> indices{1, 3, 4};
 
     // Only vectors
-    VectorView view(vec, indices);
+    SequenceView view(vec, indices);
     EXPECT_THAT(view, ElementsAre(11, 13, 14));
+    EXPECT_EQ(view.size(), 3);
     EXPECT_EQ(view[0], 11);
     EXPECT_EQ(view[1], 13);
     EXPECT_EQ(view[2], 14);
@@ -221,8 +222,9 @@ TEST(Views, VectorView) {
 
     // Vector from SelIndex
     SelIndex sel_indices(indices, 5);
-    VectorView sel_view(vec, sel_indices.indices());
+    SequenceView sel_view(vec, sel_indices.indices());
     EXPECT_THAT(sel_view, ElementsAre(11, 13, 14));
+    EXPECT_EQ(view.size(), 3);
     EXPECT_EQ(sel_view[0], 11);
     EXPECT_EQ(sel_view[1], 13);
     EXPECT_EQ(sel_view[2], 14);

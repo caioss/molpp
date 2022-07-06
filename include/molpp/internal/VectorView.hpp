@@ -6,8 +6,8 @@
 
 namespace mol {
 
-template <std::ranges::range Container, std::ranges::range Index>
-class VectorView
+template <std::ranges::random_access_range Container, std::ranges::bidirectional_range Index>
+class SequenceView
 {
 private:
     template <class ItValueType, std::bidirectional_iterator ItType>
@@ -21,10 +21,15 @@ public:
     using iterator = Iterator<value_type, typename Index::iterator>;
     using const_iterator = Iterator<value_type const, typename Index::const_iterator>;
 
-    VectorView(Container& data, Index const& indices)
+    SequenceView(Container& data, Index const& indices)
     : m_data{data},
       m_indices{indices}
     {}
+
+    size_t size() const
+    {
+        return m_indices.size();
+    }
 
     iterator begin()
     {
