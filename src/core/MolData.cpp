@@ -1,5 +1,4 @@
 #include "MolData.hpp"
-#include <molpp/Atom.hpp>
 #include <utility>
 
 using namespace mol::internal;
