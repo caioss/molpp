@@ -58,7 +58,7 @@ public:
         // High epsilon allowed by molecular properties
         return essentially_equal(first, query, 1e-4) ||
                essentially_equal(last, query, 1e-4) ||
-               (definitely_greater(query, first, 1e-4) && definitely_less(query, last, 1e-4));
+               (query > first && query < last);
     }
 
 private:
