@@ -5,13 +5,6 @@
 using namespace mol;
 using namespace mol::internal;
 
-bool BaseAtomAggregate::operator==(BaseAtomAggregate const &other) const
-{
-    return m_data == other.m_data
-           && m_index == other.m_index
-           && m_frame == other.m_frame;
-}
-
 BaseAtomAggregate::coords_type BaseAtomAggregate::coords(std::vector<size_t> &&atom_indices)
 {
     if (!m_frame)
