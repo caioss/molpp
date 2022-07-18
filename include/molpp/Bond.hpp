@@ -10,8 +10,8 @@ class Bond
 public:
     Bond() = delete;
     Bond(size_t const atom1, size_t const atom2);
-    size_t atom1() { return m_atom1; }
-    size_t atom2() { return m_atom2; }
+    size_t atom1() const { return m_atom1; }
+    size_t atom2() const { return m_atom2; }
     int order() const { return m_order; }
     void set_order(int const order) { m_order = order; }
     bool guessed() const { return m_guessed; }
