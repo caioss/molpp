@@ -130,12 +130,12 @@ TEST(Atoms, MolData) {
     EXPECT_EQ(data->trajectory().num_frames(), 0);
 }
 
-TEST(Atoms, TrajData) {
+TEST(Atoms, Trajectory) {
     size_t const num_atoms { 3 };
     auto data = MolData::create(num_atoms);
     ASSERT_THAT(data, NotNull());
 
-    TrajData &traj_data = data->trajectory();
+    Trajectory &traj_data = data->trajectory();
     EXPECT_EQ(traj_data.num_frames(), 0);
     traj_data.add_timestep(Timestep(num_atoms));
     EXPECT_EQ(traj_data.num_frames(), 1);

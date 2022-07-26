@@ -121,7 +121,7 @@ TEST(Auxiliary, create_moldata) {
     EXPECT_THAT(bond_data.bonded(5), UnorderedElementsAre());
 
     // Trajectory
-    TrajData const& traj_data = data->trajectory();
+    Trajectory const& traj_data = data->trajectory();
     EXPECT_EQ(traj_data.num_frames(), 2);
     EXPECT_THAT(traj_data.timestep(0).coords().reshaped(), ElementsAre(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5));
     EXPECT_THAT(traj_data.timestep(1).coords().reshaped(), ElementsAre(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5));

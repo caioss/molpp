@@ -1,6 +1,6 @@
-#include "Timestep.hpp"
+#include <molpp/Timestep.hpp>
 
-using namespace mol::internal;
+using namespace mol;
 
 Timestep::Timestep()
 : m_num_atoms { 0 }

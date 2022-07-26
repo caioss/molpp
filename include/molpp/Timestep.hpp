@@ -3,7 +3,7 @@
 
 #include <molpp/MolppCore.hpp>
 
-namespace mol::internal
+namespace mol
 {
 
 class Timestep
@@ -25,6 +25,6 @@ private:
     Coord3 m_coords;
 };
 
-} // namespace mol::internal
+} // namespace mol
 
 #endif // TIMESTEP_HPP

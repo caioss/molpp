@@ -4,7 +4,7 @@
 #include "core/AtomData.hpp"
 #include "core/BondData.hpp"
 #include "core/ResidueData.hpp"
-#include "core/TrajData.hpp"
+#include <molpp/Trajectory.hpp>
 #include <memory>
 
 namespace mol::internal {
@@ -22,8 +22,8 @@ public:
     BondData const& bonds() const { return m_bonds; }
     ResidueData &residues() { return m_residues; }
     ResidueData const &residues() const { return m_residues; }
-    TrajData &trajectory() { return m_trajectory; }
-    TrajData const& trajectory() const { return m_trajectory; }
+    Trajectory &trajectory() { return m_trajectory; }
+    Trajectory const& trajectory() const { return m_trajectory; }
 
 private:
     MolData(size_t const num_atoms);
@@ -32,7 +32,7 @@ private:
     AtomData m_properties;
     BondData m_bonds;
     ResidueData m_residues;
-    TrajData m_trajectory;
+    Trajectory m_trajectory;
 };
 
 } // namespace mol::internal

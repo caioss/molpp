@@ -1,15 +1,15 @@
-#ifndef TRAJDATA_HPP
-#define TRAJDATA_HPP
+#ifndef TRAJECTORY_HPP
+#define TRAJECTORY_HPP
 
-#include "core/Timestep.hpp"
+#include <molpp/Timestep.hpp>
 #include <vector>
 
-namespace mol::internal {
+namespace mol {
 
-class TrajData
+class Trajectory
 {
 public:
-    TrajData()
+    Trajectory()
     {}
 
     size_t num_frames() const {
@@ -33,6 +33,6 @@ private:
     std::vector<Timestep> m_timestep;
 };
 
-} // namespace mol::internal
+} // namespace mol
 
-#endif // TRAJDATA_HPP
+#endif // TRAJECTORY_HPP

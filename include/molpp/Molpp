@@ -1,6 +1,8 @@
 // Core
 #include "MolppCore.hpp"
 #include "MolSystem.hpp"
+#include "Trajectory.hpp"
+#include "Timestep.hpp"
 
 // Selections
 #include "AtomSel.hpp"
