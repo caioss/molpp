@@ -98,15 +98,21 @@ TEST(Selections, BaseSel) {
     /*
      * Trajectory
      */
+    // Invalid Timestep
+    EXPECT_THROW(all_sel.timestep(), MolError);
+
     BaseSel traj_sel(SelIndex(pdb.traj->size()), pdb.traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(0)));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
 }
 
 TEST(Selections, Sel) {
@@ -199,17 +205,23 @@ TEST(Selections, Sel) {
     /*
      * Trajectory
      */
+    // Invalid Timestep
+    EXPECT_THROW(all_sel.timestep(), MolError);
     EXPECT_THROW(all_sel.coords(), MolError);
+
     Sel<Atom, AtomSel> traj_sel(pdb.traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(0)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(1, -1, 0, 2, -2, 1));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
     traj_sel.coords().array() += 3;
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(27, -21, 3, 51, -45, 27));
@@ -362,17 +374,23 @@ TEST(Selections, AtomSel) {
     /*
      * Trajectory
      */
+    // Invalid Timestep
+    EXPECT_THROW(all_sel.timestep(), MolError);
     EXPECT_THROW(all_sel.coords(), MolError);
+
     AtomSel traj_sel(pdb.traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(0)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(1, -1, 0, 2, -2, 1));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
     traj_sel.coords().array() += 3;
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(27, -21, 3, 51, -45, 27));
@@ -525,17 +543,23 @@ TEST(Selections, ResidueSel) {
     /*
      * Trajectory
      */
+    // Invalid Timestep
+    EXPECT_THROW(all_sel.timestep(), MolError);
     EXPECT_THROW(all_sel.coords(), MolError);
+
     ResidueSel traj_sel(pdb.traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(0)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(1, -1, 0, 2, -2, 1));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
     traj_sel.coords().array() += 3;
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(27, -21, 3, 51, -45, 27));

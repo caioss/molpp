@@ -22,6 +22,15 @@ void BaseSel::set_frame(std::optional<size_t> frame)
     m_frame = frame;
 }
 
+Timestep& BaseSel::timestep()
+{
+    if (!m_frame)
+    {
+        throw mol::MolError("Invalid frame");
+    }
+    return m_data->trajectory().timestep(m_frame.value());
+}
+
 BaseSel::coords_type BaseSel::coords(std::vector<size_t> &&atom_indices)
 {
     if (!m_frame)

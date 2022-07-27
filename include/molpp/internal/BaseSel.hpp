@@ -3,6 +3,7 @@
 
 #include <molpp/MolppCore.hpp>
 #include <molpp/internal/SelIndex.hpp>
+#include <molpp/Timestep.hpp>
 #include <memory>
 #include <optional>
 
@@ -43,6 +44,8 @@ public:
     {
         return m_index.indices();
     }
+
+    Timestep& timestep();
 
 protected:
     coords_type coords(std::vector<size_t> &&atom_indices);
