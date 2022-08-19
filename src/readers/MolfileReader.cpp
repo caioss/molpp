@@ -171,7 +171,7 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
          */
         molfile_atom_t const &mol_atom = molfile_atoms[i];
 
-        Atom atom(i, 0, mol_data);
+        Atom atom(i, {}, mol_data);
         atom.set_name(mol_atom.name);
         atom.set_type(mol_atom.type);
 
