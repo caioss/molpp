@@ -7,8 +7,11 @@
 
 namespace mol {
 
-using Point3 = Eigen::Vector3f;
-using Coord3 = Eigen::Matrix3Xf;
+using position_t = float;
+
+using Point3 = Eigen::Vector<position_t, 3>;
+using Coord3 = Eigen::Matrix<position_t, 3, Eigen::Dynamic>;
+using Coord2 = Eigen::Matrix<position_t, 2, Eigen::Dynamic>;
 
 template <class T>
 concept SelIndexCompatible = requires(T t)
