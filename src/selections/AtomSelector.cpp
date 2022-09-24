@@ -27,7 +27,11 @@ AtomSel AtomSelector::apply(std::optional<size_t> frame)
     sel_stack.evaluate(*m_data, flags, frame);
 
     AtomSel sel(*(flags.selected), m_data);
-    sel.set_frame(frame);
+    if (frame)
+    {
+        sel.set_frame(frame);
+    }
+
     return sel;
 }
 

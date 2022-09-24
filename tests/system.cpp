@@ -24,6 +24,7 @@ TEST(System, MolSystem) {
 TEST(System, Selection) {
     MolSystem mol("4lad.pdb");
     mol.add_trajectory("4lad.pdb");
+    mol.add_trajectory("4lad.pdb");
 
     AtomSel all_sel{mol.atoms()};
     EXPECT_EQ(all_sel.size(), 1844);
@@ -32,16 +33,21 @@ TEST(System, Selection) {
     AtomSel index_sel{mol.select(std::vector<size_t>{0, 2})};
     EXPECT_THAT(index_sel.indices(), ElementsAre(0, 2));
 
-    // From strings
-    AtomSel water = mol.select("resid 203:205 or resid 900:910", 0);
+    // From strings with frame
+    AtomSel water = mol.select("resid 203:205 or resid 900:910", 1);
+    EXPECT_THAT(water.indices(), ElementsAre(1807, 1808, 1809));
+    EXPECT_EQ(water.frame(), 1);
+
+    // From strings without frame
+    water = mol.select("resid 203:205 or resid 900:910");
     EXPECT_THAT(water.indices(), ElementsAre(1807, 1808, 1809));
     EXPECT_EQ(water.frame(), 0);
 
     // Selector
     AtomSelector selector = mol.selector("resid 203:205 or resid 900:910");
-    water = selector.apply(0);
+    water = selector.apply(1);
     EXPECT_THAT(water.indices(), ElementsAre(1807, 1808, 1809));
-    EXPECT_EQ(water.frame(), 0);
+    EXPECT_EQ(water.frame(), 1);
 }
 
 TEST(System, Bonds) {
