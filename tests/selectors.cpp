@@ -12,10 +12,10 @@ using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
-std::shared_ptr<std::set<size_t>> evaluate_sel_tree(std::shared_ptr<SelectionNode> tree, MolData const& data)
+std::shared_ptr<std::set<index_t>> evaluate_sel_tree(std::shared_ptr<SelectionNode> tree, MolData const& data)
 {
     SelectionFlags flags;
-    for (size_t atom_idx = 0; atom_idx < data.size(); atom_idx++)
+    for (index_t atom_idx = 0; atom_idx < data.size(); atom_idx++)
     {
         flags.mask->insert(atom_idx);
     }
@@ -63,7 +63,7 @@ TEST(Selection, PropNodes) {
     class SubNumProp : public NumPropSelection
     {
     public:
-        void evaluate(SelectionStack& evaluator, MolData const& data, std::optional<size_t> frame) const override {};
+        void evaluate(SelectionStack& evaluator, MolData const& data, Frame frame) const override {};
     };
 
     SubNumProp num_prop;
@@ -90,7 +90,7 @@ TEST(Selection, ResidSelection) {
     auto data = create_moldata(5, 2, 2, 3, 1);
     SelectionStack flag_stack(nullptr);
     SelectionFlags flags;
-    for (size_t atom_idx = 0; atom_idx < data->size(); atom_idx++)
+    for (index_t atom_idx = 0; atom_idx < data->size(); atom_idx++)
     {
         flags.mask->insert(atom_idx);
     }
@@ -168,7 +168,7 @@ TEST(Selection, Evaluation) {
     class DummyNode : public SelectionNode
     {
     public:
-        MOCK_METHOD(void, evaluate, (SelectionStack& evaluator, MolData const& data, std::optional<size_t> frame), (const, override));
+        MOCK_METHOD(void, evaluate, (SelectionStack& evaluator, MolData const& data, Frame frame), (const, override));
     };
 
     std::shared_ptr<SelectionNode> root = std::make_shared<AndSelection>();
@@ -200,7 +200,7 @@ TEST(Selection, SelectionParser) {
 TEST(Selection, BooleanParsing) {
     // Mock MolData
     auto data = create_moldata(5, 2, 1, 1, 1);
-    std::shared_ptr<std::set<size_t>> selected;
+    std::shared_ptr<std::set<index_t>> selected;
 
     auto sel_tree = SEL_PARSER.parse("resid 1 or resid 2 or resid 3");
     ASSERT_TRUE(std::dynamic_pointer_cast<OrSelection>(sel_tree));
@@ -340,7 +340,7 @@ TEST(Selection, NumPropParsing) {
     EXPECT_TRUE(std::dynamic_pointer_cast<ResidSelection>(sel_tree->right));
     // Selection
     auto data = create_moldata(12, 1, 1, 1, 1);
-    std::shared_ptr<std::set<size_t>> selected = evaluate_sel_tree(sel_tree, *data);
+    std::shared_ptr<std::set<index_t>> selected = evaluate_sel_tree(sel_tree, *data);
     EXPECT_THAT(*selected, ElementsAre(0, 2, 3, 4, 6, 7, 9, 11));
 }
 

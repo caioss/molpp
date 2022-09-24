@@ -32,10 +32,10 @@ TEST(Bonds, BondData) {
     EXPECT_THAT(bond_data.bonded(3), UnorderedElementsAre(1, 3, 4));
     EXPECT_THAT(bond_data.bonded(4), ElementsAre(3, 4));
 
-    size_t indices[3] = {1, 0, 4};
+    index_t indices[3] = {1, 0, 4};
     auto bonded = bond_data.bonds(indices, indices + 3);
     EXPECT_EQ(bonded.size(), 3);
-    std::vector<size_t> bond_indices;
+    std::vector<index_t> bond_indices;
     bond_indices.reserve(6);
     for (auto b : bonded)
     {
@@ -220,8 +220,8 @@ TEST(Bonds, Guessers) {
     // Compare against tabulated residues and PDB's CONECT records
     for (auto ref_bond : res_atoms.bonds())
     {
-        size_t const atom1 = ref_bond->atom1();
-        size_t const atom2 = ref_bond->atom2();
+        index_t const atom1 = ref_bond->atom1();
+        index_t const atom2 = ref_bond->atom2();
         auto bonded = atoms_sel[atom1].bond(atom2);
         ASSERT_THAT(bonded, NotNull()) << atom1 << "-" << atom2;
     }

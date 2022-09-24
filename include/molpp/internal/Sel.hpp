@@ -25,8 +25,8 @@ template <class Derived>
 concept SelDerived = requires(Derived t)
 {
     std::derived_from<Derived, Sel<typename Derived::value_type, Derived>>;
-    {t.atom_indices()} -> std::same_as<std::vector<size_t>>;
-    {t.from_atom_indices({}, nullptr)} -> std::same_as<std::vector<size_t>>;
+    {t.atom_indices()} -> std::same_as<std::vector<index_t>>;
+    {t.from_atom_indices({}, nullptr)} -> std::same_as<std::vector<index_t>>;
     {t.max_size(nullptr)} -> std::same_as<size_t>;
 };
 
@@ -145,7 +145,7 @@ private:
         using pointer = ItType *;
         using reference = ItType &;
 
-        Iterator(std::shared_ptr<MolData> data, indices_iterator begin, std::optional<size_t> frame)
+        Iterator(std::shared_ptr<MolData> data, indices_iterator begin, Frame frame)
         : m_frame(frame),
           m_data(data),
           m_current(begin)
@@ -185,7 +185,7 @@ private:
         };
 
     private:
-        std::optional<size_t> m_frame;
+        Frame m_frame;
         std::shared_ptr<MolData> m_data;
         indices_iterator m_current;
     };

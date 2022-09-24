@@ -17,10 +17,10 @@ class MolData;
 class BaseAtomAggregate
 {
 public:
-    using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<size_t>>;
+    using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<index_t>>;
 
     BaseAtomAggregate() = delete;
-    BaseAtomAggregate(size_t const index, std::optional<size_t> const frame, std::shared_ptr<internal::MolData> data)
+    BaseAtomAggregate(index_t const index, Frame const frame, std::shared_ptr<internal::MolData> data)
     : m_index { index },
       m_frame(frame),
       m_data(data)
@@ -33,20 +33,20 @@ public:
                && m_frame == other.m_frame;
     }
 
-    size_t index() const
+    index_t index() const
     {
         return m_index;
     }
 
     // Read-only
-    std::optional<size_t> frame() const
+    Frame frame() const
     {
         return m_frame;
     }
 
 protected:
-    coords_type coords(std::vector<size_t> &&atom_indices);
-    std::vector<std::shared_ptr<Bond>> bonds(std::vector<size_t> const &atom_indices);
+    coords_type coords(std::vector<index_t> &&atom_indices);
+    std::vector<std::shared_ptr<Bond>> bonds(std::vector<index_t> const &atom_indices);
 
     std::shared_ptr<internal::MolData> data()
     {
@@ -59,8 +59,8 @@ protected:
     }
 
 private:
-    size_t m_index;
-    std::optional<size_t> m_frame;
+    index_t m_index;
+    Frame m_frame;
     std::shared_ptr<internal::MolData> m_data;
 };
 

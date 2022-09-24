@@ -213,7 +213,7 @@ TEST(Views, SequenceView) {
     // Supporting data
     std::vector<int> vec(5);
     std::iota(vec.begin(), vec.end(), 10);
-    std::vector<size_t> indices{1, 3, 4};
+    std::vector<index_t> indices{1, 3, 4};
 
     // Only vectors
     SequenceView view(vec, indices);

@@ -22,7 +22,7 @@ void ResidueBondGuesser::apply(ResidueSel &residues) const
         std::fill(bonds_map.begin(), bonds_map.end(), -1);
 
         AtomSel atoms(res);
-        for (size_t i = 0; i < atoms.size(); i++)
+        for (index_t i = 0; i < atoms.size(); i++)
         {
             Atom const atom = atoms[i];
             int const atom_index = res_info.atom_index(atom.name());

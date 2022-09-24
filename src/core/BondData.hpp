@@ -1,6 +1,7 @@
 #ifndef BONDGRAPH_HPP
 #define BONDGRAPH_HPP
 
+#include <molpp/MolppCore.hpp>
 #include "tools/Graph.hpp"
 #include <molpp/Bond.hpp>
 #include <vector>
@@ -31,16 +32,16 @@ public:
     template <class Iterator>
     std::vector<std::shared_ptr<Bond>> bonds(Iterator it, Iterator end);
     template <class Iterator>
-    std::vector<size_t> bonded(Iterator it, Iterator end) const;
-    std::vector<std::shared_ptr<Bond>> bonds(size_t const index);
-    std::shared_ptr<Bond> bond(size_t const atom1, size_t const atom2);
-    std::vector<size_t> bonded(size_t const index) const;
-    std::shared_ptr<Bond> add_bond(size_t const atom1, size_t const atom2);
+    std::vector<index_t> bonded(Iterator it, Iterator end) const;
+    std::vector<std::shared_ptr<Bond>> bonds(index_t const index);
+    std::shared_ptr<Bond> bond(index_t const atom1, index_t const atom2);
+    std::vector<index_t> bonded(index_t const index) const;
+    std::shared_ptr<Bond> add_bond(index_t const atom1, index_t const atom2);
     void clear();
 
 private:
     bool m_incomplete;
-    Graph<size_t, std::shared_ptr<Bond>> m_graph;
+    Graph<index_t, std::shared_ptr<Bond>> m_graph;
 };
 
 template <class Iterator>
@@ -56,12 +57,12 @@ std::vector<std::shared_ptr<Bond>> BondData::bonds(Iterator it, Iterator end)
 }
 
 template <class Iterator>
-std::vector<size_t> BondData::bonded(Iterator it, Iterator end) const
+std::vector<index_t> BondData::bonded(Iterator it, Iterator end) const
 {
-    std::unordered_set<size_t> indices;
+    std::unordered_set<index_t> indices;
     while (it != end)
     {
-        size_t const index = *(it++);
+        index_t const index = *(it++);
         auto const range = m_graph.adjacency(index);
         if (range)
         {
@@ -69,7 +70,7 @@ std::vector<size_t> BondData::bonded(Iterator it, Iterator end) const
             indices.insert(range.begin(), range.end());
         }
     }
-    return std::vector<size_t>(indices.begin(), indices.end());
+    return std::vector<index_t>(indices.begin(), indices.end());
 }
 
 } // namespace mol::internal

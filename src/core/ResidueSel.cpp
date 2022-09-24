@@ -4,7 +4,7 @@
 using namespace mol;
 using namespace mol::internal;
 
-std::vector<size_t> ResidueSel::atom_indices() const
+std::vector<index_t> ResidueSel::atom_indices() const
 {
     ResidueData const &residues = data()->residues();
     size_t num_atoms = 0;
@@ -13,7 +13,7 @@ std::vector<size_t> ResidueSel::atom_indices() const
         num_atoms += residues.size(res);
     }
 
-    std::vector<size_t> atoms;
+    std::vector<index_t> atoms;
     atoms.reserve(num_atoms);
     for (auto const res : indices())
     {
@@ -26,10 +26,10 @@ std::vector<size_t> ResidueSel::atom_indices() const
     return atoms;
 }
 
-std::vector<size_t> ResidueSel::from_atom_indices(std::vector<size_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> const data)
+std::vector<index_t> ResidueSel::from_atom_indices(std::vector<index_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> const data)
 {
     AtomData &properties = data->atoms();
-    std::unordered_set<size_t> residues;
+    std::unordered_set<index_t> residues;
     for (auto const index : atom_indices)
     {
         residues.insert(properties.residue(index));

@@ -19,11 +19,11 @@ std::shared_ptr<MolData> create_moldata(size_t const num_res, size_t const num_r
     std::string const letters("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
     // Set atoms
-    for (size_t atom_idx = 0; atom_idx < num_atoms; atom_idx++)
+    for (index_t atom_idx = 0; atom_idx < num_atoms; atom_idx++)
     {
         std::string const code = letters.substr(atom_idx % 26, 1);
 
-        size_t const res_idx = atom_idx / num_res_atoms;
+        index_t const res_idx = atom_idx / num_res_atoms;
         atom_data.residue(atom_idx) = res_idx;
         res_data.add_atom(res_idx, atom_idx);
         atom_data.atomic(atom_idx) = atom_idx;
@@ -38,7 +38,7 @@ std::shared_ptr<MolData> create_moldata(size_t const num_res, size_t const num_r
     }
 
     // Set residues
-    for (size_t res_idx = 0; res_idx < num_res; res_idx++)
+    for (index_t res_idx = 0; res_idx < num_res; res_idx++)
     {
         std::string const resname = letters.substr(res_idx % 26, 1);
         std::string const chain = letters.substr(res_idx % num_chains % 26, 1);
@@ -47,7 +47,7 @@ std::shared_ptr<MolData> create_moldata(size_t const num_res, size_t const num_r
     }
 
     // Bonds between first atoms of consecutive residues
-    for (size_t atom_idx = 0; atom_idx < num_atoms - num_res_atoms; atom_idx += num_res_atoms)
+    for (index_t atom_idx = 0; atom_idx < num_atoms - num_res_atoms; atom_idx += num_res_atoms)
     {
         data->bonds().add_bond(atom_idx, atom_idx + num_res_atoms);
     }
@@ -56,7 +56,7 @@ std::shared_ptr<MolData> create_moldata(size_t const num_res, size_t const num_r
     for (size_t frame_idx = 0; frame_idx < num_frames; frame_idx++)
     {
         data->trajectory().add_timestep(Timestep(num_atoms));
-        for (size_t atom_idx = 0; atom_idx < num_atoms; atom_idx++)
+        for (index_t atom_idx = 0; atom_idx < num_atoms; atom_idx++)
         {
             auto& coords = data->trajectory().timestep(frame_idx).coords();
             coords(Eigen::all, atom_idx) << atom_idx, atom_idx, atom_idx;
@@ -74,7 +74,7 @@ TEST(Auxiliary, create_moldata) {
     // Atoms
     EXPECT_EQ(data->atoms().size(), 6);
     std::vector<mol::Atom> atoms;
-    for (size_t i = 0; i < data->size(); ++i)
+    for (index_t i = 0; i < data->size(); ++i)
     {
         atoms.push_back(Atom(i, std::nullopt, data));
     }

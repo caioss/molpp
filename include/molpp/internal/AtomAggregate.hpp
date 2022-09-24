@@ -15,7 +15,7 @@ template <class T>
 concept AtomAggregateDerived = requires(T t)
 {
     std::derived_from<T, AtomAggregate<T>>;
-    {t.atom_indices()} -> std::same_as<std::vector<size_t>>;
+    {t.atom_indices()} -> std::same_as<std::vector<index_t>>;
 };
 
 template <class Derived>
@@ -26,7 +26,7 @@ public:
 
     AtomAggregate() = delete;
 
-    AtomAggregate(size_t const index, std::optional<size_t> const frame, std::shared_ptr<internal::MolData> data)
+    AtomAggregate(index_t const index, Frame const frame, std::shared_ptr<internal::MolData> data)
     requires AtomAggregateDerived<Derived>
     : BaseAtomAggregate(index, frame, data)
     {}

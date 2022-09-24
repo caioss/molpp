@@ -13,7 +13,7 @@ struct CopyNode : public SelectionNode
     : ast(node)
     {}
 
-    void evaluate(SelectionStack& /*evaluator*/, MolData const& /*data*/, std::optional<size_t> /*frame*/) const override
+    void evaluate(SelectionStack& /*evaluator*/, MolData const& /*data*/, Frame /*frame*/) const override
     {};
 
     std::shared_ptr<peg::Ast> ast;

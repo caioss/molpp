@@ -12,7 +12,7 @@ class ResidueDetect
 private:
     struct Residue
     {
-        size_t index;
+        index_t index;
         size_t count;
         int resid;
         std::string resname;
@@ -31,7 +31,7 @@ public:
     : m_iterator{m_residues.end()}
     {}
 
-    size_t register_atom(int const resid, std::string const &resname, std::string const &segid, std::string const chain)
+    index_t register_atom(int const resid, std::string const &resname, std::string const &segid, std::string const chain)
     {
         if (m_iterator == m_residues.end()
             || m_current.resid != resid
@@ -39,7 +39,7 @@ public:
             || m_current.segid != segid
             || m_current.chain != chain)
         {
-            size_t const index = m_residues.size();
+            index_t const index = m_residues.size();
             m_current = {index, 0, resid, resname, segid, chain};
 
             std::tuple const key{resid, resname, segid, chain};
@@ -62,9 +62,9 @@ public:
             residues_data.set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
         }
 
-        for (size_t index = 0; index < mol_data.size(); ++index)
+        for (index_t index = 0; index < mol_data.size(); ++index)
         {
-            size_t const residue_idx = mol_data.atoms().residue(index);
+            index_t const residue_idx = mol_data.atoms().residue(index);
             residues_data.add_atom(residue_idx, index);
         }
     }

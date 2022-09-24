@@ -15,10 +15,10 @@ AtomSelector::AtomSelector(std::string const& selection, std::shared_ptr<MolData
     parse(selection);
 }
 
-AtomSel AtomSelector::apply(std::optional<size_t> frame)
+AtomSel AtomSelector::apply(Frame frame)
 {
     SelectionFlags flags;
-    for (size_t atom_idx = 0; atom_idx < m_data->size(); atom_idx++)
+    for (index_t atom_idx = 0; atom_idx < m_data->size(); atom_idx++)
     {
         flags.mask->insert(atom_idx);
     }

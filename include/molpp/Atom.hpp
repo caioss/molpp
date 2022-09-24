@@ -20,7 +20,7 @@ public:
 
     int resid() const;
     Residue residue();
-    size_t residue_id() const;
+    index_t residue_id() const;
 
     int atomic() const;
     void set_atomic(int const &atomic);
@@ -53,12 +53,12 @@ public:
     std::string altloc() const;
     void set_altloc(std::string const &altloc);
 
-    std::shared_ptr<Bond> add_bond(size_t const bonded_to);
+    std::shared_ptr<Bond> add_bond(index_t const bonded_to);
     std::shared_ptr<Bond> add_bond(Atom const &bonded_to);
-    std::shared_ptr<Bond> bond(size_t const other);
+    std::shared_ptr<Bond> bond(index_t const other);
     std::shared_ptr<Bond> bond(Atom const &other);
 
-    std::vector<size_t> atom_indices() const
+    std::vector<index_t> atom_indices() const
     {
         return {index()};
     }

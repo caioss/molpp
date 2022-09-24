@@ -164,7 +164,7 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
     ResidueDetect residues;
 
     // Loop over all atoms
-    for (size_t i = 0; i < (size_t)m_num_atoms; ++i)
+    for (index_t i = 0; i < (size_t)m_num_atoms; ++i)
     {
         /*
          * Atoms properties
@@ -234,7 +234,7 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
             BondData &bond_graph = mol_data->bonds();
             bond_graph.set_incomplete(flags & MOLFILE_BONDSSPECIAL);
 
-            for (size_t i = 0; i < (size_t)num_bonds; ++i)
+            for (index_t i = 0; i < (size_t)num_bonds; ++i)
             {
                 auto bond = bond_graph.add_bond(from[i] - 1, to[i] - 1);
                 bond->set_guessed(false);

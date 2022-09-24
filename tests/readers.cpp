@@ -44,12 +44,12 @@ TEST(Readers, MolfileReader) {
      * Atom properties
      */
     std::vector<mol::Atom> atoms;
-    for (size_t i = 0; i < data->size(); ++i)
+    for (index_t i = 0; i < data->size(); ++i)
     {
         atoms.push_back(Atom(i, 0, data));
     }
     std::vector<mol::Atom> m2_atoms;
-    for (size_t i = 0; i < m2_data->size(); ++i)
+    for (index_t i = 0; i < m2_data->size(); ++i)
     {
         m2_atoms.push_back(Atom(i, std::nullopt, m2_data));
     }
@@ -194,7 +194,7 @@ TEST(Readers, MolfileReader) {
     EXPECT_EQ(data->atoms().residue(1799), 226);
     EXPECT_EQ(data->atoms().residue(1804), 226);
     // Water molecules
-    for (size_t i = 0; i < 39; ++i)
+    for (index_t i = 0; i < 39; ++i)
     {
         EXPECT_EQ(data->atoms().residue(1805 + i), 227 + i);
     }

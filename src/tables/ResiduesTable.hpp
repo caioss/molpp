@@ -1,6 +1,7 @@
 #ifndef RESIDUESTABLE_HPP
 #define RESIDUESTABLE_HPP
 
+#include <molpp/MolppCore.hpp>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -15,13 +16,13 @@ public:
     {
         bool aromatic;
         int order;
-        size_t atom1;
-        size_t atom2;
+        index_t atom1;
+        index_t atom2;
     };
 
     struct Residue
     {
-        std::unordered_map<std::string, size_t> atoms;
+        std::unordered_map<std::string, index_t> atoms;
         std::vector<Bond> bonds;
 
         int atom_index(std::string const &name) const

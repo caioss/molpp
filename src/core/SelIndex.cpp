@@ -10,7 +10,7 @@ SelIndex::SelIndex(size_t const max_size)
     std::iota(m_indices.begin(), m_indices.end(), 0);
 }
 
-bool SelIndex::contains(size_t const index) const
+bool SelIndex::contains(index_t const index) const
 {
     auto const it = std::lower_bound(m_indices.begin(), m_indices.end(), index);
     return it != m_indices.end() && *it == index;

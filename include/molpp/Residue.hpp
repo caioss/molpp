@@ -26,11 +26,11 @@ public:
     std::string chain() const;
     void set_chain(std::string const &chain);
 
-    void add_atom(size_t index);
+    void add_atom(index_t index);
     void add_atom(Atom const &atom);
     size_t size() const;
 
-    std::vector<size_t> atom_indices() const;
+    std::vector<index_t> atom_indices() const;
 };
 
 } // namespace mol

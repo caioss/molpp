@@ -9,9 +9,9 @@ class Bond
 {
 public:
     Bond() = delete;
-    Bond(size_t const atom1, size_t const atom2);
-    size_t atom1() const { return m_atom1; }
-    size_t atom2() const { return m_atom2; }
+    Bond(index_t const atom1, index_t const atom2);
+    index_t atom1() const { return m_atom1; }
+    index_t atom2() const { return m_atom2; }
     int order() const { return m_order; }
     void set_order(int const order) { m_order = order; }
     bool guessed() const { return m_guessed; }
@@ -26,11 +26,11 @@ private:
     bool m_guessed_order;
     bool m_aromatic;
     int m_order;
-    size_t m_atom1;
-    size_t m_atom2;
+    index_t m_atom1;
+    index_t m_atom2;
 };
 
-inline Bond::Bond(size_t const atom1, size_t const atom2)
+inline Bond::Bond(index_t const atom1, index_t const atom2)
 : m_guessed { true },
   m_guessed_order { true },
   m_aromatic { false },

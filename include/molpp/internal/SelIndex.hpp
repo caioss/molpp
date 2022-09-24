@@ -10,9 +10,9 @@ namespace mol::internal {
 class SelIndex
 {
 public:
-    using value_type = size_t;
+    using value_type = index_t;
     using type = std::vector<value_type>;
-    using iterator = std::vector<size_t>::const_iterator;
+    using iterator = std::vector<index_t>::const_iterator;
 
     SelIndex() = delete;
 
@@ -24,7 +24,7 @@ public:
         // Find unique, sorted and in-bounds indices
         std::vector<bool> m_selected(max_size, false);
         size_t count = 0;
-        for (size_t const& index : indices)
+        for (index_t const& index : indices)
         {
             if (index >= max_size)
             {
@@ -40,7 +40,7 @@ public:
 
         // Fill m_indices with correct values
         m_indices.reserve(count);
-        for (size_t i = 0; i < max_size; i++)
+        for (index_t i = 0; i < max_size; i++)
         {
             if (m_selected[i])
             {
@@ -49,7 +49,7 @@ public:
         }
     }
 
-    std::vector<size_t> const &indices() const
+    std::vector<index_t> const &indices() const
     {
         return m_indices;
     }
@@ -69,7 +69,7 @@ public:
         return m_indices.cend();
     }
 
-    bool contains(size_t const index) const;
+    bool contains(index_t const index) const;
 
 private:
     type m_indices;

@@ -44,11 +44,11 @@ void Residue::set_chain(std::string const &chain)
     data()->residues().chain(index()) = chain;
 }
 
-void Residue::add_atom(size_t atom_index)
+void Residue::add_atom(index_t atom_index)
 {
     mol::internal::AtomData &properties = data()->atoms();
     mol::internal::ResidueData &residues = data()->residues();
-    size_t const old_res = properties.residue(atom_index);
+    index_t const old_res = properties.residue(atom_index);
     residues.remove_atom(old_res, atom_index);
     residues.add_atom(index(), atom_index);
     properties.residue(atom_index) = index();
@@ -64,7 +64,7 @@ size_t Residue::size() const
     return data()->residues().size(index());
 }
 
-std::vector<size_t> Residue::atom_indices() const
+std::vector<index_t> Residue::atom_indices() const
 {
     auto const indices = data()->residues().indices(index());
     return {indices.begin(), indices.end()};

@@ -13,7 +13,7 @@ BaseSel::BaseSel(SelIndex&& indices, std::shared_ptr<MolData> data)
     init_frame();
 }
 
-void BaseSel::set_frame(std::optional<size_t> frame)
+void BaseSel::set_frame(Frame frame)
 {
     if (frame && frame >= m_data->trajectory().num_frames())
     {
@@ -31,21 +31,21 @@ Timestep& BaseSel::timestep()
     return m_data->trajectory().timestep(m_frame.value());
 }
 
-BaseSel::coords_type BaseSel::coords(std::vector<size_t> &&atom_indices)
+BaseSel::coords_type BaseSel::coords(std::vector<index_t> &&atom_indices)
 {
     if (!m_frame)
     {
         throw mol::MolError("Invalid frame");
     }
-    return m_data->trajectory().timestep(*m_frame).coords()(Eigen::all, std::forward<std::vector<size_t>>(atom_indices));
+    return m_data->trajectory().timestep(*m_frame).coords()(Eigen::all, std::forward<std::vector<index_t>>(atom_indices));
 }
 
-std::vector<size_t> BaseSel::bonded(std::vector<size_t> const &atom_indices) const
+std::vector<index_t> BaseSel::bonded(std::vector<index_t> const &atom_indices) const
 {
     return m_data->bonds().bonded(atom_indices.begin(), atom_indices.end());
 }
 
-std::vector<std::shared_ptr<mol::Bond>> BaseSel::bonds(std::vector<size_t> const &atom_indices)
+std::vector<std::shared_ptr<mol::Bond>> BaseSel::bonds(std::vector<index_t> const &atom_indices)
 {
     return m_data->bonds().bonds(atom_indices.begin(), atom_indices.end());
 }

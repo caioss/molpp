@@ -3,14 +3,14 @@
 
 using namespace mol;
 
-std::vector<size_t> AtomSel::atom_indices() const
+std::vector<index_t> AtomSel::atom_indices() const
 {
     return indices();
 }
 
-std::vector<size_t> AtomSel::from_atom_indices(std::vector<size_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> const /*data*/)
+std::vector<index_t> AtomSel::from_atom_indices(std::vector<index_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> const /*data*/)
 {
-    return std::forward<std::vector<size_t>>(atom_indices);
+    return std::forward<std::vector<index_t>>(atom_indices);
 }
 
 size_t AtomSel::max_size(std::shared_ptr<mol::internal::MolData> const data)

@@ -1,6 +1,7 @@
 #ifndef SELECTIONS_HPP
 #define SELECTIONS_HPP
 
+#include <molpp/MolppCore.hpp>
 #include "tools/math.hpp"
 #include <set>
 #include <memory>
@@ -68,19 +69,19 @@ private:
 
 struct SelectionFlags
 {
-    SelectionFlags(std::shared_ptr<std::set<size_t>> prev_mask, std::shared_ptr<std::set<size_t>> prev_selected)
+    SelectionFlags(std::shared_ptr<std::set<index_t>> prev_mask, std::shared_ptr<std::set<index_t>> prev_selected)
     : mask{prev_mask},
       selected{prev_selected}
     {}
 
     SelectionFlags()
-    : mask{std::make_shared<std::set<size_t>>()},
-      selected{std::make_shared<std::set<size_t>>()}
+    : mask{std::make_shared<std::set<index_t>>()},
+      selected{std::make_shared<std::set<index_t>>()}
     {}
 
     // Flags must be ordered
-    std::shared_ptr<std::set<size_t>> mask;
-    std::shared_ptr<std::set<size_t>> selected;
+    std::shared_ptr<std::set<index_t>> mask;
+    std::shared_ptr<std::set<index_t>> selected;
 };
 
 class SelectionStack
@@ -108,7 +109,7 @@ public:
         return flags;
     }
 
-    void evaluate(MolData const& data, SelectionFlags& flags, std::optional<size_t> frame);
+    void evaluate(MolData const& data, SelectionFlags& flags, Frame frame);
 
 private:
     std::shared_ptr<SelectionNode> m_root;
@@ -120,7 +121,7 @@ class SelectionNode
 {
 public:
     virtual ~SelectionNode() {}
-    virtual void evaluate(SelectionStack& stack, MolData const& data, std::optional<size_t> frame) const = 0;
+    virtual void evaluate(SelectionStack& stack, MolData const& data, Frame frame) const = 0;
 
     std::shared_ptr<SelectionNode> left;
     std::shared_ptr<SelectionNode> right;
@@ -129,19 +130,19 @@ public:
 class OrSelection : public SelectionNode
 {
 public:
-    void evaluate(SelectionStack& stack, MolData const& data, std::optional<size_t> frame) const override;
+    void evaluate(SelectionStack& stack, MolData const& data, Frame frame) const override;
 };
 
 class AndSelection : public SelectionNode
 {
 public:
-    void evaluate(SelectionStack& stack, MolData const& data, std::optional<size_t> frame) const override;
+    void evaluate(SelectionStack& stack, MolData const& data, Frame frame) const override;
 };
 
 class NotSelection : public SelectionNode
 {
 public:
-    void evaluate(SelectionStack& stack, MolData const& /*data*/, std::optional<size_t> frame) const override;
+    void evaluate(SelectionStack& stack, MolData const& /*data*/, Frame frame) const override;
 };
 
 class NumPropSelection : public SelectionNode
@@ -180,7 +181,7 @@ private:
 class ResidSelection : public NumPropSelection
 {
 public:
-    void evaluate(SelectionStack& stack, MolData const& data, std::optional<size_t> frame) const override;
+    void evaluate(SelectionStack& stack, MolData const& data, Frame frame) const override;
 };
 
 } // namespace mol::internal

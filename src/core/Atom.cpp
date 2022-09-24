@@ -16,7 +16,7 @@ Residue Atom::residue()
     return Residue(residue_id(), frame(), data());
 }
 
-size_t Atom::residue_id() const
+index_t Atom::residue_id() const
 {
     return data()->atoms().residue(index());
 }
@@ -125,7 +125,7 @@ void Atom::set_altloc(std::string const &altloc)
     data()->atoms().altloc(index()) = altloc;
 }
 
-std::shared_ptr<Bond> Atom::add_bond(size_t const bonded_to)
+std::shared_ptr<Bond> Atom::add_bond(index_t const bonded_to)
 {
     if (bonded_to == index())
     {
@@ -143,7 +143,7 @@ std::shared_ptr<Bond> Atom::add_bond(Atom const &bonded_to)
     return add_bond(bonded_to.index());
 }
 
-std::shared_ptr<Bond> Atom::bond(size_t const other)
+std::shared_ptr<Bond> Atom::bond(index_t const other)
 {
     return data()->bonds().bond(index(), other);
 }

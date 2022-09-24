@@ -30,7 +30,7 @@ TEST(System, Selection) {
     EXPECT_EQ(all_sel.size(), 1844);
 
     // From indices
-    AtomSel index_sel{mol.select(std::vector<size_t>{0, 2})};
+    AtomSel index_sel{mol.select(std::vector<index_t>{0, 2})};
     EXPECT_THAT(index_sel.indices(), ElementsAre(0, 2));
 
     // From strings with frame

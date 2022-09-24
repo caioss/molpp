@@ -1,6 +1,7 @@
 #ifndef ATOMSELECTOR_HPP
 #define ATOMSELECTOR_HPP
 
+#include <molpp/MolppCore.hpp>
 #include <molpp/AtomSel.hpp>
 #include <memory>
 
@@ -16,7 +17,7 @@ class AtomSelector
 public:
     AtomSelector() = delete;
     AtomSelector(std::string const& selection, std::shared_ptr<internal::MolData> data);
-    AtomSel apply(std::optional<size_t> frame);
+    AtomSel apply(Frame frame);
 
 private:
     void parse(std::string const& selection);

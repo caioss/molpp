@@ -54,12 +54,12 @@ AtomSel MolSystem::atoms() const
     return AtomSel(m_data);
 }
 
-AtomSel MolSystem::select(std::vector<size_t> const& indices) const
+AtomSel MolSystem::select(std::vector<index_t> const& indices) const
 {
     return AtomSel(indices, m_data);
 }
 
-AtomSel MolSystem::select(std::string const& selection, std::optional<size_t> frame) const
+AtomSel MolSystem::select(std::string const& selection, Frame frame) const
 {
     return selector(selection).apply(frame);
 }

@@ -12,7 +12,7 @@ namespace mol::internal {
 class ResidueData
 {
 private:
-    using indices_type = std::unordered_set<size_t>;
+    using indices_type = std::unordered_set<index_t>;
 
 public:
     using indices_iterator = indices_type::const_iterator;
@@ -20,7 +20,7 @@ public:
     ResidueData()
     {}
 
-    void set(size_t const index, int const res_id, std::string const& res_name, std::string const& seg_id, std::string const& chain_id)
+    void set(index_t const index, int const res_id, std::string const& res_name, std::string const& seg_id, std::string const& chain_id)
     {
         resid(index) = res_id;
         resname(index) = res_name;
@@ -33,47 +33,47 @@ public:
         return m_indices.size();
     }
 
-    size_t size(size_t const index) const
+    size_t size(index_t const index) const
     {
         return m_indices[index].size();
     }
 
-    int &resid(size_t const index)
+    int &resid(index_t const index)
     {
         return m_resid[index];
     }
 
-    int const& resid(size_t const index) const
+    int const& resid(index_t const index) const
     {
         return m_resid[index];
     }
 
-    std::string &resname(size_t const index)
+    std::string &resname(index_t const index)
     {
         return m_resname[index];
     }
 
-    std::string const& resname(size_t const index) const
+    std::string const& resname(index_t const index) const
     {
         return m_resname[index];
     }
 
-    std::string &segid(size_t const index)
+    std::string &segid(index_t const index)
     {
         return m_segid[index];
     }
 
-    std::string const& segid(size_t const index) const
+    std::string const& segid(index_t const index) const
     {
         return m_segid[index];
     }
 
-    std::string &chain(size_t const index)
+    std::string &chain(index_t const index)
     {
         return m_chain[index];
     }
 
-    std::string const& chain(size_t const index) const
+    std::string const& chain(index_t const index) const
     {
         return m_chain[index];
     }
@@ -87,24 +87,24 @@ public:
         m_chain.resize(size);
     }
 
-    auto const indices(size_t const index) const
+    auto const indices(index_t const index) const
     {
         return std::ranges::views::all(m_indices[index]);
     }
 
-    void reset(size_t const index, size_t const new_size=0)
+    void reset(index_t const index, size_t const new_size=0)
     {
         indices_type &residue = m_indices[index];
         residue.clear();
         residue.reserve(new_size);
     }
 
-    void add_atom(size_t const residue, size_t const atom)
+    void add_atom(index_t const residue, index_t const atom)
     {
         m_indices[residue].insert(atom);
     }
 
-    void remove_atom(size_t const residue, size_t const atom)
+    void remove_atom(index_t const residue, index_t const atom)
     {
         m_indices[residue].erase(atom);
     }
