@@ -9,16 +9,17 @@ using namespace mol::internal;
 
 void ResidueBondGuesser::apply(ResidueSel &residues) const
 {
-    std::vector<int> bonds_map(RESIDUES_TABLE.max_atoms());
+    ResiduesTable const& residues_table = RESIDUES_TABLE();
+    std::vector<int> bonds_map(residues_table.max_atoms());
 
     for (Residue res : residues)
     {
-        if (!RESIDUES_TABLE.contains(res.resname()))
+        if (!residues_table.contains(res.resname()))
         {
             continue;
         }
 
-        auto const &res_info = RESIDUES_TABLE[res.resname()];
+        auto const &res_info = residues_table[res.resname()];
         std::fill(bonds_map.begin(), bonds_map.end(), -1);
 
         AtomSel atoms(res);

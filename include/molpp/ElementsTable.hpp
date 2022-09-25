@@ -80,7 +80,7 @@ private:
 
 // Elements data derived from the "Blue Obelisk Element Repository"
 // which is distributed under the MIT license.
-extern ElementsTable const ELEMENTS_TABLE;
+ElementsTable const& ELEMENTS_TABLE();
 
 } // namespace mol
 

@@ -13,31 +13,39 @@ using namespace mol::internal;
 class PDBFiles
 {
 public:
-    void check()
-    {
-        ASSERT_THAT(reader, NotNull());
-        ASSERT_THAT(tiny, NotNull());
-        ASSERT_THAT(big, NotNull());
-        ASSERT_THAT(traj, NotNull());
-    }
+    PDBFiles(PDBFiles const &) = delete;
+    void operator=(PDBFiles const &) = delete;
 
-    static std::shared_ptr<MolReader> reader;
-    static const std::shared_ptr<MolData> tiny;
-    static const std::shared_ptr<MolData> big;
-    static const std::shared_ptr<MolData> traj;
+    static std::shared_ptr<MolReader> const reader();
+    static std::shared_ptr<MolData> const tiny();
+    static std::shared_ptr<MolData> const big();
+    static std::shared_ptr<MolData> const traj();
+
+private:
+    PDBFiles();
+    static PDBFiles const& instance();
+
+    std::shared_ptr<MolReader> m_reader;
+    std::shared_ptr<MolData> m_tiny;
+    std::shared_ptr<MolData> m_big;
+    std::shared_ptr<MolData> m_traj;
 };
 
 class Mol2Files
 {
 public:
-    void check()
-    {
-        ASSERT_THAT(reader, NotNull());
-        ASSERT_THAT(flben, NotNull());
-    }
+    Mol2Files(Mol2Files const &) = delete;
+    void operator=(Mol2Files const &) = delete;
 
-    static std::shared_ptr<MolReader> reader;
-    static const std::shared_ptr<MolData> flben;
+    static std::shared_ptr<MolReader> const reader();
+    static std::shared_ptr<MolData> const flben();
+
+private:
+    Mol2Files();
+    static Mol2Files const& instance();
+
+    std::shared_ptr<MolReader> m_reader;
+    std::shared_ptr<MolData> m_flben;
 };
 
 #endif // FILES_HPP

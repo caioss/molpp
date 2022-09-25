@@ -63,7 +63,7 @@ private:
 // Bioinformatics. 2004 Sep 1;20(13):2153-5.
 // Feng Z, Chen L, Maddula H, Akcan O, Oughtred R, Berman HM, Westbrook J.
 // PubMed: 15059838
-extern ResiduesTable const RESIDUES_TABLE;
+ResiduesTable const& RESIDUES_TABLE();
 
 } // namespace mol::internal
 

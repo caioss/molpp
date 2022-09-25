@@ -12,7 +12,7 @@ PDB_ORDERS = {"sing": 1, "doub": 2, "trip": 3, "quad": 4}
 response = requests.get(COUNTS_URL)
 assert response.status_code == requests.status_codes.codes.OK
 
-print("extern ResiduesTable const mol::internal::RESIDUES_TABLE({")
+print("ResiduesTable const& mol::internal::RESIDUES_TABLE()\n{\n    static ResiduesTable table{")
 for line in response.text.splitlines()[1:]:
     resname, count = line.split()
     if int(count) < MIN_COUNT:
@@ -47,15 +47,15 @@ for line in response.text.splitlines()[1:]:
 
         bonds.append('{{{}, {:d}, {:d}, {:d}}}'.format(is_aromatic, bond_order, atom1, atom2))
 
-    print("    // {}".format(name))
-    print('    {{"{}",'.format(resname))
-    print("         // Atoms")
-    print("        {{", end="")
-    print(",\n          ".join(atoms), end="")
+    print("        // {}".format(name))
+    print('        {{"{}",'.format(resname))
+    print("             // Atoms")
+    print("            {{", end="")
+    print(",\n              ".join(atoms), end="")
     print("},")
-    print("         // Bonds")
-    print("         {", end="")
-    print(",\n          ".join(bonds), end="")
+    print("             // Bonds")
+    print("             {", end="")
+    print(",\n              ".join(bonds), end="")
     print("}}},")
 
-print("});")
+print("    };\n\n    return table;\n}")

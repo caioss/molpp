@@ -15,9 +15,6 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(Selections, SelIndex) {
-    PDBFiles pdb;
-    pdb.check();
-
     /*
      * Construction
      */
@@ -58,14 +55,17 @@ TEST(Selections, SelIndex) {
 }
 
 TEST(Selections, BaseSel) {
-    PDBFiles pdb;
-    pdb.check();
+    // Data
+    std::shared_ptr<MolData> pdb_tiny = PDBFiles::tiny();
+    std::shared_ptr<MolData> pdb_traj = PDBFiles::traj();
+    ASSERT_TRUE(pdb_tiny);
+    ASSERT_TRUE(pdb_traj);
 
     /*
      * Construction
      */
-    BaseSel all_sel(SelIndex(pdb.tiny->size()), pdb.tiny);
-    EXPECT_EQ(all_sel.size(), pdb.tiny->size());
+    BaseSel all_sel(SelIndex(pdb_tiny->size()), pdb_tiny);
+    EXPECT_EQ(all_sel.size(), pdb_tiny->size());
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     for (index_t i = 0; i < 6; ++i)
@@ -76,8 +76,8 @@ TEST(Selections, BaseSel) {
 
     // Constructors accepting indexes
     std::vector<index_t> indices{4, 1, 1, 3};
-    BaseSel some_sel(SelIndex(indices, pdb.tiny->size()), pdb.tiny);
-    BaseSel rvalue_sel(SelIndex(std::vector<index_t>{4, 1, 1, 3}, pdb.tiny->size()), pdb.tiny);
+    BaseSel some_sel(SelIndex(indices, pdb_tiny->size()), pdb_tiny);
+    BaseSel rvalue_sel(SelIndex(std::vector<index_t>{4, 1, 1, 3}, pdb_tiny->size()), pdb_tiny);
     EXPECT_EQ(some_sel.size(), indices.size() - 1);
     EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
@@ -101,30 +101,33 @@ TEST(Selections, BaseSel) {
     // Invalid Timestep
     EXPECT_THROW(all_sel.timestep(), MolError);
 
-    BaseSel traj_sel(SelIndex(pdb.traj->size()), pdb.traj);
+    BaseSel traj_sel(SelIndex(pdb_traj->size()), pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(0)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
 }
 
 TEST(Selections, Sel) {
-    PDBFiles pdb;
-    pdb.check();
+    // Data
+    std::shared_ptr<MolData> pdb_tiny = PDBFiles::tiny();
+    std::shared_ptr<MolData> pdb_traj = PDBFiles::traj();
+    ASSERT_TRUE(pdb_tiny);
+    ASSERT_TRUE(pdb_traj);
 
     /*
      * Construction
      */
-    Sel<Atom, AtomSel> all_sel(pdb.tiny);
+    Sel<Atom, AtomSel> all_sel(pdb_tiny);
     EXPECT_FALSE(all_sel.frame());
-    EXPECT_EQ(all_sel.size(), pdb.tiny->size());
+    EXPECT_EQ(all_sel.size(), pdb_tiny->size());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     for (index_t i = 0; i < 6; ++i)
     {
@@ -134,8 +137,8 @@ TEST(Selections, Sel) {
 
     // Constructors accepting indexes
     std::vector<index_t> indices{4, 1, 1, 3};
-    Sel<Atom, AtomSel> some_sel(indices, pdb.tiny);
-    Sel<Atom, AtomSel> rvalue_sel(std::vector<index_t>{4, 1, 1, 3}, pdb.tiny);
+    Sel<Atom, AtomSel> some_sel(indices, pdb_tiny);
+    Sel<Atom, AtomSel> rvalue_sel(std::vector<index_t>{4, 1, 1, 3}, pdb_tiny);
     EXPECT_EQ(some_sel.size(), indices.size() - 1);
     EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
@@ -209,19 +212,19 @@ TEST(Selections, Sel) {
     EXPECT_THROW(all_sel.timestep(), MolError);
     EXPECT_THROW(all_sel.coords(), MolError);
 
-    Sel<Atom, AtomSel> traj_sel(pdb.traj);
+    Sel<Atom, AtomSel> traj_sel(pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(0)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(1, -1, 0, 2, -2, 1));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
     traj_sel.coords().array() += 3;
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(27, -21, 3, 51, -45, 27));
@@ -282,14 +285,17 @@ TEST(Selections, Sel) {
 }
 
 TEST(Selections, AtomSel) {
-    PDBFiles pdb;
-    pdb.check();
+    // Data
+    std::shared_ptr<MolData> pdb_tiny = PDBFiles::tiny();
+    std::shared_ptr<MolData> pdb_traj = PDBFiles::traj();
+    ASSERT_TRUE(pdb_tiny);
+    ASSERT_TRUE(pdb_traj);
 
     /*
      * Construction
      */
-    AtomSel all_sel(pdb.tiny);
-    EXPECT_EQ(all_sel.size(), pdb.tiny->size());
+    AtomSel all_sel(pdb_tiny);
+    EXPECT_EQ(all_sel.size(), pdb_tiny->size());
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     EXPECT_THAT(all_sel.atom_indices(), ElementsAre(0, 1, 2, 3, 4, 5));
@@ -301,8 +307,8 @@ TEST(Selections, AtomSel) {
 
     // Constructors accepting indexes
     std::vector<index_t> indices{4, 1, 1, 3};
-    AtomSel some_sel(indices, pdb.tiny);
-    AtomSel rvalue_sel(std::vector<index_t>{4, 1, 1, 3}, pdb.tiny);
+    AtomSel some_sel(indices, pdb_tiny);
+    AtomSel rvalue_sel(std::vector<index_t>{4, 1, 1, 3}, pdb_tiny);
     EXPECT_EQ(some_sel.size(), indices.size() - 1);
     EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
@@ -378,19 +384,19 @@ TEST(Selections, AtomSel) {
     EXPECT_THROW(all_sel.timestep(), MolError);
     EXPECT_THROW(all_sel.coords(), MolError);
 
-    AtomSel traj_sel(pdb.traj);
+    AtomSel traj_sel(pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(0)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(1, -1, 0, 2, -2, 1));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
     traj_sel.coords().array() += 3;
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(27, -21, 3, 51, -45, 27));
@@ -451,13 +457,16 @@ TEST(Selections, AtomSel) {
 }
 
 TEST(Selections, ResidueSel) {
-    PDBFiles pdb;
-    pdb.check();
+    // Data
+    std::shared_ptr<MolData> pdb_tiny = PDBFiles::tiny();
+    std::shared_ptr<MolData> pdb_traj = PDBFiles::traj();
+    ASSERT_TRUE(pdb_tiny);
+    ASSERT_TRUE(pdb_traj);
 
     /*
      * Construction
      */
-    ResidueSel all_sel(pdb.tiny);
+    ResidueSel all_sel(pdb_tiny);
     EXPECT_EQ(all_sel.size(), 5);
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4));
@@ -470,8 +479,8 @@ TEST(Selections, ResidueSel) {
 
     // Constructors accepting indexes
     std::vector<index_t> indices{4, 1, 1, 3};
-    ResidueSel some_sel(indices, pdb.tiny);
-    ResidueSel rvalue_sel(std::vector<index_t>{4, 1, 1, 3}, pdb.tiny);
+    ResidueSel some_sel(indices, pdb_tiny);
+    ResidueSel rvalue_sel(std::vector<index_t>{4, 1, 1, 3}, pdb_tiny);
     EXPECT_EQ(some_sel.size(), indices.size() - 1);
     EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
@@ -547,19 +556,19 @@ TEST(Selections, ResidueSel) {
     EXPECT_THROW(all_sel.timestep(), MolError);
     EXPECT_THROW(all_sel.coords(), MolError);
 
-    ResidueSel traj_sel(pdb.traj);
+    ResidueSel traj_sel(pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(0)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(1, -1, 0, 2, -2, 1));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb.traj->trajectory().timestep(3)));
+    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
     traj_sel.coords().array() += 3;
     EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(27, -21, 3, 51, -45, 27));

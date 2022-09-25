@@ -8,34 +8,36 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(Tables, Elements) {
+    ElementsTable const& table = ELEMENTS_TABLE();
+
     for (int atomic = 0; atomic < 119; ++atomic)
     {
-        EXPECT_EQ(ELEMENTS_TABLE.atomic_number(atomic), atomic) << atomic;
+        EXPECT_EQ(table.atomic_number(atomic), atomic) << atomic;
     }
 
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.mass(0), 0);
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.mass(6), 12.011);
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.mass(118), 294);
+    EXPECT_FLOAT_EQ(table.mass(0), 0);
+    EXPECT_FLOAT_EQ(table.mass(6), 12.011);
+    EXPECT_FLOAT_EQ(table.mass(118), 294);
 
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.covalent_radius(0), 0);
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.covalent_radius(6), 0.77);
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.covalent_radius(118), 0);
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.max_covalent_radius(), 2.25);
+    EXPECT_FLOAT_EQ(table.covalent_radius(0), 0);
+    EXPECT_FLOAT_EQ(table.covalent_radius(6), 0.77);
+    EXPECT_FLOAT_EQ(table.covalent_radius(118), 0);
+    EXPECT_FLOAT_EQ(table.max_covalent_radius(), 2.25);
 
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.VDW_radius(0), 0);
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.VDW_radius(6), 1.7);
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.VDW_radius(118), 0);
-    EXPECT_FLOAT_EQ(ELEMENTS_TABLE.max_VDW_radius(), 3.0);
+    EXPECT_FLOAT_EQ(table.VDW_radius(0), 0);
+    EXPECT_FLOAT_EQ(table.VDW_radius(6), 1.7);
+    EXPECT_FLOAT_EQ(table.VDW_radius(118), 0);
+    EXPECT_FLOAT_EQ(table.max_VDW_radius(), 3.0);
 
-    EXPECT_EQ(ELEMENTS_TABLE.symbol(0), "Xx");
-    EXPECT_EQ(ELEMENTS_TABLE.symbol(6), "C");
-    EXPECT_EQ(ELEMENTS_TABLE.symbol(118), "Uuo");
+    EXPECT_EQ(table.symbol(0), "Xx");
+    EXPECT_EQ(table.symbol(6), "C");
+    EXPECT_EQ(table.symbol(118), "Uuo");
 
-    EXPECT_EQ(ELEMENTS_TABLE.name(0), "Dummy");
-    EXPECT_EQ(ELEMENTS_TABLE.name(6), "Carbon");
-    EXPECT_EQ(ELEMENTS_TABLE.name(118), "Ununoctium");
+    EXPECT_EQ(table.name(0), "Dummy");
+    EXPECT_EQ(table.name(6), "Carbon");
+    EXPECT_EQ(table.name(118), "Ununoctium");
 
-    auto carbon = ELEMENTS_TABLE(6);
+    auto carbon = table(6);
     EXPECT_EQ(carbon.atomic_number, 6);
     EXPECT_FLOAT_EQ(carbon.mass, 12.011);
     EXPECT_FLOAT_EQ(carbon.covalent_radius, 0.77);
@@ -46,12 +48,14 @@ TEST(Tables, Elements) {
 }
 
 TEST(Tables, Residues) {
-    EXPECT_FALSE(RESIDUES_TABLE.contains("UNX"));
-    EXPECT_TRUE(RESIDUES_TABLE.contains("PHE"));
-    EXPECT_THAT(RESIDUES_TABLE.max_atoms(), Gt(0));
+    ResiduesTable const& table = RESIDUES_TABLE();
 
-    EXPECT_EQ(RESIDUES_TABLE["GLY"].atoms.size(), 10);
-    auto const &glycine = RESIDUES_TABLE["GLY"];
+    EXPECT_FALSE(table.contains("UNX"));
+    EXPECT_TRUE(table.contains("PHE"));
+    EXPECT_THAT(table.max_atoms(), Gt(0));
+
+    EXPECT_EQ(table["GLY"].atoms.size(), 10);
+    auto const &glycine = table["GLY"];
     EXPECT_EQ(glycine.atoms.size(), 10);
     EXPECT_EQ(glycine.atom_index("H2"), 6);
     EXPECT_EQ(glycine.atom_index("UNK"), -1);

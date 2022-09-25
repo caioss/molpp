@@ -9,7 +9,7 @@ response = requests.get(ELEMENTS_URL)
 assert response.status_code == requests.status_codes.codes.OK
 xml_root = ET.fromstring(response.text)
 
-print("extern ElementsTable const mol::ELEMENTS_TABLE({")
+print("ElementsTable const& mol::ELEMENTS_TABLE()\n{\n    static ElementsTable table{")
 
 for atom_tag in xml_root.iterfind("{*}atom"):
     vdw_tags = atom_tag.findall(".//*[@dictRef='bo:radiusVDW']")
@@ -27,6 +27,6 @@ for atom_tag in xml_root.iterfind("{*}atom"):
         atom_tag.findall(".//*[@dictRef='bo:name']")[0].attrib["value"],
     ]
 
-    print('    {{{}, {}, {}, {}, "{}", "{}"}},'.format(*data))
+    print('        {{{}, {}, {}, {}, "{}", "{}"}},'.format(*data))
 
-print("});")
+print("    };\n\n    return table;\n}")

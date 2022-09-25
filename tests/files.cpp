@@ -15,13 +15,64 @@ std::shared_ptr<MolData> load_trajectory(std::shared_ptr<MolReader> reader, std:
 /*
  * PDB
  */
-std::shared_ptr<MolReader> PDBFiles::reader = MolReader::from_file_ext(".pdb");
-const std::shared_ptr<MolData> PDBFiles::tiny = load_topology(PDBFiles::reader, "tiny.pdb");
-const std::shared_ptr<MolData> PDBFiles::big = load_trajectory(PDBFiles::reader, "4lad.pdb", load_topology(PDBFiles::reader, "4lad.pdb"));
-const std::shared_ptr<MolData> PDBFiles::traj = load_trajectory(PDBFiles::reader, "traj.pdb", load_topology(PDBFiles::reader, "traj.pdb"));
+std::shared_ptr<MolReader> const PDBFiles::reader()
+{
+    return instance().m_reader;
+}
+
+std::shared_ptr<MolData> const PDBFiles::tiny()
+{
+    return instance().m_tiny;
+}
+
+std::shared_ptr<MolData> const PDBFiles::big()
+{
+    return instance().m_big;
+}
+
+std::shared_ptr<MolData> const PDBFiles::traj()
+{
+    return instance().m_traj;
+}
+
+PDBFiles::PDBFiles()
+: m_reader{MolReader::from_file_ext(".pdb")},
+  m_tiny{m_reader->read_topology("tiny.pdb")},
+  m_big{m_reader->read_topology("4lad.pdb")},
+  m_traj{m_reader->read_topology("traj.pdb")}
+{
+    m_reader->read_trajectory("4lad.pdb", m_big);
+    m_reader->read_trajectory("traj.pdb", m_traj);
+}
+
+PDBFiles const& PDBFiles::instance()
+{
+    static PDBFiles instance;
+    return instance;
+}
 
 /*
  * Mol2
  */
-std::shared_ptr<MolReader> Mol2Files::reader = MolReader::from_file_ext(".mol2");
-const std::shared_ptr<MolData> Mol2Files::flben = load_trajectory(Mol2Files::reader, "fluorobenzene.mol2", load_topology(Mol2Files::reader, "fluorobenzene.mol2"));
+std::shared_ptr<MolReader> const Mol2Files::reader()
+{
+    return instance().m_reader;
+}
+
+std::shared_ptr<MolData> const Mol2Files::flben()
+{
+    return instance().m_flben;
+}
+
+Mol2Files::Mol2Files()
+: m_reader{MolReader::from_file_ext(".mol2")},
+  m_flben{m_reader->read_topology("fluorobenzene.mol2")}
+{
+    m_reader->read_trajectory("fluorobenzene.mol2", m_flben);
+}
+
+Mol2Files const& Mol2Files::instance()
+{
+    static Mol2Files instance;
+    return instance;
+}

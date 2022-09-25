@@ -345,11 +345,12 @@ TEST(Selection, NumPropParsing) {
 }
 
 TEST(Selection, AtomSelector) {
-    PDBFiles pdb;
-    pdb.check();
+    // Data
+    std::shared_ptr<MolData> pdb_big = PDBFiles::big();
+    ASSERT_TRUE(pdb_big);
 
     // Valid selections
-    AtomSelector selector("resid 203:205", pdb.big);
+    AtomSelector selector("resid 203:205", pdb_big);
     AtomSel water = selector.apply(0);
     EXPECT_THAT(water.indices(), ElementsAre(1807, 1808, 1809));
     EXPECT_EQ(water.frame(), 0);
@@ -360,10 +361,10 @@ TEST(Selection, AtomSelector) {
     EXPECT_EQ(water.frame(), 0);
 
     // Invalid selections
-    selector = AtomSelector("resid 900:910", pdb.big);
+    selector = AtomSelector("resid 900:910", pdb_big);
     EXPECT_THAT(selector.apply(0).indices(), ElementsAre());
 
     // Errors
     EXPECT_THROW(selector.apply(1), MolError);
-    EXPECT_THROW(AtomSelector("nonsense", pdb.big), MolError);
+    EXPECT_THROW(AtomSelector("nonsense", pdb_big), MolError);
 }

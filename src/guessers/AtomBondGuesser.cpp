@@ -18,6 +18,7 @@ void AtomBondGuesser::apply(AtomSel &atoms) const
     auto const coords = atoms.coords();
     float const max_bond_length = 3.0;
     SpatialSearch<AtomSel::coords_type> search(coords, max_bond_length + 0.1);
+    ElementsTable const& elements_table = ELEMENTS_TABLE();
 
     for (auto &[atom1, atom2, distance_sq] : search.pairs(max_bond_length))
     {
@@ -30,8 +31,8 @@ void AtomBondGuesser::apply(AtomSel &atoms) const
             continue;
         }
 
-        float const radius1 = ELEMENTS_TABLE.covalent_radius(atomic1);
-        float const radius2 = ELEMENTS_TABLE.covalent_radius(atomic2);
+        float const radius1 = elements_table.covalent_radius(atomic1);
+        float const radius2 = elements_table.covalent_radius(atomic2);
 
         // Rule taken from Zhang et al (DOI: 10.1186/1758-2946-4-26)
         float const coff_sq = pow2(radius1 + radius2 + 0.4);
