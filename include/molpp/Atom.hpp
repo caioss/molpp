@@ -19,7 +19,7 @@ public:
     using internal::AtomAggregate<Atom>::AtomAggregate;
 
     int resid() const;
-    Residue residue();
+    Residue residue() const;
     index_t residue_id() const;
 
     int atomic() const;

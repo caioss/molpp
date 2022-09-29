@@ -11,7 +11,7 @@ int Atom::resid() const
     return data()->residues().resid(residue_id());
 }
 
-Residue Atom::residue()
+Residue Atom::residue() const
 {
     return Residue(residue_id(), frame(), data());
 }
