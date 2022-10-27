@@ -1,11 +1,4 @@
-include(FetchContent)
-FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest
-    GIT_TAG release-1.11.0
-)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+find_package(GTest 1.12.1 REQUIRED)
 
 enable_testing()
 
@@ -34,10 +27,10 @@ target_include_directories(tests
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads)
 
-target_link_libraries(
-    tests
-    gtest_main
-    gmock_main
+target_link_libraries(tests
+    GTest::gtest
+    GTest::gtest_main
+    GTest::gmock_main
     molpp
     Threads::Threads
 )
