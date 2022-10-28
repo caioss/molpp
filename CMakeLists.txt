@@ -5,13 +5,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(libmolpp VERSION 0.1.0)
 
 # Options
-option(MOLPP_USE_SYSTEM_EIGEN "Use system's Eigen installation." OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(MOLPP_BUILD_TESTING "Build library tests." OFF)
 
 # The library
 add_library(molpp)
-add_library(Molpp::Molpp ALIAS molpp)
+add_library(Molpp::molpp ALIAS molpp)
 
 # Source files
 add_subdirectory("src")
@@ -19,17 +18,8 @@ add_subdirectory("src")
 # Third-party
 add_subdirectory("thirdparty")
 
-include(FetchContent)
-if(MOLPP_USE_SYSTEM_EIGEN)
-    find_package(Eigen3 3.4 REQUIRED NO_MODULE)
-else()
-    FetchContent_Declare(
-        Eigen3
-        GIT_REPOSITORY https://gitlab.com/libeigen/eigen
-        GIT_TAG 3.4.0
-    )
-    FetchContent_MakeAvailable(Eigen3)
-endif()
+# Dependencies
+find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
 # Molfile_plugin definitions. Must be set in the same
 # file as the molpp declaration.
@@ -82,11 +72,24 @@ if(MOLPP_BUILD_TESTING)
     add_subdirectory(tests)
 endif()
 
-# Exporting files
-export(TARGETS molpp NAMESPACE Molpp:: FILE MolppTargets.cmake)
-configure_file(cmake/MolppConfig.cmake.in MolppConfig.cmake @ONLY)
-
+# Exporting targets
 include(CMakePackageConfigHelpers)
+
+export(
+    TARGETS
+        molpp
+    NAMESPACE
+        Molpp::
+    FILE
+        MolppTargets.cmake
+)
+
+configure_package_config_file(cmake/MolppConfig.cmake.in
+    MolppConfig.cmake
+    INSTALL_DESTINATION
+        lib/cmake/Molpp
+)
+
 write_basic_package_version_file(
     MolppConfigVersion.cmake
     VERSION
