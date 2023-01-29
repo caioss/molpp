@@ -132,8 +132,10 @@ TEST(Selections, Sel) {
     for (index_t i = 0; i < 6; ++i)
     {
         EXPECT_TRUE(all_sel.contains(i)) << "index " << i;
+        EXPECT_EQ(all_sel.by_index(i).index(), i);
     }
     EXPECT_FALSE(all_sel.contains(6));
+    EXPECT_THROW(all_sel.by_index(6), MolError);
 
     // Constructors accepting indexes
     std::vector<index_t> indices{4, 1, 1, 3};
@@ -149,11 +151,15 @@ TEST(Selections, Sel) {
     {
         EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
         EXPECT_TRUE(rvalue_sel.contains(i)) << "Index " << i;
+        EXPECT_EQ(some_sel.by_index(i).index(), i);
+        EXPECT_EQ(rvalue_sel.by_index(i).index(), i);
     }
     for (index_t i : {0, 2, 5})
     {
         EXPECT_FALSE(some_sel.contains(i)) << "Index " << i;
         EXPECT_FALSE(rvalue_sel.contains(i)) << "Index " << i;
+        EXPECT_THROW(some_sel.by_index(i), MolError);
+        EXPECT_THROW(rvalue_sel.by_index(i), MolError);
     }
 
     /*
@@ -182,28 +188,22 @@ TEST(Selections, Sel) {
     EXPECT_FALSE(some_sel[0].frame());
     EXPECT_EQ(some_sel.at(0).index(), 1);
     EXPECT_FALSE(some_sel.at(0).frame());
+    EXPECT_EQ(some_sel.by_index(1).index(), 1);
     EXPECT_EQ(rvalue_sel[0].index(), 1);
     EXPECT_EQ(some_sel[1].index(), 3);
     EXPECT_FALSE(some_sel[1].frame());
     EXPECT_EQ(some_sel.at(1).index(), 3);
     EXPECT_FALSE(some_sel.at(1).frame());
+    EXPECT_EQ(some_sel.by_index(3).index(), 3);
     EXPECT_EQ(rvalue_sel[1].index(), 3);
     EXPECT_EQ(some_sel[2].index(), 4);
     EXPECT_FALSE(some_sel[2].frame());
     EXPECT_EQ(some_sel.at(2).index(), 4);
     EXPECT_FALSE(some_sel.at(2).frame());
+    EXPECT_EQ(some_sel.by_index(4).index(), 4);
     EXPECT_EQ(rvalue_sel[2].index(), 4);
     EXPECT_THROW(some_sel.at(3).index(), MolError);
-    for (index_t i : {1, 3, 4})
-    {
-        EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
-        EXPECT_TRUE(rvalue_sel.contains(i)) << "Index " << i;
-    }
-    for (index_t i : {0, 2, 5})
-    {
-        EXPECT_FALSE(some_sel.contains(i)) << "Index " << i;
-        EXPECT_FALSE(rvalue_sel.contains(i)) << "Index " << i;
-    }
+    EXPECT_THROW(some_sel.by_index(5), MolError);
 
     /*
      * Trajectory
@@ -302,8 +302,10 @@ TEST(Selections, AtomSel) {
     for (index_t i = 0; i < 6; ++i)
     {
         EXPECT_TRUE(all_sel.contains(i)) << "index " << i;
+        EXPECT_EQ(all_sel.by_index(i).index(), i);
     }
     EXPECT_FALSE(all_sel.contains(6));
+    EXPECT_THROW(all_sel.by_index(6), MolError);
 
     // Constructors accepting indexes
     std::vector<index_t> indices{4, 1, 1, 3};
@@ -321,11 +323,15 @@ TEST(Selections, AtomSel) {
     {
         EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
         EXPECT_TRUE(rvalue_sel.contains(i)) << "Index " << i;
+        EXPECT_EQ(some_sel.by_index(i).index(), i);
+        EXPECT_EQ(rvalue_sel.by_index(i).index(), i);
     }
     for (index_t i : {0, 2, 5})
     {
         EXPECT_FALSE(some_sel.contains(i)) << "Index " << i;
         EXPECT_FALSE(rvalue_sel.contains(i)) << "Index " << i;
+        EXPECT_THROW(some_sel.by_index(i), MolError);
+        EXPECT_THROW(rvalue_sel.by_index(i), MolError);
     }
 
     /*
@@ -354,28 +360,22 @@ TEST(Selections, AtomSel) {
     EXPECT_FALSE(some_sel[0].frame());
     EXPECT_EQ(some_sel.at(0).index(), 1);
     EXPECT_FALSE(some_sel.at(0).frame());
+    EXPECT_EQ(some_sel.by_index(1).index(), 1);
     EXPECT_EQ(rvalue_sel[0].index(), 1);
     EXPECT_EQ(some_sel[1].index(), 3);
     EXPECT_FALSE(some_sel[1].frame());
     EXPECT_EQ(some_sel.at(1).index(), 3);
     EXPECT_FALSE(some_sel.at(1).frame());
+    EXPECT_EQ(some_sel.by_index(3).index(), 3);
     EXPECT_EQ(rvalue_sel[1].index(), 3);
     EXPECT_EQ(some_sel[2].index(), 4);
     EXPECT_FALSE(some_sel[2].frame());
     EXPECT_EQ(some_sel.at(2).index(), 4);
     EXPECT_FALSE(some_sel.at(2).frame());
+    EXPECT_EQ(some_sel.by_index(4).index(), 4);
     EXPECT_EQ(rvalue_sel[2].index(), 4);
     EXPECT_THROW(some_sel.at(3).index(), MolError);
-    for (index_t i : {1, 3, 4})
-    {
-        EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
-        EXPECT_TRUE(rvalue_sel.contains(i)) << "Index " << i;
-    }
-    for (index_t i : {0, 2, 5})
-    {
-        EXPECT_FALSE(some_sel.contains(i)) << "Index " << i;
-        EXPECT_FALSE(rvalue_sel.contains(i)) << "Index " << i;
-    }
+    EXPECT_THROW(some_sel.by_index(5), MolError);
 
     /*
      * Trajectory
@@ -474,8 +474,10 @@ TEST(Selections, ResidueSel) {
     for (index_t i = 0; i < 5; ++i)
     {
         EXPECT_TRUE(all_sel.contains(i)) << "index " << i;
+        EXPECT_EQ(all_sel.by_index(i).index(), i);
     }
     EXPECT_FALSE(all_sel.contains(6));
+    EXPECT_THROW(all_sel.by_index(6), MolError);
 
     // Constructors accepting indexes
     std::vector<index_t> indices{4, 1, 1, 3};
@@ -493,11 +495,15 @@ TEST(Selections, ResidueSel) {
     {
         EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
         EXPECT_TRUE(rvalue_sel.contains(i)) << "Index " << i;
+        EXPECT_EQ(some_sel.by_index(i).index(), i);
+        EXPECT_EQ(rvalue_sel.by_index(i).index(), i);
     }
     for (index_t i : {0, 2, 5})
     {
         EXPECT_FALSE(some_sel.contains(i)) << "Index " << i;
         EXPECT_FALSE(rvalue_sel.contains(i)) << "Index " << i;
+        EXPECT_THROW(some_sel.by_index(i), MolError);
+        EXPECT_THROW(rvalue_sel.by_index(i), MolError);
     }
 
     /*
@@ -526,28 +532,22 @@ TEST(Selections, ResidueSel) {
     EXPECT_FALSE(some_sel[0].frame());
     EXPECT_EQ(some_sel.at(0).index(), 1);
     EXPECT_FALSE(some_sel.at(0).frame());
+    EXPECT_EQ(some_sel.by_index(1).index(), 1);
     EXPECT_EQ(rvalue_sel[0].index(), 1);
     EXPECT_EQ(some_sel[1].index(), 3);
     EXPECT_FALSE(some_sel[1].frame());
     EXPECT_EQ(some_sel.at(1).index(), 3);
     EXPECT_FALSE(some_sel.at(1).frame());
+    EXPECT_EQ(some_sel.by_index(3).index(), 3);
     EXPECT_EQ(rvalue_sel[1].index(), 3);
     EXPECT_EQ(some_sel[2].index(), 4);
     EXPECT_FALSE(some_sel[2].frame());
     EXPECT_EQ(some_sel.at(2).index(), 4);
     EXPECT_FALSE(some_sel.at(2).frame());
+    EXPECT_EQ(some_sel.by_index(4).index(), 4);
     EXPECT_EQ(rvalue_sel[2].index(), 4);
     EXPECT_THROW(some_sel.at(3).index(), MolError);
-    for (index_t i : {1, 3, 4})
-    {
-        EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
-        EXPECT_TRUE(rvalue_sel.contains(i)) << "Index " << i;
-    }
-    for (index_t i : {0, 2, 5})
-    {
-        EXPECT_FALSE(some_sel.contains(i)) << "Index " << i;
-        EXPECT_FALSE(rvalue_sel.contains(i)) << "Index " << i;
-    }
+    EXPECT_THROW(some_sel.by_index(5), MolError);
 
     /*
      * Trajectory

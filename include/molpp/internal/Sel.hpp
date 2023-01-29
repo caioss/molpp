@@ -105,6 +105,15 @@ public:
         return Type(indices()[index], frame(), data());
     }
 
+    Type by_index(size_t const index)
+    {
+        if (!contains(index))
+        {
+            throw mol::MolError("Atom index " + std::to_string(index) + " not found in the selection");
+        }
+        return Type(index, frame(), data());
+    }
+
     coords_type coords()
     {
         Derived &derived = static_cast<Derived &>(*this);
