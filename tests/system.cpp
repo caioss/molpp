@@ -26,7 +26,10 @@ TEST(System, Selection) {
     mol.add_trajectory("4lad.pdb");
     mol.add_trajectory("4lad.pdb");
 
+    // All atoms selections
     AtomSel all_sel{mol.atoms()};
+    EXPECT_EQ(all_sel.size(), 1844);
+    all_sel = mol.select("all");
     EXPECT_EQ(all_sel.size(), 1844);
 
     // From indices

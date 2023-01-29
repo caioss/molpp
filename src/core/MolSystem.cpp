@@ -61,6 +61,11 @@ AtomSel MolSystem::select(std::vector<index_t> const& indices) const
 
 AtomSel MolSystem::select(std::string const& selection, Frame frame) const
 {
+    if (selection == "all")
+    {
+        return atoms();
+    }
+
     return selector(selection).apply(frame);
 }
 
