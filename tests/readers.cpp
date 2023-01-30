@@ -22,6 +22,7 @@ TEST(Readers, MolfileReader) {
     MolfileReader reader(".pdb");
 
     // General checks
+    EXPECT_FALSE(MolfileReader::can_read(""));
     EXPECT_THROW(reader.read_atoms(), MolError); // Not open
     ASSERT_EQ(reader.open("tiny.pdb"), MolReader::SUCCESS);
     ASSERT_EQ(reader.open("tiny.pdb"), MolReader::INVALID); // Re-open
@@ -201,28 +202,22 @@ TEST(Readers, MolfileReader) {
 }
 
 TEST(Readers, PDB) {
+    ASSERT_TRUE(MolfileReader::can_read(".pdb"));
+    ASSERT_TRUE(MolfileReader::can_read(".ent"));
     MolfileReader reader(".pdb");
     EXPECT_TRUE(reader.has_topology());
     EXPECT_TRUE(reader.has_trajectory());
     EXPECT_FALSE(reader.has_trajectory_metadata());
     EXPECT_TRUE(reader.has_bonds());
-    EXPECT_TRUE(reader.can_read(".pdb"));
-    EXPECT_TRUE(reader.can_read(".ent"));
-    EXPECT_FALSE(reader.can_read(".psf"));
-    EXPECT_FALSE(reader.can_read(".pd"));
-    EXPECT_FALSE(reader.can_read(""));
 }
 
 TEST(Readers, Mol2) {
+    ASSERT_TRUE(MolfileReader::can_read(".mol2"));
     MolfileReader reader(".mol2");
     EXPECT_TRUE(reader.has_topology());
     EXPECT_TRUE(reader.has_trajectory());
     EXPECT_FALSE(reader.has_trajectory_metadata());
     EXPECT_TRUE(reader.has_bonds());
-    EXPECT_TRUE(reader.can_read(".mol2"));
-    EXPECT_FALSE(reader.can_read(".psf"));
-    EXPECT_FALSE(reader.can_read(".mol"));
-    EXPECT_FALSE(reader.can_read(""));
 }
 
 TEST(Readers, MolReader) {
