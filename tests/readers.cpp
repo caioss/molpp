@@ -281,6 +281,36 @@ TEST(Readers, PSF) {
     EXPECT_THAT(AtomSel(atoms[21]).bonded().indices(), ElementsAre(20, 21));
 }
 
+TEST(Readers, XTC) {
+    ASSERT_TRUE(MolfileReader::can_read(".psf"));
+    ASSERT_TRUE(MolfileReader::can_read(".xtc"));
+    MolfileReader xtc_reader(".xtc");
+    EXPECT_FALSE(xtc_reader.has_topology());
+    EXPECT_TRUE(xtc_reader.has_trajectory());
+    EXPECT_FALSE(xtc_reader.has_trajectory_metadata());
+    EXPECT_FALSE(xtc_reader.has_bonds());
+
+    // Load the topology
+    MolfileReader psf_reader(".psf");
+    ASSERT_EQ(psf_reader.open("dipeptide.psf"), MolReader::SUCCESS);
+    auto data = psf_reader.read_atoms();
+    psf_reader.close();
+    ASSERT_THAT(data, NotNull());
+    ASSERT_EQ(data->size(), 22);
+
+    // Load the trajectory
+    ASSERT_EQ(xtc_reader.open("dipeptide.xtc"), MolReader::SUCCESS);
+    ASSERT_EQ(xtc_reader.check_timestep_read(data), MolReader::SUCCESS);
+    ASSERT_EQ(xtc_reader.read_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(xtc_reader.read_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(data->trajectory().num_frames(), 2);
+    xtc_reader.close();
+
+    // Check coordinates
+    EXPECT_THAT(data->trajectory().timestep(0).coords().reshaped(), Pointwise(FloatNear(1e-5), {488.93002, 780.79004, -2.42000, 488.31000, 779.74005, -1.57000, 488.95001, 778.40002, -1.68000, 489.36002, 778.07007, -2.80000, 488.83002, 777.53003, -0.60000, 488.71002, 777.94006, 0.79000, 489.25003, 776.12006, -0.75000, 489.37006, 775.66003, 0.70000, 489.78000, 776.99005, 1.34000, 488.46002, 775.29004, -1.63000, 487.31003, 775.13000, -1.27000, 438.54004, 830.56006, -3.76000, 439.46002, 831.70007, -3.88000, 440.85004, 831.40009, -4.47000, 441.05005, 830.21002, -4.75000, 441.64001, 832.37006, -4.79000, 441.41003, 833.80005, -4.52000, 443.00003, 832.08002, -5.41000, 443.75003, 833.43005, -5.27000, 442.56000, 834.47009, -5.24000, 443.85004, 831.02002, -4.66000, 443.70001, 830.90002, -3.40000}));
+    EXPECT_THAT(data->trajectory().timestep(1).coords().reshaped(), Pointwise(FloatNear(1e-5), {488.76004, 782.39008, -1.81000, 487.96002, 781.47003, -1.06000, 488.48004, 780.12000, -1.26000, 488.72003, 779.78003, -2.39000, 488.78003, 779.27002, -0.28000, 488.90002, 779.65002, 1.13000, 489.07001, 777.84003, -0.42000, 489.22000, 777.34998, 0.98000, 489.68002, 778.56006, 1.77000, 488.13004, 776.95007, -1.27000, 486.92001, 776.92004, -1.05000, 437.76001, 830.54004, -4.03000, 438.49002, 831.81006, -3.87000, 439.61002, 832.06000, -4.89000, 439.85001, 831.20001, -5.72000, 440.36005, 833.23004, -4.93000, 439.95001, 834.44000, -4.13000, 441.73001, 833.40002, -5.36000, 442.09003, 834.89008, -5.01000, 440.76001, 835.60004, -4.67000, 442.71002, 832.34998, -4.79000, 442.83002, 832.17004, -3.55000}));
+}
+
 TEST(Readers, MolReader) {
     EXPECT_THAT(MolReader::from_file_ext(".unk"), IsNull());
     EXPECT_THAT(MolReader::from_file_ext(".pdb"), NotNull());

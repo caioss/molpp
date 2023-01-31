@@ -43,6 +43,7 @@ private:
         if (pdbplugin_init() == VMDPLUGIN_SUCCESS) pdbplugin_register(this, register_cb);
         if (mol2plugin_init() == VMDPLUGIN_SUCCESS) mol2plugin_register(this, register_cb);
         if (psfplugin_init() == VMDPLUGIN_SUCCESS) psfplugin_register(this, register_cb);
+        if (gromacsplugin_init() == VMDPLUGIN_SUCCESS) gromacsplugin_register(this, register_cb);
 
         // Register extensions
         std::regex regexz(",");
