@@ -140,7 +140,7 @@ TEST(Residues, ResidueDetect) {
         data->atoms().residue(i) = index[i];
     }
 
-    detect.update_residue_data(*data);
+    detect.update_residue_data(data);
     ResidueData &residues_data = data->residues();
 
     // Check updates
