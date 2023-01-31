@@ -220,6 +220,67 @@ TEST(Readers, Mol2) {
     EXPECT_TRUE(reader.has_bonds());
 }
 
+TEST(Readers, PSF) {
+    ASSERT_TRUE(MolfileReader::can_read(".psf"));
+    MolfileReader reader(".psf");
+    EXPECT_TRUE(reader.has_topology());
+    EXPECT_FALSE(reader.has_trajectory());
+    EXPECT_FALSE(reader.has_trajectory_metadata());
+    EXPECT_TRUE(reader.has_bonds());
+
+    // Read topology
+    ASSERT_EQ(reader.open("dipeptide.psf"), MolReader::SUCCESS);
+    auto data = reader.read_atoms();
+    reader.close();
+    ASSERT_THAT(data, NotNull());
+    ASSERT_EQ(data->size(), 22);
+
+    // Atom properties
+    std::vector<mol::Atom> atoms;
+    for (index_t i = 0; i < data->size(); ++i)
+    {
+        atoms.push_back(Atom(i, std::nullopt, data));
+    }
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid), {129, 129, 129, 129, 130, 130, 130, 130, 130, 130, 130, 129, 129, 129, 129, 130, 130, 130, 130, 130, 130, 130}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::residue_id), {0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::atomic), {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::occupancy), {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::tempfactor), {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
+    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::mass, 1e-5), {14.007, 12.011, 12.011, 15.999, 14.007, 12.011, 12.011, 12.011, 12.011, 12.011, 15.999, 14.007, 12.011, 12.011, 15.999, 14.007, 12.011, 12.011, 12.011, 12.011, 12.011, 15.999}));
+    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::radius, 1e-5), {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::name), {"N", "CA", "C", "O", "N", "CD", "CA", "CB", "CG", "C", "O", "N", "CA", "C", "O", "N", "CD", "CA", "CB", "CG", "C", "O"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::type), {"NH1", "CT2", "C", "O", "N", "CP3", "CP1", "CP2", "CP2", "C", "O", "NH1", "CT2", "C", "O", "N", "CP3", "CP1", "CP2", "CP2", "C", "O"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resname), {"GLY", "GLY", "GLY", "GLY", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO", "GLY", "GLY", "GLY", "GLY", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::segid), {"KCH1", "KCH1", "KCH1", "KCH1", "KCH1", "KCH1", "KCH1", "KCH1", "KCH1", "KCH1", "KCH1", "KCH3", "KCH3", "KCH3", "KCH3", "KCH3", "KCH3", "KCH3", "KCH3", "KCH3", "KCH3", "KCH3"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::chain), {"K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K", "K"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::altloc), {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""}));
+    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::charge, 1e-5), {-0.47, -0.02, 0.51, -0.51, -0.29, 0.0, 0.02, -0.18, -0.18, 0.51, -0.51, -0.47, -0.02, 0.51, -0.51, -0.29, 0.0, 0.02, -0.18, -0.18, 0.51, -0.51}));
+
+    // Bonds
+    EXPECT_THAT(AtomSel(atoms[0]).bonded().indices(), ElementsAre(0, 1));
+    EXPECT_THAT(AtomSel(atoms[1]).bonded().indices(), ElementsAre(0, 1, 2));
+    EXPECT_THAT(AtomSel(atoms[2]).bonded().indices(), ElementsAre(1, 2, 3, 4));
+    EXPECT_THAT(AtomSel(atoms[3]).bonded().indices(), ElementsAre(2, 3));
+    EXPECT_THAT(AtomSel(atoms[4]).bonded().indices(), ElementsAre(2, 4, 5, 6));
+    EXPECT_THAT(AtomSel(atoms[5]).bonded().indices(), ElementsAre(4, 5, 8));
+    EXPECT_THAT(AtomSel(atoms[6]).bonded().indices(), ElementsAre(4, 6, 7, 9));
+    EXPECT_THAT(AtomSel(atoms[7]).bonded().indices(), ElementsAre(6, 7, 8));
+    EXPECT_THAT(AtomSel(atoms[8]).bonded().indices(), ElementsAre(5, 7, 8));
+    EXPECT_THAT(AtomSel(atoms[9]).bonded().indices(), ElementsAre(6, 9, 10));
+    EXPECT_THAT(AtomSel(atoms[10]).bonded().indices(), ElementsAre(9, 10));
+    EXPECT_THAT(AtomSel(atoms[11]).bonded().indices(), ElementsAre(11, 12));
+    EXPECT_THAT(AtomSel(atoms[12]).bonded().indices(), ElementsAre(11, 12, 13));
+    EXPECT_THAT(AtomSel(atoms[13]).bonded().indices(), ElementsAre(12, 13, 14, 15));
+    EXPECT_THAT(AtomSel(atoms[14]).bonded().indices(), ElementsAre(13, 14));
+    EXPECT_THAT(AtomSel(atoms[15]).bonded().indices(), ElementsAre(13, 15, 16, 17));
+    EXPECT_THAT(AtomSel(atoms[16]).bonded().indices(), ElementsAre(15, 16, 19));
+    EXPECT_THAT(AtomSel(atoms[17]).bonded().indices(), ElementsAre(15, 17, 18, 20));
+    EXPECT_THAT(AtomSel(atoms[18]).bonded().indices(), ElementsAre(17, 18, 19));
+    EXPECT_THAT(AtomSel(atoms[19]).bonded().indices(), ElementsAre(16, 18, 19));
+    EXPECT_THAT(AtomSel(atoms[20]).bonded().indices(), ElementsAre(17, 20, 21));
+    EXPECT_THAT(AtomSel(atoms[21]).bonded().indices(), ElementsAre(20, 21));
+}
+
 TEST(Readers, MolReader) {
     EXPECT_THAT(MolReader::from_file_ext(".unk"), IsNull());
     EXPECT_THAT(MolReader::from_file_ext(".pdb"), NotNull());
@@ -233,7 +294,6 @@ TEST(Readers, MolReader) {
     EXPECT_EQ(Atom(1, 0, atoms).name(), "CA");
 
     // Sanity checks
-    // EXPECT_EQ(MolReader::from_file_ext(".psf")->read_trajectory("traj.pdb", atoms), MolReader::INVALID); // TODO enable when PSF reader becomes available
     EXPECT_EQ(pdb_reader->read_trajectory("", atoms), MolReader::FAILED);
     EXPECT_EQ(pdb_reader->read_trajectory("tiny.pdb", atoms), MolReader::WRONG_ATOMS);
 
