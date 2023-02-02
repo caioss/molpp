@@ -32,7 +32,7 @@ public:
             {
                 return -1;
             }
-            return (*atom_it).second;
+            return atom_it->second;
         }
     };
 

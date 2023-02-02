@@ -46,7 +46,7 @@ public:
             m_iterator = m_residues.insert(std::pair(key, m_current)).first;
         }
 
-        Residue &residue = (*m_iterator).second;
+        Residue &residue = m_iterator->second;
         residue.count++;
         return residue.index;
     }
