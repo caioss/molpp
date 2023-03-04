@@ -1,5 +1,6 @@
 #include "SelectionParser.hpp"
 #include "selections/selections.hpp"
+#include "selections/properties.hpp"
 #include <stack>
 #include <string_view>
 #include <molpp/MolError.hpp>

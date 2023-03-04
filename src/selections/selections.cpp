@@ -59,30 +59,3 @@ void NotSelection::evaluate(SelectionStack& stack, MolData const& /*data*/, Fram
     stack.push_flags(inverted);
     stack.push(left, inverted);
 }
-
-void NumPropSelection::add_number(SelNumber const& number)
-{
-    m_numbers.push_back(number);
-}
-
-void NumPropSelection::add_range(SelNumberRange const& range)
-{
-    m_ranges.push_back(range);
-}
-
-void ResidSelection::evaluate(SelectionStack& stack, MolData const& data, Frame /*frame*/) const
-{
-    SelectionFlags flags = stack.pop_flags();
-    AtomData const& atom_data = data.properties();
-    ResidueData const& res_data = data.residues();
-
-    for (index_t atom_idx : *(flags.mask))
-    {
-        index_t const res_idx = atom_data.residue(atom_idx);
-        int const resid = res_data.resid(res_idx);
-        if (has(resid))
-        {
-            flags.selected->insert(atom_idx);
-        }
-    }
-}

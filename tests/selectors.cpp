@@ -1,6 +1,7 @@
 #include <molpp/AtomSelector.hpp>
 #include "selections/SelectionParser.hpp"
 #include "selections/selections.hpp"
+#include "selections/properties.hpp"
 #include "auxiliary.hpp"
 #include "files.hpp"
 #include <molpp/MolError.hpp>
@@ -64,6 +65,11 @@ TEST(Selection, PropNodes) {
     {
     public:
         void evaluate(SelectionStack& evaluator, MolData const& data, Frame frame) const override {};
+    protected:
+        bool selected(index_t atom_idx, MolData const& data) const override
+        {
+            return true;
+        }
     };
 
     SubNumProp num_prop;

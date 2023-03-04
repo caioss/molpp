@@ -1,5 +1,5 @@
-#ifndef PEGPARSER_HPP
-#define PEGPARSER_HPP
+#ifndef SELECTIONPARSER_HPP
+#define SELECTIONPARSER_HPP
 
 #include <memory>
 #include <string>
@@ -27,4 +27,4 @@ extern SelectionParser const SEL_PARSER;
 
 } // namespace mol::internal
 
-#endif // PEGPARSER_HPP
+#endif // SELECTIONPARSER_HPP
