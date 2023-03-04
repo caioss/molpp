@@ -1,6 +1,7 @@
 #include <molpp/AtomSelector.hpp>
 #include "selections/SelectionParser.hpp"
 #include "selections/selections.hpp"
+#include "selections/boolean.hpp"
 #include "selections/properties.hpp"
 #include "auxiliary.hpp"
 #include "files.hpp"
