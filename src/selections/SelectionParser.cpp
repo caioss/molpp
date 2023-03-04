@@ -61,7 +61,6 @@ std::shared_ptr<SelectionNode> make_numprop_node(std::shared_ptr<peg::Ast> const
         // We should never get here
         throw mol::MolError("Unknown NumProp node: " + std::string(type));
     }
-    std::shared_ptr<SelectionNode> node = num_prop;
 
     for (std::shared_ptr<peg::Ast> child : ast->nodes)
     {
@@ -78,7 +77,7 @@ std::shared_ptr<SelectionNode> make_numprop_node(std::shared_ptr<peg::Ast> const
         }
     }
 
-    return node;
+    return num_prop;
 }
 
 std::shared_ptr<SelectionNode> make_node(std::shared_ptr<peg::Ast> const ast)
