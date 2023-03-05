@@ -1,8 +1,8 @@
 #include <molpp/AtomSelector.hpp>
-#include "selections/SelectionParser.hpp"
-#include "selections/selections.hpp"
 #include "selections/boolean.hpp"
 #include "selections/properties.hpp"
+#include "selections/SelectionStack.hpp"
+#include "selections/SelectionParser.hpp"
 #include "auxiliary.hpp"
 #include "files.hpp"
 #include <molpp/MolError.hpp>

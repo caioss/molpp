@@ -1,5 +1,5 @@
 #include "selections/boolean.hpp"
-#include "core/MolData.hpp"
+#include "selections/SelectionStack.hpp"
 
 using namespace mol;
 using namespace mol::internal;

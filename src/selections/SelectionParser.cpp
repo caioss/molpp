@@ -1,7 +1,7 @@
 #include "SelectionParser.hpp"
-#include "selections/selections.hpp"
 #include "selections/boolean.hpp"
 #include "selections/properties.hpp"
+#include "selections/SelectionStack.hpp"
 #include <stack>
 #include <string_view>
 #include <molpp/MolError.hpp>

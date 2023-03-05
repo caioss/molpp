@@ -1,7 +1,7 @@
 #ifndef BOOLEAN_HPP
 #define BOOLEAN_HPP
 
-#include "selections/selections.hpp"
+#include "selections/SelectionNode.hpp"
 
 namespace mol::internal
 {

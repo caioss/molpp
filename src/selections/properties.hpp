@@ -1,7 +1,9 @@
 #ifndef PROPERTIES_HPP
 #define PROPERTIES_HPP
 
-#include "selections/selections.hpp"
+#include "selections/SelectionNode.hpp"
+#include "selections/numbers.hpp"
+#include <vector>
 
 namespace mol::internal
 {
@@ -9,18 +11,7 @@ namespace mol::internal
 class PropSelection : public SelectionNode
 {
 public:
-    void evaluate(SelectionStack& stack, MolData const& data, Frame /*frame*/) const override
-    {
-        SelectionFlags flags = stack.pop_flags();
-
-        for (index_t atom_idx : *(flags.mask))
-        {
-            if (selected(atom_idx, data))
-            {
-                flags.selected->insert(atom_idx);
-            }
-        }
-    }
+    void evaluate(SelectionStack& stack, MolData const& data, Frame /*frame*/) const override;
 
 protected:
     virtual bool selected(index_t atom_idx, MolData const& data) const = 0;
