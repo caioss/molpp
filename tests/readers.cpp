@@ -47,12 +47,12 @@ TEST(Readers, MolfileReader) {
     std::vector<mol::Atom> atoms;
     for (index_t i = 0; i < data->size(); ++i)
     {
-        atoms.push_back(Atom(i, 0, data));
+        atoms.push_back(Atom(i, 0, data.get()));
     }
     std::vector<mol::Atom> m2_atoms;
     for (index_t i = 0; i < m2_data->size(); ++i)
     {
-        m2_atoms.push_back(Atom(i, std::nullopt, m2_data));
+        m2_atoms.push_back(Atom(i, std::nullopt, m2_data.get()));
     }
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid),
                                  {3, 339, 201, 801, 85, 85}));
@@ -97,28 +97,28 @@ TEST(Readers, MolfileReader) {
 
     // Sanity checks
     reader.open("tiny.pdb"); // Wrong number of atoms
-    EXPECT_EQ(reader.check_timestep_read(data), MolReader::WRONG_ATOMS);
+    EXPECT_EQ(reader.check_timestep_read(*data), MolReader::WRONG_ATOMS);
     reader.close(); // No file handle
-    EXPECT_EQ(reader.check_timestep_read(data), MolReader::INVALID);
+    EXPECT_EQ(reader.check_timestep_read(*data), MolReader::INVALID);
 
     reader.open("traj.pdb");
 
-    ASSERT_EQ(reader.skip_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(reader.skip_timestep(*data), MolReader::SUCCESS);
     ASSERT_EQ(data->trajectory().num_frames(), 0);
 
-    ASSERT_EQ(reader.read_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(reader.read_timestep(*data), MolReader::SUCCESS);
     ASSERT_EQ(data->trajectory().num_frames(), 1);
     EXPECT_THAT(data->trajectory().timestep(0).coords().reshaped(), ElementsAre(2, -2, 0, 4, -4, 2));
 
-    ASSERT_EQ(reader.skip_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(reader.skip_timestep(*data), MolReader::SUCCESS);
     ASSERT_EQ(data->trajectory().num_frames(), 1);
 
-    ASSERT_EQ(reader.read_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(reader.read_timestep(*data), MolReader::SUCCESS);
     ASSERT_EQ(data->trajectory().num_frames(), 2);
     EXPECT_THAT(data->trajectory().timestep(1).coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
 
-    ASSERT_EQ(reader.read_timestep(data), MolReader::END);
-    ASSERT_EQ(reader.skip_timestep(data), MolReader::END);
+    ASSERT_EQ(reader.read_timestep(*data), MolReader::END);
+    ASSERT_EQ(reader.skip_timestep(*data), MolReader::END);
 
     reader.close();
 
@@ -239,7 +239,7 @@ TEST(Readers, PSF) {
     std::vector<mol::Atom> atoms;
     for (index_t i = 0; i < data->size(); ++i)
     {
-        atoms.push_back(Atom(i, std::nullopt, data));
+        atoms.push_back(Atom(i, std::nullopt, data.get()));
     }
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid), {129, 129, 129, 129, 130, 130, 130, 130, 130, 130, 130, 129, 129, 129, 129, 130, 130, 130, 130, 130, 130, 130}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::residue_id), {0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3}));
@@ -300,9 +300,9 @@ TEST(Readers, XTC) {
 
     // Load the trajectory
     ASSERT_EQ(xtc_reader.open("dipeptide.xtc"), MolReader::SUCCESS);
-    ASSERT_EQ(xtc_reader.check_timestep_read(data), MolReader::SUCCESS);
-    ASSERT_EQ(xtc_reader.read_timestep(data), MolReader::SUCCESS);
-    ASSERT_EQ(xtc_reader.read_timestep(data), MolReader::SUCCESS);
+    ASSERT_EQ(xtc_reader.check_timestep_read(*data), MolReader::SUCCESS);
+    ASSERT_EQ(xtc_reader.read_timestep(*data), MolReader::SUCCESS);
+    ASSERT_EQ(xtc_reader.read_timestep(*data), MolReader::SUCCESS);
     ASSERT_EQ(data->trajectory().num_frames(), 2);
     xtc_reader.close();
 
@@ -320,20 +320,20 @@ TEST(Readers, MolReader) {
     ASSERT_THAT(atoms, NotNull());
     EXPECT_EQ(atoms->size(), 2);
     // Fast check. The complete reading test is in the plugins tests
-    EXPECT_EQ(Atom(0, 0, atoms).name(), "N");
-    EXPECT_EQ(Atom(1, 0, atoms).name(), "CA");
+    EXPECT_EQ(Atom(0, 0, atoms.get()).name(), "N");
+    EXPECT_EQ(Atom(1, 0, atoms.get()).name(), "CA");
 
     // Sanity checks
-    EXPECT_EQ(pdb_reader->read_trajectory("", atoms), MolReader::FAILED);
-    EXPECT_EQ(pdb_reader->read_trajectory("tiny.pdb", atoms), MolReader::WRONG_ATOMS);
+    EXPECT_EQ(pdb_reader->read_trajectory("", *atoms), MolReader::FAILED);
+    EXPECT_EQ(pdb_reader->read_trajectory("tiny.pdb", *atoms), MolReader::WRONG_ATOMS);
 
-    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms), MolReader::SUCCESS);
+    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", *atoms), MolReader::SUCCESS);
     EXPECT_EQ(atoms->trajectory().num_frames(), 4);
-    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, 0, 1, 0), MolReader::SUCCESS);
+    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", *atoms, 0, 1, 0), MolReader::SUCCESS);
     EXPECT_EQ(atoms->trajectory().num_frames(), 5);
-    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, 1, 2, 2), MolReader::SUCCESS);
+    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", *atoms, 1, 2, 2), MolReader::SUCCESS);
     EXPECT_EQ(atoms->trajectory().num_frames(), 6);
-    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, 2, 0), MolReader::SUCCESS);
-    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", atoms, -2, 0, 2), MolReader::SUCCESS);
+    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", *atoms, 2, 0), MolReader::SUCCESS);
+    EXPECT_EQ(pdb_reader->read_trajectory("traj.pdb", *atoms, -2, 0, 2), MolReader::SUCCESS);
     EXPECT_EQ(atoms->trajectory().num_frames(), 6);
 }

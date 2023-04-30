@@ -27,7 +27,7 @@ public:
     void guess_bonds();
 
 private:
-    std::shared_ptr<internal::MolData> m_data;
+    std::unique_ptr<internal::MolData> m_data;
 };
 
 } // namespace mol

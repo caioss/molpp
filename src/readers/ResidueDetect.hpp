@@ -51,9 +51,9 @@ public:
         return residue.index;
     }
 
-    void update_residue_data(std::shared_ptr<MolData> mol_data) const
+    void update_residue_data(MolData& mol_data) const
     {
-        ResidueData &residues_data = mol_data->residues();
+        ResidueData &residues_data = mol_data.residues();
         residues_data.resize(m_residues.size());
         for (auto const &item : m_residues)
         {
@@ -62,9 +62,9 @@ public:
             residues_data.set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
         }
 
-        for (index_t index = 0; index < mol_data->size(); ++index)
+        for (index_t index = 0; index < mol_data.size(); ++index)
         {
-            index_t const residue_idx = mol_data->atoms().residue(index);
+            index_t const residue_idx = mol_data.atoms().residue(index);
             residues_data.add_atom(residue_idx, index);
         }
     }

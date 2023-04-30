@@ -9,7 +9,7 @@
 using namespace mol;
 using namespace mol::internal;
 
-AtomSelector::AtomSelector(std::string const& selection, std::shared_ptr<MolData> data)
+AtomSelector::AtomSelector(std::string const& selection, MolData* data)
 : m_data(data)
 {
     parse(selection);

@@ -94,10 +94,10 @@ TEST(Selection, PropNodes) {
 }
 
 TEST(Selection, ResidSelection) {
-    auto data = create_moldata(5, 2, 2, 3, 1);
+    MolData data = create_moldata(5, 2, 2, 3, 1);
     SelectionStack flag_stack(nullptr);
     SelectionFlags flags;
-    for (index_t atom_idx = 0; atom_idx < data->size(); atom_idx++)
+    for (index_t atom_idx = 0; atom_idx < data.size(); atom_idx++)
     {
         flags.mask->insert(atom_idx);
     }
@@ -105,28 +105,28 @@ TEST(Selection, ResidSelection) {
     // Default resid
     ResidSelection resid;
     flag_stack.push_flags(flags);
-    resid.evaluate(flag_stack, *data, 0);
+    resid.evaluate(flag_stack, data, 0);
     EXPECT_THAT(*(flags.selected), UnorderedElementsAre());
 
     // One number
     resid.add_number(SelNumber("0"));
     flags.selected->clear();
     flag_stack.push_flags(flags);
-    resid.evaluate(flag_stack, *data, 0);
+    resid.evaluate(flag_stack, data, 0);
     EXPECT_THAT(*(flags.selected), UnorderedElementsAre(0, 1));
 
     // Two numbers
     resid.add_number(SelNumber("4"));
     flags.selected->clear();
     flag_stack.push_flags(flags);
-    resid.evaluate(flag_stack, *data, 0);
+    resid.evaluate(flag_stack, data, 0);
     EXPECT_THAT(*(flags.selected), UnorderedElementsAre(0, 1, 8, 9));
 
     // De-select one atom
     flags.mask->erase(0);
     flags.selected->clear();
     flag_stack.push_flags(flags);
-    resid.evaluate(flag_stack, *data, 0);
+    resid.evaluate(flag_stack, data, 0);
     EXPECT_THAT(*(flags.selected), UnorderedElementsAre(1, 8, 9));
     // Bring back mask state
     flags.mask->insert(0);
@@ -135,14 +135,14 @@ TEST(Selection, ResidSelection) {
     resid.add_range(SelNumberRange("1", "2"));
     flags.selected->clear();
     flag_stack.push_flags(flags);
-    resid.evaluate(flag_stack, *data, 0);
+    resid.evaluate(flag_stack, data, 0);
     EXPECT_THAT(*(flags.selected), UnorderedElementsAre(0, 1, 2, 3, 4, 5, 8, 9));
 
     // Two ranges
     resid.add_range(SelNumberRange("1", "3"));
     flags.selected->clear();
     flag_stack.push_flags(flags);
-    resid.evaluate(flag_stack, *data, 0);
+    resid.evaluate(flag_stack, data, 0);
     EXPECT_THAT(*(flags.selected), UnorderedElementsAre(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
 
     // De-select some atoms
@@ -153,7 +153,7 @@ TEST(Selection, ResidSelection) {
     flags.mask->erase(8);
     flags.selected->clear();
     flag_stack.push_flags(flags);
-    resid.evaluate(flag_stack, *data, 0);
+    resid.evaluate(flag_stack, data, 0);
     EXPECT_THAT(*(flags.selected), UnorderedElementsAre(1, 3, 4, 6, 9));
     // Bring back mask state
     flags.mask->insert(0);
@@ -186,9 +186,9 @@ TEST(Selection, Evaluation) {
     root->right = right;
     EXPECT_CALL(*right, evaluate).Times(1);
 
-    auto data = create_moldata(1, 1, 1, 1, 1);
+    MolData data = create_moldata(1, 1, 1, 1, 1);
     SelectionStack stack(root);
-    stack.evaluate(*data, flags, 0);
+    stack.evaluate(data, flags, 0);
 
     stack.push_flags(flags);
     SelectionFlags other = stack.pop_flags();
@@ -206,7 +206,7 @@ TEST(Selection, SelectionParser) {
 
 TEST(Selection, BooleanParsing) {
     // Mock MolData
-    auto data = create_moldata(5, 2, 1, 1, 1);
+    MolData data = create_moldata(5, 2, 1, 1, 1);
     std::shared_ptr<std::set<index_t>> selected;
 
     auto sel_tree = SEL_PARSER.parse("resid 1 or resid 2 or resid 3");
@@ -215,7 +215,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->right));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(2, 3, 4, 5, 6, 7));
 
     sel_tree = SEL_PARSER.parse("resid 1 and resid 2 and resid 3");
@@ -224,7 +224,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->right));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre());
 
     sel_tree = SEL_PARSER.parse("resid 1 or resid 2 and resid 3");
@@ -233,7 +233,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->right));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre());
 
     sel_tree = SEL_PARSER.parse("(resid 1 or resid 2) and resid 3");
@@ -242,7 +242,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->right));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre());
 
     sel_tree = SEL_PARSER.parse("resid 1 or (resid 2 and resid 3)");
@@ -251,7 +251,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<AndSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right->right));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(2, 3));
 
     sel_tree = SEL_PARSER.parse("resid 1 and resid 2 or resid 3");
@@ -260,7 +260,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->right));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(6, 7));
 
     sel_tree = SEL_PARSER.parse("(resid 1 and resid 2) or resid 3");
@@ -269,7 +269,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->right));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(6, 7));
 
     sel_tree = SEL_PARSER.parse("resid 1 and (resid 2 or resid 3)");
@@ -278,7 +278,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<OrSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right->right));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre());
 
     sel_tree = SEL_PARSER.parse("not resid 1 or resid 2");
@@ -286,7 +286,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NotSelection>(sel_tree->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->left));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(0, 1, 4, 5, 6, 7, 8, 9));
 
     sel_tree = SEL_PARSER.parse("resid 1 or not resid 2");
@@ -294,7 +294,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NotSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right->left));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(0, 1, 2, 3, 6, 7, 8, 9));
 
     sel_tree = SEL_PARSER.parse("not resid 1 and resid 2");
@@ -302,7 +302,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NotSelection>(sel_tree->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left->left));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(4, 5));
 
     sel_tree = SEL_PARSER.parse("resid 1 and not resid 2");
@@ -310,7 +310,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NotSelection>(sel_tree->right));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right->left));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(2, 3));
 
     sel_tree = SEL_PARSER.parse("resid 1 or not (resid 2 or resid 3)");
@@ -320,7 +320,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<OrSelection>(sel_tree->right->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right->left->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right->left->right));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(0, 1, 2, 3, 8, 9));
 
     sel_tree = SEL_PARSER.parse("resid 1 and not (resid 2 or resid 3)");
@@ -330,7 +330,7 @@ TEST(Selection, BooleanParsing) {
     ASSERT_TRUE(std::dynamic_pointer_cast<OrSelection>(sel_tree->right->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right->left->left));
     ASSERT_TRUE(std::dynamic_pointer_cast<NumPropSelection>(sel_tree->right->left->right));
-    selected = evaluate_sel_tree(sel_tree, *data);
+    selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(2, 3));
 }
 
@@ -346,14 +346,14 @@ TEST(Selection, NumPropParsing) {
     EXPECT_TRUE(std::dynamic_pointer_cast<ResidSelection>(sel_tree->left->right));
     EXPECT_TRUE(std::dynamic_pointer_cast<ResidSelection>(sel_tree->right));
     // Selection
-    auto data = create_moldata(12, 1, 1, 1, 1);
-    std::shared_ptr<std::set<index_t>> selected = evaluate_sel_tree(sel_tree, *data);
+    MolData data = create_moldata(12, 1, 1, 1, 1);
+    std::shared_ptr<std::set<index_t>> selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(0, 2, 3, 4, 6, 7, 9, 11));
 }
 
 TEST(Selection, AtomSelector) {
     // Data
-    std::shared_ptr<MolData> pdb_big = PDBFiles::big();
+    MolData* pdb_big = PDBFiles::big();
     ASSERT_TRUE(pdb_big);
 
     // Valid selections

@@ -17,18 +17,18 @@ public:
     void operator=(PDBFiles const &) = delete;
 
     static std::shared_ptr<MolReader> const reader();
-    static std::shared_ptr<MolData> const tiny();
-    static std::shared_ptr<MolData> const big();
-    static std::shared_ptr<MolData> const traj();
+    static MolData* tiny();
+    static MolData* big();
+    static MolData* traj();
 
 private:
     PDBFiles();
     static PDBFiles const& instance();
 
     std::shared_ptr<MolReader> m_reader;
-    std::shared_ptr<MolData> m_tiny;
-    std::shared_ptr<MolData> m_big;
-    std::shared_ptr<MolData> m_traj;
+    std::unique_ptr<MolData> m_tiny;
+    std::unique_ptr<MolData> m_big;
+    std::unique_ptr<MolData> m_traj;
 };
 
 class Mol2Files

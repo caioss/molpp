@@ -2,7 +2,7 @@
 #include <molpp/MolError.hpp>
 #include <molpp/MolSystem.hpp>
 #include <molpp/ResidueSel.hpp>
-#include "MolData.hpp"
+#include "core/MolData.hpp"
 #include "readers/MolReader.hpp"
 #include "guessers/AtomBondGuesser.hpp"
 #include "guessers/ResidueBondGuesser.hpp"
@@ -34,7 +34,7 @@ void MolSystem::add_trajectory(std::string const &file_name, int begin, int end,
         throw mol::MolError("No reader for file " + file_name);
     }
 
-    MolReader::Status status = reader->read_trajectory(file_name, m_data, begin, end, step);
+    MolReader::Status status = reader->read_trajectory(file_name, *m_data, begin, end, step);
 
     if (status != MolReader::SUCCESS)
     {
@@ -51,12 +51,12 @@ void MolSystem::add_trajectory(std::string const &file_name, int begin, int end,
 
 AtomSel MolSystem::atoms() const
 {
-    return AtomSel(m_data);
+    return AtomSel(m_data.get());
 }
 
 AtomSel MolSystem::select(std::vector<index_t> const& indices) const
 {
-    return AtomSel(indices, m_data);
+    return AtomSel(indices, m_data.get());
 }
 
 AtomSel MolSystem::select(std::string const& selection, Frame frame) const
@@ -71,7 +71,7 @@ AtomSel MolSystem::select(std::string const& selection, Frame frame) const
 
 AtomSelector MolSystem::selector(std::string const& selection) const
 {
-    return AtomSelector(selection, m_data);
+    return AtomSelector(selection, m_data.get());
 }
 
 void MolSystem::reset_bonds()

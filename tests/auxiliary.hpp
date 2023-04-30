@@ -7,7 +7,7 @@
 using namespace mol;
 using namespace mol::internal;
 
-std::shared_ptr<MolData> create_moldata(size_t const num_res, size_t const num_res_atoms, size_t const num_chains, size_t const num_segments, size_t const num_frames);
+MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t const num_chains, size_t const num_segments, size_t const num_frames);
 
 template <class Type>
 std::vector<Type> view2vector(auto const &view)

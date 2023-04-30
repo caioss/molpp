@@ -21,7 +21,7 @@ public:
     using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<index_t>>;
 
     BaseSel() = delete;
-    BaseSel(SelIndex&& indices, std::shared_ptr<MolData> data);
+    BaseSel(SelIndex&& indices, MolData* data);
 
     Frame frame() const
     {
@@ -72,12 +72,12 @@ protected:
         return m_index.indices_end();
     }
 
-    std::shared_ptr<MolData> data()
+    MolData* data()
     {
         return m_data;
     };
 
-    std::shared_ptr<MolData> const data() const
+    MolData const* data() const
     {
         return m_data;
     };
@@ -86,7 +86,7 @@ private:
     void init_frame();
 
     Frame m_frame;
-    std::shared_ptr<MolData> m_data;
+    MolData* m_data;
     SelIndex m_index;
 };
 

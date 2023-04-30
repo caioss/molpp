@@ -15,19 +15,19 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(Atoms, Atom) {
-    auto data = create_moldata(3, 1, 1, 1, 1);
+    MolData data = create_moldata(3, 1, 1, 1, 1);
 
     // Comparison
-    EXPECT_TRUE(Atom(1, 0, data) == Atom(1, 0, data));
-    EXPECT_FALSE(Atom(0, 0, data) == Atom(1, 0, data));
-    EXPECT_FALSE(Atom(1, std::nullopt, data) == Atom(1, 0, data));
-    EXPECT_FALSE(Atom(1, 0, data) == Atom(1, 0, nullptr));
+    EXPECT_TRUE(Atom(1, 0, &data) == Atom(1, 0, &data));
+    EXPECT_FALSE(Atom(0, 0, &data) == Atom(1, 0, &data));
+    EXPECT_FALSE(Atom(1, std::nullopt, &data) == Atom(1, 0, &data));
+    EXPECT_FALSE(Atom(1, 0, &data) == Atom(1, 0, nullptr));
 
     /*
      * Properties
      */
-    Atom atom0(0, std::nullopt, data);
-    Atom atom(1, 0, data);
+    Atom atom0(0, std::nullopt, &data);
+    Atom atom(1, 0, &data);
     EXPECT_EQ(atom.index(), 1);
     EXPECT_EQ(atom.frame(), 0);
     EXPECT_EQ(atom0.frame(), std::nullopt);
@@ -35,7 +35,7 @@ TEST(Atoms, Atom) {
     EXPECT_EQ(atom.resid(), 1);
 
     EXPECT_EQ(atom.residue_id(), 1);
-    EXPECT_EQ(atom.residue(), Residue(1, 0, data));
+    EXPECT_EQ(atom.residue(), Residue(1, 0, &data));
 
     atom.set_atomic(2);
     EXPECT_EQ(atom.atomic(), 2);
@@ -75,7 +75,7 @@ TEST(Atoms, Atom) {
     atom.coords() *= 2;
     EXPECT_THAT(atom.coords().reshaped(), ElementsAre(2, 2, 2));
 
-    EXPECT_THROW(Atom(1, std::nullopt, data).coords(), MolError);
+    EXPECT_THROW(Atom(1, std::nullopt, &data).coords(), MolError);
 
     /*
      * Bonds
@@ -84,7 +84,7 @@ TEST(Atoms, Atom) {
     EXPECT_THROW(atom.add_bond(1), MolError);
     EXPECT_THROW(atom.add_bond(3), MolError);
     EXPECT_EQ(atom.add_bond(2), atom.bond(2));
-    EXPECT_EQ(atom.add_bond(Atom(2, 0, data)), atom.bond(Atom(2, 0, data)));
+    EXPECT_EQ(atom.add_bond(Atom(2, 0, &data)), atom.bond(Atom(2, 0, &data)));
 
     EXPECT_THAT(atom0.bond(1), NotNull());
     EXPECT_THAT(atom.bond(2), NotNull());
@@ -121,21 +121,20 @@ TEST(Atoms, Timestep) {
 
 TEST(Atoms, MolData) {
     size_t const num_atoms { 3 };
-    auto data = MolData::create(num_atoms);
-    ASSERT_THAT(data, NotNull());
-    EXPECT_EQ(data->size(), num_atoms);
-    EXPECT_EQ(data->atoms().size(), num_atoms);
-    EXPECT_EQ(data->bonds().size(), 0);
-    EXPECT_EQ(data->residues().size(), 0);
-    EXPECT_EQ(data->trajectory().num_frames(), 0);
+    MolData data(num_atoms);
+    EXPECT_EQ(data.size(), num_atoms);
+    EXPECT_EQ(data.atoms().size(), num_atoms);
+    EXPECT_EQ(data.bonds().size(), 0);
+    EXPECT_EQ(data.residues().size(), 0);
+    EXPECT_EQ(data.trajectory().num_frames(), 0);
 }
 
 TEST(Atoms, Trajectory) {
     size_t const num_atoms { 3 };
-    auto data = MolData::create(num_atoms);
-    ASSERT_THAT(data, NotNull());
+    MolData data(num_atoms);
+    EXPECT_EQ(data.size(), num_atoms);
 
-    Trajectory &traj_data = data->trajectory();
+    Trajectory &traj_data = data.trajectory();
     EXPECT_EQ(traj_data.num_frames(), 0);
     traj_data.add_timestep(Timestep(num_atoms));
     EXPECT_EQ(traj_data.num_frames(), 1);

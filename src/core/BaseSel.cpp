@@ -6,8 +6,8 @@
 using namespace mol;
 using namespace mol::internal;
 
-BaseSel::BaseSel(SelIndex&& indices, std::shared_ptr<MolData> data)
-: m_data(data),
+BaseSel::BaseSel(SelIndex&& indices, MolData* data)
+: m_data{data},
   m_index{indices}
 {
     init_frame();

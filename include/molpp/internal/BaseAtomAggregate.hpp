@@ -20,7 +20,7 @@ public:
     using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<index_t>>;
 
     BaseAtomAggregate() = delete;
-    BaseAtomAggregate(index_t const index, Frame const frame, std::shared_ptr<internal::MolData> data)
+    BaseAtomAggregate(index_t const index, Frame const frame, internal::MolData* data)
     : m_index { index },
       m_frame(frame),
       m_data(data)
@@ -48,12 +48,12 @@ protected:
     coords_type coords(std::vector<index_t> &&atom_indices);
     std::vector<std::shared_ptr<Bond>> bonds(std::vector<index_t> const &atom_indices);
 
-    std::shared_ptr<internal::MolData> data()
+    internal::MolData* data()
     {
         return m_data;
     }
 
-    std::shared_ptr<internal::MolData> const data() const
+    internal::MolData const* data() const
     {
         return m_data;
     }
@@ -61,7 +61,7 @@ protected:
 private:
     index_t m_index;
     Frame m_frame;
-    std::shared_ptr<internal::MolData> m_data;
+    internal::MolData* m_data;
 };
 
 

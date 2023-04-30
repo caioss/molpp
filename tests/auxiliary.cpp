@@ -9,13 +9,13 @@ using namespace testing;
 using namespace mol;
 using namespace mol::internal;
 
-std::shared_ptr<MolData> create_moldata(size_t const num_res, size_t const num_res_atoms, size_t const num_chains, size_t const num_segments, size_t const num_frames)
+MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t const num_chains, size_t const num_segments, size_t const num_frames)
 {
     size_t const num_atoms { num_res * num_res_atoms };
-    auto data = MolData::create(num_atoms);
-    AtomData& atom_data = data->atoms();
-    ResidueData& res_data = data->residues();
-    data->residues().resize(num_res);
+    MolData data(num_atoms);
+    AtomData& atom_data = data.atoms();
+    ResidueData& res_data = data.residues();
+    data.residues().resize(num_res);
     std::string const letters("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
     // Set atoms
@@ -49,16 +49,16 @@ std::shared_ptr<MolData> create_moldata(size_t const num_res, size_t const num_r
     // Bonds between first atoms of consecutive residues
     for (index_t atom_idx = 0; atom_idx < num_atoms - num_res_atoms; atom_idx += num_res_atoms)
     {
-        data->bonds().add_bond(atom_idx, atom_idx + num_res_atoms);
+        data.bonds().add_bond(atom_idx, atom_idx + num_res_atoms);
     }
 
     // Trajectory
     for (size_t frame_idx = 0; frame_idx < num_frames; frame_idx++)
     {
-        data->trajectory().add_timestep(Timestep(num_atoms));
+        data.trajectory().add_timestep(Timestep(num_atoms));
         for (index_t atom_idx = 0; atom_idx < num_atoms; atom_idx++)
         {
-            auto& coords = data->trajectory().timestep(frame_idx).coords();
+            auto& coords = data.trajectory().timestep(frame_idx).coords();
             coords(Eigen::all, atom_idx) << atom_idx, atom_idx, atom_idx;
         }
     }
@@ -67,16 +67,15 @@ std::shared_ptr<MolData> create_moldata(size_t const num_res, size_t const num_r
 }
 
 TEST(Auxiliary, create_moldata) {
-    auto data = create_moldata(3, 2, 2, 1, 2);
-    ASSERT_THAT(data, NotNull());
-    EXPECT_EQ(data->size(), 6);
+    MolData data = create_moldata(3, 2, 2, 1, 2);
+    ASSERT_EQ(data.size(), 6);
 
     // Atoms
-    EXPECT_EQ(data->atoms().size(), 6);
+    ASSERT_EQ(data.atoms().size(), 6);
     std::vector<mol::Atom> atoms;
-    for (index_t i = 0; i < data->size(); ++i)
+    for (index_t i = 0; i < data.size(); ++i)
     {
-        atoms.push_back(Atom(i, std::nullopt, data));
+        atoms.push_back(Atom(i, std::nullopt, &data));
     }
 
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::residue_id),
@@ -109,10 +108,10 @@ TEST(Auxiliary, create_moldata) {
                                  {"A", "A", "B", "B", "A", "A"}));
 
     // Residues
-    EXPECT_EQ(data->residues().size(), 3);
+    EXPECT_EQ(data.residues().size(), 3);
 
     // Bonds
-    BondData const& bond_data = data->bonds();
+    BondData const& bond_data = data.bonds();
     EXPECT_THAT(bond_data.bonded(0), UnorderedElementsAre(0, 2));
     EXPECT_THAT(bond_data.bonded(1), UnorderedElementsAre());
     EXPECT_THAT(bond_data.bonded(2), UnorderedElementsAre(0, 2, 4));
@@ -121,7 +120,7 @@ TEST(Auxiliary, create_moldata) {
     EXPECT_THAT(bond_data.bonded(5), UnorderedElementsAre());
 
     // Trajectory
-    Trajectory const& traj_data = data->trajectory();
+    Trajectory const& traj_data = data.trajectory();
     EXPECT_EQ(traj_data.num_frames(), 2);
     EXPECT_THAT(traj_data.timestep(0).coords().reshaped(), ElementsAre(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5));
     EXPECT_THAT(traj_data.timestep(1).coords().reshaped(), ElementsAre(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5));

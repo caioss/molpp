@@ -15,18 +15,18 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(Residues, Residue) {
-    auto data = create_moldata(3, 1, 1, 1, 1);
+    MolData data = create_moldata(3, 1, 1, 1, 1);
 
     // Comparison
-    EXPECT_TRUE(Residue(1, 0, data) == Residue(1, 0, data));
-    EXPECT_FALSE(Residue(0, 0, data) == Residue(1, 0, data));
-    EXPECT_FALSE(Residue(1, std::nullopt, data) == Residue(1, 0, data));
-    EXPECT_FALSE(Residue(1, 0, data) == Residue(1, 0, nullptr));
+    EXPECT_TRUE(Residue(1, 0, &data) == Residue(1, 0, &data));
+    EXPECT_FALSE(Residue(0, 0, &data) == Residue(1, 0, &data));
+    EXPECT_FALSE(Residue(1, std::nullopt, &data) == Residue(1, 0, &data));
+    EXPECT_FALSE(Residue(1, 0, &data) == Residue(1, 0, nullptr));
 
     /*
      * Properties
      */
-    Residue res(1, 0, data);
+    Residue res(1, 0, &data);
     EXPECT_EQ(res.index(), 1);
     EXPECT_EQ(res.frame(), 0);
 
@@ -49,12 +49,12 @@ TEST(Residues, Residue) {
     res.coords() *= 2;
     EXPECT_THAT(res.coords().reshaped(), ElementsAre(2, 2, 2));
 
-    EXPECT_THROW(Residue(1, std::nullopt, data).coords(), MolError);
+    EXPECT_THROW(Residue(1, std::nullopt, &data).coords(), MolError);
 
     /*
      * Bonds
      */
-    auto bond_list = Residue(0, 0, data).bonds();
+    auto bond_list = Residue(0, 0, &data).bonds();
     ASSERT_EQ(bond_list.size(), 1);
     EXPECT_EQ(bond_list[0]->atom1(), 0);
     EXPECT_EQ(bond_list[0]->atom2(), 1);
@@ -62,7 +62,7 @@ TEST(Residues, Residue) {
     /*
      * Addition/removal
      */
-    Atom atom = Atom(0, 0, data);
+    Atom atom = Atom(0, 0, &data);
     res.add_atom(atom);
     res.add_atom(2);
     AtomSel atomsel(res);
@@ -133,15 +133,15 @@ TEST(Residues, ResidueDetect) {
     char chain[5][2] = {"A", "A", "A", "A", "B"};
 
     // Update MolData
-    auto data = MolData::create(10);
-    ASSERT_THAT(data, NotNull());
+    MolData data(10);
+    ASSERT_EQ(data.size(), 10);
     for (index_t i = 0; i < 10; i++)
     {
-        data->atoms().residue(i) = index[i];
+        data.atoms().residue(i) = index[i];
     }
 
     detect.update_residue_data(data);
-    ResidueData &residues_data = data->residues();
+    ResidueData &residues_data = data.residues();
 
     // Check updates
     EXPECT_EQ(residues_data.size(), 5);

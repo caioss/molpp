@@ -17,6 +17,7 @@ public:
     Graph()
     {}
 
+    Graph(Graph&&) = default;
     Graph(Graph const &src) = delete;
     Graph &operator=(Graph const &rhs) = delete;
 

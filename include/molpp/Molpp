@@ -3,6 +3,7 @@
 #include "MolSystem.hpp"
 #include "Trajectory.hpp"
 #include "Timestep.hpp"
+#include "Bond.hpp"
 
 // Selections
 #include "AtomSel.hpp"

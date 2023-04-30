@@ -26,9 +26,9 @@ std::vector<index_t> ResidueSel::atom_indices() const
     return atoms;
 }
 
-std::vector<index_t> ResidueSel::from_atom_indices(std::vector<index_t> &&atom_indices, std::shared_ptr<mol::internal::MolData> const data)
+std::vector<index_t> ResidueSel::from_atom_indices(std::vector<index_t>&& atom_indices, internal::MolData const& data)
 {
-    AtomData &properties = data->atoms();
+    AtomData const& properties = data.atoms();
     std::unordered_set<index_t> residues;
     for (auto const index : atom_indices)
     {
@@ -38,7 +38,7 @@ std::vector<index_t> ResidueSel::from_atom_indices(std::vector<index_t> &&atom_i
     return {residues.begin(), residues.end()};
 }
 
-size_t ResidueSel::max_size(std::shared_ptr<mol::internal::MolData> const data)
+size_t ResidueSel::max_size(internal::MolData const& data)
 {
-    return data->residues().size();
+    return data.residues().size();
 }

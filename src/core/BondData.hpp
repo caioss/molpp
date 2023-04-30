@@ -13,8 +13,9 @@ namespace mol::internal {
 class BondData
 {
 public:
-    BondData() = delete;
     BondData(size_t const num_atoms);
+    BondData() = delete;
+    BondData(BondData&&) = default;
     BondData(const BondData &src) = delete;
     BondData &operator=(const BondData &rhs) = delete;
 

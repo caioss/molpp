@@ -26,7 +26,7 @@ public:
 
     AtomAggregate() = delete;
 
-    AtomAggregate(index_t const index, Frame const frame, std::shared_ptr<internal::MolData> data)
+    AtomAggregate(index_t const index, Frame const frame, internal::MolData* data)
     requires AtomAggregateDerived<Derived>
     : BaseAtomAggregate(index, frame, data)
     {}

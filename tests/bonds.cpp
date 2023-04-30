@@ -108,8 +108,8 @@ TEST(Bonds, Guessers) {
     auto res_data = reader->read_topology("4lad.pdb");
     ASSERT_THAT(res_data, NotNull());
 
-    AtomSel res_atoms(res_data);
-    ResidueSel res(res_data);
+    AtomSel res_atoms(res_data.get());
+    ResidueSel res(res_data.get());
     ResidueBondGuesser res_guesser;
     res_guesser.apply(res);
 
@@ -152,9 +152,9 @@ TEST(Bonds, Guessers) {
     auto atom_data = reader->read_topology("4lad.pdb");
     ASSERT_THAT(atom_data, NotNull());
     atom_data->bonds().clear();
-    reader->read_trajectory("4lad.pdb", atom_data);
+    reader->read_trajectory("4lad.pdb", *atom_data);
 
-    AtomSel atoms_sel(atom_data);
+    AtomSel atoms_sel(atom_data.get());
     AtomBondGuesser atom_guesser;
     atom_guesser.apply(atoms_sel);
 

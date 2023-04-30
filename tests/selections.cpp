@@ -56,8 +56,8 @@ TEST(Selections, SelIndex) {
 
 TEST(Selections, BaseSel) {
     // Data
-    std::shared_ptr<MolData> pdb_tiny = PDBFiles::tiny();
-    std::shared_ptr<MolData> pdb_traj = PDBFiles::traj();
+    MolData* pdb_tiny = PDBFiles::tiny();
+    MolData* pdb_traj = PDBFiles::traj();
     ASSERT_TRUE(pdb_tiny);
     ASSERT_TRUE(pdb_traj);
 
@@ -117,8 +117,8 @@ TEST(Selections, BaseSel) {
 
 TEST(Selections, Sel) {
     // Data
-    std::shared_ptr<MolData> pdb_tiny = PDBFiles::tiny();
-    std::shared_ptr<MolData> pdb_traj = PDBFiles::traj();
+    MolData* pdb_tiny = PDBFiles::tiny();
+    MolData* pdb_traj = PDBFiles::traj();
     ASSERT_TRUE(pdb_tiny);
     ASSERT_TRUE(pdb_traj);
 
@@ -286,8 +286,8 @@ TEST(Selections, Sel) {
 
 TEST(Selections, AtomSel) {
     // Data
-    std::shared_ptr<MolData> pdb_tiny = PDBFiles::tiny();
-    std::shared_ptr<MolData> pdb_traj = PDBFiles::traj();
+    MolData* pdb_tiny = PDBFiles::tiny();
+    MolData* pdb_traj = PDBFiles::traj();
     ASSERT_TRUE(pdb_tiny);
     ASSERT_TRUE(pdb_traj);
 
@@ -458,8 +458,8 @@ TEST(Selections, AtomSel) {
 
 TEST(Selections, ResidueSel) {
     // Data
-    std::shared_ptr<MolData> pdb_tiny = PDBFiles::tiny();
-    std::shared_ptr<MolData> pdb_traj = PDBFiles::traj();
+    MolData* pdb_tiny = PDBFiles::tiny();
+    MolData* pdb_traj = PDBFiles::traj();
     ASSERT_TRUE(pdb_tiny);
     ASSERT_TRUE(pdb_traj);
 

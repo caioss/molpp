@@ -148,7 +148,7 @@ void MolfileReader::close()
     m_num_atoms = 0;
 }
 
-std::shared_ptr<MolData> MolfileReader::read_atoms()
+std::unique_ptr<MolData> MolfileReader::read_atoms()
 {
     if (!m_handle)
     {
@@ -162,7 +162,8 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
     {
         return nullptr;
     }
-    std::shared_ptr<MolData> mol_data = MolData::create(m_num_atoms);
+
+    std::unique_ptr<MolData> mol_data = std::make_unique<MolData>(m_num_atoms);
     ResidueDetect residues;
 
     // Loop over all atoms
@@ -173,7 +174,7 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
          */
         molfile_atom_t const &mol_atom = molfile_atoms[i];
 
-        Atom atom(i, {}, mol_data);
+        Atom atom(i, {}, mol_data.get());
         atom.set_name(mol_atom.name);
         atom.set_type(mol_atom.type);
 
@@ -217,7 +218,7 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
     }
 
     // Update residues data
-    residues.update_residue_data(mol_data);
+    residues.update_residue_data(*mol_data);
 
     /*
      * Bonds
@@ -262,14 +263,14 @@ std::shared_ptr<MolData> MolfileReader::read_atoms()
     return mol_data;
 }
 
-MolReader::Status MolfileReader::check_timestep_read(std::shared_ptr<MolData> mol_data)
+MolReader::Status MolfileReader::check_timestep_read(MolData& mol_data)
 {
     if (!m_handle)
     {
         return INVALID;
     }
 
-    if (mol_data->size() != (size_t)m_num_atoms)
+    if (mol_data.size() != (size_t)m_num_atoms)
     {
         return WRONG_ATOMS;
     }
@@ -277,9 +278,9 @@ MolReader::Status MolfileReader::check_timestep_read(std::shared_ptr<MolData> mo
     return SUCCESS;
 }
 
-MolReader::Status MolfileReader::skip_timestep(std::shared_ptr<MolData> mol_data)
+MolReader::Status MolfileReader::skip_timestep(MolData& mol_data)
 {
-    switch (m_plugin->read_next_timestep(m_handle, mol_data->size(), nullptr))
+    switch (m_plugin->read_next_timestep(m_handle, mol_data.size(), nullptr))
     {
         case MOLFILE_SUCCESS:
             return SUCCESS;
@@ -292,14 +293,14 @@ MolReader::Status MolfileReader::skip_timestep(std::shared_ptr<MolData> mol_data
     }
 }
 
-MolReader::Status MolfileReader::read_timestep(std::shared_ptr<MolData> mol_data)
+MolReader::Status MolfileReader::read_timestep(MolData& mol_data)
 {
-    Timestep ts(mol_data->size());
+    Timestep ts(mol_data.size());
     molfile_timestep_t mol_ts;
     mol_ts.coords = ts.coords().data();
     mol_ts.physical_time = 0.0;
 
-    switch (m_plugin->read_next_timestep(m_handle, mol_data->size(), &mol_ts))
+    switch (m_plugin->read_next_timestep(m_handle, mol_data.size(), &mol_ts))
     {
         case MOLFILE_SUCCESS:
             break;
@@ -311,7 +312,7 @@ MolReader::Status MolfileReader::read_timestep(std::shared_ptr<MolData> mol_data
             return FAILED;
     }
 
-    mol_data->trajectory().add_timestep(std::move(ts));
+    mol_data.trajectory().add_timestep(std::move(ts));
 
     return SUCCESS;
 }

@@ -16,13 +16,13 @@ class AtomSelector
 {
 public:
     AtomSelector() = delete;
-    AtomSelector(std::string const& selection, std::shared_ptr<internal::MolData> data);
+    AtomSelector(std::string const& selection, internal::MolData* data);
     AtomSel apply(Frame frame);
 
 private:
     void parse(std::string const& selection);
 
-    std::shared_ptr<internal::MolData> m_data;
+    internal::MolData* m_data;
     std::shared_ptr<internal::SelectionNode> m_tree;
 };
 
