@@ -23,10 +23,21 @@ TEST(Residues, Residue) {
     EXPECT_FALSE(Residue(1, std::nullopt, &data) == Residue(1, 0, &data));
     EXPECT_FALSE(Residue(1, 0, &data) == Residue(1, 0, nullptr));
 
+    Residue res(1, 0, &data);
+    Residue const const_res(1, 0, &data);
+
+    /*
+     * Constructors
+     */
+    EXPECT_FALSE(Residue());
+    EXPECT_FALSE(Residue(4, 0, &data));
+    EXPECT_FALSE(Residue(1, 0, nullptr));
+    EXPECT_TRUE(res);
+    EXPECT_TRUE(const_res);
+
     /*
      * Properties
      */
-    Residue res(1, 0, &data);
     EXPECT_EQ(res.index(), 1);
     EXPECT_EQ(res.frame(), 0);
 

@@ -152,3 +152,8 @@ std::shared_ptr<Bond> Atom::bond(Atom const &other)
 {
     return bond(other.index());
 }
+
+bool Atom::validate_index() const
+{
+    return index() < data()->atoms().size();
+}

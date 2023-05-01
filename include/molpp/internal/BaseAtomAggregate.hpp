@@ -19,11 +19,12 @@ class BaseAtomAggregate
 public:
     using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<index_t>>;
 
-    BaseAtomAggregate() = delete;
+    BaseAtomAggregate() = default;
+
     BaseAtomAggregate(index_t const index, Frame const frame, internal::MolData* data)
-    : m_index { index },
+    : m_index{index},
       m_frame(frame),
-      m_data(data)
+      m_data{data}
     {}
 
     bool operator==(BaseAtomAggregate const &other) const

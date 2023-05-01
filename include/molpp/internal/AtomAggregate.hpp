@@ -24,7 +24,10 @@ class AtomAggregate : public BaseAtomAggregate
 public:
     using BaseAtomAggregate::coords_type;
 
-    AtomAggregate() = delete;
+    AtomAggregate()
+    requires AtomAggregateDerived<Derived>
+    : BaseAtomAggregate()
+    {}
 
     AtomAggregate(index_t const index, Frame const frame, internal::MolData* data)
     requires AtomAggregateDerived<Derived>
@@ -41,6 +44,12 @@ public:
     {
         Derived &derived = static_cast<Derived &>(*this);
         return bonds(derived.atom_indices());
+    }
+
+    operator bool() const
+    {
+        Derived const& derived = static_cast<Derived const&>(*this);
+        return data() && derived.validate_index();
     }
 
 protected:

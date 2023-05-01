@@ -14,8 +14,9 @@ class Residue;
 
 class Atom : public internal::AtomAggregate<Atom>
 {
+    friend class internal::AtomAggregate<Atom>;
+
 public:
-    Atom() = delete;
     using internal::AtomAggregate<Atom>::AtomAggregate;
 
     int resid() const;
@@ -62,6 +63,9 @@ public:
     {
         return {index()};
     }
+
+protected:
+    bool validate_index() const;
 };
 
 } // namespace mol

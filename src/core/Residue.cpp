@@ -69,3 +69,8 @@ std::vector<index_t> Residue::atom_indices() const
     auto const indices = data()->residues().indices(index());
     return {indices.begin(), indices.end()};
 }
+
+bool mol::Residue::validate_index() const
+{
+    return index() < data()->residues().size();
+}

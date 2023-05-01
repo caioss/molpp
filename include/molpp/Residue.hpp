@@ -10,8 +10,9 @@ class Atom;
 
 class Residue : public internal::AtomAggregate<Residue>
 {
+    friend class internal::AtomAggregate<Residue>;
+
 public:
-    Residue() = delete;
     using internal::AtomAggregate<Residue>::AtomAggregate;
 
     int resid() const;
@@ -31,6 +32,9 @@ public:
     size_t size() const;
 
     std::vector<index_t> atom_indices() const;
+
+protected:
+    bool validate_index() const;
 };
 
 } // namespace mol

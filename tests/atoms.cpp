@@ -23,11 +23,23 @@ TEST(Atoms, Atom) {
     EXPECT_FALSE(Atom(1, std::nullopt, &data) == Atom(1, 0, &data));
     EXPECT_FALSE(Atom(1, 0, &data) == Atom(1, 0, nullptr));
 
+    Atom atom0(0, std::nullopt, &data);
+    Atom atom(1, 0, &data);
+    Atom const const_atom(1, 0, &data);
+
+    /*
+     * Constructors
+     */
+    EXPECT_FALSE(Atom());
+    EXPECT_FALSE(Atom(4, 0, &data));
+    EXPECT_FALSE(Atom(1, 0, nullptr));
+    EXPECT_TRUE(atom0);
+    EXPECT_TRUE(atom);
+    EXPECT_TRUE(const_atom);
+
     /*
      * Properties
      */
-    Atom atom0(0, std::nullopt, &data);
-    Atom atom(1, 0, &data);
     EXPECT_EQ(atom.index(), 1);
     EXPECT_EQ(atom.frame(), 0);
     EXPECT_EQ(atom0.frame(), std::nullopt);
