@@ -56,6 +56,7 @@ TEST(Residues, Residue) {
     /*
      * Coordinates
      */
+    EXPECT_THAT(const_res.coords().reshaped(), ElementsAre(1, 1, 1));
     EXPECT_THAT(res.coords().reshaped(), ElementsAre(1, 1, 1));
     res.coords() *= 2;
     EXPECT_THAT(res.coords().reshaped(), ElementsAre(2, 2, 2));

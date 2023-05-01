@@ -18,6 +18,7 @@ class BaseAtomAggregate
 {
 public:
     using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<index_t>>;
+    using const_coords_type = const Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<index_t>>;
 
     BaseAtomAggregate() = default;
 
@@ -47,6 +48,7 @@ public:
 
 protected:
     coords_type coords(std::vector<index_t> &&atom_indices);
+    const_coords_type coords(std::vector<index_t> &&atom_indices) const;
     std::vector<std::shared_ptr<Bond>> bonds(std::vector<index_t> const &atom_indices);
 
     internal::MolData* data()

@@ -23,6 +23,7 @@ class AtomAggregate : public BaseAtomAggregate
 {
 public:
     using BaseAtomAggregate::coords_type;
+    using BaseAtomAggregate::const_coords_type;
 
     AtomAggregate()
     requires AtomAggregateDerived<Derived>
@@ -37,6 +38,12 @@ public:
     coords_type coords()
     {
         Derived &derived = static_cast<Derived &>(*this);
+        return coords(derived.atom_indices());
+    }
+
+    const_coords_type coords() const
+    {
+        Derived const& derived = static_cast<Derived const&>(*this);
         return coords(derived.atom_indices());
     }
 

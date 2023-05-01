@@ -83,6 +83,7 @@ TEST(Atoms, Atom) {
     /*
      * Coordinates
      */
+    EXPECT_THAT(const_atom.coords().reshaped(), ElementsAre(1, 1, 1));
     EXPECT_THAT(atom.coords().reshaped(), ElementsAre(1, 1, 1));
     atom.coords() *= 2;
     EXPECT_THAT(atom.coords().reshaped(), ElementsAre(2, 2, 2));
