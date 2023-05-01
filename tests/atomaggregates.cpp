@@ -18,6 +18,7 @@ TEST(AtomAggregates, BaseAtomAggregate) {
     EXPECT_FALSE(BaseAtomAggregate(0, 0, &data) == BaseAtomAggregate(1, 0, &data));
     EXPECT_FALSE(BaseAtomAggregate(1, std::nullopt, &data) == BaseAtomAggregate(1, 0, &data));
     EXPECT_FALSE(BaseAtomAggregate(1, 0, &data) == BaseAtomAggregate(1, 0, nullptr));
+    EXPECT_TRUE(BaseAtomAggregate() == BaseAtomAggregate(0, std::nullopt, nullptr));
 
     /*
      * Properties
@@ -37,16 +38,28 @@ TEST(AtomAggregates, AtomAggregate) {
     EXPECT_FALSE(Aggregate(1, std::nullopt, &data) == Aggregate(1, 0, &data));
     EXPECT_FALSE(Aggregate(1, 0, &data) == Aggregate(1, 0, nullptr));
 
+    Aggregate aggr(1, 0, &data);
+    Aggregate const const_aggr(1, 0, &data);
+
+    /*
+     * Constructors
+     */
+    EXPECT_FALSE(Aggregate());
+    EXPECT_FALSE(Aggregate(4, 0, &data));
+    EXPECT_FALSE(Aggregate(1, 0, nullptr));
+    EXPECT_TRUE(aggr);
+    EXPECT_TRUE(const_aggr);
+
     /*
      * Properties
      */
-    Aggregate aggr(1, 0, &data);
     EXPECT_EQ(aggr.index(), 1);
     EXPECT_EQ(aggr.frame(), 0);
 
     /*
      * Coordinates
      */
+    EXPECT_THAT(const_aggr.coords().reshaped(), ElementsAre(1, 1, 1));
     EXPECT_THAT(aggr.coords().reshaped(), ElementsAre(1, 1, 1));
     aggr.coords() *= 2;
     EXPECT_THAT(aggr.coords().reshaped(), ElementsAre(2, 2, 2));
