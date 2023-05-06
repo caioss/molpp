@@ -59,10 +59,7 @@ public:
     std::shared_ptr<Bond> bond(index_t const other);
     std::shared_ptr<Bond> bond(Atom const &other);
 
-    std::vector<index_t> atom_indices() const
-    {
-        return {index()};
-    }
+    std::vector<index_t> atom_indices() const;
 
 protected:
     bool validate_index() const;

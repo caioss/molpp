@@ -1,8 +1,14 @@
+#include "molpp/ResidueSel.hpp"
 #include "core/MolData.hpp"
-#include <molpp/ResidueSel.hpp>
+#include "molpp/internal/SelIndex.hpp"
 
 using namespace mol;
 using namespace mol::internal;
+
+size_t ResidueSel::data_size(internal::MolData const& data)
+{
+    return data.residues().size();
+}
 
 std::vector<index_t> ResidueSel::atom_indices() const
 {
@@ -26,19 +32,7 @@ std::vector<index_t> ResidueSel::atom_indices() const
     return atoms;
 }
 
-std::vector<index_t> ResidueSel::from_atom_indices(std::vector<index_t>&& atom_indices, internal::MolData const& data)
+size_t ResidueSel::atom_index(size_t const atom_index, internal::MolData const& data)
 {
-    AtomData const& properties = data.atoms();
-    std::unordered_set<index_t> residues;
-    for (auto const index : atom_indices)
-    {
-        residues.insert(properties.residue(index));
-    }
-
-    return {residues.begin(), residues.end()};
-}
-
-size_t ResidueSel::max_size(internal::MolData const& data)
-{
-    return data.residues().size();
+    return data.atoms().residue(atom_index);
 }

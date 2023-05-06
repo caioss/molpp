@@ -4,7 +4,6 @@
 #include <molpp/internal/Sel.hpp>
 #include <molpp/Atom.hpp>
 #include <vector>
-#include <memory>
 
 namespace mol {
 
@@ -15,11 +14,15 @@ class AtomSel : public internal::Sel<Atom, AtomSel>
 public:
     AtomSel() = delete;
     using internal::Sel<Atom, AtomSel>::Sel;
-    std::vector<index_t> atom_indices() const;
 
 protected:
-    static std::vector<index_t> from_atom_indices(std::vector<index_t>&& atom_indices, internal::MolData const& data);
-    static size_t max_size(internal::MolData const& data);
+    static size_t data_size(internal::MolData const& data);
+    std::vector<index_t> const& atom_indices() const;
+
+    static internal::SelIndex from_atom_indices(internal::IndexRange auto const& atom_indices, internal::MolData const& data)
+    {
+        return {atom_indices, data_size(data)};
+    }
 
     template <class, class>
     friend class internal::Sel;

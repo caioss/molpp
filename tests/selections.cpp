@@ -298,7 +298,6 @@ TEST(Selections, AtomSel) {
     EXPECT_EQ(all_sel.size(), pdb_tiny->size());
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
-    EXPECT_THAT(all_sel.atom_indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     for (index_t i = 0; i < 6; ++i)
     {
         EXPECT_TRUE(all_sel.contains(i)) << "index " << i;
@@ -317,8 +316,6 @@ TEST(Selections, AtomSel) {
     EXPECT_FALSE(rvalue_sel.frame());
     EXPECT_THAT(some_sel.indices(), ElementsAre(1, 3, 4));
     EXPECT_THAT(rvalue_sel.indices(), ElementsAre(1, 3, 4));
-    EXPECT_THAT(some_sel.atom_indices(), ElementsAre(1, 3, 4));
-    EXPECT_THAT(rvalue_sel.atom_indices(), ElementsAre(1, 3, 4));
     for (index_t i : {1, 3, 4})
     {
         EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
@@ -470,7 +467,6 @@ TEST(Selections, ResidueSel) {
     EXPECT_EQ(all_sel.size(), 5);
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4));
-    EXPECT_THAT(all_sel.atom_indices(), UnorderedElementsAre(0, 1, 2, 3, 4, 5));
     for (index_t i = 0; i < 5; ++i)
     {
         EXPECT_TRUE(all_sel.contains(i)) << "index " << i;
@@ -489,8 +485,6 @@ TEST(Selections, ResidueSel) {
     EXPECT_FALSE(rvalue_sel.frame());
     EXPECT_THAT(some_sel.indices(), ElementsAre(1, 3, 4));
     EXPECT_THAT(rvalue_sel.indices(), ElementsAre(1, 3, 4));
-    EXPECT_THAT(some_sel.atom_indices(), UnorderedElementsAre(1, 3, 4, 5));
-    EXPECT_THAT(rvalue_sel.atom_indices(), UnorderedElementsAre(1, 3, 4, 5));
     for (index_t i : {1, 3, 4})
     {
         EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;

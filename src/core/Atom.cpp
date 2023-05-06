@@ -1,7 +1,6 @@
 #include "core/MolData.hpp"
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
-#include <molpp/AtomSel.hpp>
 #include <molpp/MolError.hpp>
 
 using namespace mol;
@@ -151,6 +150,11 @@ std::shared_ptr<Bond> Atom::bond(index_t const other)
 std::shared_ptr<Bond> Atom::bond(Atom const &other)
 {
     return bond(other.index());
+}
+
+std::vector<index_t> Atom::atom_indices() const
+{
+    return {index()};
 }
 
 bool Atom::validate_index() const

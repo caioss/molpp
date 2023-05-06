@@ -3,6 +3,7 @@
 
 #include <molpp/MolError.hpp>
 #include <molpp/MolppCore.hpp>
+#include <molpp/internal/requirements.hpp>
 #include <vector>
 
 namespace mol::internal {
@@ -12,19 +13,18 @@ class SelIndex
 public:
     using value_type = index_t;
     using type = std::vector<value_type>;
-    using iterator = std::vector<index_t>::const_iterator;
+    using iterator = type::const_iterator;
 
     SelIndex() = delete;
 
     explicit SelIndex(size_t const max_size);
 
-    template <SelIndexCompatible T>
-    explicit SelIndex(T const &indices, size_t const max_size)
+    SelIndex(IndexRange auto const& indices, size_t const max_size)
     {
         // Find unique, sorted and in-bounds indices
         std::vector<bool> m_selected(max_size, false);
         size_t count = 0;
-        for (index_t const& index : indices)
+        for (auto const& index : indices)
         {
             if (index >= max_size)
             {
@@ -49,12 +49,12 @@ public:
         }
     }
 
-    std::vector<index_t> const &indices() const
+    type const& indices() const
     {
         return m_indices;
     }
 
-    size_t size() const
+    value_type size() const
     {
         return m_indices.size();
     }

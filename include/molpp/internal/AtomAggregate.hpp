@@ -15,7 +15,7 @@ template <class T>
 concept AtomAggregateDerived = requires(T t)
 {
     std::derived_from<T, AtomAggregate<T>>;
-    {t.atom_indices()} -> std::same_as<std::vector<index_t>>;
+    {t.atom_indices()} -> std::convertible_to<std::vector<index_t>>;
 };
 
 template <class Derived>

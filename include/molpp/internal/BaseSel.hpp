@@ -21,6 +21,10 @@ public:
     using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<index_t>>;
 
     BaseSel() = delete;
+    BaseSel(BaseSel &&) = default;
+    BaseSel(BaseSel const&) = default;
+    BaseSel& operator=(BaseSel &&) = default;
+    BaseSel& operator=(BaseSel const&) = default;
     BaseSel(SelIndex&& indices, MolData* data);
 
     Frame frame() const
@@ -48,7 +52,6 @@ public:
     Timestep& timestep();
 
 protected:
-    coords_type coords(std::vector<index_t> &&atom_indices);
     std::vector<index_t> bonded(std::vector<index_t> const &atom_indices) const;
     std::vector<std::shared_ptr<mol::Bond>> bonds(std::vector<index_t> const &atom_indices);
 

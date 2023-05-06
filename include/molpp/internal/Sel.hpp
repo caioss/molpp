@@ -3,10 +3,9 @@
 
 #include <molpp/MolError.hpp>
 #include <molpp/MolppCore.hpp>
+#include <molpp/internal/requirements.hpp>
 #include <molpp/internal/BaseSel.hpp>
-#include <molpp/internal/AtomAggregate.hpp>
-#include <ranges>
-#include <optional>
+#include <vector>
 #include <concepts>
 
 namespace mol {
@@ -24,15 +23,16 @@ template <class Derived>
 concept SelDerived = requires(Derived t, MolData data)
 {
     std::derived_from<Derived, Sel<typename Derived::value_type, Derived>>;
-    {t.atom_indices()} -> std::same_as<std::vector<index_t>>;
-    {t.from_atom_indices({}, data)} -> std::same_as<std::vector<index_t>>;
-    {t.max_size(data)} -> std::same_as<size_t>;
+    {t.data_size(data)} -> std::same_as<size_t>;
+    {t.atom_indices()} -> std::convertible_to<std::vector<index_t>>;
 };
 
-template <class Type>
-concept SelConvertible = requires
+template <class Derived, class Other>
+concept SelFromAtoms = requires(Derived sel, Other other, MolData data)
 {
-    SelDerived<Type> || AtomAggregateDerived<Type>;
+    {other.data()} -> std::same_as<MolData*>;
+    {other.frame()} -> std::same_as<Frame>;
+    {sel.from_atom_indices(other.atom_indices(), data)} -> std::same_as<SelIndex>;
 };
 
 template <class Type, class Derived>
@@ -49,24 +49,32 @@ public:
     using BaseSel::coords_type;
 
     Sel() = delete;
+    Sel(Sel &&) = default;
+    Sel(Sel const&) = default;
+    Sel& operator=(Sel &&) = default;
+    Sel& operator=(Sel const&) = default;
 
-    template <SelConvertible Other>
+    template <class Other>
     explicit Sel(Other&& other)
-    requires SelDerived<Derived>
-    : Sel(Derived::from_atom_indices(other.atom_indices(), *(other.data())), other.data())
+    requires SelDerived<Derived> && SelFromAtoms<Derived, Other>
+    : BaseSel(Derived::from_atom_indices(other.atom_indices(), *(other.data())), other.data())
     {
         set_frame(other.frame());
     }
 
-    explicit Sel(MolData* data)
+    explicit Sel(SelIndex&& sel_index, MolData* data)
     requires SelDerived<Derived>
-    : BaseSel(SelIndex(Derived::max_size(*data)), data)
+    : BaseSel(std::forward<SelIndex>(sel_index), data)
     {}
 
-    template <class T>
-    explicit Sel(T const &indices, MolData* data)
-    requires SelDerived<Derived> && SelIndexCompatible<T>
-    : BaseSel(SelIndex(indices, Derived::max_size(*data)), data)
+    explicit Sel(IndexRange auto const& indices, MolData* data)
+    requires SelDerived<Derived>
+    : BaseSel(SelIndex(indices, Derived::data_size(*data)), data)
+    {}
+
+    explicit Sel(MolData* data)
+    requires SelDerived<Derived>
+    : BaseSel(SelIndex(Derived::data_size(*data)), data)
     {}
 
     iterator begin()
@@ -116,7 +124,7 @@ public:
     coords_type coords()
     {
         Derived &derived = static_cast<Derived &>(*this);
-        return coords(derived.atom_indices());
+        return timestep().coords()(Eigen::all, derived.atom_indices());
     }
 
     Derived bonded()
@@ -134,7 +142,6 @@ public:
     }
 
 protected:
-    using BaseSel::coords;
     using BaseSel::bonded;
     using BaseSel::bonds;
     using BaseSel::data;

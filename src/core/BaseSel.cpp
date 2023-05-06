@@ -31,15 +31,6 @@ Timestep& BaseSel::timestep()
     return m_data->trajectory().timestep(m_frame.value());
 }
 
-BaseSel::coords_type BaseSel::coords(std::vector<index_t> &&atom_indices)
-{
-    if (!m_frame)
-    {
-        throw mol::MolError("Invalid frame");
-    }
-    return m_data->trajectory().timestep(*m_frame).coords()(Eigen::all, std::forward<std::vector<index_t>>(atom_indices));
-}
-
 std::vector<index_t> BaseSel::bonded(std::vector<index_t> const &atom_indices) const
 {
     return m_data->bonds().bonded(atom_indices.begin(), atom_indices.end());
