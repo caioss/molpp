@@ -20,12 +20,12 @@ public:
     MolSystem(std::string const& topology);
     ~MolSystem();
     void add_trajectory(std::string const& file_name, int begin=0, int end=-1, int step=1);
-    AtomSel atoms() const;
-    AtomSel select(std::vector<index_t> const &indices) const;
-    AtomSel select(std::string const &selection, Frame frame = std::nullopt) const;
+    AtomSel atoms(Frame const frame = std::nullopt) const;
+    AtomSel select(std::vector<index_t> const &indices, Frame const frame = std::nullopt) const;
+    AtomSel select(std::string const &selection, Frame const frame = std::nullopt) const;
     AtomSelector selector(std::string const& selection) const;
     void reset_bonds();
-    void guess_bonds();
+    void guess_bonds(Frame const frame);
 
 private:
     std::unique_ptr<internal::MolData> m_data;

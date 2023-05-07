@@ -30,12 +30,20 @@ TEST(System, Selection) {
     // All atoms selections
     AtomSel all_sel{mol.atoms()};
     EXPECT_EQ(all_sel.size(), 1844);
+    EXPECT_FALSE(all_sel.frame());
     all_sel = mol.select("all");
     EXPECT_EQ(all_sel.size(), 1844);
+    EXPECT_FALSE(all_sel.frame());
+
+    // All atoms with frame
+    EXPECT_EQ(mol.atoms(1).frame(), 1);
+    EXPECT_EQ(mol.select("all", 1).frame(), 1);
 
     // From indices
     AtomSel index_sel{mol.select(std::vector<index_t>{0, 2})};
     EXPECT_THAT(index_sel.indices(), ElementsAre(0, 2));
+    EXPECT_FALSE(all_sel.frame());
+    EXPECT_EQ(mol.select(std::vector<index_t>{0, 2}, 1).frame(), 1);
 
     // From strings with frame
     AtomSel water = mol.select("resid 203:205 or resid 900:910", 1);
@@ -57,10 +65,10 @@ TEST(System, Selection) {
 TEST(System, Bonds) {
     MolSystem mol("4lad.pdb");
     mol.add_trajectory("4lad.pdb");
-    AtomSel atoms{mol.atoms()};
+    AtomSel atoms{mol.atoms(0)};
 
     ASSERT_EQ(atoms.size(), 1844);
-    ASSERT_TRUE(atoms.frame());
+    ASSERT_EQ(atoms.frame(), 0);
 
     // Pre-condition
     auto bond = atoms[650].bond(648); // TYR80A-CZ-CE1
@@ -84,7 +92,7 @@ TEST(System, Bonds) {
     EXPECT_THAT(bond, IsNull());
 
     // Guess bonds
-    mol.guess_bonds();
+    mol.guess_bonds(0);
     bond = atoms[650].bond(648); // TYR80A-CZ-CE1
     EXPECT_THAT(bond, NotNull());
     bond = atoms[1108].bond(1101); // PHE151A-N-GLN150A-C

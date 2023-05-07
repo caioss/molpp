@@ -53,21 +53,25 @@ void MolSystem::add_trajectory(std::string const& file_name, int begin, int end,
     }
 }
 
-AtomSel MolSystem::atoms() const
+AtomSel MolSystem::atoms(Frame const frame) const
 {
-    return AtomSel(m_data.get());
+    AtomSel sel(m_data.get());
+    sel.set_frame(frame);
+    return sel;
 }
 
-AtomSel MolSystem::select(std::vector<index_t> const& indices) const
+AtomSel MolSystem::select(std::vector<index_t> const& indices, Frame const frame) const
 {
-    return AtomSel(indices, m_data.get());
+    AtomSel sel(indices, m_data.get());
+    sel.set_frame(frame);
+    return sel;
 }
 
-AtomSel MolSystem::select(std::string const& selection, Frame frame) const
+AtomSel MolSystem::select(std::string const& selection, Frame const frame) const
 {
     if (selection == "all")
     {
-        return atoms();
+        return atoms(frame);
     }
 
     return selector(selection).apply(frame);
@@ -83,9 +87,9 @@ void MolSystem::reset_bonds()
     m_data->bonds().clear();
 }
 
-void MolSystem::guess_bonds()
+void MolSystem::guess_bonds(Frame const frame)
 {
-    AtomSel all_atoms = atoms();
+    AtomSel all_atoms = atoms(frame);
     ResidueSel all_residues(all_atoms);
 
     // Fill tabulated bonds first
