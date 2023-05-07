@@ -5,7 +5,21 @@
 using namespace mol;
 using namespace mol::internal;
 
-BaseAtomAggregate::coords_type BaseAtomAggregate::coords(std::vector<index_t> &&atom_indices)
+Frame BaseAtomAggregate::frame() const
+{
+    return m_frame;
+}
+
+void BaseAtomAggregate::set_frame(Frame const frame)
+{
+    if (frame && frame >= m_data->trajectory().num_frames())
+    {
+        throw mol::MolError("Out of bounds frame: " + std::to_string(*frame));
+    }
+    m_frame = frame;
+}
+
+BaseAtomAggregate::coords_type BaseAtomAggregate::coords(std::vector<index_t>&& atom_indices)
 {
     if (!m_frame)
     {

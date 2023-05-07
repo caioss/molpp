@@ -11,7 +11,7 @@ using namespace mol::internal;
 using namespace testing;
 
 TEST(AtomAggregates, BaseAtomAggregate) {
-    MolData data = create_moldata(3, 1, 1, 1, 0);
+    MolData data = create_moldata(3, 1, 1, 1, 1);
 
     // Comparison
     EXPECT_TRUE(BaseAtomAggregate(1, 0, &data) == BaseAtomAggregate(1, 0, &data));
@@ -26,6 +26,11 @@ TEST(AtomAggregates, BaseAtomAggregate) {
     BaseAtomAggregate aggr(1, 0, &data);
     EXPECT_EQ(aggr.index(), 1);
     EXPECT_EQ(aggr.frame(), 0);
+    aggr.set_frame(std::nullopt);
+    EXPECT_FALSE(aggr.frame());
+    aggr.set_frame(0);
+    EXPECT_EQ(aggr.frame(), 0);
+    EXPECT_THROW(aggr.set_frame(1), MolError);
 }
 
 TEST(AtomAggregates, AtomAggregate) {
@@ -55,6 +60,11 @@ TEST(AtomAggregates, AtomAggregate) {
      */
     EXPECT_EQ(aggr.index(), 1);
     EXPECT_EQ(aggr.frame(), 0);
+    aggr.set_frame(std::nullopt);
+    EXPECT_FALSE(aggr.frame());
+    aggr.set_frame(0);
+    EXPECT_EQ(aggr.frame(), 0);
+    EXPECT_THROW(aggr.set_frame(1), MolError);
 
     /*
      * Coordinates

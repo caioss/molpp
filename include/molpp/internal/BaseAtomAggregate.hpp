@@ -35,16 +35,14 @@ public:
                && m_frame == other.m_frame;
     }
 
+    // Read-only
     index_t index() const
     {
         return m_index;
     }
 
-    // Read-only
-    Frame frame() const
-    {
-        return m_frame;
-    }
+    Frame frame() const;
+    void set_frame(Frame const frame);
 
 protected:
     coords_type coords(std::vector<index_t> &&atom_indices);

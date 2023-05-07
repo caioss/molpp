@@ -40,6 +40,11 @@ TEST(Residues, Residue) {
      */
     EXPECT_EQ(res.index(), 1);
     EXPECT_EQ(res.frame(), 0);
+    res.set_frame(std::nullopt);
+    EXPECT_FALSE(res.frame());
+    res.set_frame(0);
+    EXPECT_EQ(res.frame(), 0);
+    EXPECT_THROW(res.set_frame(1), MolError);
 
     res.set_resid(20);
     EXPECT_EQ(res.resid(), 20);

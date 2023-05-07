@@ -42,7 +42,12 @@ TEST(Atoms, Atom) {
      */
     EXPECT_EQ(atom.index(), 1);
     EXPECT_EQ(atom.frame(), 0);
-    EXPECT_EQ(atom0.frame(), std::nullopt);
+    EXPECT_FALSE(atom0.frame());
+    atom.set_frame(std::nullopt);
+    EXPECT_FALSE(atom.frame());
+    atom.set_frame(0);
+    EXPECT_EQ(atom.frame(), 0);
+    EXPECT_THROW(atom.set_frame(1), MolError);
 
     EXPECT_EQ(atom.resid(), 1);
 
