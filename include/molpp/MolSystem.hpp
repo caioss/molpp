@@ -18,6 +18,7 @@ class MolSystem
 {
 public:
     MolSystem(std::string const& topology);
+    ~MolSystem();
     void add_trajectory(std::string const& file_name, int begin=0, int end=-1, int step=1);
     AtomSel atoms() const;
     AtomSel select(std::vector<index_t> const &indices) const;

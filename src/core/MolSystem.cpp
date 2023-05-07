@@ -26,7 +26,11 @@ MolSystem::MolSystem(std::string const &topology)
     }
 }
 
-void MolSystem::add_trajectory(std::string const &file_name, int begin, int end, int step)
+mol::MolSystem::~MolSystem()
+{
+}
+
+void MolSystem::add_trajectory(std::string const& file_name, int begin, int end, int step)
 {
     auto reader = MolReader::from_file_ext(std::filesystem::path(file_name).extension());
     if (!reader)
