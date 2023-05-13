@@ -18,8 +18,7 @@
 #include <functional>
 #include <list>
 #include <cassert>
-
-// using namespace dssp;
+#include "structure.hpp"
 
 double constexpr kPI = 4 * std::atan(1.0),
                  kSSBridgeDistance = 3.0,
@@ -49,12 +48,12 @@ double dssp::distance(mol::Point3 const& first, mol::Point3 const& second)
     return (first - second).norm();
 }
 
-bool dssp::test_bond(dssp::MResidue const* first, dssp::MResidue const* second)
+bool dssp::MProtein::test_bond(dssp::MResidue const* first, dssp::MResidue const* second)
 {
     return (first->h_bond_acceptor[0].residue == second && first->h_bond_acceptor[0].energy < kMaxHBondEnergy) || (first->h_bond_acceptor[1].residue == second && first->h_bond_acceptor[1].energy < kMaxHBondEnergy);
 }
 
-dssp::MBridgeType dssp::test_bridge(dssp::MResidue const* first, dssp::MResidue const* second)
+dssp::MBridgeType dssp::MProtein::test_bridge(dssp::MResidue const* first, dssp::MResidue const* second)
 { // I. a d II. a d parallel
     dssp::MResidue const* a = first->previous; // \ /
     dssp::MResidue const* b = first; // b e b e
@@ -67,18 +66,18 @@ dssp::MBridgeType dssp::test_bridge(dssp::MResidue const* first, dssp::MResidue 
                                      //
                                      // c -> d c d
 
-    if (a && c && dssp::no_chain_break(a, c) && d && f && dssp::no_chain_break(d, f))
+    if (a && c && no_chain_break(a, c) && d && f && no_chain_break(d, f))
     {
-        if ((dssp::test_bond(c, e) && dssp::test_bond(e, a)) || (dssp::test_bond(f, b) && dssp::test_bond(b, d)))
+        if ((test_bond(c, e) && test_bond(e, a)) || (test_bond(f, b) && test_bond(b, d)))
             result = btParallel;
-        else if ((dssp::test_bond(c, d) && dssp::test_bond(f, a)) || (dssp::test_bond(e, b) && dssp::test_bond(b, e)))
+        else if ((test_bond(c, d) && test_bond(f, a)) || (test_bond(e, b) && test_bond(b, e)))
             result = btAntiParallel;
     }
 
     return result;
 }
 
-double dssp::calculate_Hbond_energy(dssp::MResidue* inDonor, dssp::MResidue* inAcceptor)
+double dssp::MProtein::calculate_Hbond_energy(dssp::MResidue* inDonor, dssp::MResidue* inAcceptor)
 {
     double result = 0;
 
@@ -133,7 +132,7 @@ double dssp::calculate_Hbond_energy(dssp::MResidue* inDonor, dssp::MResidue* inA
     return result;
 }
 
-bool dssp::no_chain_break(dssp::MResidue const* from, dssp::MResidue const* to)
+bool dssp::MProtein::no_chain_break(dssp::MResidue const* from, dssp::MResidue const* to) const
 {
     // TODO check if early return is possible
     bool result = true;
@@ -150,6 +149,23 @@ bool dssp::no_chain_break(dssp::MResidue const* from, dssp::MResidue const* to)
         }
     }
     return result;
+}
+
+double dssp::MProtein::compute_kappa(MResidue const* residue) const
+{
+    const dssp::MResidue* prevPrev = residue->previous ? residue->previous->previous : nullptr;
+    const dssp::MResidue* nextNext = residue->next ? residue->next->next : nullptr;
+
+    if (prevPrev != nullptr && nextNext != nullptr && no_chain_break(prevPrev, nextNext))
+    {
+        double ckap = CosinusAngle(residue->CA(), prevPrev->CA(), nextNext->CA(), residue->CA());
+        double skap = sqrt(1 - ckap * ckap);
+        return atan2(skap, ckap) * 180 / kPI;
+    }
+    else
+    {
+        return 360;
+    }
 }
 
 struct MBridge
@@ -203,23 +219,6 @@ void dssp::MResidue::update_positions(mol::Atom const& N, mol::Atom const& CA, m
 bool dssp::MResidue::is_valid_distance(dssp::MResidue const* inNext) const // TODO accept a reference
 {
     return distance(C(), inNext->N()) <= kMaxPeptideBondLength;
-}
-
-double dssp::MResidue::Kappa() const
-{
-    const dssp::MResidue* prevPrev = previous ? previous->previous : nullptr;
-    const dssp::MResidue* nextNext = next ? next->next : nullptr;
-
-    if (prevPrev != nullptr && nextNext != nullptr && no_chain_break(prevPrev, nextNext))
-    {
-        double ckap = CosinusAngle(CA(), prevPrev->CA(), nextNext->CA(), CA());
-        double skap = sqrt(1 - ckap * ckap);
-        return atan2(skap, ckap) * 180 / kPI;
-    }
-    else
-    {
-        return 360;
-    }
 }
 
 dssp::MHelixFlag dssp::MResidue::helix_flag(uint32_t inHelixStride) const
@@ -305,7 +304,7 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
 
     for (dssp::MResidue* r : mResidues)
     {
-        double kappa = r->Kappa();
+        double kappa = compute_kappa(r);
         r->is_bend = kappa != 360 && kappa > 70;
     }
 

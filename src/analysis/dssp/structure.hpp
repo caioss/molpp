@@ -24,6 +24,14 @@
 namespace dssp
 {
 
+enum MBridgeType {
+    btNoBridge, btParallel, btAntiParallel
+};
+
+enum MHelixFlag {
+    helixNone, helixStart, helixEnd, helixStartAndEnd, helixMiddle
+};
+
 class MResidue;
 class MChain;
 
@@ -39,16 +47,13 @@ private:
     void CalculateHBondEnergies();
     void CalculateAlphaHelices(bool inPreferPiHelices);
     void CalculateBetaSheets();
+    bool test_bond(MResidue const* first, MResidue const* second);
+    MBridgeType test_bridge(MResidue const* first, MResidue const* second);
+    double calculate_Hbond_energy(MResidue* inDonor, MResidue* inAcceptor);
+    bool no_chain_break(MResidue const* from, MResidue const* to) const;
+    double compute_kappa(MResidue const* residue) const;
 
     std::vector<MResidue*> mResidues;
-};
-
-enum MBridgeType {
-    btNoBridge, btParallel, btAntiParallel
-};
-
-enum MHelixFlag {
-    helixNone, helixStart, helixEnd, helixStartAndEnd, helixMiddle
 };
 
 struct HBond {
@@ -102,7 +107,6 @@ public:
     }
 
     void update_positions(mol::Atom const& N, mol::Atom const& CA, mol::Atom const& C, mol::Atom const& O);
-    double Kappa() const;
     MHelixFlag helix_flag(uint32_t inHelixStride) const;
     void set_helix_flag(uint32_t inHelixStride, MHelixFlag inHelixFlag);
     bool is_helix_start(uint32_t inHelixStride) const;
@@ -120,16 +124,11 @@ public:
     bool is_proline;
 
 private:
-    // mol::Atom const& m_N, m_CA, m_C, m_O;
     mol::Point3 m_N, m_CA, m_C, m_O;
     mol::Point3 m_H;
     MHelixFlag m_helix_flags[3];
 };
 
 double distance(mol::Point3 const& first, mol::Point3 const& second);
-bool test_bond(MResidue const* first, MResidue const* second);
-MBridgeType test_bridge(MResidue const* first, MResidue const* second);
-double calculate_Hbond_energy(MResidue* inDonor, MResidue* inAcceptor);
-bool no_chain_break(MResidue const* from, MResidue const* to);
 
 } // namespace dssp
