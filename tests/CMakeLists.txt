@@ -13,6 +13,7 @@ add_executable(tests
     bonds.cpp
     tools.cpp
     tables.cpp
+    dssp.cpp
     files.cpp
     auxiliary.cpp
 )

@@ -26,6 +26,11 @@ MolSystem::MolSystem(std::string const &topology)
     }
 }
 
+mol::MolSystem::MolSystem(MolSystem&& other)
+{
+    std::swap(m_data, other.m_data);
+}
+
 mol::MolSystem::~MolSystem()
 {
 }

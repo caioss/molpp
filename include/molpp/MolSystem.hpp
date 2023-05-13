@@ -18,6 +18,7 @@ class MolSystem
 {
 public:
     MolSystem(std::string const& topology);
+    MolSystem(MolSystem&& other);
     ~MolSystem();
     void add_trajectory(std::string const& file_name, int begin=0, int end=-1, int step=1);
     AtomSel atoms(Frame const frame = std::nullopt) const;
