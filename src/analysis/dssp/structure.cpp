@@ -134,21 +134,15 @@ double dssp::MProtein::calculate_Hbond_energy(dssp::MResidue* inDonor, dssp::MRe
 
 bool dssp::MProtein::no_chain_break(dssp::MResidue const* from, dssp::MResidue const* to) const
 {
-    // TODO check if early return is possible
-    bool result = true;
-    for (dssp::MResidue const* r = from; result && r != to; r = r->next)
+    for (dssp::MResidue const* r = from; r != to; r = r->next)
     {
         dssp::MResidue const* next = r->next;
-        if (next)
+        if (!next || next->is_chain_break)
         {
-            result = next->index == r->index + 1;
-        }
-        else
-        {
-            result = false;
+            return false;
         }
     }
-    return result;
+    return true;
 }
 
 double dssp::MProtein::compute_kappa(MResidue const* residue) const
@@ -198,6 +192,7 @@ dssp::MResidue::MResidue(std::string chain_id, bool const isProline)
 , structure(mol::SecondaryStructure::Loop)
 , sheet(0)
 , is_proline(isProline)
+, is_chain_break{false}
 {
     std::fill(m_helix_flags, m_helix_flags + 3, helixNone);
 }

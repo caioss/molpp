@@ -62,7 +62,7 @@ void mol::SSResidue::update(dssp::MResidue* previous)
     // Check for chain breaks
     if (previous && !previous->is_valid_distance(m_residue.get()))
     {
-        m_residue->index++;
+        m_residue->is_chain_break = true;
     }
 }
 

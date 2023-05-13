@@ -122,6 +122,7 @@ public:
     uint32_t sheet;
     bool is_bend;
     bool is_proline;
+    bool is_chain_break;
 
 private:
     mol::Point3 m_N, m_CA, m_C, m_O;
