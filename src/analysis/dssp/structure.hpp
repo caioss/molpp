@@ -40,7 +40,11 @@ class MProtein
 {
 public:
     void CalculateSecondaryStructure(bool inPreferPiHelices = true);
-    void add_residue(MResidue* residue) {m_residues.push_back(residue);}
+    template<class... Args>
+    MResidue* emplace_residue(Args&&... args)
+    {
+        return m_residues.emplace_back(new MResidue(std::forward<Args>(args)...));
+    }
     std::vector<MResidue*> const& residues() {return m_residues;}
 
 private:
@@ -79,7 +83,7 @@ struct MBridgePartner {
 class MResidue
 {
 public:
-    MResidue(std::string chain_id, bool const isProline);
+    MResidue(std::string chain_id, bool const isProline, MResidue* previous, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O);
 
     mol::Point3 const& N() const
     {
@@ -106,7 +110,7 @@ public:
         return m_H;
     }
 
-    void update_positions(mol::Atom const& N, mol::Atom const& CA, mol::Atom const& C, mol::Atom const& O);
+    void compute_H();
     MHelixFlag helix_flag(uint32_t inHelixStride) const;
     void set_helix_flag(uint32_t inHelixStride, MHelixFlag inHelixFlag);
     bool is_helix_start(uint32_t inHelixStride) const;
@@ -124,8 +128,7 @@ public:
     bool is_chain_break;
 
 private:
-    mol::Point3 m_N, m_CA, m_C, m_O;
-    mol::Point3 m_H;
+    mol::Point3 m_N, m_CA, m_C, m_O, m_H;
     MHelixFlag m_helix_flags[3];
 };
 

@@ -8,10 +8,6 @@
 #include <algorithm>
 #include "DSSP.hpp"
 
-mol::SSResidue::~SSResidue()
-{
-}
-
 mol::SSResidue::SSResidue(Residue& residue)
 : m_is_proline{residue.resname() == "PRO"}
 , N()
@@ -19,7 +15,7 @@ mol::SSResidue::SSResidue(Residue& residue)
 , C()
 , O()
 , m_chain{residue.chain()}
-, m_residue{std::make_unique<dssp::MResidue>(m_chain, m_is_proline)}
+, m_residue{nullptr}
 {
     for (Atom atom : AtomSel(residue))
     {
@@ -43,28 +39,6 @@ mol::SSResidue::SSResidue(Residue& residue)
     }
 }
 
-void mol::SSResidue::update(dssp::MResidue* previous)
-{
-    if (!is_amino_acid())
-    {
-        return;
-    }
-
-    m_residue->previous = previous;
-    m_residue->update_positions(N, CA, C, O);
-
-    if (previous)
-    {
-        previous->next = m_residue.get();
-    }
-
-    // Check for chain breaks
-    if (previous && !previous->is_valid_distance(m_residue.get()))
-    {
-        m_residue->is_chain_break = true;
-    }
-}
-
 void mol::SSResidue::set_frame(Frame const frame)
 {
     if (N)
@@ -85,25 +59,24 @@ void mol::SSResidue::set_frame(Frame const frame)
     }
 }
 
-void mol::SSResidue::set_structure(SecondaryStructure const structure)
-{
-    m_residue->structure = structure;
-}
-
 bool mol::SSResidue::is_amino_acid() const
 {
     return CA && C && O && N;
 }
 
-dssp::MResidue& mol::SSResidue::residue() // TODO needed?
-{
-    return *m_residue;
-}
-
 mol::SecondaryStructure mol::SSResidue::secondary_structure() const
 {
-    // TODO use Unknown as default for dssp::MResidue when not a protein so the check is not needed
-    return is_amino_acid() ? m_residue->structure : mol::Unknown;
+    return m_residue ? m_residue->structure : mol::Unknown;
+}
+
+bool mol::SSResidue::is_proline() const
+{
+    return m_is_proline;
+}
+
+std::string const& mol::SSResidue::chain() const
+{
+    return m_chain;
 }
 
 mol::DSSP::DSSP(MolSystem& molecule)
@@ -118,20 +91,15 @@ mol::DSSP::DSSP(MolSystem& molecule)
 std::vector<mol::SecondaryStructure> mol::DSSP::run(mol::Frame frame)
 {
     dssp::MProtein protein;
-    dssp::MResidue* previous = nullptr; // TODO move this to MProtein
+    dssp::MResidue* previous = nullptr;
     for (SSResidue& residue : m_residues)
     {
         residue.set_frame(frame);
         if (residue.is_amino_acid())
         {
-            // residue.set_structure(mol::Loop);
-            residue.update(previous); // TODO move to MProtein
-            protein.add_residue(&residue.residue()); // TODO move to MProtein
-            previous = &residue.residue(); // TODO parenthesis needed? Look up
-        }
-        else
-        {
-            residue.set_structure(mol::Unknown);
+            dssp::MResidue* mresidue = protein.emplace_residue(residue.chain(), residue.is_proline(), previous, residue.N.coords(), residue.CA.coords(), residue.C.coords(), residue.O.coords());
+            residue.m_residue = mresidue;
+            previous = mresidue;
         }
     }
 

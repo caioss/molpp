@@ -184,24 +184,35 @@ struct MBridge
     }
 };
 
-dssp::MResidue::MResidue(std::string chain_id, bool const isProline)
+dssp::MResidue::MResidue(std::string chain_id, bool const isProline, MResidue* previous, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O)
 : chain_id(chain_id)
-, previous{nullptr}
+, previous{previous}
 , next{nullptr}
 , structure(mol::SecondaryStructure::Loop)
 , sheet(0)
 , is_proline(isProline)
 , is_chain_break{false}
+, m_N{N}
+, m_CA{CA}
+, m_C{C}
+, m_O{O}
 {
     std::fill(m_helix_flags, m_helix_flags + 3, helixNone);
+    compute_H();
+
+    if (previous)
+    {
+        previous->next = this;
+    }
+
+    if (previous && !previous->is_valid_distance(this))
+    {
+        is_chain_break = true;
+    }
 }
 
-void dssp::MResidue::update_positions(mol::Atom const& N, mol::Atom const& CA, mol::Atom const& C, mol::Atom const& O)
+void dssp::MResidue::compute_H()
 {
-    m_N = N.coords();
-    m_CA = CA.coords();
-    m_C = C.coords();
-    m_O = O.coords();
     m_H = m_N;
 
     if (!is_proline && previous)

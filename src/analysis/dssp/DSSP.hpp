@@ -29,24 +29,22 @@ class SSResidue
 {
 public:
     SSResidue() = default;
-    ~SSResidue();
-    SSResidue(SSResidue&&) = default;
     SSResidue(Residue& residue);
-    void update(dssp::MResidue* previous);
     void set_frame(Frame const frame);
-    void set_structure(SecondaryStructure const structure);
     bool is_amino_acid() const;
-    dssp::MResidue& residue();
     SecondaryStructure secondary_structure() const;
+    bool is_proline() const;
+    std::string const& chain() const;
 
-private:
+
+// private: // TODO
     bool m_is_proline;
     Atom N;
     Atom CA;
     Atom C;
     Atom O;
     std::string m_chain;
-    std::unique_ptr<dssp::MResidue> m_residue; // TODO try to not use pointers
+    dssp::MResidue* m_residue;
 };
 
 class DSSP
