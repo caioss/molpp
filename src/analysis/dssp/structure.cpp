@@ -244,13 +244,13 @@ void dssp::MProtein::CalculateSecondaryStructure(bool inPreferPiHelices)
 void dssp::MProtein::CalculateHBondEnergies()
 {
     // Calculate the HBond energies
-    for (uint32_t i = 0; i + 1 < mResidues.size(); ++i)
+    for (uint32_t i = 0; i + 1 < m_residues.size(); ++i)
     {
-        dssp::MResidue* ri = mResidues[i];
+        dssp::MResidue* ri = m_residues[i];
 
-        for (uint32_t j = i + 1; j < mResidues.size(); ++j)
+        for (uint32_t j = i + 1; j < m_residues.size(); ++j)
         {
-            dssp::MResidue* rj = mResidues[j];
+            dssp::MResidue* rj = m_residues[j];
 
             if (distance(ri->CA(), rj->CA()) < kMinimalCADistance)
             {
@@ -266,7 +266,7 @@ void dssp::MProtein::CalculateHBondEnergies()
 
 void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
 {
-    std::vector<dssp::MResidue*>& res = mResidues;
+    std::vector<dssp::MResidue*>& res = m_residues;
     for (uint32_t stride = 3; stride <= 5; ++stride)
     {
         if (res.size() < stride)
@@ -297,74 +297,74 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
         }
     }
 
-    for (dssp::MResidue* r : mResidues)
+    for (dssp::MResidue* r : m_residues)
     {
         double kappa = compute_kappa(r);
         r->is_bend = kappa != 360 && kappa > 70;
     }
 
-    for (uint32_t i = 1; i + 4 < mResidues.size(); ++i)
+    for (uint32_t i = 1; i + 4 < m_residues.size(); ++i)
     {
-        if (mResidues[i]->is_helix_start(4) && mResidues[i - 1]->is_helix_start(4))
+        if (m_residues[i]->is_helix_start(4) && m_residues[i - 1]->is_helix_start(4))
         {
             for (uint32_t j = i; j <= i + 3; ++j)
             {
-                mResidues[j]->structure = mol::SecondaryStructure::Helix;
+                m_residues[j]->structure = mol::SecondaryStructure::Helix;
             }
         }
     }
 
-    for (uint32_t i = 1; i + 3 < mResidues.size(); ++i)
+    for (uint32_t i = 1; i + 3 < m_residues.size(); ++i)
     {
-        if (mResidues[i]->is_helix_start(3) && mResidues[i - 1]->is_helix_start(3))
+        if (m_residues[i]->is_helix_start(3) && m_residues[i - 1]->is_helix_start(3))
         {
             bool empty = true;
             for (uint32_t j = i; empty && j <= i + 2; ++j)
             {
-                empty = mResidues[j]->structure == mol::SecondaryStructure::Loop || mResidues[j]->structure == mol::SecondaryStructure::Helix3;
+                empty = m_residues[j]->structure == mol::SecondaryStructure::Loop || m_residues[j]->structure == mol::SecondaryStructure::Helix3;
             }
 
             if (empty)
             {
                 for (uint32_t j = i; j <= i + 2; ++j)
                 {
-                    mResidues[j]->structure = mol::SecondaryStructure::Helix3;
+                    m_residues[j]->structure = mol::SecondaryStructure::Helix3;
                 }
             }
         }
     }
 
-    for (uint32_t i = 1; i + 5 < mResidues.size(); ++i)
+    for (uint32_t i = 1; i + 5 < m_residues.size(); ++i)
     {
-        if (mResidues[i]->is_helix_start(5) && mResidues[i - 1]->is_helix_start(5))
+        if (m_residues[i]->is_helix_start(5) && m_residues[i - 1]->is_helix_start(5))
         {
             bool empty = true;
             for (uint32_t j = i; empty && j <= i + 4; ++j)
-                empty = mResidues[j]->structure == mol::SecondaryStructure::Loop || mResidues[j]->structure == mol::SecondaryStructure::Helix5 ||
-                        (inPreferPiHelices && mResidues[j]->structure == mol::SecondaryStructure::Helix);
+                empty = m_residues[j]->structure == mol::SecondaryStructure::Loop || m_residues[j]->structure == mol::SecondaryStructure::Helix5 ||
+                        (inPreferPiHelices && m_residues[j]->structure == mol::SecondaryStructure::Helix);
             if (empty)
             {
                 for (uint32_t j = i; j <= i + 4; ++j)
-                    mResidues[j]->structure = mol::SecondaryStructure::Helix5;
+                    m_residues[j]->structure = mol::SecondaryStructure::Helix5;
             }
         }
     }
 
-    for (uint32_t i = 1; i + 1 < mResidues.size(); ++i)
+    for (uint32_t i = 1; i + 1 < m_residues.size(); ++i)
     {
-        if (mResidues[i]->structure == mol::SecondaryStructure::Loop)
+        if (m_residues[i]->structure == mol::SecondaryStructure::Loop)
         {
             bool isTurn = false;
             for (uint32_t stride = 3; stride <= 5 && not isTurn; ++stride)
             {
                 for (uint32_t k = 1; k < stride && not isTurn; ++k)
-                    isTurn = (i >= k) && mResidues[i - k]->is_helix_start(stride);
+                    isTurn = (i >= k) && m_residues[i - k]->is_helix_start(stride);
             }
 
             if (isTurn)
-                mResidues[i]->structure = mol::SecondaryStructure::Turn;
-            else if (mResidues[i]->is_bend)
-                mResidues[i]->structure = mol::SecondaryStructure::Bend;
+                m_residues[i]->structure = mol::SecondaryStructure::Turn;
+            else if (m_residues[i]->is_bend)
+                m_residues[i]->structure = mol::SecondaryStructure::Bend;
         }
     }
 }
@@ -373,15 +373,15 @@ void dssp::MProtein::CalculateBetaSheets()
 {
     // Calculate Bridges
     std::vector<MBridge> bridges;
-    if (mResidues.size() > 4)
+    if (m_residues.size() > 4)
     {
-        for (size_t i = 1; i + 4 < mResidues.size(); ++i)
+        for (size_t i = 1; i + 4 < m_residues.size(); ++i)
         {
-            dssp::MResidue* ri = mResidues[i];
+            dssp::MResidue* ri = m_residues[i];
 
-            for (size_t j = i + 3; j + 1 < mResidues.size(); ++j)
+            for (size_t j = i + 3; j + 1 < m_residues.size(); ++j)
             {
-                dssp::MResidue* rj = mResidues[j];
+                dssp::MResidue* rj = m_residues[j];
 
                 dssp::MBridgeType type = test_bridge(ri, rj);
                 if (type == btNoBridge)
@@ -438,8 +438,8 @@ void dssp::MProtein::CalculateBetaSheets()
             uint32_t jej = bridges[j].j.back();
 
             if (bridges[i].type != bridges[j].type ||
-                no_chain_break(mResidues[std::min(ibi, ibj)], mResidues[std::max(iei, iej)]) == false ||
-                no_chain_break(mResidues[std::min(jbi, jbj)], mResidues[std::max(jei, jej)]) == false ||
+                no_chain_break(m_residues[std::min(ibi, ibj)], m_residues[std::max(iei, iej)]) == false ||
+                no_chain_break(m_residues[std::min(jbi, jbj)], m_residues[std::max(jei, jej)]) == false ||
                 ibj - iei >= 6 ||
                 (iei >= ibj && ibi <= iej))
             {
@@ -484,20 +484,20 @@ void dssp::MProtein::CalculateBetaSheets()
 
         for (size_t i = bridge.i.front(); i <= bridge.i.back(); ++i)
         {
-            if (mResidues[i]->structure != mol::SecondaryStructure::Strand)
+            if (m_residues[i]->structure != mol::SecondaryStructure::Strand)
             {
-                mResidues[i]->structure = ss;
+                m_residues[i]->structure = ss;
             }
-            mResidues[i]->sheet = bridge.sheet;
+            m_residues[i]->sheet = bridge.sheet;
         }
 
         for (size_t i = bridge.j.front(); i <= bridge.j.back(); ++i)
         {
-            if (mResidues[i]->structure != mol::SecondaryStructure::Strand)
+            if (m_residues[i]->structure != mol::SecondaryStructure::Strand)
             {
-                mResidues[i]->structure = ss;
+                m_residues[i]->structure = ss;
             }
-            mResidues[i]->sheet = bridge.sheet;
+            m_residues[i]->sheet = bridge.sheet;
         }
     }
 }

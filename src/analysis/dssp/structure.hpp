@@ -40,8 +40,8 @@ class MProtein
 {
 public:
     void CalculateSecondaryStructure(bool inPreferPiHelices = true);
-    void add_residue(MResidue* residue) {mResidues.push_back(residue);}
-    std::vector<MResidue*> const& residues() {return mResidues;}
+    void add_residue(MResidue* residue) {m_residues.push_back(residue);}
+    std::vector<MResidue*> const& residues() {return m_residues;}
 
 private:
     void CalculateHBondEnergies();
@@ -53,7 +53,7 @@ private:
     bool no_chain_break(MResidue const* from, MResidue const* to) const;
     double compute_kappa(MResidue const* residue) const;
 
-    std::vector<MResidue*> mResidues;
+    std::vector<MResidue*> m_residues;
 };
 
 struct HBond {
