@@ -188,7 +188,6 @@ dssp::MResidue::MResidue(std::string chain_id, bool const isProline)
 : chain_id(chain_id)
 , previous{nullptr}
 , next{nullptr}
-, index{0}
 , structure(mol::SecondaryStructure::Loop)
 , sheet(0)
 , is_proline(isProline)

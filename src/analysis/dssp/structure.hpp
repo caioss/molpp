@@ -115,7 +115,6 @@ public:
     std::string chain_id;
     MResidue const* previous;
     MResidue const* next;
-    size_t index;
     mol::SecondaryStructure structure;
     HBond h_bond_donor[2], h_bond_acceptor[2];
     MBridgePartner beta_partner[2];

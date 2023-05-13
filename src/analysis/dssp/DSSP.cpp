@@ -50,7 +50,6 @@ void mol::SSResidue::update(dssp::MResidue* previous)
         return;
     }
 
-    m_residue->index = previous ? previous->index + 1 : 0;
     m_residue->previous = previous;
     m_residue->update_positions(N, CA, C, O);
 
