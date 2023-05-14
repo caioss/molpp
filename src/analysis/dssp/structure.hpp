@@ -32,6 +32,16 @@ enum MHelixFlag {
     helixNone, helixStart, helixEnd, helixStartAndEnd, helixMiddle
 };
 
+struct HBond {
+    HBond()
+    : residue{0}
+    , energy{0.0}
+    {}
+
+    size_t residue;
+    double energy;
+};
+
 class MResidue;
 
 class MProtein
@@ -67,26 +77,6 @@ private:
     double compute_kappa(size_t const index) const;
 
     std::vector<MResidue> m_residues;
-};
-
-struct HBond {
-    HBond()
-    : residue{0}
-    , energy{0.0}
-    {}
-
-    size_t residue;
-    double energy;
-};
-
-struct MBridgePartner {
-    MBridgePartner()
-    : residue{nullptr}
-    {}
-
-    MResidue const* residue; // TODO next pointer to be eliminated
-    uint32_t ladder;
-    bool parallel;
 };
 
 class MResidue
@@ -133,7 +123,6 @@ public:
     std::string chain_id;
     mol::SecondaryStructure structure;
     HBond h_bond_donor[2], h_bond_acceptor[2];
-    MBridgePartner beta_partner[2];
     uint32_t sheet;
     bool is_bend;
     bool is_proline;
