@@ -47,8 +47,9 @@ public:
     template<class... Args>
     MResidue& emplace_residue(Args&&... args)
     {
-        return m_residues.emplace_back(std::forward<Args>(args)...);
+        return m_residues.emplace_back(m_residues.size(), std::forward<Args>(args)...);
     }
+    bool is_last(size_t const index) const {return index == m_residues.size() - 1;}
 
 private:
     // TODO revise all arguments to use references whenever possible
@@ -58,7 +59,7 @@ private:
     bool test_bond(MResidue const* first, MResidue const* second);
     MBridgeType test_bridge(MResidue const* first, MResidue const* second);
     double calculate_Hbond_energy(MResidue& inDonor, MResidue& inAcceptor);
-    bool no_chain_break(MResidue const* from, MResidue const* to) const;
+    bool no_chain_break(size_t const fisrt, size_t const last) const;
     double compute_kappa(MResidue const* residue) const;
 
     std::vector<MResidue> m_residues;
@@ -88,7 +89,7 @@ class MResidue
 {
 public:
     MResidue() = default;
-    MResidue(std::string chain_id, bool const isProline, MResidue* previous, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O);
+    MResidue(size_t const index, std::string chain_id, bool const isProline, MResidue* previous, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O);
     MResidue(MResidue&& other) = default;
     MResidue(MResidue const&) = delete;
     MResidue& operator=(MResidue const&) = delete;
@@ -124,6 +125,7 @@ public:
     bool is_helix_start(uint32_t inHelixStride) const;
     bool is_valid_distance(MResidue const* inNext) const;
 
+    size_t index;
     std::string chain_id;
     MResidue* previous;
     MResidue* next;
@@ -135,7 +137,7 @@ public:
     bool is_proline;
     bool is_chain_break;
 
-private:
+private: // TODO make everything public? And a struct?
     mol::Point3 m_N, m_CA, m_C, m_O, m_H;
     MHelixFlag m_helix_flags[3];
 };

@@ -88,7 +88,6 @@ mol::DSSP::DSSP(MolSystem& molecule)
     }
 }
 
-#include <iostream>
 std::vector<mol::SecondaryStructure> mol::DSSP::run(mol::Frame frame)
 {
     dssp::MProtein protein(m_residues.size());

@@ -54,24 +54,38 @@ bool dssp::MProtein::test_bond(dssp::MResidue const* first, dssp::MResidue const
 }
 
 dssp::MBridgeType dssp::MProtein::test_bridge(dssp::MResidue const* first, dssp::MResidue const* second)
-{ // I. a d II. a d parallel
-    dssp::MResidue const* a = first->previous; // \ /
-    dssp::MResidue const* b = first; // b e b e
-    dssp::MResidue const* c = first->next; // / \ ..
+{                                               // I. a d II. a d parallel
+    dssp::MResidue const* a = first->previous;  // \ /
+    dssp::MResidue const* b = first;            // b e b e
+    dssp::MResidue const* c = first->next;      // / \ ..
     dssp::MResidue const* d = second->previous; // c f c f
-    dssp::MResidue const* e = second; //
-    dssp::MResidue const* f = second->next; // III. a <- f IV. a f antiparallel
-                                                      //
-    dssp::MBridgeType result = btNoBridge; // b e b <-> e
-                                     //
-                                     // c -> d c d
+    dssp::MResidue const* e = second;           //
+    dssp::MResidue const* f = second->next;     // III. a <- f IV. a f antiparallel
+                                                //
+    dssp::MBridgeType result = btNoBridge;      // b e b <-> e
+                                                //
+                                                // c -> d c d
 
-    if (a && c && no_chain_break(a, c) && d && f && no_chain_break(d, f))
+    if (first->index == 0 || first->index == m_residues.size() - 1)
+    {
+        return btNoBridge;
+    }
+
+    if (second->index == 0 || second->index == m_residues.size() - 1)
+    {
+        return btNoBridge;
+    }
+
+    if (no_chain_break(first->index - 1, first->index + 1) && no_chain_break(second->index - 1, second->index + 1))
     {
         if ((test_bond(c, e) && test_bond(e, a)) || (test_bond(f, b) && test_bond(b, d)))
+        {
             result = btParallel;
+        }
         else if ((test_bond(c, d) && test_bond(f, a)) || (test_bond(e, b) && test_bond(b, e)))
+        {
             result = btAntiParallel;
+        }
     }
 
     return result;
@@ -133,12 +147,11 @@ double dssp::MProtein::calculate_Hbond_energy(dssp::MResidue& inDonor, dssp::MRe
     return result;
 }
 
-bool dssp::MProtein::no_chain_break(dssp::MResidue const* from, dssp::MResidue const* to) const
+bool dssp::MProtein::no_chain_break(size_t const fisrt, size_t const last) const
 {
-    for (dssp::MResidue const* r = from; r != to; r = r->next)
+    for (size_t index = fisrt; index < last; index++)
     {
-        dssp::MResidue const* next = r->next;
-        if (!next || next->is_chain_break)
+        if (is_last(index) || m_residues[index + 1].is_chain_break)
         {
             return false;
         }
@@ -151,7 +164,7 @@ double dssp::MProtein::compute_kappa(MResidue const* residue) const
     const dssp::MResidue* prevPrev = residue->previous ? residue->previous->previous : nullptr;
     const dssp::MResidue* nextNext = residue->next ? residue->next->next : nullptr;
 
-    if (prevPrev != nullptr && nextNext != nullptr && no_chain_break(prevPrev, nextNext))
+    if (prevPrev != nullptr && nextNext != nullptr && no_chain_break(prevPrev->index, nextNext->index))
     {
         double ckap = CosinusAngle(residue->CA(), prevPrev->CA(), nextNext->CA(), residue->CA());
         double skap = sqrt(1 - ckap * ckap);
@@ -185,8 +198,9 @@ struct MBridge
     }
 };
 
-dssp::MResidue::MResidue(std::string chain_id, bool const isProline, MResidue* previous, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O)
-: chain_id(chain_id)
+dssp::MResidue::MResidue(size_t const index, std::string chain_id, bool const isProline, MResidue* previous, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O)
+: index{index}
+, chain_id(chain_id)
 , previous{previous}
 , next{nullptr}
 , structure(mol::SecondaryStructure::Loop)
@@ -289,7 +303,7 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
             MResidue& current = m_residues[i];
             MResidue& strided = m_residues[i + stride];
 
-            if (test_bond(&strided, &current) && no_chain_break(&current, &strided))
+            if (test_bond(&strided, &current) && no_chain_break(i, i + stride))
             {
                 strided.set_helix_flag(stride, helixEnd);
                 for (uint32_t j = i + 1; j < i + stride; ++j)
@@ -468,8 +482,8 @@ void dssp::MProtein::CalculateBetaSheets()
             uint32_t jej = bridges[j].j.back();
 
             if (bridges[i].type != bridges[j].type ||
-                no_chain_break(&m_residues[std::min(ibi, ibj)], &m_residues[std::max(iei, iej)]) == false ||
-                no_chain_break(&m_residues[std::min(jbi, jbj)], &m_residues[std::max(jei, jej)]) == false ||
+                no_chain_break(std::min(ibi, ibj), std::max(iei, iej)) == false ||
+                no_chain_break(std::min(jbi, jbj), std::max(jei, jej)) == false ||
                 ibj - iei >= 6 ||
                 (iei >= ibj && ibi <= iej))
             {
