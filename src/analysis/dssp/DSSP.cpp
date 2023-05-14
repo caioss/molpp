@@ -88,25 +88,26 @@ mol::DSSP::DSSP(MolSystem& molecule)
     }
 }
 
+#include <iostream>
 std::vector<mol::SecondaryStructure> mol::DSSP::run(mol::Frame frame)
 {
-    dssp::MProtein protein;
+    dssp::MProtein protein(m_residues.size());
     dssp::MResidue* previous = nullptr;
     for (SSResidue& residue : m_residues)
     {
         residue.set_frame(frame);
         if (residue.is_amino_acid())
         {
-            dssp::MResidue* mresidue = protein.emplace_residue(residue.chain(), residue.is_proline(), previous, residue.N.coords(), residue.CA.coords(), residue.C.coords(), residue.O.coords());
-            residue.m_residue = mresidue;
-            previous = mresidue;
+            dssp::MResidue& mresidue = protein.emplace_residue(residue.chain(), residue.is_proline(), previous, residue.N.coords(), residue.CA.coords(), residue.C.coords(), residue.O.coords());
+            residue.m_residue = &mresidue;
+            previous = &mresidue;
         }
     }
 
     protein.CalculateSecondaryStructure();
 
     std::vector<mol::SecondaryStructure> structures;
-    structures.reserve(protein.residues().size());
+    structures.reserve(m_residues.size());
 
     for (SSResidue const& residue : m_residues)
     {

@@ -39,25 +39,29 @@ class MChain;
 class MProtein
 {
 public:
+    MProtein(size_t const num_residues)
+    {
+        m_residues.reserve(num_residues);
+    }
     void CalculateSecondaryStructure(bool inPreferPiHelices = true);
     template<class... Args>
-    MResidue* emplace_residue(Args&&... args)
+    MResidue& emplace_residue(Args&&... args)
     {
-        return m_residues.emplace_back(new MResidue(std::forward<Args>(args)...));
+        return m_residues.emplace_back(std::forward<Args>(args)...);
     }
-    std::vector<MResidue*> const& residues() {return m_residues;}
 
 private:
+    // TODO revise all arguments to use references whenever possible
     void CalculateHBondEnergies();
     void CalculateAlphaHelices(bool inPreferPiHelices);
     void CalculateBetaSheets();
     bool test_bond(MResidue const* first, MResidue const* second);
     MBridgeType test_bridge(MResidue const* first, MResidue const* second);
-    double calculate_Hbond_energy(MResidue* inDonor, MResidue* inAcceptor);
+    double calculate_Hbond_energy(MResidue& inDonor, MResidue& inAcceptor);
     bool no_chain_break(MResidue const* from, MResidue const* to) const;
     double compute_kappa(MResidue const* residue) const;
 
-    std::vector<MResidue*> m_residues;
+    std::vector<MResidue> m_residues;
 };
 
 struct HBond {
@@ -83,7 +87,11 @@ struct MBridgePartner {
 class MResidue
 {
 public:
+    MResidue() = default;
     MResidue(std::string chain_id, bool const isProline, MResidue* previous, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O);
+    MResidue(MResidue&& other) = default;
+    MResidue(MResidue const&) = delete;
+    MResidue& operator=(MResidue const&) = delete;
 
     mol::Point3 const& N() const
     {
@@ -117,8 +125,8 @@ public:
     bool is_valid_distance(MResidue const* inNext) const;
 
     std::string chain_id;
-    MResidue const* previous;
-    MResidue const* next;
+    MResidue* previous;
+    MResidue* next;
     mol::SecondaryStructure structure;
     HBond h_bond_donor[2], h_bond_acceptor[2];
     MBridgePartner beta_partner[2];
