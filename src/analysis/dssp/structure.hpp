@@ -33,9 +33,7 @@ enum MHelixFlag {
 };
 
 class MResidue;
-class MChain;
 
-// TODO merge with the analysis DSSP?
 class MProtein
 {
 public:
@@ -47,7 +45,13 @@ public:
     template<class... Args>
     MResidue& emplace_residue(Args&&... args)
     {
-        return m_residues.emplace_back(m_residues.size(), std::forward<Args>(args)...);
+        size_t const index = m_residues.size();
+        MResidue& residue = m_residues.emplace_back(index, std::forward<Args>(args)...);
+        if (index > 0)
+        {
+            residue.set_previous(m_residues[index - 1]);
+        }
+        return residue;
     }
     bool is_last(size_t const index) const {return index == m_residues.size() - 1;}
 
@@ -80,7 +84,7 @@ struct MBridgePartner {
     : residue{nullptr}
     {}
 
-    MResidue const* residue;
+    MResidue const* residue; // TODO next pointer to be eliminated
     uint32_t ladder;
     bool parallel;
 };
@@ -89,7 +93,7 @@ class MResidue
 {
 public:
     MResidue() = default;
-    MResidue(size_t const index, std::string chain_id, bool const isProline, MResidue* previous, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O);
+    MResidue(size_t const index, std::string chain_id, bool const isProline, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O);
     MResidue(MResidue&& other) = default;
     MResidue(MResidue const&) = delete;
     MResidue& operator=(MResidue const&) = delete;
@@ -119,16 +123,14 @@ public:
         return m_H;
     }
 
-    void compute_H();
+    void set_previous(MResidue const& previous);
     MHelixFlag helix_flag(uint32_t inHelixStride) const;
     void set_helix_flag(uint32_t inHelixStride, MHelixFlag inHelixFlag);
     bool is_helix_start(uint32_t inHelixStride) const;
-    bool is_valid_distance(MResidue const* inNext) const;
+    bool is_valid_distance(MResidue const& inNext) const;
 
     size_t index;
     std::string chain_id;
-    MResidue* previous;
-    MResidue* next;
     mol::SecondaryStructure structure;
     HBond h_bond_donor[2], h_bond_acceptor[2];
     MBridgePartner beta_partner[2];

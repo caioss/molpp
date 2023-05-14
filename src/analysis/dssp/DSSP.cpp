@@ -81,6 +81,7 @@ std::string const& mol::SSResidue::chain() const
 
 mol::DSSP::DSSP(MolSystem& molecule)
 {
+    // TODO count total valid aa and pass to MProtein
     ResidueSel residues(molecule.atoms(0));
     for (mol::Residue residue : residues)
     {
@@ -91,15 +92,13 @@ mol::DSSP::DSSP(MolSystem& molecule)
 std::vector<mol::SecondaryStructure> mol::DSSP::run(mol::Frame frame)
 {
     dssp::MProtein protein(m_residues.size());
-    dssp::MResidue* previous = nullptr;
     for (SSResidue& residue : m_residues)
     {
         residue.set_frame(frame);
         if (residue.is_amino_acid())
         {
-            dssp::MResidue& mresidue = protein.emplace_residue(residue.chain(), residue.is_proline(), previous, residue.N.coords(), residue.CA.coords(), residue.C.coords(), residue.O.coords());
+            dssp::MResidue& mresidue = protein.emplace_residue(residue.chain(), residue.is_proline(), residue.N.coords(), residue.CA.coords(), residue.C.coords(), residue.O.coords());
             residue.m_residue = &mresidue;
-            previous = &mresidue;
         }
     }
 

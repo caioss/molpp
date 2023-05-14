@@ -207,11 +207,9 @@ struct MBridge
     }
 };
 
-dssp::MResidue::MResidue(size_t const index, std::string chain_id, bool const isProline, MResidue* previous, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O)
+dssp::MResidue::MResidue(size_t const index, std::string chain_id, bool const isProline, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O)
 : index{index}
 , chain_id(chain_id)
-, previous{previous}
-, next{nullptr}
 , structure(mol::SecondaryStructure::Loop)
 , sheet(0)
 , is_proline(isProline)
@@ -220,34 +218,29 @@ dssp::MResidue::MResidue(size_t const index, std::string chain_id, bool const is
 , m_CA{CA}
 , m_C{C}
 , m_O{O}
+, m_H{N}
 {
     std::fill(m_helix_flags, m_helix_flags + 3, helixNone);
-    compute_H();
+}
 
-    if (previous)
+void dssp::MResidue::set_previous(MResidue const& previous)
+{
+    if (is_proline)
     {
-        previous->next = this;
+        return;
     }
 
-    if (previous && !previous->is_valid_distance(this))
+    m_H += (previous.C() - previous.O()).normalized();
+
+    if (!is_valid_distance(previous))
     {
         is_chain_break = true;
     }
 }
 
-void dssp::MResidue::compute_H()
+bool dssp::MResidue::is_valid_distance(dssp::MResidue const& next) const
 {
-    m_H = m_N;
-
-    if (!is_proline && previous)
-    {
-        m_H += (previous->C() - previous->O()).normalized();
-    }
-}
-
-bool dssp::MResidue::is_valid_distance(dssp::MResidue const* inNext) const // TODO accept a reference
-{
-    return distance(C(), inNext->N()) <= kMaxPeptideBondLength;
+    return distance(N(), next.C()) <= kMaxPeptideBondLength;
 }
 
 dssp::MHelixFlag dssp::MResidue::helix_flag(uint32_t inHelixStride) const
