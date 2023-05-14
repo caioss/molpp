@@ -207,12 +207,12 @@ struct MBridge
     }
 };
 
-dssp::MResidue::MResidue(size_t const index, std::string chain_id, bool const isProline, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O)
+dssp::MResidue::MResidue(size_t const index, std::string chain_id, bool const is_proline, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O)
 : index{index}
 , chain_id(chain_id)
-, structure(mol::SecondaryStructure::Loop)
+, structure(mol::Loop)
 , sheet(0)
-, is_proline(isProline)
+, is_proline(is_proline)
 , is_chain_break{false}
 , m_N{N}
 , m_CA{CA}
@@ -342,7 +342,7 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
             for (uint32_t j = i; j <= i + 3; ++j)
             {
                 // TODO stop using mol::SecondaryStructure
-                m_residues[j].structure = mol::SecondaryStructure::Helix;
+                m_residues[j].structure = mol::Helix;
             }
         }
     }
@@ -356,14 +356,14 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
             for (uint32_t j = i; empty && j <= i + 2; ++j) // TODO that for again
             {
                 MResidue& residue = m_residues[j];
-                empty = residue.structure == mol::SecondaryStructure::Loop || residue.structure == mol::SecondaryStructure::Helix3;
+                empty = residue.structure == mol::Loop || residue.structure == mol::Helix3;
             }
 
             if (empty)
             {
                 for (uint32_t j = i; j <= i + 2; ++j)
                 {
-                    m_residues[j].structure = mol::SecondaryStructure::Helix3;
+                    m_residues[j].structure = mol::Helix3;
                 }
             }
         }
@@ -377,14 +377,14 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
             for (uint32_t j = i; empty && j <= i + 4; ++j) // TODO that for again
             {
                 MResidue& residue = m_residues[j];
-                empty = residue.structure == mol::SecondaryStructure::Loop || residue.structure == mol::SecondaryStructure::Helix5 ||
-                        (inPreferPiHelices && residue.structure == mol::SecondaryStructure::Helix);
+                empty = residue.structure == mol::Loop || residue.structure == mol::Helix5 ||
+                        (inPreferPiHelices && residue.structure == mol::Helix);
             }
 
             if (empty)
             {
                 for (uint32_t j = i; j <= i + 4; ++j)
-                    m_residues[j].structure = mol::SecondaryStructure::Helix5;
+                    m_residues[j].structure = mol::Helix5;
             }
         }
     }
@@ -392,7 +392,7 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
     for (uint32_t i = 1; i + 1 < m_residues.size(); ++i)
     {
         MResidue& residue = m_residues[i];
-        if (residue.structure == mol::SecondaryStructure::Loop)
+        if (residue.structure == mol::Loop)
         {
             bool isTurn = false;
             for (uint32_t stride = 3; stride <= 5 && not isTurn; ++stride) // TODO that for again
@@ -405,11 +405,11 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
 
             if (isTurn)
             {
-                residue.structure = mol::SecondaryStructure::Turn;
+                residue.structure = mol::Turn;
             }
             else if (residue.is_bend)
             {
-                residue.structure = mol::SecondaryStructure::Bend;
+                residue.structure = mol::Bend;
             }
         }
     }
@@ -524,14 +524,14 @@ void dssp::MProtein::CalculateBetaSheets()
     {
         // find out if any of the i and j set members already have
         // a bridge assigned, if so, we're assigning bridge 2
-        mol::SecondaryStructure ss = mol::SecondaryStructure::Bridge;
+        mol::SecondaryStructure ss = mol::Bridge;
         if (bridge.i.size() > 1)
-            ss = mol::SecondaryStructure::Strand;
+            ss = mol::Strand;
 
         for (size_t i = bridge.i.front(); i <= bridge.i.back(); ++i)
         {
             MResidue& residue = m_residues[i];
-            if (residue.structure != mol::SecondaryStructure::Strand)
+            if (residue.structure != mol::Strand)
             {
                 residue.structure = ss;
             }
@@ -541,7 +541,7 @@ void dssp::MProtein::CalculateBetaSheets()
         for (size_t i = bridge.j.front(); i <= bridge.j.back(); ++i)
         {
             MResidue& residue = m_residues[i];
-            if (residue.structure != mol::SecondaryStructure::Strand)
+            if (residue.structure != mol::Strand)
             {
                 residue.structure = ss;
             }
