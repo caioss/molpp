@@ -98,25 +98,24 @@ dssp::MBridgeType dssp::MProtein::test_bridge(size_t const first, size_t const s
     return btNoBridge;
 }
 
-// TODO rename variables
-double dssp::MProtein::calculate_Hbond_energy(dssp::MResidue& inDonor, dssp::MResidue& inAcceptor)
+double dssp::MProtein::compute_h_bond(dssp::MResidue& donor, dssp::MResidue& acceptor)
 {
     double result = 0;
 
-    if (!inDonor.is_proline)
+    if (!donor.is_proline)
     {
-        double const distanceHO = dssp::distance(inDonor.H(), inAcceptor.O());
-        double const distanceHC = dssp::distance(inDonor.H(), inAcceptor.C());
-        double const distanceNC = dssp::distance(inDonor.N(), inAcceptor.C());
-        double const distanceNO = dssp::distance(inDonor.N(), inAcceptor.O());
+        double const dist_H_O = dssp::distance(donor.H(), acceptor.O());
+        double const dist_H_C = dssp::distance(donor.H(), acceptor.C());
+        double const dist_N_C = dssp::distance(donor.N(), acceptor.C());
+        double const dist_N_O = dssp::distance(donor.N(), acceptor.O());
 
-        if (distanceHO < kMinimalDistance || distanceHC < kMinimalDistance || distanceNC < kMinimalDistance || distanceNO < kMinimalDistance)
+        if (dist_H_O < kMinimalDistance || dist_H_C < kMinimalDistance || dist_N_C < kMinimalDistance || dist_N_O < kMinimalDistance)
         {
             result = kMinHBondEnergy;
         }
         else
         {
-            result = kCouplingConstant / distanceHO - kCouplingConstant / distanceHC + kCouplingConstant / distanceNC - kCouplingConstant / distanceNO;
+            result = kCouplingConstant / dist_H_O - kCouplingConstant / dist_H_C + kCouplingConstant / dist_N_C - kCouplingConstant / dist_N_O;
         }
 
         if (result < kMinHBondEnergy)
@@ -125,30 +124,30 @@ double dssp::MProtein::calculate_Hbond_energy(dssp::MResidue& inDonor, dssp::MRe
         }
     }
 
-    // update donor
-    if (result < inDonor.h_bond_acceptor[0].energy)
+    // Update donor
+    if (result < donor.h_bond_acceptor[0].energy)
     {
-        inDonor.h_bond_acceptor[1] = inDonor.h_bond_acceptor[0];
-        inDonor.h_bond_acceptor[0].residue = inAcceptor.index;
-        inDonor.h_bond_acceptor[0].energy = result;
+        donor.h_bond_acceptor[1] = donor.h_bond_acceptor[0];
+        donor.h_bond_acceptor[0].residue = acceptor.index;
+        donor.h_bond_acceptor[0].energy = result;
     }
-    else if (result < inDonor.h_bond_acceptor[1].energy)
+    else if (result < donor.h_bond_acceptor[1].energy)
     {
-        inDonor.h_bond_acceptor[1].residue = inAcceptor.index;
-        inDonor.h_bond_acceptor[1].energy = result;
+        donor.h_bond_acceptor[1].residue = acceptor.index;
+        donor.h_bond_acceptor[1].energy = result;
     }
 
-    // and acceptor
-    if (result < inAcceptor.h_bond_donor[0].energy)
+    // Update acceptor
+    if (result < acceptor.h_bond_donor[0].energy)
     {
-        inAcceptor.h_bond_donor[1] = inAcceptor.h_bond_donor[0];
-        inAcceptor.h_bond_donor[0].residue = inDonor.index;
-        inAcceptor.h_bond_donor[0].energy = result;
+        acceptor.h_bond_donor[1] = acceptor.h_bond_donor[0];
+        acceptor.h_bond_donor[0].residue = donor.index;
+        acceptor.h_bond_donor[0].energy = result;
     }
-    else if (result < inAcceptor.h_bond_donor[1].energy)
+    else if (result < acceptor.h_bond_donor[1].energy)
     {
-        inAcceptor.h_bond_donor[1].residue = inDonor.index;
-        inAcceptor.h_bond_donor[1].energy = result;
+        acceptor.h_bond_donor[1].residue = donor.index;
+        acceptor.h_bond_donor[1].energy = result;
     }
 
     return result;
@@ -289,10 +288,10 @@ void dssp::MProtein::CalculateHBondEnergies()
 
             if (distance(ri.CA(), rj.CA()) < kMinimalCADistance)
             {
-                calculate_Hbond_energy(ri, rj);
+                compute_h_bond(ri, rj);
                 if (j != i + 1)
                 {
-                    calculate_Hbond_energy(rj, ri);
+                    compute_h_bond(rj, ri);
                 }
             }
         }

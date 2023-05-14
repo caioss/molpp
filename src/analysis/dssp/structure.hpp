@@ -58,7 +58,7 @@ private:
     void CalculateBetaSheets();
     bool test_bond(size_t const first, size_t const second) const;
     MBridgeType test_bridge(size_t const first, size_t const second) const;
-    double calculate_Hbond_energy(MResidue& inDonor, MResidue& inAcceptor);
+    double compute_h_bond(MResidue& inDonor, MResidue& inAcceptor);
     bool no_chain_break(size_t const fisrt, size_t const last) const;
     double compute_kappa(size_t const index) const;
 
