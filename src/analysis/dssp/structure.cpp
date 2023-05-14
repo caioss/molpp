@@ -29,7 +29,7 @@ double constexpr kPI = 4 * std::atan(1.0),
                  kCouplingConstant = -332 * 0.42 * 0.2,
                  kMaxPeptideBondLength = 2.5;
 
-double CosinusAngle(const mol::Point3& atom1, const mol::Point3& atom2, const mol::Point3& atom3, const mol::Point3& atom4)
+double cosinus_angle(const mol::Point3& atom1, const mol::Point3& atom2, const mol::Point3& atom3, const mol::Point3& atom4)
 {
     mol::Point3 v12 = atom1 - atom2;
     mol::Point3 v34 = atom3 - atom4;
@@ -159,21 +159,24 @@ bool dssp::MProtein::no_chain_break(size_t const fisrt, size_t const last) const
     return true;
 }
 
-double dssp::MProtein::compute_kappa(MResidue const* residue) const
+double dssp::MProtein::compute_kappa(size_t const index) const
 {
-    const dssp::MResidue* prevPrev = residue->previous ? residue->previous->previous : nullptr;
-    const dssp::MResidue* nextNext = residue->next ? residue->next->next : nullptr;
-
-    if (prevPrev != nullptr && nextNext != nullptr && no_chain_break(prevPrev->index, nextNext->index))
-    {
-        double ckap = CosinusAngle(residue->CA(), prevPrev->CA(), nextNext->CA(), residue->CA());
-        double skap = sqrt(1 - ckap * ckap);
-        return atan2(skap, ckap) * 180 / kPI;
-    }
-    else
+    if (index < 2 || index > m_residues.size() - 2)
     {
         return 360;
     }
+
+    size_t const prev_prev = index - 2;
+    size_t const next_next = index + 2;
+
+    if (!no_chain_break(prev_prev, next_next))
+    {
+        return 360;
+    }
+
+    double const ckap = cosinus_angle(m_residues[index].CA(), m_residues[prev_prev].CA(), m_residues[next_next].CA(), m_residues[index].CA());
+    double const skap = sqrt(1 - ckap * ckap);
+    return atan2(skap, ckap) * 180 / kPI;
 }
 
 struct MBridge
@@ -329,7 +332,7 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
 
     for (dssp::MResidue& residue : m_residues)
     {
-        double kappa = compute_kappa(&residue);
+        double kappa = compute_kappa(residue.index);
         residue.is_bend = kappa != 360 && kappa > 70;
     }
 

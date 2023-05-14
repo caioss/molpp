@@ -60,7 +60,7 @@ private:
     MBridgeType test_bridge(MResidue const* first, MResidue const* second);
     double calculate_Hbond_energy(MResidue& inDonor, MResidue& inAcceptor);
     bool no_chain_break(size_t const fisrt, size_t const last) const;
-    double compute_kappa(MResidue const* residue) const;
+    double compute_kappa(size_t const index) const;
 
     std::vector<MResidue> m_residues;
 };
