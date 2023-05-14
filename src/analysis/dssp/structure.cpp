@@ -11,14 +11,8 @@
  */
 
 #include "analysis/dssp/structure.hpp"
-#include "analysis/dssp/DSSP.hpp"
-#include <cstdint>
-#include <iostream>
 #include <set>
-#include <functional>
 #include <list>
-#include <cassert>
-#include "structure.hpp"
 
 double constexpr kPI = 4 * std::atan(1.0),
                  kSSBridgeDistance = 3.0,
@@ -57,11 +51,11 @@ bool dssp::MProtein::test_bond(size_t const first, size_t const second) const
     return (hb1.residue == second && hb1.energy < kMaxHBondEnergy) || (hb2.residue == second && hb2.energy < kMaxHBondEnergy);
 }
 
-dssp::MBridgeType dssp::MProtein::test_bridge(size_t const first, size_t const second) const
+dssp::BridgeType dssp::MProtein::test_bridge(size_t const first, size_t const second) const
 {
     if (first == 0 || is_last(first) || second == 0 || is_last(second))
     {
-        return btNoBridge;
+        return BridgeType::None;
     }
 
     // I. a d II. a d parallel
@@ -87,15 +81,15 @@ dssp::MBridgeType dssp::MProtein::test_bridge(size_t const first, size_t const s
     {
         if ((test_bond(c, e) && test_bond(e, a)) || (test_bond(f, b) && test_bond(b, d)))
         {
-            return btParallel;
+            return BridgeType::Parallel;
         }
         else if ((test_bond(c, d) && test_bond(f, a)) || (test_bond(e, b) && test_bond(b, e)))
         {
-            return btAntiParallel;
+            return BridgeType::AntiParallel;
         }
     }
 
-    return btNoBridge;
+    return BridgeType::None;
 }
 
 double dssp::MProtein::compute_h_bond(dssp::MResidue& donor, dssp::MResidue& acceptor)
@@ -185,16 +179,21 @@ double dssp::MProtein::compute_kappa(size_t const index) const
     return atan2(skap, ckap) * 180 / kPI;
 }
 
+bool dssp::MProtein::is_last(size_t const index) const
+{
+    return index == m_residues.size() - 1;
+}
+
 struct MBridge
 {
-    dssp::MBridgeType type;
+    dssp::BridgeType type;
     uint32_t sheet, ladder;
     std::set<MBridge*> link;
     std::list<size_t> i, j;
     std::string chainI; // TODO non-reference is bad
     std::string chainJ; // TODO non-reference is bad
 
-    MBridge(dssp::MBridgeType type, std::string const& I, std::string const& J)
+    MBridge(dssp::BridgeType type, std::string const& I, std::string const& J)
     : type{type}
     , chainI{I}
     , chainJ{J}
@@ -220,7 +219,7 @@ dssp::MResidue::MResidue(size_t const index, std::string chain_id, bool const is
 , m_O{O}
 , m_H{N}
 {
-    std::fill(m_helix_flags, m_helix_flags + 3, helixNone);
+    std::fill(m_helix_flags, m_helix_flags + 3, HelixType::None);
 }
 
 void dssp::MResidue::set_previous(MResidue const& previous)
@@ -243,32 +242,34 @@ bool dssp::MResidue::is_valid_distance(dssp::MResidue const& next) const
     return distance(N(), next.C()) <= kMaxPeptideBondLength;
 }
 
-dssp::MHelixFlag dssp::MResidue::helix_flag(uint32_t inHelixStride) const
+dssp::HelixType dssp::MResidue::helix_flag(uint32_t const stride) const
 {
-    assert(inHelixStride == 3 || inHelixStride == 4 || inHelixStride == 5);
-    return m_helix_flags[inHelixStride - 3];
+    return m_helix_flags[stride - 3];
 }
 
-bool dssp::MResidue::is_helix_start(uint32_t inHelixStride) const
+bool dssp::MResidue::is_helix_start(uint32_t const stride) const
 {
-    assert(inHelixStride == 3 || inHelixStride == 4 || inHelixStride == 5);
-    return m_helix_flags[inHelixStride - 3] == helixStart || m_helix_flags[inHelixStride - 3] == helixStartAndEnd;
+    return m_helix_flags[stride - 3] == HelixType::Start || m_helix_flags[stride - 3] == HelixType::StartAndEnd;
 }
 
-void dssp::MResidue::set_helix_flag(uint32_t inHelixStride, dssp::MHelixFlag inHelixFlag)
+void dssp::MResidue::set_helix_flag(uint32_t const stride, dssp::HelixType const type)
 {
-    assert(inHelixStride == 3 || inHelixStride == 4 || inHelixStride == 5);
-    m_helix_flags[inHelixStride - 3] = inHelixFlag;
+    m_helix_flags[stride - 3] = type;
 }
 
-void dssp::MProtein::CalculateSecondaryStructure(bool inPreferPiHelices)
+dssp::MProtein::MProtein(size_t const num_residues)
 {
-    CalculateHBondEnergies();
-    CalculateBetaSheets();
-    CalculateAlphaHelices(inPreferPiHelices);
+    m_residues.reserve(num_residues);
 }
 
-void dssp::MProtein::CalculateHBondEnergies()
+void dssp::MProtein::compute_secondary_structure(bool prefer_pi_helices)
+{
+    compute_h_bond_energies();
+    compute_sheets();
+    compute_helices(prefer_pi_helices);
+}
+
+void dssp::MProtein::compute_h_bond_energies()
 {
     // Calculate the HBond energies
     for (uint32_t i = 0; i + 1 < m_residues.size(); ++i)
@@ -291,7 +292,7 @@ void dssp::MProtein::CalculateHBondEnergies()
     }
 }
 
-void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
+void dssp::MProtein::compute_helices(bool prefer_pi_helices)
 {
     for (uint32_t stride = 3; stride <= 5; ++stride)
     {
@@ -307,23 +308,23 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
 
             if (test_bond(i + stride, i) && no_chain_break(i, i + stride))
             {
-                strided.set_helix_flag(stride, helixEnd);
+                strided.set_helix_flag(stride, HelixType::End);
                 for (uint32_t j = i + 1; j < i + stride; ++j)
                 {
                     MResidue& between = m_residues[j];
-                    if (between.helix_flag(stride) == helixNone)
+                    if (between.helix_flag(stride) == HelixType::None)
                     {
-                        between.set_helix_flag(stride, helixMiddle);
+                        between.set_helix_flag(stride, HelixType::Middle);
                     }
                 }
 
-                if (current.helix_flag(stride) == helixEnd)
+                if (current.helix_flag(stride) == HelixType::End)
                 {
-                    current.set_helix_flag(stride, helixStartAndEnd);
+                    current.set_helix_flag(stride, HelixType::StartAndEnd);
                 }
                 else
                 {
-                    current.set_helix_flag(stride, helixStart);
+                    current.set_helix_flag(stride, HelixType::Start);
                 }
             }
         }
@@ -341,7 +342,6 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
         {
             for (uint32_t j = i; j <= i + 3; ++j)
             {
-                // TODO stop using mol::SecondaryStructure
                 m_residues[j].structure = mol::Helix;
             }
         }
@@ -378,7 +378,7 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
             {
                 MResidue& residue = m_residues[j];
                 empty = residue.structure == mol::Loop || residue.structure == mol::Helix5 ||
-                        (inPreferPiHelices && residue.structure == mol::Helix);
+                        (prefer_pi_helices && residue.structure == mol::Helix);
             }
 
             if (empty)
@@ -415,7 +415,7 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
     }
 }
 
-void dssp::MProtein::CalculateBetaSheets()
+void dssp::MProtein::compute_sheets()
 {
     // Calculate Bridges
     std::vector<MBridge> bridges;
@@ -429,17 +429,21 @@ void dssp::MProtein::CalculateBetaSheets()
             {
                 dssp::MResidue& rj = m_residues[j];
 
-                dssp::MBridgeType type = test_bridge(i, j);
-                if (type == btNoBridge)
+                dssp::BridgeType type = test_bridge(i, j);
+                if (type == BridgeType::None)
+                {
                     continue;
+                }
 
                 bool found = false;
                 for (MBridge& bridge : bridges)
                 {
                     if (type != bridge.type || i != bridge.i.back() + 1)
+                    {
                         continue;
+                    }
 
-                    if (type == btParallel && bridge.j.back() + 1 == j)
+                    if (type == BridgeType::Parallel && bridge.j.back() + 1 == j)
                     {
                         bridge.i.push_back(i);
                         bridge.j.push_back(j);
@@ -447,7 +451,7 @@ void dssp::MProtein::CalculateBetaSheets()
                         break;
                     }
 
-                    if (type == btAntiParallel && bridge.j.front() - 1 == j)
+                    if (type == BridgeType::AntiParallel && bridge.j.front() - 1 == j)
                     {
                         bridge.i.push_back(i);
                         bridge.j.push_front(j);
@@ -483,17 +487,17 @@ void dssp::MProtein::CalculateBetaSheets()
             uint32_t jbj = bridges[j].j.front();
             uint32_t jej = bridges[j].j.back();
 
-            if (bridges[i].type != bridges[j].type ||
-                no_chain_break(std::min(ibi, ibj), std::max(iei, iej)) == false ||
-                no_chain_break(std::min(jbi, jbj), std::max(jei, jej)) == false ||
-                ibj - iei >= 6 ||
-                (iei >= ibj && ibi <= iej))
+            if (bridges[i].type != bridges[j].type
+                || no_chain_break(std::min(ibi, ibj), std::max(iei, iej)) == false
+                || no_chain_break(std::min(jbi, jbj), std::max(jei, jej)) == false
+                || ibj - iei >= 6
+                || (iei >= ibj && ibi <= iej))
             {
                 continue;
             }
 
             bool bulge;
-            if (bridges[i].type == btParallel)
+            if (bridges[i].type == BridgeType::Parallel)
             {
                 bulge = ((jbj - jei < 6 && ibj - iei < 3) || (jbj - jei < 3));
             }
@@ -505,7 +509,7 @@ void dssp::MProtein::CalculateBetaSheets()
             if (bulge)
             {
                 bridges[i].i.insert(bridges[i].i.end(), bridges[j].i.begin(), bridges[j].i.end());
-                if (bridges[i].type == btParallel)
+                if (bridges[i].type == BridgeType::Parallel)
                 {
                     bridges[i].j.insert(bridges[i].j.end(), bridges[j].j.begin(), bridges[j].j.end());
                 }
@@ -526,7 +530,9 @@ void dssp::MProtein::CalculateBetaSheets()
         // a bridge assigned, if so, we're assigning bridge 2
         mol::SecondaryStructure ss = mol::Bridge;
         if (bridge.i.size() > 1)
+        {
             ss = mol::Strand;
+        }
 
         for (size_t i = bridge.i.front(); i <= bridge.i.back(); ++i)
         {

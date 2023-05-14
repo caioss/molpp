@@ -10,13 +10,9 @@
  * distributed under the BSD 3-Clause License.
  */
 
-// TODO
-#pragma once
+#ifndef MOLPP_STRUCTURE_HPP
+#define MOLPP_STRUCTURE_HPP
 
-// TODO rename and separate classes
-
-#include <molpp/MolppCore.hpp>
-#include <molpp/Atom.hpp> // TODO needed
 #include "analysis/dssp/DSSP.hpp"
 #include <string>
 #include <vector>
@@ -24,15 +20,24 @@
 namespace dssp
 {
 
-enum MBridgeType {
-    btNoBridge, btParallel, btAntiParallel
+enum class BridgeType
+{
+    None,
+    Parallel,
+    AntiParallel
 };
 
-enum MHelixFlag {
-    helixNone, helixStart, helixEnd, helixStartAndEnd, helixMiddle
+enum class HelixType
+{
+    None,
+    Start,
+    End,
+    StartAndEnd,
+    Middle
 };
 
-struct HBond {
+struct HBond
+{
     HBond()
     : residue{0}
     , energy{0.0}
@@ -47,11 +52,9 @@ class MResidue;
 class MProtein
 {
 public:
-    MProtein(size_t const num_residues)
-    {
-        m_residues.reserve(num_residues);
-    }
-    void CalculateSecondaryStructure(bool inPreferPiHelices = true);
+    MProtein(size_t const num_residues);
+    void compute_secondary_structure(bool prefer_pi_helices = true);
+
     template<class... Args>
     MResidue& emplace_residue(Args&&... args)
     {
@@ -63,18 +66,17 @@ public:
         }
         return residue;
     }
-    bool is_last(size_t const index) const {return index == m_residues.size() - 1;}
 
 private:
-    // TODO revise all arguments to use references whenever possible
-    void CalculateHBondEnergies();
-    void CalculateAlphaHelices(bool inPreferPiHelices);
-    void CalculateBetaSheets();
+    void compute_h_bond_energies();
+    void compute_helices(bool prefer_pi_helices);
+    void compute_sheets();
     bool test_bond(size_t const first, size_t const second) const;
-    MBridgeType test_bridge(size_t const first, size_t const second) const;
+    BridgeType test_bridge(size_t const first, size_t const second) const;
     double compute_h_bond(MResidue& inDonor, MResidue& inAcceptor);
     bool no_chain_break(size_t const fisrt, size_t const last) const;
     double compute_kappa(size_t const index) const;
+    bool is_last(size_t const index) const;
 
     std::vector<MResidue> m_residues;
 };
@@ -82,11 +84,7 @@ private:
 class MResidue
 {
 public:
-    MResidue() = default;
     MResidue(size_t const index, std::string chain_id, bool const isProline, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O);
-    MResidue(MResidue&& other) = default;
-    MResidue(MResidue const&) = delete;
-    MResidue& operator=(MResidue const&) = delete;
 
     mol::Point3 const& N() const
     {
@@ -114,9 +112,9 @@ public:
     }
 
     void set_previous(MResidue const& previous);
-    MHelixFlag helix_flag(uint32_t inHelixStride) const;
-    void set_helix_flag(uint32_t inHelixStride, MHelixFlag inHelixFlag);
-    bool is_helix_start(uint32_t inHelixStride) const;
+    HelixType helix_flag(uint32_t const stride) const;
+    void set_helix_flag(uint32_t const stride, HelixType const type);
+    bool is_helix_start(uint32_t const stride) const;
     bool is_valid_distance(MResidue const& inNext) const;
 
     size_t index;
@@ -130,9 +128,11 @@ public:
 
 private: // TODO make everything public? And a struct?
     mol::Point3 m_N, m_CA, m_C, m_O, m_H;
-    MHelixFlag m_helix_flags[3];
+    HelixType m_helix_flags[3];
 };
 
 double distance(mol::Point3 const& first, mol::Point3 const& second);
 
 } // namespace dssp
+
+#endif // MOLPP_STRUCTURE_HPP

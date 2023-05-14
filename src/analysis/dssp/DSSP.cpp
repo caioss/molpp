@@ -102,7 +102,7 @@ std::vector<mol::SecondaryStructure> mol::DSSP::run(mol::Frame frame)
         }
     }
 
-    protein.CalculateSecondaryStructure();
+    protein.compute_secondary_structure();
 
     std::vector<mol::SecondaryStructure> structures;
     structures.reserve(m_residues.size());
