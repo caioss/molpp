@@ -56,8 +56,8 @@ private:
     void CalculateHBondEnergies();
     void CalculateAlphaHelices(bool inPreferPiHelices);
     void CalculateBetaSheets();
-    bool test_bond(MResidue const* first, MResidue const* second);
-    MBridgeType test_bridge(MResidue const* first, MResidue const* second);
+    bool test_bond(size_t const first, size_t const second) const;
+    MBridgeType test_bridge(size_t const first, size_t const second) const;
     double calculate_Hbond_energy(MResidue& inDonor, MResidue& inAcceptor);
     bool no_chain_break(size_t const fisrt, size_t const last) const;
     double compute_kappa(size_t const index) const;
@@ -67,11 +67,11 @@ private:
 
 struct HBond {
     HBond()
-    : residue{nullptr}
+    : residue{0}
     , energy{0.0}
     {}
 
-    MResidue const* residue;
+    size_t residue;
     double energy;
 };
 

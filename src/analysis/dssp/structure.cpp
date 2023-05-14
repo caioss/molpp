@@ -48,47 +48,54 @@ double dssp::distance(mol::Point3 const& first, mol::Point3 const& second)
     return (first - second).norm();
 }
 
-bool dssp::MProtein::test_bond(dssp::MResidue const* first, dssp::MResidue const* second)
+bool dssp::MProtein::test_bond(size_t const first, size_t const second) const
 {
-    return (first->h_bond_acceptor[0].residue == second && first->h_bond_acceptor[0].energy < kMaxHBondEnergy) || (first->h_bond_acceptor[1].residue == second && first->h_bond_acceptor[1].energy < kMaxHBondEnergy);
+    MResidue const& first_residue = m_residues[first];
+    HBond const& hb1 = first_residue.h_bond_acceptor[0];
+    HBond const& hb2 = first_residue.h_bond_acceptor[1];
+
+    return (hb1.residue == second && hb1.energy < kMaxHBondEnergy) || (hb2.residue == second && hb2.energy < kMaxHBondEnergy);
 }
 
-dssp::MBridgeType dssp::MProtein::test_bridge(dssp::MResidue const* first, dssp::MResidue const* second)
-{                                               // I. a d II. a d parallel
-    dssp::MResidue const* a = first->previous;  // \ /
-    dssp::MResidue const* b = first;            // b e b e
-    dssp::MResidue const* c = first->next;      // / \ ..
-    dssp::MResidue const* d = second->previous; // c f c f
-    dssp::MResidue const* e = second;           //
-    dssp::MResidue const* f = second->next;     // III. a <- f IV. a f antiparallel
-                                                //
-    dssp::MBridgeType result = btNoBridge;      // b e b <-> e
-                                                //
-                                                // c -> d c d
-
-    if (first->index == 0 || first->index == m_residues.size() - 1)
+dssp::MBridgeType dssp::MProtein::test_bridge(size_t const first, size_t const second) const
+{
+    if (first == 0 || is_last(first) || second == 0 || is_last(second))
     {
         return btNoBridge;
     }
 
-    if (second->index == 0 || second->index == m_residues.size() - 1)
-    {
-        return btNoBridge;
-    }
+    // I. a d II. a d parallel
+    //    \ /
+    //    b e b e
+    //    / \ ..
+    //    c f c f
+    //
+    // III. a <- f IV. a f antiparallel
+    //
+    // b e b <-> e
+    //
+    // c -> d c d
 
-    if (no_chain_break(first->index - 1, first->index + 1) && no_chain_break(second->index - 1, second->index + 1))
+    size_t const a = first - 1;
+    size_t const b = first;
+    size_t const c = first + 1;
+    size_t const d = second - 1;
+    size_t const e = second;
+    size_t const f = second + 1;
+
+    if (no_chain_break(a, c) && no_chain_break(d, f))
     {
         if ((test_bond(c, e) && test_bond(e, a)) || (test_bond(f, b) && test_bond(b, d)))
         {
-            result = btParallel;
+            return btParallel;
         }
         else if ((test_bond(c, d) && test_bond(f, a)) || (test_bond(e, b) && test_bond(b, e)))
         {
-            result = btAntiParallel;
+            return btAntiParallel;
         }
     }
 
-    return result;
+    return btNoBridge;
 }
 
 // TODO rename variables
@@ -122,12 +129,12 @@ double dssp::MProtein::calculate_Hbond_energy(dssp::MResidue& inDonor, dssp::MRe
     if (result < inDonor.h_bond_acceptor[0].energy)
     {
         inDonor.h_bond_acceptor[1] = inDonor.h_bond_acceptor[0];
-        inDonor.h_bond_acceptor[0].residue = &inAcceptor;
+        inDonor.h_bond_acceptor[0].residue = inAcceptor.index;
         inDonor.h_bond_acceptor[0].energy = result;
     }
     else if (result < inDonor.h_bond_acceptor[1].energy)
     {
-        inDonor.h_bond_acceptor[1].residue = &inAcceptor;
+        inDonor.h_bond_acceptor[1].residue = inAcceptor.index;
         inDonor.h_bond_acceptor[1].energy = result;
     }
 
@@ -135,12 +142,12 @@ double dssp::MProtein::calculate_Hbond_energy(dssp::MResidue& inDonor, dssp::MRe
     if (result < inAcceptor.h_bond_donor[0].energy)
     {
         inAcceptor.h_bond_donor[1] = inAcceptor.h_bond_donor[0];
-        inAcceptor.h_bond_donor[0].residue = &inDonor;
+        inAcceptor.h_bond_donor[0].residue = inDonor.index;
         inAcceptor.h_bond_donor[0].energy = result;
     }
     else if (result < inAcceptor.h_bond_donor[1].energy)
     {
-        inAcceptor.h_bond_donor[1].residue = &inDonor;
+        inAcceptor.h_bond_donor[1].residue = inDonor.index;
         inAcceptor.h_bond_donor[1].energy = result;
     }
 
@@ -306,7 +313,7 @@ void dssp::MProtein::CalculateAlphaHelices(bool inPreferPiHelices)
             MResidue& current = m_residues[i];
             MResidue& strided = m_residues[i + stride];
 
-            if (test_bond(&strided, &current) && no_chain_break(i, i + stride))
+            if (test_bond(i + stride, i) && no_chain_break(i, i + stride))
             {
                 strided.set_helix_flag(stride, helixEnd);
                 for (uint32_t j = i + 1; j < i + stride; ++j)
@@ -430,7 +437,7 @@ void dssp::MProtein::CalculateBetaSheets()
             {
                 dssp::MResidue& rj = m_residues[j];
 
-                dssp::MBridgeType type = test_bridge(&ri, &rj);
+                dssp::MBridgeType type = test_bridge(i, j);
                 if (type == btNoBridge)
                     continue;
 
