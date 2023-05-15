@@ -271,12 +271,12 @@ void dssp::MProtein::compute_secondary_structure(bool prefer_pi_helices)
 
 void dssp::MProtein::compute_h_bond_energies()
 {
-    // Calculate the HBond energies
-    for (uint32_t i = 0; i + 1 < m_residues.size(); ++i)
+    size_t const num_residues = m_residues.size();
+    for (uint32_t i = 0; i + 1 < num_residues; ++i)
     {
         dssp::MResidue& ri = m_residues[i];
 
-        for (uint32_t j = i + 1; j < m_residues.size(); ++j)
+        for (uint32_t j = i + 1; j < num_residues; ++j)
         {
             dssp::MResidue& rj = m_residues[j];
 
@@ -294,22 +294,21 @@ void dssp::MProtein::compute_h_bond_energies()
 
 void dssp::MProtein::compute_helices(bool prefer_pi_helices)
 {
-    for (uint32_t stride = 3; stride <= 5; ++stride)
+    for (size_t stride = 3; stride <= 5; ++stride)
     {
         if (m_residues.size() < stride)
         {
             continue;
         }
 
-        for (uint32_t i = 0; i + stride < m_residues.size(); ++i)
+        for (size_t i = 0; i + stride < m_residues.size(); ++i)
         {
             MResidue& current = m_residues[i];
-            MResidue& strided = m_residues[i + stride];
 
             if (test_bond(i + stride, i) && no_chain_break(i, i + stride))
             {
-                strided.set_helix_flag(stride, HelixType::End);
-                for (uint32_t j = i + 1; j < i + stride; ++j)
+                m_residues[i + stride].set_helix_flag(stride, HelixType::End);
+                for (size_t j = i + 1; j < i + stride; ++j)
                 {
                     MResidue& between = m_residues[j];
                     if (between.helix_flag(stride) == HelixType::None)
@@ -336,32 +335,32 @@ void dssp::MProtein::compute_helices(bool prefer_pi_helices)
         residue.is_bend = kappa != 360 && kappa > 70;
     }
 
-    for (uint32_t i = 1; i + 4 < m_residues.size(); ++i)
+    size_t const num_residues = m_residues.size();
+    for (size_t i = 1; i < num_residues; ++i)
     {
         if (m_residues[i].is_helix_start(4) && m_residues[i - 1].is_helix_start(4))
         {
-            for (uint32_t j = i; j <= i + 3; ++j)
+            for (size_t j = i; j <= i + 3; ++j)
             {
                 m_residues[j].structure = mol::Helix;
             }
         }
     }
 
-    // TODO try to transform each stride loop into function calls (are they the same operation?)
-    for (uint32_t i = 1; i + 3 < m_residues.size(); ++i)
+    for (size_t i = 1; i < num_residues; ++i)
     {
         if (m_residues[i].is_helix_start(3) && m_residues[i - 1].is_helix_start(3))
         {
             bool empty = true;
-            for (uint32_t j = i; empty && j <= i + 2; ++j) // TODO that for again
+            for (size_t j = i; empty && j <= i + 2; ++j)
             {
-                MResidue& residue = m_residues[j];
-                empty = residue.structure == mol::Loop || residue.structure == mol::Helix3;
+                mol::SecondaryStructure const structure = m_residues[j].structure;
+                empty = structure == mol::Loop || structure == mol::Helix3;
             }
 
             if (empty)
             {
-                for (uint32_t j = i; j <= i + 2; ++j)
+                for (size_t j = i; j <= i + 2; ++j)
                 {
                     m_residues[j].structure = mol::Helix3;
                 }
@@ -369,41 +368,44 @@ void dssp::MProtein::compute_helices(bool prefer_pi_helices)
         }
     }
 
-    for (uint32_t i = 1; i + 5 < m_residues.size(); ++i)
+    for (size_t i = 1; i < num_residues; ++i)
     {
         if (m_residues[i].is_helix_start(5) && m_residues[i - 1].is_helix_start(5))
         {
             bool empty = true;
-            for (uint32_t j = i; empty && j <= i + 4; ++j) // TODO that for again
+            for (size_t j = i; empty && j <= i + 4; ++j)
             {
-                MResidue& residue = m_residues[j];
-                empty = residue.structure == mol::Loop || residue.structure == mol::Helix5 ||
-                        (prefer_pi_helices && residue.structure == mol::Helix);
+                mol::SecondaryStructure const structure = m_residues[j].structure;
+                empty = structure == mol::Loop
+                     || structure == mol::Helix5
+                     || (prefer_pi_helices && structure == mol::Helix);
             }
 
             if (empty)
             {
-                for (uint32_t j = i; j <= i + 4; ++j)
+                for (size_t j = i; j <= i + 4; ++j)
+                {
                     m_residues[j].structure = mol::Helix5;
+                }
             }
         }
     }
 
-    for (uint32_t i = 1; i + 1 < m_residues.size(); ++i)
+    for (size_t i = 1; i < num_residues - 1; ++i)
     {
         MResidue& residue = m_residues[i];
         if (residue.structure == mol::Loop)
         {
-            bool isTurn = false;
-            for (uint32_t stride = 3; stride <= 5 && not isTurn; ++stride) // TODO that for again
+            bool is_turn = false;
+            for (size_t stride = 3; stride <= 5 && !is_turn; ++stride)
             {
-                for (uint32_t k = 1; k < stride && not isTurn; ++k)
+                for (size_t k = 1; k < stride && !is_turn; ++k)
                 {
-                    isTurn = (i >= k) && m_residues[i - k].is_helix_start(stride);
+                    is_turn = (i >= k) && m_residues[i - k].is_helix_start(stride);
                 }
             }
 
-            if (isTurn)
+            if (is_turn)
             {
                 residue.structure = mol::Turn;
             }
