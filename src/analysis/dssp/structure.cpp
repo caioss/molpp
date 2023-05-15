@@ -13,6 +13,7 @@
 #include "analysis/dssp/structure.hpp"
 #include <set>
 #include <list>
+#include "structure.hpp"
 
 double constexpr PI = 4 * std::atan(1.0);
 double constexpr SS_BRIDGE_DISTANCE = 3.0;
@@ -37,10 +38,30 @@ double cosinus_angle(const mol::Point3& atom1, const mol::Point3& atom2, const m
     return 0;
 }
 
-double dssp::distance(mol::Point3 const& first, mol::Point3 const& second)
+double distance(mol::Point3 const& first, mol::Point3 const& second)
 {
     return (first - second).norm();
 }
+struct MBridge
+{
+    dssp::BridgeType type;
+    uint32_t sheet;
+    size_t chainI;
+    size_t chainJ;
+    std::list<size_t> i, j;
+
+    MBridge(dssp::BridgeType in_type, size_t const in_I, size_t const in_J)
+    : type{in_type}
+    , chainI{in_I}
+    , chainJ{in_J}
+    {
+    }
+
+    bool operator<(const MBridge& b) const
+    {
+        return chainI < b.chainI || (chainI == b.chainI && i.front() < b.i.front());
+    }
+};
 
 bool dssp::MProtein::test_bond(size_t const first, size_t const second) const
 {
@@ -96,12 +117,12 @@ double dssp::MProtein::compute_h_bond(dssp::MResidue& donor, dssp::MResidue& acc
 {
     double result = 0;
 
-    if (!donor.is_proline)
+    if (!donor.is_proline())
     {
-        double const dist_H_O = dssp::distance(donor.H(), acceptor.O());
-        double const dist_H_C = dssp::distance(donor.H(), acceptor.C());
-        double const dist_N_C = dssp::distance(donor.N(), acceptor.C());
-        double const dist_N_O = dssp::distance(donor.N(), acceptor.O());
+        double const dist_H_O = distance(donor.H(), acceptor.O());
+        double const dist_H_C = distance(donor.H(), acceptor.C());
+        double const dist_N_C = distance(donor.N(), acceptor.C());
+        double const dist_N_O = distance(donor.N(), acceptor.O());
 
         if (dist_H_O < MIN_DISTANCE || dist_H_C < MIN_DISTANCE || dist_N_C < MIN_DISTANCE || dist_N_O < MIN_DISTANCE)
         {
@@ -151,7 +172,7 @@ bool dssp::MProtein::no_chain_break(size_t const fisrt, size_t const last) const
 {
     for (size_t index = fisrt; index < last; index++)
     {
-        if (is_last(index) || m_residues[index + 1].is_chain_break)
+        if (is_last(index) || m_residues[index + 1].is_chain_break())
         {
             return false;
         }
@@ -184,47 +205,66 @@ bool dssp::MProtein::is_last(size_t const index) const
     return index == m_residues.size() - 1;
 }
 
-struct MBridge
-{
-    dssp::BridgeType type;
-    uint32_t sheet, ladder;
-    std::set<MBridge*> link;
-    std::list<size_t> i, j;
-    std::string chainI; // TODO non-reference is bad
-    std::string chainJ; // TODO non-reference is bad
-
-    MBridge(dssp::BridgeType type, std::string const& I, std::string const& J)
-    : type{type}
-    , chainI{I}
-    , chainJ{J}
-    {
-    }
-
-    bool operator<(const MBridge& b) const
-    {
-        return chainI < b.chainI || (chainI == b.chainI && i.front() < b.i.front());
-    }
-};
-
-dssp::MResidue::MResidue(size_t const index, std::string chain_id, bool const is_proline, mol::Point3 N, mol::Point3 CA, mol::Point3 C, mol::Point3 O)
-: index{index}
-, chain_id(chain_id)
-, structure(mol::Loop)
+dssp::MResidue::MResidue(size_t const in_index, std::string chain_id, bool const in_is_proline, mol::Point3 in_N, mol::Point3 in_CA, mol::Point3 in_C, mol::Point3 in_O)
+: is_bend{false}
+, index{in_index}
 , sheet(0)
-, is_proline(is_proline)
-, is_chain_break{false}
-, m_N{N}
-, m_CA{CA}
-, m_C{C}
-, m_O{O}
-, m_H{N}
+, structure(mol::Loop)
+, m_is_proline{in_is_proline}
+, m_is_chain_break{false}
+, m_chain{std::hash<std::string>{}(chain_id)}
+, m_N{in_N}
+, m_CA{in_CA}
+, m_C{in_C}
+, m_O{in_O}
+, m_H{in_N}
 {
     std::fill(m_helix_flags, m_helix_flags + 3, HelixType::None);
 }
 
+size_t dssp::MResidue::chain() const
+{
+    return m_chain;
+}
+
+bool dssp::MResidue::is_proline() const
+{
+    return m_is_proline;
+}
+
+bool dssp::MResidue::is_chain_break() const
+{
+    return m_is_chain_break;
+}
+
+mol::Point3 const& dssp::MResidue::N() const
+{
+    return m_N;
+}
+
+mol::Point3 const& dssp::MResidue::CA() const
+{
+    return m_CA;
+}
+
+mol::Point3 const& dssp::MResidue::C() const
+{
+    return m_C;
+}
+
+mol::Point3 const& dssp::MResidue::O() const
+{
+    return m_O;
+}
+
+mol::Point3 const& dssp::MResidue::H() const
+{
+    return m_H;
+}
+
 void dssp::MResidue::set_previous(MResidue const& previous)
 {
-    if (is_proline)
+    if (m_is_proline)
     {
         return;
     }
@@ -233,7 +273,7 @@ void dssp::MResidue::set_previous(MResidue const& previous)
 
     if (!is_valid_distance(previous))
     {
-        is_chain_break = true;
+        m_is_chain_break = true;
     }
 }
 
@@ -421,54 +461,48 @@ void dssp::MProtein::compute_sheets()
 {
     // Calculate Bridges
     std::vector<MBridge> bridges;
-    if (m_residues.size() > 4)
+    size_t const num_residues = m_residues.size();
+    for (size_t i = 1; i + 4 < num_residues; ++i)
     {
-        for (size_t i = 1; i + 4 < m_residues.size(); ++i)
+        for (size_t j = i + 3; j + 1 < num_residues; ++j)
         {
-            dssp::MResidue& ri = m_residues[i];
-
-            for (size_t j = i + 3; j + 1 < m_residues.size(); ++j)
+            dssp::BridgeType type = test_bridge(i, j);
+            if (type == BridgeType::None)
             {
-                dssp::MResidue& rj = m_residues[j];
+                continue;
+            }
 
-                dssp::BridgeType type = test_bridge(i, j);
-                if (type == BridgeType::None)
+            bool found = false;
+            for (MBridge& bridge : bridges)
+            {
+                if (type != bridge.type || i != bridge.i.back() + 1)
                 {
                     continue;
                 }
 
-                bool found = false;
-                for (MBridge& bridge : bridges)
+                if (type == BridgeType::Parallel && bridge.j.back() + 1 == j)
                 {
-                    if (type != bridge.type || i != bridge.i.back() + 1)
-                    {
-                        continue;
-                    }
-
-                    if (type == BridgeType::Parallel && bridge.j.back() + 1 == j)
-                    {
-                        bridge.i.push_back(i);
-                        bridge.j.push_back(j);
-                        found = true;
-                        break;
-                    }
-
-                    if (type == BridgeType::AntiParallel && bridge.j.front() - 1 == j)
-                    {
-                        bridge.i.push_back(i);
-                        bridge.j.push_front(j);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    MBridge bridge(type, ri.chain_id, rj.chain_id);
                     bridge.i.push_back(i);
                     bridge.j.push_back(j);
-                    bridges.push_back(bridge);
+                    found = true;
+                    break;
                 }
+
+                if (type == BridgeType::AntiParallel && bridge.j.front() - 1 == j)
+                {
+                    bridge.i.push_back(i);
+                    bridge.j.push_front(j);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                MBridge bridge(type, m_residues[i].chain(), m_residues[j].chain());
+                bridge.i.push_back(i);
+                bridge.j.push_back(j);
+                bridges.push_back(bridge);
             }
         }
     }

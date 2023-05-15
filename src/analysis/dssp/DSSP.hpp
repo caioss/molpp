@@ -54,6 +54,7 @@ public:
     std::vector<SecondaryStructure> run(Frame frame);
 
 private:
+    size_t m_num_prot_aa;
     std::vector<SSResidue> m_residues;
 };
 
