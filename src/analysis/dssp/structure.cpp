@@ -14,14 +14,14 @@
 #include <set>
 #include <list>
 
-double constexpr kPI = 4 * std::atan(1.0),
-                 kSSBridgeDistance = 3.0,
-                 kMinimalDistance = 0.5,
-                 kMinimalCADistance = 9.0,
-                 kMinHBondEnergy = -9.9,
-                 kMaxHBondEnergy = -0.5,
-                 kCouplingConstant = -332 * 0.42 * 0.2,
-                 kMaxPeptideBondLength = 2.5;
+double constexpr PI = 4 * std::atan(1.0);
+double constexpr SS_BRIDGE_DISTANCE = 3.0;
+double constexpr MIN_DISTANCE = 0.5;
+double constexpr MIN_CA_DISTANCE = 9.0;
+double constexpr MIN_HBOND_ENERGY = -9.9;
+double constexpr MAX_HBOND_ENERGY = -0.5;
+double constexpr COUPLING_CONSTANT = -332 * 0.42 * 0.2;
+double constexpr MAX_PEPTIDE_BOND_LENGTH = 2.5;
 
 double cosinus_angle(const mol::Point3& atom1, const mol::Point3& atom2, const mol::Point3& atom3, const mol::Point3& atom4)
 {
@@ -48,7 +48,7 @@ bool dssp::MProtein::test_bond(size_t const first, size_t const second) const
     HBond const& hb1 = first_residue.h_bond_acceptor[0];
     HBond const& hb2 = first_residue.h_bond_acceptor[1];
 
-    return (hb1.residue == second && hb1.energy < kMaxHBondEnergy) || (hb2.residue == second && hb2.energy < kMaxHBondEnergy);
+    return (hb1.residue == second && hb1.energy < MAX_HBOND_ENERGY) || (hb2.residue == second && hb2.energy < MAX_HBOND_ENERGY);
 }
 
 dssp::BridgeType dssp::MProtein::test_bridge(size_t const first, size_t const second) const
@@ -103,18 +103,18 @@ double dssp::MProtein::compute_h_bond(dssp::MResidue& donor, dssp::MResidue& acc
         double const dist_N_C = dssp::distance(donor.N(), acceptor.C());
         double const dist_N_O = dssp::distance(donor.N(), acceptor.O());
 
-        if (dist_H_O < kMinimalDistance || dist_H_C < kMinimalDistance || dist_N_C < kMinimalDistance || dist_N_O < kMinimalDistance)
+        if (dist_H_O < MIN_DISTANCE || dist_H_C < MIN_DISTANCE || dist_N_C < MIN_DISTANCE || dist_N_O < MIN_DISTANCE)
         {
-            result = kMinHBondEnergy;
+            result = MIN_HBOND_ENERGY;
         }
         else
         {
-            result = kCouplingConstant / dist_H_O - kCouplingConstant / dist_H_C + kCouplingConstant / dist_N_C - kCouplingConstant / dist_N_O;
+            result = COUPLING_CONSTANT / dist_H_O - COUPLING_CONSTANT / dist_H_C + COUPLING_CONSTANT / dist_N_C - COUPLING_CONSTANT / dist_N_O;
         }
 
-        if (result < kMinHBondEnergy)
+        if (result < MIN_HBOND_ENERGY)
         {
-            result = kMinHBondEnergy;
+            result = MIN_HBOND_ENERGY;
         }
     }
 
@@ -176,7 +176,7 @@ double dssp::MProtein::compute_kappa(size_t const index) const
 
     double const ckap = cosinus_angle(m_residues[index].CA(), m_residues[prev_prev].CA(), m_residues[next_next].CA(), m_residues[index].CA());
     double const skap = sqrt(1 - ckap * ckap);
-    return atan2(skap, ckap) * 180 / kPI;
+    return atan2(skap, ckap) * 180 / PI;
 }
 
 bool dssp::MProtein::is_last(size_t const index) const
@@ -239,7 +239,7 @@ void dssp::MResidue::set_previous(MResidue const& previous)
 
 bool dssp::MResidue::is_valid_distance(dssp::MResidue const& next) const
 {
-    return distance(N(), next.C()) <= kMaxPeptideBondLength;
+    return distance(N(), next.C()) <= MAX_PEPTIDE_BOND_LENGTH;
 }
 
 dssp::HelixType dssp::MResidue::helix_flag(uint32_t const stride) const
@@ -280,7 +280,7 @@ void dssp::MProtein::compute_h_bond_energies()
         {
             dssp::MResidue& rj = m_residues[j];
 
-            if (distance(ri.CA(), rj.CA()) < kMinimalCADistance)
+            if (distance(ri.CA(), rj.CA()) < MIN_CA_DISTANCE)
             {
                 compute_h_bond(ri, rj);
                 if (j != i + 1)
