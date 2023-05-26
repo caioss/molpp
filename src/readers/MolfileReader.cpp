@@ -240,6 +240,11 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
             for (index_t i = 0; i < (size_t)num_bonds; ++i)
             {
                 auto bond = bond_graph.add_bond(from[i] - 1, to[i] - 1);
+                if (!bond)
+                {
+                    continue;
+                }
+
                 bond->set_guessed(false);
                 if (order)
                 {
