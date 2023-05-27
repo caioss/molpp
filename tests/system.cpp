@@ -39,10 +39,16 @@ TEST(System, Selection) {
     EXPECT_EQ(mol.atoms(1).frame(), 1);
     EXPECT_EQ(mol.select("all", 1).frame(), 1);
 
-    // From indices
-    AtomSel index_sel{mol.select(std::vector<index_t>{0, 2})};
+    // From indices with frame
+    AtomSel index_sel{mol.select(std::vector<index_t>{0, 2}, 1)};
     EXPECT_THAT(index_sel.indices(), ElementsAre(0, 2));
-    EXPECT_FALSE(all_sel.frame());
+    EXPECT_EQ(index_sel.frame(), 1);
+    EXPECT_EQ(mol.select(std::vector<index_t>{0, 2}, 1).frame(), 1);
+
+    // From indices without frame
+    index_sel = mol.select(std::vector<index_t>{0, 2});
+    EXPECT_THAT(index_sel.indices(), ElementsAre(0, 2));
+    EXPECT_FALSE(index_sel.frame());
     EXPECT_EQ(mol.select(std::vector<index_t>{0, 2}, 1).frame(), 1);
 
     // From strings with frame
@@ -53,7 +59,7 @@ TEST(System, Selection) {
     // From strings without frame
     water = mol.select("resid 203:205 or resid 900:910");
     EXPECT_THAT(water.indices(), ElementsAre(1807, 1808, 1809));
-    EXPECT_EQ(water.frame(), 0);
+    EXPECT_FALSE(water.frame());
 
     // Selector
     AtomSelector selector = mol.selector("resid 203:205 or resid 900:910");

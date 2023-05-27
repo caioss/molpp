@@ -365,7 +365,7 @@ TEST(Selection, AtomSelector) {
     // No frame
     water = selector.apply(std::nullopt);
     EXPECT_THAT(water.indices(), ElementsAre(1807, 1808, 1809));
-    EXPECT_EQ(water.frame(), 0);
+    EXPECT_FALSE(water.frame());
 
     // Invalid selections
     selector = AtomSelector("resid 900:910", pdb_big);
