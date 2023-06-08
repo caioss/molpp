@@ -3,6 +3,7 @@ find_package(GTest 1.12.1 REQUIRED)
 enable_testing()
 
 add_executable(tests
+    test_Atom.cpp
     atoms.cpp
     residues.cpp
     atomaggregates.cpp
