@@ -10,4 +10,6 @@ target_sources(molpp PRIVATE
     BaseSel.cpp
     BaseAtomAggregate.cpp
     SelIndex.cpp
+    PropertyContainer.cpp
+    PropertyTrajectory.cpp
 )

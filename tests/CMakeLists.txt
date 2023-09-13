@@ -4,6 +4,10 @@ enable_testing()
 
 add_executable(tests
     test_Atom.cpp
+    test_Property.cpp
+    test_PropertyTrajectory.cpp
+    test_PropertyContainer.cpp
+    test_MolData.cpp
     atoms.cpp
     residues.cpp
     atomaggregates.cpp
