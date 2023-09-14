@@ -8,6 +8,5 @@ target_sources(molpp PRIVATE
     BondData.cpp
     ResidueSel.cpp
     BaseSel.cpp
-    BaseAtomAggregate.cpp
     SelIndex.cpp
 )

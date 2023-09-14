@@ -10,29 +10,6 @@ using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
-TEST(AtomAggregates, BaseAtomAggregate) {
-    MolData data = create_moldata(3, 1, 1, 1, 1);
-
-    // Comparison
-    EXPECT_TRUE(BaseAtomAggregate(1, 0, &data) == BaseAtomAggregate(1, 0, &data));
-    EXPECT_FALSE(BaseAtomAggregate(0, 0, &data) == BaseAtomAggregate(1, 0, &data));
-    EXPECT_FALSE(BaseAtomAggregate(1, std::nullopt, &data) == BaseAtomAggregate(1, 0, &data));
-    EXPECT_FALSE(BaseAtomAggregate(1, 0, &data) == BaseAtomAggregate(1, 0, nullptr));
-    EXPECT_TRUE(BaseAtomAggregate() == BaseAtomAggregate(0, std::nullopt, nullptr));
-
-    /*
-     * Properties
-     */
-    BaseAtomAggregate aggr(1, 0, &data);
-    EXPECT_EQ(aggr.index(), 1);
-    EXPECT_EQ(aggr.frame(), 0);
-    aggr.set_frame(std::nullopt);
-    EXPECT_FALSE(aggr.frame());
-    aggr.set_frame(0);
-    EXPECT_EQ(aggr.frame(), 0);
-    EXPECT_THROW(aggr.set_frame(1), MolError);
-}
-
 TEST(AtomAggregates, AtomAggregate) {
     using Aggregate = AtomAggregate<Residue>;
     MolData data = create_moldata(3, 1, 1, 1, 1);
