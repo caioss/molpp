@@ -3,10 +3,11 @@
 using namespace mol::internal;
 
 PropertyTrajectory::PropertyTrajectory(bool const is_time_based, make_property_fn const make_property)
-: m_make_property{make_property}
-, m_time_based{is_time_based}
+: m_is_time_based{is_time_based}
+, m_size{0}
+, m_make_property{make_property}
 {
-    if (!m_time_based)
+    if (!m_is_time_based)
     {
         emplace_frame();
     }
@@ -14,25 +15,32 @@ PropertyTrajectory::PropertyTrajectory(bool const is_time_based, make_property_f
 
 size_t PropertyTrajectory::is_time_based() const
 {
-    return m_time_based;
+    return m_is_time_based;
 }
 
 void PropertyTrajectory::resize(size_t const size)
 {
+    if (size == m_size)
+    {
+        return;
+    }
+
     for (auto& property : m_trajectory)
     {
         property->resize(size);
     }
+
+    m_size = size;
 }
 
 size_t PropertyTrajectory::num_frames() const
 {
-    return m_time_based ? m_trajectory.size() : 0;
+    return m_is_time_based ? m_trajectory.size() : 0;
 }
 
 mol::Property* PropertyTrajectory::add_frame()
 {
-    if (!m_time_based)
+    if (!m_is_time_based)
     {
         return nullptr;
     }
@@ -40,14 +48,27 @@ mol::Property* PropertyTrajectory::add_frame()
     return emplace_frame();
 }
 
-void PropertyTrajectory::remove_frame(Frame const frame)
+void PropertyTrajectory::add_frames(size_t const num_frames)
 {
-    if (!m_time_based || !frame)
+    if (!m_is_time_based)
     {
         return;
     }
 
-    auto iter = std::next(m_trajectory.begin(), frame.value());
+    for (size_t i = 0; i < num_frames; i++)
+    {
+        emplace_frame();
+    }
+}
+
+void PropertyTrajectory::remove_frame(size_t const frame)
+{
+    if (!m_is_time_based)
+    {
+        return;
+    }
+
+    auto iter = std::next(m_trajectory.begin(), frame);
 
     if (iter == m_trajectory.end())
     {
@@ -57,13 +78,16 @@ void PropertyTrajectory::remove_frame(Frame const frame)
     m_trajectory.erase(iter);
 }
 
-mol::Property* PropertyTrajectory::get(Frame const frame)
+mol::Property* PropertyTrajectory::get(size_t const frame)
 {
     auto iter = m_trajectory.begin();
 
-    if (m_time_based && frame)
+    if (m_is_time_based)
     {
-        iter = std::next(iter, frame.value());
+        for (size_t i = 0; i < frame && iter != m_trajectory.end(); i++)
+        {
+            iter = std::next(iter);
+        }
     }
 
     if (iter == m_trajectory.end())
@@ -76,7 +100,7 @@ mol::Property* PropertyTrajectory::get(Frame const frame)
 
 mol::Property* PropertyTrajectory::emplace_frame()
 {
-    std::unique_ptr<Property>& property = m_trajectory.emplace_back();
-    property = m_make_property();
+    std::unique_ptr<Property>& property = m_trajectory.emplace_back(m_make_property());
+    property->resize(m_size);
     return property.get();
 }

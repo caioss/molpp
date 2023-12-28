@@ -20,15 +20,16 @@ public:
     void resize(size_t const size);
     size_t num_frames() const;
     Property* add_frame();
-    void remove_frame(Frame const frame);
-    Property* get(Frame const frame);
+    void add_frames(size_t const num_frames);
+    void remove_frame(size_t const frame);
+    Property* get(size_t const frame);
 
 private:
-    make_property_fn m_make_property;
-
     Property* emplace_frame();
 
-    bool m_time_based;
+    bool m_is_time_based;
+    size_t m_size;
+    make_property_fn m_make_property;
     std::list<std::unique_ptr<Property>> m_trajectory;
 };
 

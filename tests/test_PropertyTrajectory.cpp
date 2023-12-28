@@ -58,7 +58,28 @@ TEST_F(PropertyTrajectoryTest, DefaultFrames)
     EXPECT_THAT(dynamic_trajectory.get(0), IsNull());
 }
 
-TEST_F(PropertyTrajectoryTest, ResizeStatic)
+TEST_F(PropertyTrajectoryTest, DefaultSizeOnStatic)
+{
+    mol::Property* property = static_trajectory.get(0);
+    ASSERT_THAT(property, NotNull());
+
+    EXPECT_EQ(property->size(), 0);
+}
+
+TEST_F(PropertyTrajectoryTest, DefaultSizeOnDynamic)
+{
+    EXPECT_CALL(make_property_mock, call).Times(2);
+
+    mol::Property* property0 = dynamic_trajectory.add_frame();
+    mol::Property* property1 = dynamic_trajectory.add_frame();
+    ASSERT_THAT(property0, NotNull());
+    ASSERT_THAT(property1, NotNull());
+
+    EXPECT_EQ(property0->size(), 0);
+    EXPECT_EQ(property1->size(), 0);
+}
+
+TEST_F(PropertyTrajectoryTest, ResizeOnStatic)
 {
     mol::Property* property = static_trajectory.get(0);
     ASSERT_THAT(property, NotNull());
@@ -71,7 +92,7 @@ TEST_F(PropertyTrajectoryTest, ResizeStatic)
     }
 }
 
-TEST_F(PropertyTrajectoryTest, ResizeDynamic)
+TEST_F(PropertyTrajectoryTest, ResizeOnDynamic)
 {
     EXPECT_CALL(make_property_mock, call).Times(2);
 
@@ -89,7 +110,39 @@ TEST_F(PropertyTrajectoryTest, ResizeDynamic)
     }
 }
 
-TEST_F(PropertyTrajectoryTest, AddFrameStatic)
+TEST_F(PropertyTrajectoryTest, ResizeSameSizeTwiceOnStatic)
+{
+    mol::Property* property = static_trajectory.get(0);
+    ASSERT_THAT(property, NotNull());
+
+    static_trajectory.resize(3);
+    EXPECT_EQ(property->size(), 3);
+
+    static_trajectory.resize(3);
+    EXPECT_EQ(property->size(), 3);
+}
+
+TEST_F(PropertyTrajectoryTest, ResizeSameSizeTwiceOnDynamic)
+{
+    EXPECT_CALL(make_property_mock, call).Times(2);
+
+    mol::Property* property0 = dynamic_trajectory.add_frame();
+    mol::Property* property1 = dynamic_trajectory.add_frame();
+    ASSERT_THAT(property0, NotNull());
+    ASSERT_THAT(property1, NotNull());
+
+    // First time
+    dynamic_trajectory.resize(3);
+    EXPECT_EQ(property0->size(), 3);
+    EXPECT_EQ(property1->size(), 3);
+
+    // Second time
+    dynamic_trajectory.resize(3);
+    EXPECT_EQ(property0->size(), 3);
+    EXPECT_EQ(property1->size(), 3);
+}
+
+TEST_F(PropertyTrajectoryTest, AddFrameOnStatic)
 {
     EXPECT_CALL(make_property_mock, call).Times(0);
 
@@ -102,7 +155,7 @@ TEST_F(PropertyTrajectoryTest, AddFrameStatic)
     }
 }
 
-TEST_F(PropertyTrajectoryTest, AddFrameDynamic)
+TEST_F(PropertyTrajectoryTest, AddFrameOnDynamic)
 {
     EXPECT_CALL(make_property_mock, call).Times(3);
 
@@ -115,16 +168,32 @@ TEST_F(PropertyTrajectoryTest, AddFrameDynamic)
     }
 }
 
-TEST_F(PropertyTrajectoryTest, RemoveFrameStatic)
+TEST_F(PropertyTrajectoryTest, AddMultipleFramesAtOnceOnStatic)
+{
+    EXPECT_CALL(make_property_mock, call).Times(0);
+
+    static_trajectory.add_frames(3);
+
+    EXPECT_EQ(static_trajectory.num_frames(), 0);
+}
+
+TEST_F(PropertyTrajectoryTest, AddMultipleFramesOAtOncenDynamic)
+{
+    EXPECT_CALL(make_property_mock, call).Times(3);
+
+    dynamic_trajectory.add_frames(3);
+
+    EXPECT_EQ(dynamic_trajectory.num_frames(), 3);
+}
+
+TEST_F(PropertyTrajectoryTest, RemoveFrameOnStatic)
 {
     EXPECT_CALL(make_property_mock, call).Times(0);
 
     mol::Property* property = static_trajectory.get(0);
     ASSERT_THAT(property, NotNull());
 
-    static_trajectory.add_frame();
-    static_trajectory.add_frame();
-    static_trajectory.add_frame();
+    static_trajectory.add_frames(3);
     static_trajectory.remove_frame(0);
 
     EXPECT_EQ(static_trajectory.get(0), property);
@@ -133,7 +202,7 @@ TEST_F(PropertyTrajectoryTest, RemoveFrameStatic)
     EXPECT_EQ(static_trajectory.num_frames(), 0);
 }
 
-TEST_F(PropertyTrajectoryTest, RemoveFrameDynamic)
+TEST_F(PropertyTrajectoryTest, RemoveFrameOnDynamic)
 {
     EXPECT_CALL(make_property_mock, call).Times(3);
 
@@ -168,14 +237,12 @@ TEST_F(PropertyTrajectoryTest, RemoveInvalidFrame)
     EXPECT_EQ(dynamic_trajectory.num_frames(), 2);
 }
 
-TEST_F(PropertyTrajectoryTest, GetStatic)
+TEST_F(PropertyTrajectoryTest, GetOnStatic)
 {
     EXPECT_CALL(make_property_mock, call).Times(0);
 
     mol::Property* property = static_trajectory.get(0);
-    static_trajectory.add_frame();
-    static_trajectory.add_frame();
-    static_trajectory.add_frame();
+    static_trajectory.add_frames(3);
 
     EXPECT_THAT(property, NotNull());
     EXPECT_EQ(static_trajectory.get(0), property);
@@ -184,7 +251,7 @@ TEST_F(PropertyTrajectoryTest, GetStatic)
     EXPECT_EQ(static_trajectory.get(3), property);
 }
 
-TEST_F(PropertyTrajectoryTest, GetDynamic)
+TEST_F(PropertyTrajectoryTest, GetOnDynamic)
 {
     EXPECT_CALL(make_property_mock, call).Times(3);
 

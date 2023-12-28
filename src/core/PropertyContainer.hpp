@@ -22,6 +22,10 @@ public:
 
     PropertyContainer();
 
+    size_t num_frames() const;
+    Frame add_frame();
+    void remove_frame(Frame const frame);
+
     template<IsAtomAggregate AggregateType>
     size_t size() const;
 
@@ -43,6 +47,7 @@ private:
     template<IsAtomAggregate AggregateType, IsProperty PropertyType>
     static std::unique_ptr<Property> make_property();
 
+    size_t m_num_frames;
     std::unordered_map<size_key_type, size_t> m_sizes;
     std::map<property_key_type, PropertyTrajectory> m_properties;
 };

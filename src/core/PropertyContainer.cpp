@@ -3,7 +3,38 @@
 using namespace mol::internal;
 
 PropertyContainer::PropertyContainer()
+: m_num_frames{0}
 {
+}
+
+size_t PropertyContainer::num_frames() const
+{
+    return m_num_frames;
+}
+
+mol::Frame PropertyContainer::add_frame()
+{
+    for (auto& [key, trajectory] : m_properties)
+    {
+        trajectory.add_frame();
+    }
+
+    return m_num_frames++;
+}
+
+void PropertyContainer::remove_frame(Frame const frame)
+{
+    if (!frame || frame >= m_num_frames)
+    {
+        return;
+    }
+
+    for (auto& [key, trajectory] : m_properties)
+    {
+        trajectory.remove_frame(frame.value());
+    }
+
+    m_num_frames--;
 }
 
 size_t PropertyContainer::size(size_key_type const key) const
@@ -36,10 +67,11 @@ mol::Property* PropertyContainer::emplace(property_key_type const key, bool cons
 
     if (!result)
     {
-        return nullptr;
+        return iter->second.get(0);
     }
 
     PropertyTrajectory& trajectory = iter->second;
+    trajectory.add_frames(m_num_frames);
     trajectory.resize(size(key.first));
     return trajectory.get(0);
 }
@@ -51,5 +83,5 @@ mol::Property* PropertyContainer::get(property_key_type const key, Frame const f
     {
         return nullptr;
     }
-    return iter->second.get(frame);
+    return iter->second.get(frame.value_or(0));
 }
