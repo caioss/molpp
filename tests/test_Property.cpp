@@ -1,4 +1,5 @@
 #include <molpp/Property.hpp>
+#include <molpp/MolppCore.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -8,73 +9,107 @@
 using namespace testing;
 using namespace mol;
 
-template<IsProperty T>
-class PropertyTest : public testing::Test
+template <IsProperty Type>
+struct PropertyTraits
 {
-protected:
-    PropertyTest()
-    : property()
+    using property_type = Type;
+    using value_type = Type::value_type;
+};
+
+template <>
+struct PropertyTraits<Position>
+{
+    using property_type = Position;
+    using value_type = Point3;
+};
+
+template<IsProperty Type>
+class PropertyTestValues
+{
+public:
+    using value_type = typename PropertyTraits<Type>::value_type;
+
+    PropertyTestValues()
     {
-        if constexpr (std::integral<typename T::value_type> || std::floating_point<typename T::value_type>)
+        if constexpr (std::integral<value_type> || std::floating_point<value_type>)
         {
-            values = {1, 2, 3, 4, 5, 6};
+            expected = {1, 2, 3, 4, 5, 6};
         }
-        else if constexpr (std::is_same_v<typename T::value_type, std::string>)
+        else if constexpr (std::is_same_v<value_type, std::string>)
         {
-            values = {"a", "b", "c", "d", "e", "f"};
+            expected = {"a", "b", "c", "d", "e", "f"};
+        }
+        else if constexpr (std::is_same_v<value_type, Point3>)
+        {
+            expected = {Point3{0, 0, 0}, Point3{1, 1, 1}, Point3{2, 2, 2}, Point3{3, 3, 3}, Point3{4, 4, 4}, Point3{5, 5, 5}};
         }
     }
 
-    T property;
-    std::array<typename T::value_type, 6> values;
+    std::array<value_type, 6> expected;
+};
+
+template<IsProperty Type>
+class PropertyTest : public Type, public PropertyTestValues<Type>, public testing::Test
+{
 };
 
 TYPED_TEST_SUITE_P(PropertyTest);
 
 TYPED_TEST_P(PropertyTest, ResizeOnce)
 {
-    this->property.resize(2);
+    this->resize(2);
 
-    EXPECT_EQ(this->property.size(), 2);
+    EXPECT_EQ(this->size(), 2);
 }
 
 TYPED_TEST_P(PropertyTest, ResizeTwice)
 {
-    this->property.resize(2);
-    this->property.resize(4);
+    this->resize(2);
+    this->resize(4);
 
-    EXPECT_EQ(this->property.size(), 4);
+    EXPECT_EQ(this->size(), 4);
 }
 
 TYPED_TEST_P(PropertyTest, SetValues)
 {
-    this->property.resize(2);
-    this->property.value(0) = this->values[0];
-    this->property.value(1) = this->values[1];
+    this->resize(2);
+    this->value(0) = this->expected[0];
+    this->value(1) = this->expected[1];
 
-    EXPECT_EQ(this->property.size(), 2);
-    EXPECT_EQ(this->property.value(0), this->values[0]);
-    EXPECT_EQ(this->property.value(1), this->values[1]);
+    EXPECT_EQ(this->size(), 2);
+    EXPECT_EQ(this->value(0), this->expected[0]);
+    EXPECT_EQ(this->value(1), this->expected[1]);
 }
 
-TYPED_TEST_P(PropertyTest, ResizeTwiceWithValues)
+TYPED_TEST_P(PropertyTest, ResizeTwiceAndSetValues)
 {
-    this->property.resize(4);
-    this->property.value(0) = this->values[0];
-    this->property.value(1) = this->values[1];
-    this->property.value(2) = this->values[2];
-    this->property.value(3) = this->values[3];
-    this->property.resize(2);
+    this->resize(4);
+    this->resize(2);
+    this->value(0) = this->expected[0];
+    this->value(1) = this->expected[1];
 
-    EXPECT_EQ(this->property.size(), 2);
-    EXPECT_EQ(this->property.value(0), this->values[0]);
-    EXPECT_EQ(this->property.value(1), this->values[1]);
+    EXPECT_EQ(this->size(), 2);
+    EXPECT_EQ(this->value(0), this->expected[0]);
+    EXPECT_EQ(this->value(1), this->expected[1]);
 }
 
-REGISTER_TYPED_TEST_SUITE_P(PropertyTest, ResizeOnce, ResizeTwice, SetValues, ResizeTwiceWithValues);
+REGISTER_TYPED_TEST_SUITE_P(PropertyTest, ResizeOnce, ResizeTwice, SetValues, ResizeTwiceAndSetValues);
 
-using ContainerPropertyTypes = testing::Types<ContainerProperty<int>, ContainerProperty<std::string>>;
-INSTANTIATE_TYPED_TEST_SUITE_P(ContainerProperties, PropertyTest, ContainerPropertyTypes);
+using Properties = testing::Types<Occupancy, TemperatureFactor, Mass, Charge, Radius, AtomicNumber, ResID, Name, Type, AlternateLocation, InsertionCode, ResName, Position>;
+INSTANTIATE_TYPED_TEST_SUITE_P(VectorProperties, PropertyTest, Properties);
 
-using PropertyTypes = testing::Types<Occupancy, TemperatureFactor, Mass, Charge, Radius, AtomicNumber, ResID, Name, Type, AlternateLocation, InsertionCode, ResName>;
-INSTANTIATE_TYPED_TEST_SUITE_P(VectorProperties, PropertyTest, PropertyTypes);
+using PositionPropertyTest = PropertyTest<Position>;
+
+TEST_F(PositionPropertyTest, Positions)
+{
+    this->resize(this->expected.size());
+    for (size_t i = 0; i < this->expected.size(); i++)
+    {
+        this->value(i) = this->expected[i];
+    }
+
+    for (size_t i = 0; i < this->expected.size(); i++)
+    {
+        EXPECT_EQ(this->value(i), this->expected[i]) << i;
+    }
+}

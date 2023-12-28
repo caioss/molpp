@@ -4,9 +4,15 @@
 #include <molpp/MolppCore.hpp>
 
 #include <vector>
+#include <concepts>
 
 namespace mol
 {
+
+namespace internal
+{
+class PropertyTrajectory;
+} // namespace internal
 
 class Property;
 
@@ -14,7 +20,7 @@ template<class T>
 concept IsProperty = requires(T t)
 {
     std::derived_from<T, Property>;
-    {t.value(std::declval<index_t>())} -> std::same_as<typename T::value_type&>;
+    {t.value(std::declval<index_t>())} -> std::common_reference_with<typename T::value_type&>;
 };
 
 template<class T>
@@ -30,7 +36,46 @@ class Property
 public:
     virtual ~Property() = default;
     virtual size_t size() const = 0;
+
+protected:
     virtual void resize(size_t const size) = 0;
+
+    friend class mol::internal::PropertyTrajectory;
+};
+
+class Position : public Property
+{
+public:
+    using value_type = Coord3::ColXpr;
+
+    value_type value(index_t const index)
+    {
+        return m_positions.col(index);
+    };
+
+    size_t size() const override
+    {
+        return m_positions.cols();
+    }
+
+    Coord3& positions()
+    {
+        return m_positions;
+    }
+
+    Coord3 const& positions() const
+    {
+        return m_positions;
+    }
+
+protected:
+    void resize(size_t const size) override
+    {
+        m_positions.resize(Eigen::NoChange, size);
+    }
+
+private:
+    Coord3 m_positions;
 };
 
 template<class Type, class Container = std::vector<Type>>
@@ -44,12 +89,13 @@ public:
         return m_values[index];
     };
 
-    size_t size() const
+    size_t size() const override
     {
         return m_values.size();
     }
 
-    void resize(size_t const size)
+protected:
+    void resize(size_t const size) override
     {
         m_values.resize(size);
     }
