@@ -1,6 +1,6 @@
 #include <molpp/MolError.hpp>
 #include <molpp/AtomSelector.hpp>
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include "selections/SelectionStack.hpp"
 #include "selections/SelectionParser.hpp"
 #include <set>

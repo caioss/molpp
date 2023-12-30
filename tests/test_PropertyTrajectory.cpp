@@ -1,4 +1,4 @@
-#include "core/PropertyTrajectory.hpp"
+#include <molpp/internal/PropertyTrajectory.hpp>
 #include <molpp/Property.hpp>
 
 #include <gtest/gtest.h>

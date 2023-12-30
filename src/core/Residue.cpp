@@ -1,4 +1,4 @@
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/AtomSel.hpp>
 

@@ -1,4 +1,4 @@
-#include "PropertyTrajectory.hpp"
+#include <molpp/internal/PropertyTrajectory.hpp>
 
 using namespace mol::internal;
 

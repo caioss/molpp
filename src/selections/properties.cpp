@@ -1,6 +1,6 @@
 #include "selections/properties.hpp"
 #include "selections/SelectionStack.hpp"
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 
 using namespace mol;
 using namespace mol::internal;

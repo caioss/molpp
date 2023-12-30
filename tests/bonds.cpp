@@ -1,6 +1,6 @@
 #include <molpp/AtomSel.hpp>
 #include <molpp/ResidueSel.hpp>
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include "guessers/ResidueBondGuesser.hpp"
 #include "guessers/AtomBondGuesser.hpp"
 #include "files.hpp"

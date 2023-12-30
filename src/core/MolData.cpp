@@ -1,4 +1,4 @@
-#include "MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 
 using namespace mol::internal;
 

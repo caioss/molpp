@@ -1,4 +1,4 @@
-#include "core/PropertyContainer.hpp"
+#include <molpp/internal/PropertyContainer.hpp>
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/Property.hpp>

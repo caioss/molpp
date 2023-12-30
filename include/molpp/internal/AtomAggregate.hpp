@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 #include <concepts>
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 
 namespace mol::internal {
 

@@ -1,4 +1,4 @@
-#include "core/PropertyContainer.hpp"
+#include <molpp/internal/PropertyContainer.hpp>
 
 using namespace mol::internal;
 

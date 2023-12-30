@@ -1,4 +1,4 @@
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>

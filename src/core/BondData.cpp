@@ -1,4 +1,4 @@
-#include "BondData.hpp"
+#include <molpp/internal/BondData.hpp>
 
 using namespace mol;
 using namespace mol::internal;

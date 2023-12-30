@@ -1,7 +1,7 @@
 #ifndef MOLPP_PROPERTYCONTAINER_HPP
 #define MOLPP_PROPERTYCONTAINER_HPP
 
-#include "core/PropertyTrajectory.hpp"
+#include <molpp/internal/PropertyTrajectory.hpp>
 #include <molpp/Property.hpp>
 #include <molpp/internal/requirements.hpp>
 

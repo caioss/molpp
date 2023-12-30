@@ -1,8 +1,8 @@
 #include "files.hpp"
 #include "matchers.hpp"
 #include "auxiliary.hpp"
-#include "core/MolData.hpp"
-#include "core/AtomData.hpp"
+#include <molpp/internal/AtomData.hpp>
+#include <molpp/internal/MolData.hpp>
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/AtomSel.hpp>

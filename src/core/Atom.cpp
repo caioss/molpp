@@ -1,4 +1,4 @@
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/MolError.hpp>

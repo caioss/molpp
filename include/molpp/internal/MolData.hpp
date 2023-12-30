@@ -2,10 +2,10 @@
 #define MOLDATA_HPP
 
 #include <molpp/Trajectory.hpp>
-#include "core/AtomData.hpp"
-#include "core/BondData.hpp"
-#include "core/ResidueData.hpp"
-#include "core/PropertyContainer.hpp"
+#include <molpp/internal/AtomData.hpp>
+#include <molpp/internal/BondData.hpp>
+#include <molpp/internal/ResidueData.hpp>
+#include <molpp/internal/PropertyContainer.hpp>
 
 namespace mol::internal {
 

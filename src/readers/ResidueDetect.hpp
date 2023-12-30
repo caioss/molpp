@@ -1,7 +1,7 @@
 #ifndef RESIDUEDETECT_HPP
 #define RESIDUEDETECT_HPP
 
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include <map>
 #include <string>
 

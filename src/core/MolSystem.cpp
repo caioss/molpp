@@ -2,7 +2,7 @@
 #include <molpp/MolError.hpp>
 #include <molpp/MolSystem.hpp>
 #include <molpp/ResidueSel.hpp>
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include "readers/MolReader.hpp"
 #include "guessers/AtomBondGuesser.hpp"
 #include "guessers/ResidueBondGuesser.hpp"

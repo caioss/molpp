@@ -1,6 +1,7 @@
 #include <molpp/internal/BaseSel.hpp>
 #include <molpp/MolError.hpp>
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
+
 #include <numeric>
 
 using namespace mol;
