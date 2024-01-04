@@ -13,6 +13,7 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
 {
     size_t const num_atoms { num_res * num_res_atoms };
     MolData data(num_atoms);
+    data.properties().set_size<Atom>(num_atoms);
     AtomData& atom_data = data.atoms();
     ResidueData& res_data = data.residues();
     data.residues().resize(num_res);
@@ -80,32 +81,8 @@ TEST(Auxiliary, create_moldata) {
 
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::residue_id),
                                  {0, 0, 1, 1, 2, 2}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::atomic),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::occupancy, 1e-5),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::tempfactor, 1e-5),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::mass, 1e-5),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::charge, 1e-5),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::radius, 1e-5),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::name),
-                                 {"A", "B", "C", "D", "E", "F"}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::type),
-                                 {"A", "B", "C", "D", "E", "F"}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::altloc),
-                                 {"A", "B", "C", "D", "E", "F"}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid),
                                  {0, 0, 1, 1, 2, 2}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resname),
-                                 {"A", "A", "B", "B", "C", "C"}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::segid),
-                                 {"A", "A", "A", "A", "A", "A"}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::chain),
-                                 {"A", "A", "B", "B", "A", "A"}));
 
     // Residues
     EXPECT_EQ(data.residues().size(), 3);

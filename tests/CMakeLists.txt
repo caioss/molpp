@@ -4,16 +4,16 @@ enable_testing()
 
 add_executable(tests
     test_Atom.cpp
+    test_MolfileReader.cpp
     test_Property.cpp
     test_PropertyTrajectory.cpp
     test_PropertyContainer.cpp
     test_MolData.cpp
+    test_AtomAggregate.cpp
     atoms.cpp
     residues.cpp
-    atomaggregates.cpp
     selections.cpp
     selectors.cpp
-    readers.cpp
     system.cpp
     bonds.cpp
     tools.cpp

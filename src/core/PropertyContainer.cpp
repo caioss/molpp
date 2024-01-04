@@ -76,7 +76,7 @@ mol::Property* PropertyContainer::emplace(property_key_type const key, bool cons
     return trajectory.get(0);
 }
 
-mol::Property* PropertyContainer::get(property_key_type const key, Frame const frame)
+mol::Property const* PropertyContainer::get(property_key_type const key, Frame const frame) const
 {
     auto iter = m_properties.find(key);
     if (iter == m_properties.end())
@@ -84,4 +84,10 @@ mol::Property* PropertyContainer::get(property_key_type const key, Frame const f
         return nullptr;
     }
     return iter->second.get(frame.value_or(0));
+}
+
+mol::Property* PropertyContainer::get(property_key_type const key, Frame const frame)
+{
+    // Delegate to the const version
+    return const_cast<mol::Property*>(std::as_const(*this).get(key, frame));
 }

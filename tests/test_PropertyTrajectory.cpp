@@ -267,3 +267,14 @@ TEST_F(PropertyTrajectoryTest, GetOnDynamic)
     EXPECT_EQ(dynamic_trajectory.get(2), property2);
     EXPECT_THAT(dynamic_trajectory.get(3), IsNull());
 }
+
+TEST_F(PropertyTrajectoryTest, ConstGet)
+{
+    EXPECT_CALL(make_property_mock, call).Times(0);
+
+    PropertyTrajectory const& const_trajectory = static_trajectory;
+    mol::Property const* property = const_trajectory.get(0);
+
+    EXPECT_THAT(property, NotNull());
+    EXPECT_EQ(const_trajectory.get(0), property);
+}

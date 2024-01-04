@@ -2,7 +2,7 @@
 #include "analysis/dssp/structure.hpp"
 #include <molpp/AtomSel.hpp>
 #include <molpp/ResidueSel.hpp>
-#include "DSSP.hpp"
+#include <molpp/Property.hpp>
 
 mol::SSResidue::SSResidue()
 : m_is_proline{false}
@@ -24,9 +24,12 @@ mol::SSResidue::SSResidue(Residue& residue)
 , m_O()
 , m_chain{residue.chain()}
 {
-    for (Atom atom : AtomSel(residue))
+    AtomSel atom_sel(residue);
+    Name* name_property = atom_sel.property<Name>();
+
+    for (Atom atom : atom_sel)
     {
-        std::string const name = atom.name();
+        std::string const name = atom.get(name_property);
         if (name == "N")
         {
             m_N = atom;

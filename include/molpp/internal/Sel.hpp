@@ -1,10 +1,13 @@
 #ifndef SEL_HPP
 #define SEL_HPP
 
+#include <molpp/Property.hpp>
 #include <molpp/MolError.hpp>
 #include <molpp/MolppCore.hpp>
 #include <molpp/internal/requirements.hpp>
 #include <molpp/internal/BaseSel.hpp>
+#include <molpp/internal/MolData.hpp>
+
 #include <vector>
 #include <concepts>
 
@@ -35,6 +38,7 @@ concept SelFromAtoms = requires(Derived sel, Other other, MolData data)
     {sel.from_atom_indices(other.atom_indices(), data)} -> std::same_as<SelIndex>;
 };
 
+// TODO Remove dependency on BaseSel
 template <class Type, class Derived>
 class Sel : public BaseSel
 {
@@ -139,6 +143,30 @@ public:
     {
         Derived &derived = static_cast<Derived &>(*this);
         return bonds(derived.atom_indices());
+    }
+
+    template <IsProperty PropertyType>
+    bool has()
+    {
+        return property<PropertyType>();
+    }
+
+    template <IsProperty PropertyType>
+    bool has() const
+    {
+        return property<PropertyType>();
+    }
+
+    template <IsProperty PropertyType>
+    PropertyType* property()
+    {
+        return data()->properties().template get<Type, PropertyType>(frame());
+    }
+
+    template <IsProperty PropertyType>
+    PropertyType const* property() const
+    {
+        return data()->properties().template get<Type, PropertyType>(frame());
     }
 
 protected:

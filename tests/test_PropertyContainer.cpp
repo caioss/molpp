@@ -249,6 +249,26 @@ TEST_F(PropertyContainerTest, GetNotRegistered)
     }
 }
 
+TEST_F(PropertyContainerTest, ConstGet)
+{
+    Mass* from_add = container.add<Atom, Mass>(false);
+    ASSERT_THAT(from_add, NotNull());
+    PropertyContainer const& const_container = container;
+    Mass const* from_get = const_container.get<Atom, Mass>(0);
+
+    EXPECT_THAT(from_get, NotNull());
+    EXPECT_EQ(from_add, from_get);
+}
+
+TEST_F(PropertyContainerTest, ConstGetNotRegistered)
+{
+    Mass* from_add = container.add<Atom, Mass>(false);
+    PropertyContainer const& const_container = container;
+    Charge const* from_get = const_container.get<Atom, Charge>(0);
+
+    EXPECT_THAT(from_get, IsNull());
+}
+
 TEST_F(PropertyContainerTest, AddBeforeAddFrame)
 {
     Mass* time_based = container.add<Atom, Mass>(true);

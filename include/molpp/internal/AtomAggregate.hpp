@@ -1,11 +1,13 @@
 #ifndef ATOMAGGREGATE_HPP
 #define ATOMAGGREGATE_HPP
 
+#include <molpp/Property.hpp>
 #include <molpp/internal/requirements.hpp>
+#include <molpp/internal/MolData.hpp>
+
 #include <memory>
 #include <vector>
 #include <concepts>
-#include <molpp/internal/MolData.hpp>
 
 namespace mol::internal {
 
@@ -82,7 +84,67 @@ public:
     operator bool() const
     {
         Derived const& derived = static_cast<Derived const&>(*this);
-        return data() && derived.validate_index();
+        return m_data && derived.validate_index();
+    }
+
+    template <IsProperty PropertyType>
+    bool has()
+    {
+        return property<PropertyType>();
+    }
+
+    template <IsProperty PropertyType>
+    bool has() const
+    {
+        return property<PropertyType>();
+    }
+
+    template <IsProperty PropertyType>
+    PropertyType* property()
+    {
+        return m_data->properties().template get<Derived, PropertyType>(frame());
+    }
+
+    template <IsProperty PropertyType>
+    PropertyType const* property() const
+    {
+        return m_data->properties().template get<Derived, PropertyType>(frame());
+    }
+
+    template <IsProperty PropertyType>
+    PropertyType::value_type& get()
+    {
+        return property<PropertyType>()->value(index());
+    }
+
+    template <IsProperty PropertyType>
+    PropertyType::value_type const& get() const
+    {
+        return property<PropertyType>()->value(index());
+    }
+
+    template <IsProperty PropertyType>
+    PropertyType::value_type& get(PropertyType* attribute)
+    {
+        return attribute->value(index());
+    }
+
+    template <IsProperty PropertyType>
+    PropertyType::value_type const& get(PropertyType* attribute) const
+    {
+        return attribute->value(index());
+    }
+
+    template <IsProperty PropertyType>
+    void set(PropertyType::value_type const& value)
+    {
+        get<PropertyType>() = value;
+    }
+
+    template <IsProperty PropertyType>
+    void set(PropertyType* attribute, PropertyType::value_type const& value)
+    {
+        get(attribute) = value;
     }
 
 protected:

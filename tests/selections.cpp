@@ -1,4 +1,5 @@
 #include "files.hpp"
+#include "auxiliary.hpp"
 #include "matchers.hpp"
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
@@ -239,14 +240,14 @@ TEST(Selections, Sel) {
      * Iterators
      */
     std::vector<Atom> atoms(some_sel.begin(), some_sel.end());
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::name), {"NA", "O22", "ND"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::index), {1, 3, 4}));
     auto it = some_sel.begin();
     auto end = some_sel.end();
     EXPECT_EQ(end - it, 3);
-    EXPECT_EQ((*it).name(), "NA");
-    EXPECT_EQ((*++it).name(), "O22");
+    EXPECT_EQ((*it).index(), 1);
+    EXPECT_EQ((*++it).index(), 3);
     it++;
-    EXPECT_EQ((*it++).name(), "ND");
+    EXPECT_EQ((*it++).index(), 4);
     EXPECT_TRUE(it == end);
     EXPECT_FALSE(it != end);
 
@@ -408,14 +409,14 @@ TEST(Selections, AtomSel) {
      * Iterators
      */
     std::vector<Atom> atoms(some_sel.begin(), some_sel.end());
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::name), {"NA", "O22", "ND"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::index), {1, 3, 4}));
     auto it = some_sel.begin();
     auto end = some_sel.end();
     EXPECT_EQ(end - it, 3);
-    EXPECT_EQ((*it).name(), "NA");
-    EXPECT_EQ((*++it).name(), "O22");
+    EXPECT_EQ((*it).index(), 1);
+    EXPECT_EQ((*++it).index(), 3);
     it++;
-    EXPECT_EQ((*it++).name(), "ND");
+    EXPECT_EQ((*it++).index(), 4);
     EXPECT_TRUE(it == end);
     EXPECT_FALSE(it != end);
 
@@ -620,4 +621,50 @@ TEST(Selections, ResidueSel) {
         bond_indices.push_back(b->atom2());
     }
     EXPECT_THAT(bond_indices, UnorderedElementsAre(0, 2, 0, 3));
+}
+
+class SelTest : public ::testing::Test
+{
+public:
+    SelTest()
+    : data{create_moldata(3, 1, 1, 1, 1)}
+    , atom_sel{&data}
+    , const_atom_sel{atom_sel}
+    , atom_name{data.properties().add<Atom, Name>(false)}
+    {
+        atom_name->value(0) = "A";
+        atom_name->value(1) = "B";
+        atom_name->value(2) = "C";
+    }
+
+    MolData data;
+    Sel<Atom, AtomSel> atom_sel;
+    Sel<Atom, AtomSel> const& const_atom_sel;
+    Name* atom_name;
+};
+
+TEST_F(SelTest, HasProperty)
+{
+    ASSERT_THAT(atom_name, NotNull());
+    EXPECT_TRUE(atom_sel.has<Name>());
+    EXPECT_TRUE(const_atom_sel.has<Name>());
+}
+
+TEST_F(SelTest, HasNotProperty)
+{
+    EXPECT_FALSE(atom_sel.has<ResID>());
+    EXPECT_FALSE(const_atom_sel.has<ResID>());
+}
+
+TEST_F(SelTest, FetchProperty)
+{
+    ASSERT_THAT(atom_name, NotNull());
+    EXPECT_EQ(atom_sel.property<Name>(), atom_name);
+    EXPECT_EQ(const_atom_sel.property<Name>(), atom_name);
+}
+
+TEST_F(SelTest, FetchNotPresentProperty)
+{
+    EXPECT_THAT(atom_sel.property<ResID>(), IsNull());
+    EXPECT_THAT(const_atom_sel.property<ResID>(), IsNull());
 }

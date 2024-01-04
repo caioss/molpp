@@ -1,5 +1,6 @@
 #include "guessers/AtomBondGuesser.hpp"
 #include "tools/SpatialSearch.hpp"
+#include <molpp/Property.hpp>
 #include <molpp/Bond.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/MolppCore.hpp>
@@ -15,15 +16,25 @@ T pow2(T value)
 
 void AtomBondGuesser::apply(AtomSel &atoms) const
 {
-    auto const coords = atoms.coords();
+    // Safety checks
+    AtomicNumber* atomic = atoms.property<AtomicNumber>();
+    Position* positions = atoms.property<Position>();
+
+    // Safety checks
+    if (atomic == nullptr || positions == nullptr)
+    {
+        return;
+    }
+
+    auto const& coords = positions->positions()(Eigen::all, atoms.indices());
     float const max_bond_length = 3.0;
     SpatialSearch<AtomSel::coords_type> search(coords, max_bond_length + 0.1);
     ElementsTable const& elements_table = ELEMENTS_TABLE();
 
     for (auto &[atom1, atom2, distance_sq] : search.pairs(max_bond_length))
     {
-        int const atomic1 = atoms[atom1].atomic();
-        int const atomic2 = atoms[atom2].atomic();
+        int const atomic1 = atomic->value(atom1);
+        int const atomic2 = atomic->value(atom2);
 
         if (atomic1 == 0 || atomic2 == 0)
         {

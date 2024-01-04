@@ -164,6 +164,64 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
     }
 
     std::unique_ptr<MolData> mol_data = std::make_unique<MolData>(m_num_atoms);
+
+    // Register properties
+    mol::internal::PropertyContainer& properties = mol_data->properties();
+    properties.set_size<Atom>(m_num_atoms);
+
+    properties.add<Atom, Position>(true);
+    Name* name = properties.add<Atom, Name>(false);
+    Type* type = properties.add<Atom, Type>(false);
+
+    Occupancy* occupancy = nullptr;
+    if (flags & MOLFILE_OCCUPANCY)
+    {
+        occupancy = properties.add<Atom, Occupancy>(false);
+    }
+
+    TemperatureFactor* temp_factor = nullptr;
+    if (flags & MOLFILE_BFACTOR)
+    {
+        temp_factor = properties.add<Atom, TemperatureFactor>(false);
+    }
+
+    Mass* mass = nullptr;
+    if (flags & MOLFILE_MASS)
+    {
+        mass = properties.add<Atom, Mass>(false);
+    }
+
+    Charge* charge = nullptr;
+    if (flags & MOLFILE_CHARGE)
+    {
+        charge = properties.add<Atom, Charge>(false);
+    }
+
+    Radius* radius = nullptr;
+    if (flags & MOLFILE_RADIUS)
+    {
+        radius = properties.add<Atom, Radius>(false);
+    }
+
+    AtomicNumber* atomic_number = nullptr;
+    if (flags & MOLFILE_ATOMICNUMBER)
+    {
+        atomic_number = properties.add<Atom, AtomicNumber>(false);
+    }
+
+    AlternateLocation* alternate_location = nullptr;
+    if (flags & MOLFILE_ALTLOC)
+    {
+        alternate_location = properties.add<Atom, AlternateLocation>(false);
+    }
+
+    InsertionCode* insertion_code = nullptr;
+    if (flags & MOLFILE_INSERTION)
+    {
+        insertion_code = properties.add<Atom, InsertionCode>(false);
+    }
+
+    // Structure detection
     ResidueDetect residues;
 
     // Loop over all atoms
@@ -175,42 +233,47 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
         molfile_atom_t const &mol_atom = molfile_atoms[i];
 
         Atom atom(i, {}, mol_data.get());
-        atom.set_name(mol_atom.name);
-        atom.set_type(mol_atom.type);
+        atom.set(name, mol_atom.name);
+        atom.set(type, mol_atom.type);
 
-        if (flags & MOLFILE_INSERTION)
+        if (occupancy)
         {
-            atom.set_altloc(mol_atom.altloc);
+            atom.set(occupancy, mol_atom.occupancy);
         }
 
-        if (flags & MOLFILE_OCCUPANCY)
+        if (temp_factor)
         {
-            atom.set_occupancy(mol_atom.occupancy);
+            atom.set(temp_factor, mol_atom.bfactor);
         }
 
-        if (flags & MOLFILE_BFACTOR)
+        if (mass)
         {
-            atom.set_tempfactor(mol_atom.bfactor);
+            atom.set(mass, mol_atom.mass);
         }
 
-        if (flags & MOLFILE_MASS)
+        if (charge)
         {
-            atom.set_mass(mol_atom.mass);
+            atom.set(charge, mol_atom.charge);
         }
 
-        if (flags & MOLFILE_CHARGE)
+        if (radius)
         {
-            atom.set_charge(mol_atom.charge);
+            atom.set(radius, mol_atom.radius);
         }
 
-        if (flags & MOLFILE_RADIUS)
+        if (atomic_number)
         {
-            atom.set_radius(mol_atom.radius);
+            atom.set(atomic_number, mol_atom.atomicnumber);
         }
 
-        if (flags & MOLFILE_ATOMICNUMBER)
+        if (alternate_location)
         {
-            atom.set_atomic(mol_atom.atomicnumber);
+            atom.set(alternate_location, mol_atom.altloc);
+        }
+
+        if (insertion_code)
+        {
+            atom.set(insertion_code, mol_atom.insertion);
         }
 
         // Detect residues
@@ -226,12 +289,12 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
     if (has_bonds())
     {
         int num_bonds = 0, num_types = 0;
-        int *from = nullptr, *to = nullptr, *type = nullptr;
+        int *from = nullptr, *to = nullptr, *bond_type = nullptr;
         float *order = nullptr;
         char **type_name = nullptr;
 
         int rc = m_plugin->read_bonds(m_handle, &num_bonds, &from, &to, &order,
-                                      &type, &num_types, &type_name);
+                                      &bond_type, &num_types, &type_name);
         if (rc == MOLFILE_SUCCESS && num_bonds > 0)
         {
             BondData &bond_graph = mol_data->bonds();
@@ -246,20 +309,21 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
                 }
 
                 bond->set_guessed(false);
+                bond->set_order(1);
+                bond->set_guessed_order(true);
                 if (order)
                 {
-                    float const atom_order = order[i];
-                    if (atom_order > 1 && atom_order < 2)
+                    bond->set_guessed_order(false);
+                    float const bond_order = order[i];
+                    if (bond_order > 1 && bond_order < 2)
                     {
                         bond->set_order(0);
                         bond->set_aromatic(true);
                     }
                     else
                     {
-                        bond->set_order(atom_order);
-                        bond->set_guessed_order(false);
+                        bond->set_order(bond_order);
                     }
-
                 }
             }
         }

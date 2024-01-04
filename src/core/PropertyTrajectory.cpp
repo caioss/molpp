@@ -1,5 +1,7 @@
 #include <molpp/internal/PropertyTrajectory.hpp>
 
+#include <utility>
+
 using namespace mol::internal;
 
 PropertyTrajectory::PropertyTrajectory(bool const is_time_based, make_property_fn const make_property)
@@ -78,7 +80,7 @@ void PropertyTrajectory::remove_frame(size_t const frame)
     m_trajectory.erase(iter);
 }
 
-mol::Property* PropertyTrajectory::get(size_t const frame)
+mol::Property const* PropertyTrajectory::get(size_t const frame) const
 {
     auto iter = m_trajectory.begin();
 
@@ -96,6 +98,12 @@ mol::Property* PropertyTrajectory::get(size_t const frame)
     }
 
     return iter->get();
+}
+
+mol::Property* PropertyTrajectory::get(size_t const frame)
+{
+    // Delegate to the const version
+    return const_cast<mol::Property*>(std::as_const(*this).get(frame));
 }
 
 mol::Property* PropertyTrajectory::emplace_frame()

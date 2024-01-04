@@ -1,7 +1,7 @@
 #include "auxiliary.hpp"
-#include "tools/iterators.hpp"
+#include <molpp/tools/iterators.hpp>
 #include "tools/algorithms.hpp"
-#include "tools/Graph.hpp"
+#include <molpp/tools/Graph.hpp>
 #include "tools/math.hpp"
 #include "tools/SpatialSearch.hpp"
 #include <molpp/MolppCore.hpp>

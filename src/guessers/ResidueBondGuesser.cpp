@@ -3,6 +3,8 @@
 #include <molpp/Bond.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/ResidueSel.hpp>
+#include <molpp/Property.hpp>
+
 #include <algorithm>
 
 using namespace mol::internal;
@@ -23,10 +25,11 @@ void ResidueBondGuesser::apply(ResidueSel &residues) const
         std::fill(bonds_map.begin(), bonds_map.end(), -1);
 
         AtomSel atoms(res);
+        Name* name = atoms.property<Name>();
         for (index_t i = 0; i < atoms.size(); i++)
         {
             Atom const atom = atoms[i];
-            int const atom_index = res_info.atom_index(atom.name());
+            int const atom_index = res_info.atom_index(atom.get(name));
             if (atom_index >= 0)
             {
                 bonds_map[atom_index] = i;

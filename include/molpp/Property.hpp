@@ -46,9 +46,16 @@ protected:
 class Position : public Property
 {
 public:
-    using value_type = Coord3::ColXpr;
+    using type = Coord3;
+    using value_type = Eigen::Block<Coord3, 3, 1, true>;
+    using const_value_type = Eigen::Block<const Coord3, 3, 1, true>;
 
     value_type value(index_t const index)
+    {
+        return m_positions.col(index);
+    };
+
+    const_value_type value(index_t const index) const
     {
         return m_positions.col(index);
     };
@@ -85,6 +92,11 @@ public:
     using value_type = typename Container::value_type;
 
     value_type& value(index_t const index)
+    {
+        return m_values[index];
+    };
+
+    value_type const& value(index_t const index) const
     {
         return m_values[index];
     };

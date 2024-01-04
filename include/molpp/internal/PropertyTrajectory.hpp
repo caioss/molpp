@@ -22,6 +22,7 @@ public:
     Property* add_frame();
     void add_frames(size_t const num_frames);
     void remove_frame(size_t const frame);
+    Property const* get(size_t const frame) const;
     Property* get(size_t const frame);
 
 private:

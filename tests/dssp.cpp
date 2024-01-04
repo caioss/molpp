@@ -1,11 +1,14 @@
 #include "analysis/dssp/DSSP.hpp"
 #include "matchers.hpp"
 #include "auxiliary.hpp"
-#include "molpp/MolError.hpp"
-#include "molpp/AtomSel.hpp"
-#include "molpp/Residue.hpp"
+#include <molpp/MolError.hpp>
+#include <molpp/AtomSel.hpp>
+#include <molpp/Residue.hpp>
+#include <molpp/Property.hpp>
+
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+
 #include <array>
 
 using namespace mol;
@@ -21,23 +24,23 @@ public:
     , proline_residue(1, 0, &mol_data)
     , non_protein_residue(2, 0, &mol_data)
     {
-        AtomSel atoms(&mol_data);
-        atoms[0].set_name("N");
-        atoms[1].set_name("CA");
-        atoms[2].set_name("C");
-        atoms[3].set_name("O");
+        Name* names = mol_data.properties().add<Atom, Name>(false);
+        names->value(0) = "N";
+        names->value(1) = "CA";
+        names->value(2) = "C";
+        names->value(3) = "O";
         protein_residue.set_resname("ALA");
 
         // Proline
-        atoms[4].set_name("N");
-        atoms[5].set_name("CA");
-        atoms[6].set_name("C");
-        atoms[7].set_name("O");
+        names->value(4) = "N";
+        names->value(5) = "CA";
+        names->value(6) = "C";
+        names->value(7) = "O";
         proline_residue.set_resname("PRO");
 
         // Non-proteic
-        atoms[8].set_name("CA");
-        atoms[9].set_name("N");
+        names->value(8) = "CA";
+        names->value(9) = "N";
         non_protein_residue.set_resname("PRO");
     }
 

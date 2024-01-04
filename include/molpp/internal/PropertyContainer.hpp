@@ -7,6 +7,7 @@
 
 #include <map>
 #include <memory>
+#include <utility>
 #include <typeinfo>
 #include <typeindex>
 #include <unordered_map>
@@ -33,6 +34,9 @@ public:
     void set_size(size_t const size);
 
     template<IsAtomAggregate AggregateType, IsProperty PropertyType>
+    PropertyType const* get(Frame const frame) const;
+
+    template<IsAtomAggregate AggregateType, IsProperty PropertyType>
     PropertyType* get(Frame const frame);
 
     template<IsAtomAggregate AggregateType, IsProperty PropertyType>
@@ -42,6 +46,7 @@ private:
     size_t size(size_key_type const key) const;
     void resize(size_key_type const key, size_t const size);
     Property* emplace(property_key_type const key, bool const is_time_based, PropertyTrajectory::make_property_fn const make_property);
+    Property const* get(property_key_type const key, Frame const frame) const;
     Property* get(property_key_type const key, Frame const frame);
 
     template<IsAtomAggregate AggregateType, IsProperty PropertyType>
@@ -65,16 +70,23 @@ void PropertyContainer::set_size(size_t const size)
 }
 
 template<IsAtomAggregate AggregateType, IsProperty PropertyType>
-PropertyType* PropertyContainer::get(Frame const frame)
+PropertyType const* PropertyContainer::get(Frame const frame) const
 {
     property_key_type key(typeid(AggregateType), typeid(PropertyType));
-    Property* property = get(key, frame);
+    Property const* property = get(key, frame);
 
     if (!property)
     {
         return nullptr;
     }
-    return static_cast<PropertyType*>(property);
+    return static_cast<PropertyType const*>(property);
+}
+
+template<IsAtomAggregate AggregateType, IsProperty PropertyType>
+PropertyType* PropertyContainer::get(Frame const frame)
+{
+    // Delegate to the const version
+    return const_cast<PropertyType*>(std::as_const(*this).get<AggregateType, PropertyType>(frame));
 }
 
 template<IsAtomAggregate AggregateType, IsProperty PropertyType>
