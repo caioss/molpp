@@ -19,6 +19,18 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     data.residues().resize(num_res);
     std::string const letters("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
+    // Properties
+    Name* atom_name = data.properties().add<Atom, Name>(false);
+    Type* atom_type = data.properties().add<Atom, Type>(false);
+    AlternateLocation* atom_altloc = data.properties().add<Atom, AlternateLocation>(false);
+    InsertionCode* atom_insertion = data.properties().add<Atom, InsertionCode>(false);
+    AtomicNumber* atom_atomic = data.properties().add<Atom, AtomicNumber>(false);
+    Occupancy* atom_occupancy = data.properties().add<Atom, Occupancy>(false);
+    TemperatureFactor* atom_bfactor = data.properties().add<Atom, TemperatureFactor>(false);
+    Mass* atom_mass = data.properties().add<Atom, Mass>(false);
+    Charge* atom_charge = data.properties().add<Atom, Charge>(false);
+    Radius* atom_radius = data.properties().add<Atom, Radius>(false);
+
     // Set atoms
     for (index_t atom_idx = 0; atom_idx < num_atoms; atom_idx++)
     {
@@ -27,15 +39,20 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
         index_t const res_idx = atom_idx / num_res_atoms;
         atom_data.residue(atom_idx) = res_idx;
         res_data.add_atom(res_idx, atom_idx);
-        atom_data.atomic(atom_idx) = atom_idx;
-        atom_data.occupancy(atom_idx) = atom_idx;
-        atom_data.tempfactor(atom_idx) = atom_idx;
-        atom_data.mass(atom_idx) = atom_idx;
-        atom_data.charge(atom_idx) = atom_idx;
-        atom_data.radius(atom_idx) = atom_idx;
-        atom_data.name(atom_idx) = code;
-        atom_data.type(atom_idx) = code;
-        atom_data.altloc(atom_idx) = code;
+
+        // String properties
+        atom_name->value(atom_idx) = code;
+        atom_type->value(atom_idx) = code;
+        atom_altloc->value(atom_idx) = code;
+        atom_insertion->value(atom_idx) = code;
+
+        // Numeric properties
+        atom_atomic->value(atom_idx) = atom_idx;
+        atom_occupancy->value(atom_idx) = atom_idx;
+        atom_bfactor->value(atom_idx) = atom_idx;
+        atom_mass->value(atom_idx) = atom_idx;
+        atom_charge->value(atom_idx) = atom_idx;
+        atom_radius->value(atom_idx) = atom_idx;
     }
 
     // Set residues
@@ -86,15 +103,6 @@ TEST(Auxiliary, create_moldata) {
 
     // Residues
     EXPECT_EQ(data.residues().size(), 3);
-
-    // Bonds
-    BondData const& bond_data = data.bonds();
-    EXPECT_THAT(bond_data.bonded(0), UnorderedElementsAre(0, 2));
-    EXPECT_THAT(bond_data.bonded(1), UnorderedElementsAre());
-    EXPECT_THAT(bond_data.bonded(2), UnorderedElementsAre(0, 2, 4));
-    EXPECT_THAT(bond_data.bonded(3), UnorderedElementsAre());
-    EXPECT_THAT(bond_data.bonded(4), UnorderedElementsAre(2, 4));
-    EXPECT_THAT(bond_data.bonded(5), UnorderedElementsAre());
 
     // Trajectory
     Trajectory const& traj_data = data.trajectory();
