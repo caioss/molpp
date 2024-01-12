@@ -211,13 +211,11 @@ TEST(Selections, Sel) {
      */
     // Invalid Timestep
     EXPECT_THROW(all_sel.timestep(), MolError);
-    EXPECT_THROW(all_sel.coords(), MolError);
 
     Sel<Atom, AtomSel> traj_sel(pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
     EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
-    EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(1, -1, 0, 2, -2, 1));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
@@ -226,11 +224,6 @@ TEST(Selections, Sel) {
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
     EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
-    EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
-    traj_sel.coords().array() += 3;
-    EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(27, -21, 3, 51, -45, 27));
-    // Undo changes
-    traj_sel.coords().array() -= 3;
 
     // Correctly forwarding frames
     EXPECT_TRUE(traj_sel[0].frame());
@@ -380,13 +373,11 @@ TEST(Selections, AtomSel) {
      */
     // Invalid Timestep
     EXPECT_THROW(all_sel.timestep(), MolError);
-    EXPECT_THROW(all_sel.coords(), MolError);
 
     AtomSel traj_sel(pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
     EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
-    EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(1, -1, 0, 2, -2, 1));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
@@ -395,11 +386,6 @@ TEST(Selections, AtomSel) {
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
     EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
-    EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
-    traj_sel.coords().array() += 3;
-    EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(27, -21, 3, 51, -45, 27));
-    // Undo changes
-    traj_sel.coords().array() -= 3;
 
     // Correctly forwarding frames
     EXPECT_TRUE(traj_sel[0].frame());
@@ -549,13 +535,11 @@ TEST(Selections, ResidueSel) {
      */
     // Invalid Timestep
     EXPECT_THROW(all_sel.timestep(), MolError);
-    EXPECT_THROW(all_sel.coords(), MolError);
 
     ResidueSel traj_sel(pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
     EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
-    EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(1, -1, 0, 2, -2, 1));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
@@ -564,11 +548,6 @@ TEST(Selections, ResidueSel) {
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
     EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
-    EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(24, -24, 0, 48, -48, 24));
-    traj_sel.coords().array() += 3;
-    EXPECT_THAT(traj_sel.coords().reshaped(), ElementsAre(27, -21, 3, 51, -45, 27));
-    // Undo changes
-    traj_sel.coords().array() -= 3;
 
     // Correctly forwarding frames
     EXPECT_TRUE(traj_sel[0].frame());
@@ -630,11 +609,8 @@ public:
     : data{create_moldata(3, 1, 1, 1, 1)}
     , atom_sel{&data}
     , const_atom_sel{atom_sel}
-    , atom_name{data.properties().add<Atom, Name>(false)}
+    , atom_name{data.properties().get<Atom, Name>(0)}
     {
-        atom_name->value(0) = "A";
-        atom_name->value(1) = "B";
-        atom_name->value(2) = "C";
     }
 
     MolData data;

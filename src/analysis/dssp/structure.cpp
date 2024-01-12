@@ -13,7 +13,6 @@
 #include "analysis/dssp/structure.hpp"
 #include <set>
 #include <list>
-#include "structure.hpp"
 
 double constexpr PI = 4 * std::atan(1.0);
 double constexpr SS_BRIDGE_DISTANCE = 3.0;
@@ -214,12 +213,13 @@ dssp::Residue::Residue(size_t const index, size_t const original_index, mol::SSR
 , m_index{index}
 , m_external_index{original_index}
 , m_chain{std::hash<std::string>{}(residue.chain())}
-, m_N{residue.N().coords()}
-, m_CA{residue.CA().coords()}
-, m_C{residue.C().coords()}
-, m_O{residue.O().coords()}
-, m_H{residue.N().coords()}
 {
+    mol::Position const* position = residue.N().property<mol::Position>();
+    m_N = residue.N().get(position);
+    m_CA = residue.CA().get(position);
+    m_C = residue.C().get(position);
+    m_O = residue.O().get(position);
+    m_H = residue.N().get(position);
     std::fill(m_helix_flags, m_helix_flags + 3, HelixType::None);
 }
 

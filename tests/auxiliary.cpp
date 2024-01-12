@@ -1,8 +1,10 @@
 #include "auxiliary.hpp"
 #include "matchers.hpp"
 #include <molpp/Atom.hpp>
+
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+
 #include <optional>
 
 using namespace testing;
@@ -13,23 +15,25 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
 {
     size_t const num_atoms { num_res * num_res_atoms };
     MolData data(num_atoms);
-    data.properties().set_size<Atom>(num_atoms);
+    PropertyContainer& properties = data.properties();
+    properties.set_size<Atom>(num_atoms);
     AtomData& atom_data = data.atoms();
     ResidueData& res_data = data.residues();
     data.residues().resize(num_res);
     std::string const letters("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
     // Properties
-    Name* atom_name = data.properties().add<Atom, Name>(false);
-    Type* atom_type = data.properties().add<Atom, Type>(false);
-    AlternateLocation* atom_altloc = data.properties().add<Atom, AlternateLocation>(false);
-    InsertionCode* atom_insertion = data.properties().add<Atom, InsertionCode>(false);
-    AtomicNumber* atom_atomic = data.properties().add<Atom, AtomicNumber>(false);
-    Occupancy* atom_occupancy = data.properties().add<Atom, Occupancy>(false);
-    TemperatureFactor* atom_bfactor = data.properties().add<Atom, TemperatureFactor>(false);
-    Mass* atom_mass = data.properties().add<Atom, Mass>(false);
-    Charge* atom_charge = data.properties().add<Atom, Charge>(false);
-    Radius* atom_radius = data.properties().add<Atom, Radius>(false);
+    Name* atom_name = properties.add<Atom, Name>(false);
+    Type* atom_type = properties.add<Atom, Type>(false);
+    AlternateLocation* atom_altloc = properties.add<Atom, AlternateLocation>(false);
+    InsertionCode* atom_insertion = properties.add<Atom, InsertionCode>(false);
+    AtomicNumber* atom_atomic = properties.add<Atom, AtomicNumber>(false);
+    Occupancy* atom_occupancy = properties.add<Atom, Occupancy>(false);
+    TemperatureFactor* atom_bfactor = properties.add<Atom, TemperatureFactor>(false);
+    Mass* atom_mass = properties.add<Atom, Mass>(false);
+    Charge* atom_charge = properties.add<Atom, Charge>(false);
+    Radius* atom_radius = properties.add<Atom, Radius>(false);
+    properties.add<Atom, Position>(true);
 
     // Set atoms
     for (index_t atom_idx = 0; atom_idx < num_atoms; atom_idx++)
@@ -73,11 +77,13 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     // Trajectory
     for (size_t frame_idx = 0; frame_idx < num_frames; frame_idx++)
     {
-        data.trajectory().add_timestep(Timestep(num_atoms));
+        Frame const frame = properties.add_frame();
+        Position* position_property = properties.get<Atom, Position>(frame);
+        Position::type& positions = position_property->positions();
+
         for (index_t atom_idx = 0; atom_idx < num_atoms; atom_idx++)
         {
-            auto& coords = data.trajectory().timestep(frame_idx).coords();
-            coords(Eigen::all, atom_idx) << atom_idx, atom_idx, atom_idx;
+            positions.col(atom_idx) << atom_idx, atom_idx, atom_idx;
         }
     }
 
@@ -103,10 +109,4 @@ TEST(Auxiliary, create_moldata) {
 
     // Residues
     EXPECT_EQ(data.residues().size(), 3);
-
-    // Trajectory
-    Trajectory const& traj_data = data.trajectory();
-    EXPECT_EQ(traj_data.num_frames(), 2);
-    EXPECT_THAT(traj_data.timestep(0).coords().reshaped(), ElementsAre(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5));
-    EXPECT_THAT(traj_data.timestep(1).coords().reshaped(), ElementsAre(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5));
 }

@@ -125,12 +125,6 @@ public:
         return Type(index, frame(), data());
     }
 
-    coords_type coords()
-    {
-        Derived &derived = static_cast<Derived &>(*this);
-        return timestep().coords()(Eigen::all, derived.atom_indices());
-    }
-
     Derived bonded()
     {
         Derived &derived = static_cast<Derived &>(*this);

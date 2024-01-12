@@ -25,7 +25,14 @@ mol::SSResidue::SSResidue(Residue& residue)
 , m_chain{residue.chain()}
 {
     AtomSel atom_sel(residue);
-    Name* name_property = atom_sel.property<Name>();
+    Name const* name_property = atom_sel.property<Name>();
+    Position const* position_property = atom_sel.property<Position>();
+
+    if (!name_property || !position_property)
+    {
+        // Invalid residue
+        return;
+    }
 
     for (Atom atom : atom_sel)
     {
@@ -54,6 +61,7 @@ mol::SSResidue::SSResidue(Residue& residue)
     }
     else
     {
+        // Reset any possibily set Atom
         m_N = Atom();
         m_CA = Atom();
         m_C = Atom();

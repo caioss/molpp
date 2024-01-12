@@ -107,27 +107,6 @@ TEST_F(AtomAggregateTest, SetOutOfRangeFrame)
     EXPECT_THROW(aggregate.set_frame(1), MolError);
 }
 
-TEST_F(AtomAggregateTest, Positions)
-{
-    EXPECT_THAT(const_aggregate.coords().reshaped(), ElementsAre(1, 1, 1));
-    EXPECT_THAT(aggregate.coords().reshaped(), ElementsAre(1, 1, 1));
-}
-
-TEST_F(AtomAggregateTest, MutablePositions)
-{
-    ASSERT_THAT(aggregate.coords().reshaped(), ElementsAre(1, 1, 1));
-
-    aggregate.coords() *= 2;
-    EXPECT_THAT(aggregate.coords().reshaped(), ElementsAre(2, 2, 2));
-}
-
-TEST_F(AtomAggregateTest, PositionsOnInvalidFrame)
-{
-    aggregate.set_frame(std::nullopt);
-
-    EXPECT_THROW(aggregate.coords(), MolError);
-}
-
 TEST_F(AtomAggregateTest, HasProperty)
 {
     ASSERT_THAT(name, NotNull());

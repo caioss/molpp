@@ -55,5 +55,5 @@ std::vector<index_t> Atom::atom_indices() const
 
 bool Atom::validate_index() const
 {
-    return index() < data()->atoms().size();
+    return index() < data()->properties().size<Atom>();
 }

@@ -10,6 +10,7 @@ add_executable(tests
     test_PropertyContainer.cpp
     test_MolData.cpp
     test_AtomAggregate.cpp
+    test_auxiliary.cpp
     atoms.cpp
     residues.cpp
     selections.cpp

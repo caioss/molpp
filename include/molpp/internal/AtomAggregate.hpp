@@ -47,31 +47,11 @@ public:
 
     void set_frame(Frame const frame)
     {
-        if (frame && frame >= m_data->trajectory().num_frames())
+        if (frame && frame >= m_data->properties().num_frames())
         {
             throw mol::MolError("Out of bounds frame: " + std::to_string(*frame));
         }
         m_frame = frame;
-    }
-
-    coords_type coords()
-    {
-        if (!m_frame)
-        {
-            throw mol::MolError("Invalid frame");
-        }
-        Derived &derived = static_cast<Derived &>(*this);
-        return m_data->trajectory().timestep(*m_frame).coords()(Eigen::all, std::forward<std::vector<index_t>>(derived.atom_indices()));
-    }
-
-    const_coords_type coords() const
-    {
-        if (!m_frame)
-        {
-            throw mol::MolError("Invalid frame");
-        }
-        Derived const& derived = static_cast<Derived const&>(*this);
-        return m_data->trajectory().timestep(*m_frame).coords()(Eigen::all, std::forward<std::vector<index_t>>(derived.atom_indices()));
     }
 
     std::vector<std::shared_ptr<Bond>> bonds()
@@ -112,25 +92,25 @@ public:
     }
 
     template <IsProperty PropertyType>
-    PropertyType::value_type& get()
+    PropertyType::reference get()
     {
         return property<PropertyType>()->value(index());
     }
 
     template <IsProperty PropertyType>
-    PropertyType::value_type const& get() const
+    PropertyType::const_reference get() const
     {
         return property<PropertyType>()->value(index());
     }
 
     template <IsProperty PropertyType>
-    PropertyType::value_type& get(PropertyType* attribute)
+    PropertyType::reference get(PropertyType* attribute)
     {
         return attribute->value(index());
     }
 
     template <IsProperty PropertyType>
-    PropertyType::value_type const& get(PropertyType* attribute) const
+    PropertyType::const_reference get(PropertyType const* attribute) const
     {
         return attribute->value(index());
     }

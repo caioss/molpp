@@ -59,16 +59,6 @@ TEST(Residues, Residue) {
     EXPECT_EQ(res.chain(), "B");
 
     /*
-     * Coordinates
-     */
-    EXPECT_THAT(const_res.coords().reshaped(), ElementsAre(1, 1, 1));
-    EXPECT_THAT(res.coords().reshaped(), ElementsAre(1, 1, 1));
-    res.coords() *= 2;
-    EXPECT_THAT(res.coords().reshaped(), ElementsAre(2, 2, 2));
-
-    EXPECT_THROW(Residue(1, std::nullopt, &data).coords(), MolError);
-
-    /*
      * Bonds
      */
     auto bond_list = Residue(0, 0, &data).bonds();

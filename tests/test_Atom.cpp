@@ -77,20 +77,6 @@ TEST_F(AtomTest, Residues)
     EXPECT_EQ(atom.residue(), Residue(1, 0, &data));
 }
 
-TEST_F(AtomTest, Coordinates)
-{
-    EXPECT_THAT(const_atom.coords().reshaped(), ElementsAre(1, 1, 1));
-    EXPECT_THAT(atom.coords().reshaped(), ElementsAre(1, 1, 1));
-    atom.coords() *= 2;
-    EXPECT_THAT(atom.coords().reshaped(), ElementsAre(2, 2, 2));
-}
-
-TEST_F(AtomTest, CoordinatesOnInvalidFrame)
-{
-    ASSERT_FALSE(atom_no_frame.frame());
-    EXPECT_THROW(atom_no_frame.coords(), MolError);
-}
-
 TEST_F(AtomTest, AddValidBond)
 {
     ASSERT_THAT(atom.add_bond(2), NotNull());

@@ -16,7 +16,7 @@ BaseSel::BaseSel(SelIndex&& indices, MolData* data)
 
 void BaseSel::set_frame(Frame frame)
 {
-    if (frame && frame >= m_data->trajectory().num_frames())
+    if (frame && frame >= m_data->properties().num_frames())
     {
         throw mol::MolError("Out of bounds frame: " + std::to_string(*frame));
     }

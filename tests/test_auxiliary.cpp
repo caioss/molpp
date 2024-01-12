@@ -98,3 +98,20 @@ TEST_F(CreateMoldataTest, Bonds)
     EXPECT_THAT(bond_data.bonded(4), UnorderedElementsAre(2, 4));
     EXPECT_THAT(bond_data.bonded(5), UnorderedElementsAre());
 }
+
+TEST_F(CreateMoldataTest, NumberOfFrames)
+{
+    size_t const num_frames = data.properties().num_frames();
+    EXPECT_EQ(num_frames, 2);
+}
+
+TEST_F(CreateMoldataTest, Positions)
+{
+    for (size_t frame = 0; frame < 2; frame++)
+    {
+        Position* position_property = data.properties().get<Atom, Position>(frame);
+        Position::type const& positions = position_property->positions();
+
+        EXPECT_THAT(positions.reshaped(), ElementsAre(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5));
+    }
+}

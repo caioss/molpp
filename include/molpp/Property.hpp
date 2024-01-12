@@ -17,18 +17,14 @@ class PropertyTrajectory;
 class Property;
 
 template<class T>
-concept IsProperty = requires(T t)
+concept IsProperty = requires(T t, T const const_t)
 {
     std::derived_from<T, Property>;
-    {t.value(std::declval<index_t>())} -> std::common_reference_with<typename T::value_type&>;
-};
-
-template<class T>
-concept IsContainerProperty = requires(T t)
-{
-    {t[std::declval<index_t>()]} -> std::same_as<typename T::value_type&>;
-    {t.size()} -> std::same_as<size_t>;
-    {t.resize(std::declval<index_t>())} -> std::same_as<void>;
+    typename T::value_type;
+    typename T::reference;
+    typename T::const_reference;
+    {t.value(std::declval<index_t>())} -> std::same_as<typename T::reference>;
+    {const_t.value(std::declval<index_t>())} -> std::same_as<typename T::const_reference>;
 };
 
 class Property
@@ -49,13 +45,15 @@ public:
     using type = Coord3;
     using value_type = Eigen::Block<Coord3, 3, 1, true>;
     using const_value_type = Eigen::Block<const Coord3, 3, 1, true>;
+    using reference = value_type;
+    using const_reference = const_value_type;
 
-    value_type value(index_t const index)
+    reference value(index_t const index)
     {
         return m_positions.col(index);
     };
 
-    const_value_type value(index_t const index) const
+    const_reference value(index_t const index) const
     {
         return m_positions.col(index);
     };
@@ -65,12 +63,12 @@ public:
         return m_positions.cols();
     }
 
-    Coord3& positions()
+    type& positions()
     {
         return m_positions;
     }
 
-    Coord3 const& positions() const
+    type const& positions() const
     {
         return m_positions;
     }
@@ -82,7 +80,7 @@ protected:
     }
 
 private:
-    Coord3 m_positions;
+    type m_positions;
 };
 
 template<class Type, class Container = std::vector<Type>>
@@ -90,13 +88,15 @@ class ContainerProperty : public Property
 {
 public:
     using value_type = typename Container::value_type;
+    using reference  = value_type&;
+    using const_reference  = value_type const&;
 
-    value_type& value(index_t const index)
+    reference value(index_t const index)
     {
         return m_values[index];
     };
 
-    value_type const& value(index_t const index) const
+    const_reference value(index_t const index) const
     {
         return m_values[index];
     };
