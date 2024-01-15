@@ -99,21 +99,15 @@ TEST(Selections, BaseSel) {
     /*
      * Trajectory
      */
-    // Invalid Timestep
-    EXPECT_THROW(all_sel.timestep(), MolError);
-
     BaseSel traj_sel(SelIndex(pdb_traj->size()), pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
 }
 
 TEST(Selections, Sel) {
@@ -209,21 +203,15 @@ TEST(Selections, Sel) {
     /*
      * Trajectory
      */
-    // Invalid Timestep
-    EXPECT_THROW(all_sel.timestep(), MolError);
-
     Sel<Atom, AtomSel> traj_sel(pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
 
     // Correctly forwarding frames
     EXPECT_TRUE(traj_sel[0].frame());
@@ -371,21 +359,15 @@ TEST(Selections, AtomSel) {
     /*
      * Trajectory
      */
-    // Invalid Timestep
-    EXPECT_THROW(all_sel.timestep(), MolError);
-
     AtomSel traj_sel(pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
 
     // Correctly forwarding frames
     EXPECT_TRUE(traj_sel[0].frame());
@@ -533,21 +515,15 @@ TEST(Selections, ResidueSel) {
     /*
      * Trajectory
      */
-    // Invalid Timestep
-    EXPECT_THROW(all_sel.timestep(), MolError);
-
     ResidueSel traj_sel(pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(0)));
     traj_sel.set_frame(3);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
     EXPECT_THROW(traj_sel.set_frame(4), MolError);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_EQ(&(traj_sel.timestep()), &(pdb_traj->trajectory().timestep(3)));
 
     // Correctly forwarding frames
     EXPECT_TRUE(traj_sel[0].frame());

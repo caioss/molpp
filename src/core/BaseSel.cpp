@@ -23,15 +23,6 @@ void BaseSel::set_frame(Frame frame)
     m_frame = frame;
 }
 
-Timestep& BaseSel::timestep()
-{
-    if (!m_frame)
-    {
-        throw mol::MolError("Invalid frame");
-    }
-    return m_data->trajectory().timestep(m_frame.value());
-}
-
 std::vector<index_t> BaseSel::bonded(std::vector<index_t> const &atom_indices) const
 {
     return m_data->bonds().bonded(atom_indices.begin(), atom_indices.end());
@@ -44,7 +35,7 @@ std::vector<std::shared_ptr<mol::Bond>> BaseSel::bonds(std::vector<index_t> cons
 
 void BaseSel::init_frame()
 {
-    if (m_data->trajectory().num_frames())
+    if (m_data->properties().num_frames())
     {
         m_frame = 0;
     }

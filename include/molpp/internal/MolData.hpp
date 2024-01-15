@@ -1,7 +1,6 @@
 #ifndef MOLDATA_HPP
 #define MOLDATA_HPP
 
-#include <molpp/Trajectory.hpp>
 #include <molpp/internal/AtomData.hpp>
 #include <molpp/internal/BondData.hpp>
 #include <molpp/internal/ResidueData.hpp>
@@ -21,8 +20,6 @@ public:
     BondData const& bonds() const { return m_bonds; }
     ResidueData &residues() { return m_residues; }
     ResidueData const &residues() const { return m_residues; }
-    Trajectory &trajectory() { return m_trajectory; }
-    Trajectory const& trajectory() const { return m_trajectory; }
 
     PropertyContainer& properties()
     {
@@ -40,7 +37,6 @@ private:
     AtomData m_properties_old;
     BondData m_bonds;
     ResidueData m_residues;
-    Trajectory m_trajectory;
 };
 
 } // namespace mol::internal

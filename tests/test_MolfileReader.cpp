@@ -179,7 +179,7 @@ TEST_F(MolfileReaderTrajectoryFunctionsTest, SkipTimestep)
     MolfileReader reader(".pdb");
     reader.open("traj.pdb");
     EXPECT_EQ(reader.skip_timestep(*data), MolReader::SUCCESS);
-    EXPECT_EQ(data->trajectory().num_frames(), 0);
+    EXPECT_EQ(data->properties().num_frames(), 0);
     reader.close();
 }
 
@@ -188,7 +188,7 @@ TEST_F(MolfileReaderTrajectoryFunctionsTest, ReadTimestep)
     MolfileReader reader(".pdb");
     reader.open("traj.pdb");
     EXPECT_EQ(reader.read_timestep(*data), MolReader::SUCCESS);
-    EXPECT_EQ(data->trajectory().num_frames(), 1);
+    EXPECT_EQ(data->properties().num_frames(), 1);
     reader.close();
 }
 
@@ -200,7 +200,7 @@ TEST_F(MolfileReaderTrajectoryFunctionsTest, ReadAndSkipTimestep)
     reader.read_timestep(*data);
     reader.skip_timestep(*data);
     reader.read_timestep(*data);
-    EXPECT_EQ(data->trajectory().num_frames(), 2);
+    EXPECT_EQ(data->properties().num_frames(), 2);
     reader.close();
 }
 

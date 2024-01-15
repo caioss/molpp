@@ -365,8 +365,6 @@ MolReader::Status MolfileReader::skip_timestep(MolData& mol_data)
 MolReader::Status MolfileReader::read_timestep(MolData& mol_data)
 {
     Coord3 ts_positions(3, m_num_atoms);
-
-    Timestep ts(mol_data.size());
     molfile_timestep_t mol_ts;
     mol_ts.coords = ts_positions.data();
     mol_ts.physical_time = 0.0;
@@ -381,8 +379,6 @@ MolReader::Status MolfileReader::read_timestep(MolData& mol_data)
     {
         return FAILED;
     }
-
-    mol_data.trajectory().add_timestep(std::move(ts));
 
     mol::internal::PropertyContainer& properties = mol_data.properties();
     Frame const new_frame = properties.add_frame();
