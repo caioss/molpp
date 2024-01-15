@@ -6,7 +6,6 @@
 #include <molpp/AtomSel.hpp>
 #include <molpp/ResidueSel.hpp>
 #include <molpp/MolError.hpp>
-#include <molpp/internal/BaseSel.hpp>
 #include <molpp/internal/Sel.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -53,61 +52,6 @@ TEST(Selections, SelIndex) {
     EXPECT_EQ(some.indices_end() - some.indices_begin(), 3);
     EXPECT_TRUE(rvalue.indices_begin() != rvalue.indices_end());
     EXPECT_EQ(rvalue.indices_end() - rvalue.indices_begin(), 3);
-}
-
-TEST(Selections, BaseSel) {
-    // Data
-    MolData* pdb_tiny = PDBFiles::tiny();
-    MolData* pdb_traj = PDBFiles::traj();
-    ASSERT_TRUE(pdb_tiny);
-    ASSERT_TRUE(pdb_traj);
-
-    /*
-     * Construction
-     */
-    BaseSel all_sel(SelIndex(pdb_tiny->properties().size<Atom>()), pdb_tiny);
-    EXPECT_EQ(all_sel.size(), pdb_tiny->properties().size<Atom>());
-    EXPECT_FALSE(all_sel.frame());
-    EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
-    for (index_t i = 0; i < 6; ++i)
-    {
-        EXPECT_TRUE(all_sel.contains(i)) << "index " << i;
-    }
-    EXPECT_FALSE(all_sel.contains(6));
-
-    // Constructors accepting indexes
-    std::vector<index_t> indices{4, 1, 1, 3};
-    BaseSel some_sel(SelIndex(indices, pdb_tiny->properties().size<Atom>()), pdb_tiny);
-    BaseSel rvalue_sel(SelIndex(std::vector<index_t>{4, 1, 1, 3}, pdb_tiny->properties().size<Atom>()), pdb_tiny);
-    EXPECT_EQ(some_sel.size(), indices.size() - 1);
-    EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
-    EXPECT_FALSE(some_sel.frame());
-    EXPECT_FALSE(rvalue_sel.frame());
-    EXPECT_THAT(some_sel.indices(), ElementsAre(1, 3, 4));
-    EXPECT_THAT(rvalue_sel.indices(), ElementsAre(1, 3, 4));
-    for (index_t i : {1, 3, 4})
-    {
-        EXPECT_TRUE(some_sel.contains(i)) << "Index " << i;
-        EXPECT_TRUE(rvalue_sel.contains(i)) << "Index " << i;
-    }
-    for (index_t i : {0, 2, 5})
-    {
-        EXPECT_FALSE(some_sel.contains(i)) << "Index " << i;
-        EXPECT_FALSE(rvalue_sel.contains(i)) << "Index " << i;
-    }
-
-    /*
-     * Trajectory
-     */
-    BaseSel traj_sel(SelIndex(pdb_traj->properties().size<Atom>()), pdb_traj);
-    ASSERT_TRUE(traj_sel.frame());
-    EXPECT_EQ(traj_sel.frame(), 0);
-    traj_sel.set_frame(3);
-    ASSERT_TRUE(traj_sel.frame());
-    EXPECT_EQ(traj_sel.frame(), 3);
-    EXPECT_THROW(traj_sel.set_frame(4), MolError);
-    ASSERT_TRUE(traj_sel.frame());
-    EXPECT_EQ(traj_sel.frame(), 3);
 }
 
 TEST(Selections, Sel) {
