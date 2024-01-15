@@ -54,7 +54,7 @@ public:
         return m_indices;
     }
 
-    value_type size() const
+    size_t size() const
     {
         return m_indices.size();
     }
