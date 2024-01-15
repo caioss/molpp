@@ -141,7 +141,7 @@ TEST(Residues, ResidueDetect) {
 
     // Update MolData
     MolData data(10);
-    ASSERT_EQ(data.size(), 10);
+    data.properties().set_size<mol::Atom>(10);
     for (index_t i = 0; i < 10; i++)
     {
         data.atoms().residue(i) = index[i];

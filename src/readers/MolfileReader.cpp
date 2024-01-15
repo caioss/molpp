@@ -339,7 +339,7 @@ MolReader::Status MolfileReader::check_timestep_read(MolData& mol_data)
         return INVALID;
     }
 
-    if (mol_data.size() != (size_t)m_num_atoms)
+    if (mol_data.properties().size<Atom>() != (size_t)m_num_atoms)
     {
         return WRONG_ATOMS;
     }
@@ -349,7 +349,7 @@ MolReader::Status MolfileReader::check_timestep_read(MolData& mol_data)
 
 MolReader::Status MolfileReader::skip_timestep(MolData& mol_data)
 {
-    switch (m_plugin->read_next_timestep(m_handle, mol_data.size(), nullptr))
+    switch (m_plugin->read_next_timestep(m_handle, mol_data.properties().size<Atom>(), nullptr))
     {
         case MOLFILE_SUCCESS:
             return SUCCESS;
@@ -369,7 +369,7 @@ MolReader::Status MolfileReader::read_timestep(MolData& mol_data)
     mol_ts.coords = ts_positions.data();
     mol_ts.physical_time = 0.0;
 
-    int result = m_plugin->read_next_timestep(m_handle, mol_data.size(), &mol_ts);
+    int result = m_plugin->read_next_timestep(m_handle, mol_data.properties().size<Atom>(), &mol_ts);
 
     if (result == MOLFILE_EOF)
     {

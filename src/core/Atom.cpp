@@ -26,7 +26,7 @@ std::shared_ptr<Bond> Atom::add_bond(index_t const bonded_to)
     {
         throw mol::MolError("Atoms can't have bonds to themselves");
     }
-    if (bonded_to >= data()->size())
+    if (bonded_to >= data()->properties().size<Atom>())
     {
         throw mol::MolError("Out of bounds index: " + std::to_string(bonded_to));
     }

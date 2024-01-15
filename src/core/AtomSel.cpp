@@ -6,7 +6,7 @@ using namespace mol;
 
 size_t AtomSel::data_size(internal::MolData const& data)
 {
-    return data.size();
+    return data.properties().size<Atom>();
 }
 
 std::vector<index_t> const& AtomSel::atom_indices() const

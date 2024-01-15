@@ -17,7 +17,6 @@ using namespace testing;
 TEST(Atoms, MolData) {
     size_t const num_atoms { 3 };
     MolData data(num_atoms);
-    EXPECT_EQ(data.size(), num_atoms);
     EXPECT_EQ(data.atoms().size(), num_atoms);
     EXPECT_EQ(data.bonds().size(), 0);
     EXPECT_EQ(data.residues().size(), 0);

@@ -92,12 +92,12 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
 
 TEST(Auxiliary, create_moldata) {
     MolData data = create_moldata(3, 2, 2, 1, 2);
-    ASSERT_EQ(data.size(), 6);
+    ASSERT_EQ(data.properties().size<Atom>(), 6);
 
     // Atoms
     ASSERT_EQ(data.atoms().size(), 6);
     std::vector<mol::Atom> atoms;
-    for (index_t i = 0; i < data.size(); ++i)
+    for (index_t i = 0; i < data.properties().size<Atom>(); ++i)
     {
         atoms.push_back(Atom(i, std::nullopt, &data));
     }

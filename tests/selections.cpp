@@ -65,8 +65,8 @@ TEST(Selections, BaseSel) {
     /*
      * Construction
      */
-    BaseSel all_sel(SelIndex(pdb_tiny->size()), pdb_tiny);
-    EXPECT_EQ(all_sel.size(), pdb_tiny->size());
+    BaseSel all_sel(SelIndex(pdb_tiny->properties().size<Atom>()), pdb_tiny);
+    EXPECT_EQ(all_sel.size(), pdb_tiny->properties().size<Atom>());
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     for (index_t i = 0; i < 6; ++i)
@@ -77,8 +77,8 @@ TEST(Selections, BaseSel) {
 
     // Constructors accepting indexes
     std::vector<index_t> indices{4, 1, 1, 3};
-    BaseSel some_sel(SelIndex(indices, pdb_tiny->size()), pdb_tiny);
-    BaseSel rvalue_sel(SelIndex(std::vector<index_t>{4, 1, 1, 3}, pdb_tiny->size()), pdb_tiny);
+    BaseSel some_sel(SelIndex(indices, pdb_tiny->properties().size<Atom>()), pdb_tiny);
+    BaseSel rvalue_sel(SelIndex(std::vector<index_t>{4, 1, 1, 3}, pdb_tiny->properties().size<Atom>()), pdb_tiny);
     EXPECT_EQ(some_sel.size(), indices.size() - 1);
     EXPECT_EQ(rvalue_sel.size(), indices.size() - 1);
     EXPECT_FALSE(some_sel.frame());
@@ -99,7 +99,7 @@ TEST(Selections, BaseSel) {
     /*
      * Trajectory
      */
-    BaseSel traj_sel(SelIndex(pdb_traj->size()), pdb_traj);
+    BaseSel traj_sel(SelIndex(pdb_traj->properties().size<Atom>()), pdb_traj);
     ASSERT_TRUE(traj_sel.frame());
     EXPECT_EQ(traj_sel.frame(), 0);
     traj_sel.set_frame(3);
@@ -122,7 +122,7 @@ TEST(Selections, Sel) {
      */
     Sel<Atom, AtomSel> all_sel(pdb_tiny);
     EXPECT_FALSE(all_sel.frame());
-    EXPECT_EQ(all_sel.size(), pdb_tiny->size());
+    EXPECT_EQ(all_sel.size(), pdb_tiny->properties().size<Atom>());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     for (index_t i = 0; i < 6; ++i)
     {
@@ -277,7 +277,7 @@ TEST(Selections, AtomSel) {
      * Construction
      */
     AtomSel all_sel(pdb_tiny);
-    EXPECT_EQ(all_sel.size(), pdb_tiny->size());
+    EXPECT_EQ(all_sel.size(), pdb_tiny->properties().size<Atom>());
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     for (index_t i = 0; i < 6; ++i)

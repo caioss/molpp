@@ -13,7 +13,6 @@ class MolData
 public:
     MolData(size_t const num_atoms);
 
-    size_t size() const { return m_num_atoms; };
     AtomData &atoms() { return m_properties_old; }
     AtomData const &atoms() const { return m_properties_old; }
     BondData &bonds() { return m_bonds; }
@@ -32,7 +31,6 @@ public:
     }
 
 private:
-    size_t m_num_atoms;
     PropertyContainer m_properties;
     AtomData m_properties_old;
     BondData m_bonds;
