@@ -25,12 +25,12 @@ std::vector<std::shared_ptr<Bond>> BondData::bonds(index_t const index)
 
 std::shared_ptr<Bond> BondData::bond(index_t const atom1, index_t const atom2)
 {
-    auto range = m_graph.edge_at(atom1, atom2);
-    if (!range)
+    auto edge = m_graph.edge_for(atom1, atom2);
+    if (!edge)
     {
         return nullptr;
     }
-    return *(range.begin());
+    return edge.value();
 }
 
 std::vector<index_t> BondData::bonded(index_t const index) const
@@ -53,8 +53,8 @@ std::shared_ptr<Bond> BondData::add_bond(index_t const atom1, index_t const atom
         return nullptr;
     }
 
-    std::shared_ptr<Bond> data = std::make_shared<Bond>(atom1, atom2);
-    return m_graph.add_edge(atom1, atom2, data);
+    auto result = m_graph.add_edge(atom1, atom2, std::make_shared<Bond>(atom1, atom2));
+    return result ? result.value().get() : nullptr;
 }
 
 void BondData::clear()

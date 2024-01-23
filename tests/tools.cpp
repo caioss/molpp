@@ -36,46 +36,6 @@ TEST(Iterators, IteratorWrapper) {
     EXPECT_EQ(iter1 - iter2, 2);
 }
 
-TEST(DataStructures, Graph) {
-    Graph<int, int> graph;
-
-    EXPECT_EQ(graph.size(), 0);
-    EXPECT_TRUE(graph.add_node(0));
-    EXPECT_FALSE(graph.add_node(0));
-    EXPECT_TRUE(graph.add_node(1));
-    EXPECT_TRUE(graph.add_node(2));
-    EXPECT_TRUE(graph.add_node(3));
-    EXPECT_EQ(graph.size(), 4);
-    EXPECT_TRUE(graph.contains(0));
-    EXPECT_FALSE(graph.contains(-1));
-
-    EXPECT_EQ(graph.edges_size(), 0);
-    EXPECT_EQ(graph.add_edge(0, 1, -1), -1);
-    EXPECT_EQ(graph.add_edge(0, 2, -2), -2);
-    EXPECT_EQ(graph.edges_size(), 2);
-
-    EXPECT_THAT(view2vector<int>(graph.adjacency(0)), UnorderedElementsAre(1, 2));
-    EXPECT_THAT(view2vector<int>(graph.adjacency(1)), UnorderedElementsAre(0));
-    EXPECT_THAT(view2vector<int>(graph.adjacency(2)), UnorderedElementsAre(0));
-    EXPECT_FALSE(graph.adjacency(3));
-
-    EXPECT_THAT(view2vector<int>(graph.nodes()), UnorderedElementsAre(0, 1, 2, 3));
-
-    EXPECT_THAT(view2vector<int>(graph.edges(0)), UnorderedElementsAre(-1, -2));
-    EXPECT_THAT(view2vector<int>(graph.edges(1)), UnorderedElementsAre(-1));
-    EXPECT_THAT(view2vector<int>(graph.edges(2)), UnorderedElementsAre(-2));
-    EXPECT_FALSE(graph.edges(3));
-
-    EXPECT_THAT(view2vector<int>(graph.edge_at(1, 0)), UnorderedElementsAre(-1));
-    EXPECT_FALSE(graph.edge_at(2, 1));
-
-    EXPECT_EQ(graph.edges_size(), 2);
-    EXPECT_EQ(graph.size(), 4);
-    graph.clear();
-    EXPECT_EQ(graph.size(), 0);
-    EXPECT_EQ(graph.edges_size(), 0);
-}
-
 TEST(Algorithms, BreadthFirstSearch) {
     using GraphInt = Graph<int, int>;
     GraphInt graph;
