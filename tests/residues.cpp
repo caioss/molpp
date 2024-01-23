@@ -104,11 +104,11 @@ TEST(Residues, ResidueData) {
     props.add_atom(0, 0);
     props.add_atom(0, 1);
     EXPECT_EQ(props.size(0), 2);
-    EXPECT_THAT(view2vector<index_t>(props.indices(0)), UnorderedElementsAre(0, 1));
+    EXPECT_THAT(view2vector(props.indices(0)), UnorderedElementsAre(0, 1));
 
     props.remove_atom(0, 1);
     EXPECT_EQ(props.size(0), 1);
-    EXPECT_THAT(view2vector<index_t>(props.indices(0)), UnorderedElementsAre(0));
+    EXPECT_THAT(view2vector(props.indices(0)), UnorderedElementsAre(0));
 
     props.reset(0);
     EXPECT_EQ(props.size(0), 0);
@@ -161,9 +161,9 @@ TEST(Residues, ResidueDetect) {
         EXPECT_EQ(residues_data.chain(i), chain[i]) << "Residue " << i;
     }
 
-    EXPECT_THAT(view2vector<index_t>(residues_data.indices(0)), UnorderedElementsAre(0, 8));
-    EXPECT_THAT(view2vector<index_t>(residues_data.indices(1)), UnorderedElementsAre(1, 5));
-    EXPECT_THAT(view2vector<index_t>(residues_data.indices(2)), UnorderedElementsAre(2, 7));
-    EXPECT_THAT(view2vector<index_t>(residues_data.indices(3)), UnorderedElementsAre(3, 9));
-    EXPECT_THAT(view2vector<index_t>(residues_data.indices(4)), UnorderedElementsAre(4, 6));
+    EXPECT_THAT(view2vector(residues_data.indices(0)), UnorderedElementsAre(0, 8));
+    EXPECT_THAT(view2vector(residues_data.indices(1)), UnorderedElementsAre(1, 5));
+    EXPECT_THAT(view2vector(residues_data.indices(2)), UnorderedElementsAre(2, 7));
+    EXPECT_THAT(view2vector(residues_data.indices(3)), UnorderedElementsAre(3, 9));
+    EXPECT_THAT(view2vector(residues_data.indices(4)), UnorderedElementsAre(4, 6));
 }

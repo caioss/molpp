@@ -11,6 +11,7 @@ add_executable(tests
     test_MolData.cpp
     test_AtomAggregate.cpp
     test_auxiliary.cpp
+    test_Graph.cpp
     atoms.cpp
     residues.cpp
     selections.cpp
