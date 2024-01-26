@@ -15,6 +15,7 @@ class GraphTest : public testing::Test
 public:
     GraphTest()
     : num_nodes{4}
+    , num_edges{2}
     {}
 
 protected:
@@ -24,12 +25,15 @@ protected:
         {
             ASSERT_TRUE(graph.add_node(i)) << "Node " << i;
         }
+        ASSERT_EQ(graph.add_edge(0, 1, -1), -1);
+        ASSERT_EQ(graph.add_edge(0, 2, -2), -2);
 
         ASSERT_EQ(graph.size(), num_nodes);
-        ASSERT_EQ(graph.edges_size(), 0);
+        ASSERT_EQ(graph.edges_size(), num_edges);
     }
 
     size_t num_nodes;
+    size_t num_edges;
     Graph<int, int> graph;
 };
 
@@ -61,7 +65,10 @@ TEST_F(GraphTest, ContainsNode)
     {
         EXPECT_TRUE(graph.contains(i)) << "Node " << i;
     }
+}
 
+TEST_F(GraphTest, ContainsInvalidNodes)
+{
     EXPECT_FALSE(graph.contains(-1));
     EXPECT_FALSE(graph.contains(num_nodes));
 }
@@ -72,7 +79,11 @@ TEST_F(GraphTest, AddNode)
     for (int i = num_nodes; i < num_nodes + extra_nodes; i++)
     {
         EXPECT_TRUE(graph.add_node(i)) << "Node " << i;
+        EXPECT_TRUE(graph.contains(i)) << "Node " << i;
+        EXPECT_THAT(view2vector(graph.adjacency(i)), UnorderedElementsAre()) << "Node " << i;
     }
+    EXPECT_EQ(graph.size(), num_nodes + extra_nodes);
+    EXPECT_THAT(view2vector(graph.nodes()), UnorderedElementsAre(0, 1, 2, 3, 4, 5, 6));
 }
 
 TEST_F(GraphTest, AddExistingNode)
@@ -81,13 +92,12 @@ TEST_F(GraphTest, AddExistingNode)
     {
         EXPECT_FALSE(graph.add_node(i)) << "Node " << i;
     }
+
+    EXPECT_EQ(graph.size(), num_nodes);
 }
 
 TEST_F(GraphTest, AddExistingNodeDoesNotChangeEdgeData)
 {
-    ASSERT_EQ(graph.add_edge(0, 1, -1), -1);
-    ASSERT_EQ(graph.add_edge(0, 2, -2), -2);
-
     for (int i = 0; i < num_nodes; i++)
     {
         EXPECT_FALSE(graph.add_node(i)) << "Node " << i;
@@ -100,9 +110,6 @@ TEST_F(GraphTest, AddExistingNodeDoesNotChangeEdgeData)
 
 TEST_F(GraphTest, AddExistingNodeDoesNotChangeAdjacency)
 {
-    ASSERT_EQ(graph.add_edge(0, 1, -1), -1);
-    ASSERT_EQ(graph.add_edge(0, 2, -2), -2);
-
     for (int i = 0; i < num_nodes; i++)
     {
         EXPECT_FALSE(graph.add_node(i)) << "Node " << i;
@@ -111,13 +118,11 @@ TEST_F(GraphTest, AddExistingNodeDoesNotChangeAdjacency)
     EXPECT_THAT(view2vector(graph.adjacency(0)), UnorderedElementsAre(1, 2));
     EXPECT_THAT(view2vector(graph.adjacency(1)), UnorderedElementsAre(0));
     EXPECT_THAT(view2vector(graph.adjacency(2)), UnorderedElementsAre(0));
+    EXPECT_THAT(view2vector(graph.adjacency(3)), UnorderedElementsAre());
 }
 
 TEST_F(GraphTest, Adjacency)
 {
-    ASSERT_EQ(graph.add_edge(0, 1, -1), -1);
-    ASSERT_EQ(graph.add_edge(0, 2, -2), -2);
-
     EXPECT_THAT(view2vector(graph.adjacency(0)), UnorderedElementsAre(1, 2));
     EXPECT_THAT(view2vector(graph.adjacency(1)), UnorderedElementsAre(0));
     EXPECT_THAT(view2vector(graph.adjacency(2)), UnorderedElementsAre(0));
@@ -137,9 +142,6 @@ TEST_F(GraphTest, Nodes)
 
 TEST_F(GraphTest, Edges)
 {
-    ASSERT_EQ(graph.add_edge(0, 1, -1), -1);
-    ASSERT_EQ(graph.add_edge(0, 2, -2), -2);
-
     EXPECT_THAT(view2vector(graph.edges(0)), UnorderedElementsAre(-1, -2));
     EXPECT_THAT(view2vector(graph.edges(1)), UnorderedElementsAre(-1));
     EXPECT_THAT(view2vector(graph.edges(2)), UnorderedElementsAre(-2));
@@ -154,9 +156,6 @@ TEST_F(GraphTest, EdgesOfInvalidNode)
 
 TEST_F(GraphTest, EdgeFor)
 {
-    ASSERT_EQ(graph.add_edge(0, 1, -1), -1);
-    ASSERT_EQ(graph.add_edge(0, 2, -2), -2);
-
     EXPECT_EQ(graph.edge_for(0, 1).value(), -1);
     EXPECT_EQ(graph.edge_for(0, 2).value(), -2);
     EXPECT_FALSE(graph.edge_for(0, 3));
@@ -164,17 +163,12 @@ TEST_F(GraphTest, EdgeFor)
 
 TEST_F(GraphTest, EdgeForWithInavlidNode)
 {
-    ASSERT_EQ(graph.add_edge(0, 1, -1), -1);
-    ASSERT_EQ(graph.add_edge(0, 2, -2), -2);
-
     EXPECT_FALSE(graph.edge_for(-1, 0));
     EXPECT_FALSE(graph.edge_for(0, -1));
 }
 
 TEST_F(GraphTest, ClearEdges)
 {
-    ASSERT_EQ(graph.add_edge(0, 1, -1), -1);
-    ASSERT_EQ(graph.add_edge(0, 2, -2), -2);
     graph.clear_edges();
 
     EXPECT_FALSE(graph.edge_for(0, 1));
@@ -183,12 +177,11 @@ TEST_F(GraphTest, ClearEdges)
 
 TEST_F(GraphTest, AddEdges)
 {
-    graph.clear_edges();
+    EXPECT_EQ(graph.add_edge(3, 1, -1), -1);
+    EXPECT_EQ(graph.add_edge(3, 2, -2), -2);
 
-    EXPECT_EQ(graph.add_edge(0, 1, -1), -1);
-    EXPECT_EQ(graph.add_edge(0, 2, -2), -2);
-    EXPECT_EQ(graph.edge_for(0, 1).value(), -1);
-    EXPECT_EQ(graph.edge_for(0, 2).value(), -2);
+    EXPECT_EQ(graph.edge_for(3, 1).value(), -1);
+    EXPECT_EQ(graph.edge_for(3, 2).value(), -2);
 }
 
 TEST_F(GraphTest, AddExistingEdge)
