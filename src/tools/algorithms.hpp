@@ -3,24 +3,32 @@
 
 #include <list>
 #include <queue>
+#include <ranges>
 #include <concepts>
 #include <unordered_set>
 #include <unordered_map>
 
-namespace mol::internal {
+namespace mol::internal
+{
 
-template <class Container>
+template<class Container>
+requires requires(Container obj) {
+    typename Container::node_type;
+    {
+        obj.adjacency(std::declval<typename Container::node_type>())
+    } -> std::ranges::range;
+}
 class BreadthFirstTraversal
 {
 public:
     using node_type = typename Container::node_type;
 
-    BreadthFirstTraversal(Container const &container)
+    BreadthFirstTraversal(Container const& container)
     : m_container(container)
     {}
 
-    template <std::invocable<node_type const&> StopPredicate, std::invocable<node_type const&> FilterPredicate>
-    bool run(node_type const &start, StopPredicate stop, FilterPredicate filter)
+    template<std::predicate<node_type> Stop, std::predicate<node_type> Filter>
+    bool run(node_type const& start, Stop stop, Filter filter)
     {
         m_visited.clear();
         m_parent.clear();
@@ -42,7 +50,7 @@ public:
                 return true;
             }
 
-            for (node_type const &node : m_container.adjacency(current))
+            for (node_type const& node : m_container.adjacency(current))
             {
                 if (!filter(node))
                 {
@@ -61,33 +69,33 @@ public:
         return false;
     }
 
-    std::unordered_set<node_type> const &visited() const
+    std::unordered_set<node_type> const& visited() const
     {
         return m_visited;
     }
 
-    std::unordered_map<node_type, node_type> const &parent_map() const
+    std::unordered_map<node_type, node_type> const& parent_map() const
     {
         return m_parent;
     }
 
 private:
-    Container const &m_container;
+    Container const& m_container;
     std::unordered_set<node_type> m_visited;
     std::unordered_map<node_type, node_type> m_parent;
 };
 
-template <class Container>
+template<class Container>
 class ConnectedComponents
 {
 public:
     using node_type = typename Container::node_type;
 
-    ConnectedComponents(Container const &container)
+    ConnectedComponents(Container const& container)
     : m_container(container)
     {}
 
-    template <std::invocable<node_type const&> Predicate>
+    template<std::invocable<node_type const&> Predicate>
     size_t run(Predicate filter)
     {
         auto const container_nodes = m_container.nodes();
@@ -106,7 +114,7 @@ public:
 
             bfs.run(start, [](auto){return false;}, filter);
 
-            for (auto const &node : bfs.visited())
+            for (auto const& node : bfs.visited())
             {
                 not_visited.erase(node);
             }
@@ -117,13 +125,13 @@ public:
         return m_components.size();
     }
 
-    std::list<std::unordered_set<node_type>> const &components()
+    std::list<std::unordered_set<node_type>> const& components()
     {
         return m_components;
     }
 
 private:
-    Container const &m_container;
+    Container const& m_container;
     std::list<std::unordered_set<node_type>> m_components;
 };
 
