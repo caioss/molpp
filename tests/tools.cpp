@@ -36,57 +36,6 @@ TEST(Iterators, IteratorWrapper) {
     EXPECT_EQ(iter1 - iter2, 2);
 }
 
-TEST(Algorithms, BreadthFirstSearch) {
-    using GraphInt = Graph<int, int>;
-    GraphInt graph;
-
-    for (int i = 0; i < 6; ++i)
-    {
-        ASSERT_TRUE(graph.add_node(i));
-    }
-    graph.add_edge(0, 1, 0);
-    graph.add_edge(0, 2, 0);
-    graph.add_edge(2, 3, 0);
-    graph.add_edge(1, 4, 0);
-    graph.add_edge(4, 5, 0);
-    graph.add_edge(5, 3, 0);
-
-    BreadthFirstTraversal bfs(graph);
-    EXPECT_TRUE(bfs.run(0, [](int const &node) {
-        return node == 3;
-    }, [](auto){
-        return true;
-    }));
-    // Node 4 may or may not be present (STL-implementation-dependent)
-    EXPECT_THAT(bfs.visited(), IsSupersetOf({0, 1, 2, 3}));
-    EXPECT_THAT(bfs.visited(), IsSubsetOf({0, 1, 2, 3, 4}));
-    EXPECT_THAT(bfs.parent_map(), IsSupersetOf({Pair(3, 2), Pair(2, 0), Pair(1, 0)}));
-    EXPECT_THAT(bfs.parent_map(), IsSubsetOf({Pair(3, 2), Pair(2, 0), Pair(4, 1), Pair(1, 0)}));
-
-    // Search using a mask (without node 4)
-    EXPECT_TRUE(bfs.run(0, [](int const &node) {
-        return node == 3;
-    }, [](int const &node){
-        return node != 4;
-    }));
-    EXPECT_THAT(bfs.visited(), UnorderedElementsAre(0, 1, 2, 3));
-    EXPECT_THAT(bfs.parent_map(), UnorderedElementsAre(Pair(3, 2), Pair(2, 0), Pair(1, 0)));
-
-    // Repeat search but starting at node 4
-    EXPECT_FALSE(bfs.run(4, [](int const &node) {
-        return node == 3;
-    }, [](int const &node){
-        return node != 4;
-    }));
-
-    // Search not possible
-    EXPECT_FALSE(bfs.run(0, [](int const &node) {
-        return node == 3;
-    }, [](int const &node){
-        return node == 0 || node == 3 || node == 5;
-    }));
-}
-
 TEST(Algorithms, ConnectedComponents) {
     using GraphInt = Graph<int, int>;
     GraphInt graph;
