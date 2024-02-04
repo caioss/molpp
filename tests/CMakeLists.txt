@@ -14,6 +14,7 @@ add_executable(tests
     test_Graph.cpp
     test_SimpleGraph.cpp
     test_BreadthFirstTraversal.cpp
+    test_ConnectedComponents.cpp
     atoms.cpp
     residues.cpp
     selections.cpp
