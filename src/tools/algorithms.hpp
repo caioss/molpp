@@ -14,9 +14,7 @@ namespace mol::internal
 template<class Container>
 requires requires(Container obj) {
     typename Container::node_type;
-    {
-        obj.adjacency(std::declval<typename Container::node_type>())
-    } -> std::ranges::range;
+    {obj.adjacency(std::declval<typename Container::node_type>())} -> std::ranges::range;
 }
 class BreadthFirstTraversal
 {
@@ -86,6 +84,10 @@ private:
 };
 
 template<class Container>
+requires requires(Container obj) {
+    typename Container::node_type;
+    {obj.nodes()} -> std::ranges::range;
+}
 class ConnectedComponents
 {
 public:
@@ -95,13 +97,13 @@ public:
     : m_container(container)
     {}
 
-    template<std::invocable<node_type const&> Predicate>
-    size_t run(Predicate filter)
+    template<std::predicate<node_type> Filter>
+    size_t run(Filter filter)
     {
         auto const container_nodes = m_container.nodes();
         std::unordered_set<node_type> not_visited(container_nodes.begin(), container_nodes.end());
         m_components.clear();
-        BreadthFirstTraversal bfs(m_container);
+        BreadthFirstTraversal<Container> bfs(m_container);
 
         while (!not_visited.empty())
         {

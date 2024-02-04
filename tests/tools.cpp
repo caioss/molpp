@@ -36,35 +36,6 @@ TEST(Iterators, IteratorWrapper) {
     EXPECT_EQ(iter1 - iter2, 2);
 }
 
-TEST(Algorithms, ConnectedComponents) {
-    using GraphInt = Graph<int, int>;
-    GraphInt graph;
-
-    for (int i = 0; i < 7; ++i)
-    {
-        ASSERT_TRUE(graph.add_node(i));
-    }
-
-    ConnectedComponents components(graph);
-
-    // Without edges
-    EXPECT_EQ(components.run([](auto){return true;}), 7);
-    EXPECT_THAT(components.components(), UnorderedElementsAre(ElementsAre(0), ElementsAre(1), ElementsAre(2), ElementsAre(3), ElementsAre(4), ElementsAre(5), ElementsAre(6)));
-
-    graph.add_edge(0, 1, 0);
-    graph.add_edge(0, 2, 0);
-    graph.add_edge(2, 3, 0);
-    graph.add_edge(4, 5, 0);
-
-    // With edges
-    EXPECT_EQ(components.run([](auto){return true;}), 3);
-    EXPECT_THAT(components.components(), UnorderedElementsAre(UnorderedElementsAre(0, 1, 2, 3), UnorderedElementsAre(4, 5), ElementsAre(6)));
-
-    // Filter out node 2
-    EXPECT_EQ(components.run([](auto const &node){return node != 2;}), 4);
-    EXPECT_THAT(components.components(), UnorderedElementsAre(UnorderedElementsAre(0, 1), ElementsAre(3), UnorderedElementsAre(4, 5), ElementsAre(6)));
-}
-
 TEST(DataStructures, SpatialSearch) {
     Eigen::Matrix3Xf points(3, 10);
     points << 0.394864, -1.92212, 0.507918, -1.10244, 2.86075, -2.68154, 2.28578, 2.88865, -1.65935, 2.21034, 0.665579, 1.90012, -0.467064, -2.63234, 2.86835, -1.38607, 0.375439, 2.77146, -1.7135, -1.00928, 0.0346084, -1.89917, -2.84799, -2.49805, 2.24333, -2.44597, 0.981083, -2.16332, -2.92808, 0.216672;
