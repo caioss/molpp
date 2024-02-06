@@ -64,7 +64,7 @@ public:
             residues_data.set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
         }
 
-        size_t const num_atoms = mol_data.properties().size<Atom>();
+        size_t const num_atoms = mol_data.entity_size<Atom>();
         for (index_t index = 0; index < num_atoms; ++index)
         {
             index_t const residue_idx = mol_data.atoms().residue(index);

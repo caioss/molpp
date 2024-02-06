@@ -62,7 +62,7 @@ public:
     : m_data{data}
     , m_index{sel_index}
     {
-        if (m_data->properties().num_frames())
+        if (m_data->num_frames())
         {
             m_frame = 0;
         }
@@ -93,7 +93,7 @@ public:
 
     void set_frame(Frame const frame)
     {
-        if (frame && frame >= m_data->properties().num_frames())
+        if (frame && frame >= m_data->num_frames())
         {
             throw mol::MolError("Out of bounds frame: " + std::to_string(*frame));
         }
@@ -191,13 +191,13 @@ public:
     template <IsProperty PropertyType>
     PropertyType* property()
     {
-        return m_data->properties().template get<Type, PropertyType>(frame());
+        return m_data->property_at<Type, PropertyType>(frame());
     }
 
     template <IsProperty PropertyType>
     PropertyType const* property() const
     {
-        return m_data->properties().template get<Type, PropertyType>(frame());
+        return m_data->property_at<Type, PropertyType>(frame());
     }
 
 protected:

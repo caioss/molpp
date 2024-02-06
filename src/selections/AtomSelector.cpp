@@ -18,7 +18,7 @@ AtomSelector::AtomSelector(std::string const& selection, MolData* data)
 AtomSel AtomSelector::apply(Frame frame)
 {
     SelectionFlags flags;
-    for (index_t atom_idx = 0; atom_idx < m_data->properties().size<Atom>(); atom_idx++)
+    for (index_t atom_idx = 0; atom_idx < m_data->entity_size<Atom>(); atom_idx++)
     {
         flags.mask->insert(atom_idx);
     }

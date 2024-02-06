@@ -66,7 +66,7 @@ TEST(Selections, Sel) {
      */
     Sel<Atom, AtomSel> all_sel(pdb_tiny);
     EXPECT_FALSE(all_sel.frame());
-    EXPECT_EQ(all_sel.size(), pdb_tiny->properties().size<Atom>());
+    EXPECT_EQ(all_sel.size(), pdb_tiny->entity_size<Atom>());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     for (index_t i = 0; i < 6; ++i)
     {
@@ -221,7 +221,7 @@ TEST(Selections, AtomSel) {
      * Construction
      */
     AtomSel all_sel(pdb_tiny);
-    EXPECT_EQ(all_sel.size(), pdb_tiny->properties().size<Atom>());
+    EXPECT_EQ(all_sel.size(), pdb_tiny->entity_size<Atom>());
     EXPECT_FALSE(all_sel.frame());
     EXPECT_THAT(all_sel.indices(), ElementsAre(0, 1, 2, 3, 4, 5));
     for (index_t i = 0; i < 6; ++i)
@@ -529,7 +529,7 @@ public:
     : data{create_moldata(3, 1, 1, 1, 1)}
     , atom_sel{&data}
     , const_atom_sel{atom_sel}
-    , atom_name{data.properties().get<Atom, Name>(0)}
+    , atom_name{data.property_at<Atom, Name>(0)}
     {
     }
 

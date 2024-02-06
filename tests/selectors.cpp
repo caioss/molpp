@@ -17,7 +17,7 @@ using namespace testing;
 std::shared_ptr<std::set<index_t>> evaluate_sel_tree(std::shared_ptr<SelectionNode> tree, MolData const& data)
 {
     SelectionFlags flags;
-    for (index_t atom_idx = 0; atom_idx < data.properties().size<Atom>(); atom_idx++)
+    for (index_t atom_idx = 0; atom_idx < data.entity_size<Atom>(); atom_idx++)
     {
         flags.mask->insert(atom_idx);
     }
@@ -97,7 +97,7 @@ TEST(Selection, ResidSelection) {
     MolData data = create_moldata(5, 2, 2, 3, 1);
     SelectionStack flag_stack(nullptr);
     SelectionFlags flags;
-    for (index_t atom_idx = 0; atom_idx < data.properties().size<Atom>(); atom_idx++)
+    for (index_t atom_idx = 0; atom_idx < data.entity_size<Atom>(); atom_idx++)
     {
         flags.mask->insert(atom_idx);
     }

@@ -28,10 +28,7 @@ public:
     void remove_frame(Frame const frame);
 
     template<IsAtomAggregate AggregateType>
-    size_t size() const;
-
-    template<IsAtomAggregate AggregateType>
-    void set_size(size_t const size);
+    void resize(size_t const size);
 
     template<IsAtomAggregate AggregateType, IsProperty PropertyType>
     PropertyType const* get(Frame const frame) const;
@@ -40,12 +37,11 @@ public:
     PropertyType* get(Frame const frame);
 
     template<IsAtomAggregate AggregateType, IsProperty PropertyType>
-    PropertyType* add(bool const is_time_based);
+    PropertyType* add(bool const is_time_based, size_t const size);
 
 private:
-    size_t size(size_key_type const key) const;
     void resize(size_key_type const key, size_t const size);
-    Property* emplace(property_key_type const key, bool const is_time_based, PropertyTrajectory::make_property_fn const make_property);
+    Property* emplace(property_key_type const key, bool const is_time_based, size_t const size, PropertyTrajectory::make_property_fn const make_property);
     Property const* get(property_key_type const key, Frame const frame) const;
     Property* get(property_key_type const key, Frame const frame);
 
@@ -53,18 +49,11 @@ private:
     static std::unique_ptr<Property> make_property();
 
     size_t m_num_frames;
-    std::unordered_map<size_key_type, size_t> m_sizes;
     std::map<property_key_type, PropertyTrajectory> m_properties;
 };
 
 template<IsAtomAggregate AggregateType>
-size_t PropertyContainer::size() const
-{
-    return size(typeid(AggregateType));
-}
-
-template<IsAtomAggregate AggregateType>
-void PropertyContainer::set_size(size_t const size)
+void PropertyContainer::resize(size_t const size)
 {
     resize(typeid(AggregateType), size);
 }
@@ -90,10 +79,10 @@ PropertyType* PropertyContainer::get(Frame const frame)
 }
 
 template<IsAtomAggregate AggregateType, IsProperty PropertyType>
-PropertyType* PropertyContainer::add(bool const is_time_based)
+PropertyType* PropertyContainer::add(bool const is_time_based, size_t const size)
 {
     property_key_type key(typeid(AggregateType), typeid(PropertyType));
-    Property* property = emplace(key, is_time_based, make_property<AggregateType, PropertyType>);
+    Property* property = emplace(key, is_time_based, size, make_property<AggregateType, PropertyType>);
     return static_cast<PropertyType*>(property);
 }
 

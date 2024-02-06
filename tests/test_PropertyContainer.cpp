@@ -19,31 +19,15 @@ protected:
     PropertyContainer container;
 };
 
-TEST_F(PropertyContainerTest, DefaultSize)
+TEST_F(PropertyContainerTest, ResizeOnMultipleProperties)
 {
-    container.add<Atom, Mass>(false);
-    container.add<Residue, Charge>(false);
-    Mass* mass = container.get<Atom, Mass>(0);
-    Charge* charge = container.get<Residue, Charge>(0);
+    Mass* atom_mass = container.add<Atom, Mass>(false, 0);
+    Charge* atom_charge = container.add<Atom, Charge>(false, 0);
+    Mass* residue_mass = container.add<Residue, Mass>(false, 0);
+    Charge* residue_charge = container.add<Residue, Charge>(false, 0);
 
-    EXPECT_EQ(container.size<Atom>(), 0);
-    EXPECT_EQ(container.size<Residue>(), 0);
-    EXPECT_EQ(mass->size(), 0);
-    EXPECT_EQ(charge->size(), 0);
-}
-
-TEST_F(PropertyContainerTest, SetSizeOnMultipleProperties)
-{
-    Mass* atom_mass = container.add<Atom, Mass>(false);
-    Charge* atom_charge = container.add<Atom, Charge>(false);
-    Mass* residue_mass = container.add<Residue, Mass>(false);
-    Charge* residue_charge = container.add<Residue, Charge>(false);
-
-    container.set_size<Atom>(2);
-    container.set_size<Residue>(3);
-
-    EXPECT_EQ(container.size<Atom>(), 2);
-    EXPECT_EQ(container.size<Residue>(), 3);
+    container.resize<Atom>(2);
+    container.resize<Residue>(3);
 
     EXPECT_EQ(atom_mass->size(), 2);
     EXPECT_EQ(atom_charge->size(), 2);
@@ -51,13 +35,13 @@ TEST_F(PropertyContainerTest, SetSizeOnMultipleProperties)
     EXPECT_EQ(residue_charge->size(), 3);
 }
 
-TEST_F(PropertyContainerTest, SetSizeBeforeAddFrame)
+TEST_F(PropertyContainerTest, ResizeBeforeAddFrame)
 {
-    container.add<Atom, Mass>(true);
-    container.add<Residue, Charge>(true);
+    container.add<Atom, Mass>(true, 0);
+    container.add<Residue, Charge>(true, 0);
 
-    container.set_size<Atom>(2);
-    container.set_size<Residue>(3);
+    container.resize<Atom>(2);
+    container.resize<Residue>(3);
 
     size_t const num_frames = 3;
 
@@ -65,9 +49,6 @@ TEST_F(PropertyContainerTest, SetSizeBeforeAddFrame)
     {
         container.add_frame();
     }
-
-    EXPECT_EQ(container.size<Atom>(), 2);
-    EXPECT_EQ(container.size<Residue>(), 3);
 
     for (size_t frame = 0; frame < num_frames; frame++)
     {
@@ -79,10 +60,10 @@ TEST_F(PropertyContainerTest, SetSizeBeforeAddFrame)
     }
 }
 
-TEST_F(PropertyContainerTest, SetSizeAfterAddFrame)
+TEST_F(PropertyContainerTest, ResizeAfterAddFrame)
 {
-    container.add<Atom, Mass>(true);
-    container.add<Residue, Charge>(true);
+    container.add<Atom, Mass>(true, 0);
+    container.add<Residue, Charge>(true, 0);
 
     size_t const num_frames = 3;
 
@@ -91,11 +72,8 @@ TEST_F(PropertyContainerTest, SetSizeAfterAddFrame)
         container.add_frame();
     }
 
-    container.set_size<Atom>(2);
-    container.set_size<Residue>(3);
-
-    EXPECT_EQ(container.size<Atom>(), 2);
-    EXPECT_EQ(container.size<Residue>(), 3);
+    container.resize<Atom>(2);
+    container.resize<Residue>(3);
 
     for (size_t frame = 0; frame < num_frames; frame++)
     {
@@ -107,13 +85,13 @@ TEST_F(PropertyContainerTest, SetSizeAfterAddFrame)
     }
 }
 
-TEST_F(PropertyContainerTest, SetSizeBeforeAddFrameNotTimeBased)
+TEST_F(PropertyContainerTest, ResizeBeforeAddFrameNotTimeBased)
 {
-    Mass* default_mass = container.add<Atom, Mass>(false);
-    Charge* default_charge = container.add<Residue, Charge>(false);
+    Mass* default_mass = container.add<Atom, Mass>(false, 0);
+    Charge* default_charge = container.add<Residue, Charge>(false, 0);
 
-    container.set_size<Atom>(2);
-    container.set_size<Residue>(3);
+    container.resize<Atom>(2);
+    container.resize<Residue>(3);
 
     size_t const num_frames = 3;
 
@@ -121,9 +99,6 @@ TEST_F(PropertyContainerTest, SetSizeBeforeAddFrameNotTimeBased)
     {
         container.add_frame();
     }
-
-    EXPECT_EQ(container.size<Atom>(), 2);
-    EXPECT_EQ(container.size<Residue>(), 3);
 
     for (size_t frame = 0; frame < num_frames; frame++)
     {
@@ -137,10 +112,10 @@ TEST_F(PropertyContainerTest, SetSizeBeforeAddFrameNotTimeBased)
     }
 }
 
-TEST_F(PropertyContainerTest, SetSizeAfterAddFrameNotTimeBased)
+TEST_F(PropertyContainerTest, ResizeAfterAddFrameNotTimeBased)
 {
-    Mass* default_mass = container.add<Atom, Mass>(false);
-    Charge* default_charge = container.add<Residue, Charge>(false);
+    Mass* default_mass = container.add<Atom, Mass>(false, 0);
+    Charge* default_charge = container.add<Residue, Charge>(false, 0);
 
     size_t const num_frames = 3;
 
@@ -149,11 +124,8 @@ TEST_F(PropertyContainerTest, SetSizeAfterAddFrameNotTimeBased)
         container.add_frame();
     }
 
-    container.set_size<Atom>(2);
-    container.set_size<Residue>(3);
-
-    EXPECT_EQ(container.size<Atom>(), 2);
-    EXPECT_EQ(container.size<Residue>(), 3);
+    container.resize<Atom>(2);
+    container.resize<Residue>(3);
 
     for (size_t frame = 0; frame < num_frames; frame++)
     {
@@ -169,7 +141,7 @@ TEST_F(PropertyContainerTest, SetSizeAfterAddFrameNotTimeBased)
 
 TEST_F(PropertyContainerTest, GetNotTimeBasedWithoutFrames)
 {
-    Mass* from_add = container.add<Atom, Mass>(false);
+    Mass* from_add = container.add<Atom, Mass>(false, 0);
     ASSERT_THAT(from_add, NotNull());
 
     for (size_t i = 0; i < 3; i++)
@@ -183,7 +155,7 @@ TEST_F(PropertyContainerTest, GetNotTimeBasedWithoutFrames)
 
 TEST_F(PropertyContainerTest, GetTimeBasedWithoutFrames)
 {
-    Mass* from_add = container.add<Atom, Mass>(true);
+    Mass* from_add = container.add<Atom, Mass>(true, 0);
     ASSERT_THAT(from_add, IsNull());
 
     for (size_t i = 0; i < 3; i++)
@@ -202,7 +174,7 @@ TEST_F(PropertyContainerTest, GetNotTimeBasedWithFrames)
         container.add_frame();
     }
 
-    Mass* default_mass = container.add<Atom, Mass>(false);
+    Mass* default_mass = container.add<Atom, Mass>(false, 0);
 
     for (size_t i = 0; i < num_frames; i++)
     {
@@ -214,7 +186,7 @@ TEST_F(PropertyContainerTest, GetNotTimeBasedWithFrames)
 
 TEST_F(PropertyContainerTest, GetTimeBasedWithFrames)
 {
-    container.add<Atom, Mass>(true);
+    container.add<Atom, Mass>(true, 0);
 
     size_t const num_frames = 3;
     for (size_t frame = 0; frame < num_frames; frame++)
@@ -239,7 +211,7 @@ TEST_F(PropertyContainerTest, GetTimeBasedWithFrames)
 
 TEST_F(PropertyContainerTest, GetNotRegistered)
 {
-    container.add<Atom, Mass>(false);
+    container.add<Atom, Mass>(false, 0);
 
     for (size_t i = 0; i < 3; i++)
     {
@@ -251,7 +223,7 @@ TEST_F(PropertyContainerTest, GetNotRegistered)
 
 TEST_F(PropertyContainerTest, ConstGet)
 {
-    Mass* from_add = container.add<Atom, Mass>(false);
+    Mass* from_add = container.add<Atom, Mass>(false, 0);
     ASSERT_THAT(from_add, NotNull());
     PropertyContainer const& const_container = container;
     Mass const* from_get = const_container.get<Atom, Mass>(0);
@@ -262,7 +234,7 @@ TEST_F(PropertyContainerTest, ConstGet)
 
 TEST_F(PropertyContainerTest, ConstGetNotRegistered)
 {
-    Mass* from_add = container.add<Atom, Mass>(false);
+    Mass* from_add = container.add<Atom, Mass>(false, 0);
     PropertyContainer const& const_container = container;
     Charge const* from_get = const_container.get<Atom, Charge>(0);
 
@@ -271,8 +243,8 @@ TEST_F(PropertyContainerTest, ConstGetNotRegistered)
 
 TEST_F(PropertyContainerTest, AddBeforeAddFrame)
 {
-    Mass* time_based = container.add<Atom, Mass>(true);
-    Charge* not_time_based = container.add<Atom, Charge>(false);
+    Mass* time_based = container.add<Atom, Mass>(true, 0);
+    Charge* not_time_based = container.add<Atom, Charge>(false, 0);
 
     container.add_frame();
 
@@ -284,8 +256,8 @@ TEST_F(PropertyContainerTest, AddAfterAddFrame)
 {
     container.add_frame();
 
-    Mass* time_based = container.add<Atom, Mass>(true);
-    Charge* not_time_based = container.add<Atom, Charge>(false);
+    Mass* time_based = container.add<Atom, Mass>(true, 0);
+    Charge* not_time_based = container.add<Atom, Charge>(false, 0);
 
     EXPECT_THAT(time_based, NotNull());
     EXPECT_THAT(not_time_based, NotNull());
@@ -293,15 +265,25 @@ TEST_F(PropertyContainerTest, AddAfterAddFrame)
 
 TEST_F(PropertyContainerTest, AddMultipleTimes)
 {
-    Mass* first = container.add<Atom, Mass>(false);
-    Mass* second = container.add<Atom, Mass>(false);
-    Mass* third = container.add<Atom, Mass>(true);
+    Mass* first = container.add<Atom, Mass>(false, 0);
+    Mass* second = container.add<Atom, Mass>(false, 0);
+    Mass* third = container.add<Atom, Mass>(true, 0);
 
     EXPECT_THAT(first, NotNull());
     EXPECT_THAT(second, NotNull());
     EXPECT_THAT(third, NotNull());
     EXPECT_EQ(first, second);
     EXPECT_EQ(first, third);
+}
+
+TEST_F(PropertyContainerTest, AddWithSize)
+{
+    Mass* time_based = container.add<Atom, Mass>(true, 2);
+    Charge* not_time_based = container.add<Atom, Charge>(false, 3);
+
+    EXPECT_THAT(time_based, IsNull());
+    ASSERT_THAT(not_time_based, NotNull());
+    EXPECT_EQ(not_time_based->size(), 3);
 }
 
 TEST_F(PropertyContainerTest, DefaultNumberOfFrames)
@@ -320,9 +302,9 @@ TEST_F(PropertyContainerTest, AddFrames)
 
 TEST_F(PropertyContainerTest, AddFrameKeepSize)
 {
-    container.add<Atom, Mass>(true);
-    container.add<Atom, Charge>(true);
-    container.set_size<Atom>(3);
+    container.add<Atom, Mass>(true, 0);
+    container.add<Atom, Charge>(true, 0);
+    container.resize<Atom>(3);
 
     size_t const num_frames = 3;
     for (size_t frame = 0; frame < num_frames; frame++)
@@ -344,7 +326,7 @@ TEST_F(PropertyContainerTest, AddFrameKeepSize)
 
 TEST_F(PropertyContainerTest, RemoveFrames)
 {
-    container.add<Atom, Mass>(true);
+    container.add<Atom, Mass>(true, 0);
 
     for (size_t frame = 0; frame < 5; frame++)
     {
@@ -375,7 +357,7 @@ TEST_F(PropertyContainerTest, RemoveFrames)
 
 TEST_F(PropertyContainerTest, RemoveInvalidFrame)
 {
-    container.add<Atom, Mass>(true);
+    container.add<Atom, Mass>(true, 0);
 
     for (size_t frame = 0; frame < 3; frame++)
     {
@@ -389,7 +371,7 @@ TEST_F(PropertyContainerTest, RemoveInvalidFrame)
 
 TEST_F(PropertyContainerTest, RemoveOutOfRangeFrame)
 {
-    container.add<Atom, Mass>(true);
+    container.add<Atom, Mass>(true, 0);
 
     for (size_t frame = 0; frame < 3; frame++)
     {

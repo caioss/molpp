@@ -24,7 +24,7 @@ public:
     , proline_residue(1, 0, &mol_data)
     , non_protein_residue(2, 0, &mol_data)
     {
-        Name* names = mol_data.properties().add<Atom, Name>(false);
+        Name* names = mol_data.add_property<Atom, Name>(false);
         names->value(0) = "N";
         names->value(1) = "CA";
         names->value(2) = "C";

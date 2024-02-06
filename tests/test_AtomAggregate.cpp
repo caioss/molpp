@@ -21,7 +21,7 @@ public:
     : data{create_moldata(3, 1, 1, 1, 1)}
     , aggregate{1, 0, &data}
     , const_aggregate{aggregate}
-    , name{data.properties().add<Atom, Name>(false)}
+    , name{data.add_property<Atom, Name>(false)}
     {
         name->value(0) = "A";
         name->value(1) = "B";

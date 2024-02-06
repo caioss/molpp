@@ -15,25 +15,24 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
 {
     size_t const num_atoms { num_res * num_res_atoms };
     MolData data(num_atoms);
-    PropertyContainer& properties = data.properties();
-    properties.set_size<Atom>(num_atoms);
+    data.add_entity<Atom>(num_atoms);
     AtomData& atom_data = data.atoms();
     ResidueData& res_data = data.residues();
     data.residues().resize(num_res);
     std::string const letters("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
     // Properties
-    Name* atom_name = properties.add<Atom, Name>(false);
-    Type* atom_type = properties.add<Atom, Type>(false);
-    AlternateLocation* atom_altloc = properties.add<Atom, AlternateLocation>(false);
-    InsertionCode* atom_insertion = properties.add<Atom, InsertionCode>(false);
-    AtomicNumber* atom_atomic = properties.add<Atom, AtomicNumber>(false);
-    Occupancy* atom_occupancy = properties.add<Atom, Occupancy>(false);
-    TemperatureFactor* atom_bfactor = properties.add<Atom, TemperatureFactor>(false);
-    Mass* atom_mass = properties.add<Atom, Mass>(false);
-    Charge* atom_charge = properties.add<Atom, Charge>(false);
-    Radius* atom_radius = properties.add<Atom, Radius>(false);
-    properties.add<Atom, Position>(true);
+    Name* atom_name = data.add_property<Atom, Name>(false);
+    Type* atom_type = data.add_property<Atom, Type>(false);
+    AlternateLocation* atom_altloc = data.add_property<Atom, AlternateLocation>(false);
+    InsertionCode* atom_insertion = data.add_property<Atom, InsertionCode>(false);
+    AtomicNumber* atom_atomic = data.add_property<Atom, AtomicNumber>(false);
+    Occupancy* atom_occupancy = data.add_property<Atom, Occupancy>(false);
+    TemperatureFactor* atom_bfactor = data.add_property<Atom, TemperatureFactor>(false);
+    Mass* atom_mass = data.add_property<Atom, Mass>(false);
+    Charge* atom_charge = data.add_property<Atom, Charge>(false);
+    Radius* atom_radius = data.add_property<Atom, Radius>(false);
+    data.add_property<Atom, Position>(true);
 
     // Set atoms
     for (index_t atom_idx = 0; atom_idx < num_atoms; atom_idx++)
@@ -77,8 +76,8 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     // Trajectory
     for (size_t frame_idx = 0; frame_idx < num_frames; frame_idx++)
     {
-        Frame const frame = properties.add_frame();
-        Position* position_property = properties.get<Atom, Position>(frame);
+        Frame const frame = data.add_frame();
+        Position* position_property = data.property_at<Atom, Position>(frame);
         Position::type& positions = position_property->positions();
 
         for (index_t atom_idx = 0; atom_idx < num_atoms; atom_idx++)
@@ -92,12 +91,12 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
 
 TEST(Auxiliary, create_moldata) {
     MolData data = create_moldata(3, 2, 2, 1, 2);
-    ASSERT_EQ(data.properties().size<Atom>(), 6);
+    ASSERT_EQ(data.entity_size<Atom>(), 6);
 
     // Atoms
     ASSERT_EQ(data.atoms().size(), 6);
     std::vector<mol::Atom> atoms;
-    for (index_t i = 0; i < data.properties().size<Atom>(); ++i)
+    for (index_t i = 0; i < data.entity_size<Atom>(); ++i)
     {
         atoms.push_back(Atom(i, std::nullopt, &data));
     }

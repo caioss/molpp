@@ -102,7 +102,7 @@ void MolSystem::guess_bonds(Frame const frame)
     res_guesser.apply(all_residues);
 
     // Bond heuristics are the last step
-    if (m_data->properties().num_frames())
+    if (m_data->num_frames())
     {
         AtomBondGuesser atom_guesser;
         atom_guesser.apply(all_atoms);

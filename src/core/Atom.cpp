@@ -26,7 +26,7 @@ std::shared_ptr<Bond> Atom::add_bond(index_t const bonded_to)
     {
         throw mol::MolError("Atoms can't have bonds to themselves");
     }
-    if (bonded_to >= data()->properties().size<Atom>())
+    if (bonded_to >= data()->entity_size<Atom>())
     {
         throw mol::MolError("Out of bounds index: " + std::to_string(bonded_to));
     }
@@ -55,5 +55,5 @@ std::vector<index_t> Atom::atom_indices() const
 
 bool Atom::validate_index() const
 {
-    return index() < data()->properties().size<Atom>();
+    return index() < data()->entity_size<Atom>();
 }

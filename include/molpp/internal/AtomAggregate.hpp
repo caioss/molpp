@@ -47,7 +47,7 @@ public:
 
     void set_frame(Frame const frame)
     {
-        if (frame && frame >= m_data->properties().num_frames())
+        if (frame && frame >= m_data->num_frames())
         {
             throw mol::MolError("Out of bounds frame: " + std::to_string(*frame));
         }
@@ -82,13 +82,13 @@ public:
     template <IsProperty PropertyType>
     PropertyType* property()
     {
-        return m_data->properties().template get<Derived, PropertyType>(frame());
+        return m_data->property_at<Derived, PropertyType>(frame());
     }
 
     template <IsProperty PropertyType>
     PropertyType const* property() const
     {
-        return m_data->properties().template get<Derived, PropertyType>(frame());
+        return m_data->property_at<Derived, PropertyType>(frame());
     }
 
     template <IsProperty PropertyType>

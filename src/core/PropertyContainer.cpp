@@ -37,16 +37,6 @@ void PropertyContainer::remove_frame(Frame const frame)
     m_num_frames--;
 }
 
-size_t PropertyContainer::size(size_key_type const key) const
-{
-    auto const iter = m_sizes.find(key);
-    if (iter == m_sizes.end())
-    {
-        return 0;
-    }
-    return iter->second;
-}
-
 void PropertyContainer::resize(size_key_type const key, size_t const size)
 {
     for (auto& [property_key, trajectory] : m_properties)
@@ -58,10 +48,9 @@ void PropertyContainer::resize(size_key_type const key, size_t const size)
 
         trajectory.resize(size);
     }
-    m_sizes[key] = size;
 }
 
-mol::Property* PropertyContainer::emplace(property_key_type const key, bool const is_time_based, PropertyTrajectory::make_property_fn const make_property)
+mol::Property* PropertyContainer::emplace(property_key_type const key, bool const is_time_based, size_t const size, PropertyTrajectory::make_property_fn const make_property)
 {
     auto [iter, result] = m_properties.emplace(key, PropertyTrajectory(is_time_based, make_property));
 
@@ -72,7 +61,7 @@ mol::Property* PropertyContainer::emplace(property_key_type const key, bool cons
 
     PropertyTrajectory& trajectory = iter->second;
     trajectory.add_frames(m_num_frames);
-    trajectory.resize(size(key.first));
+    trajectory.resize(size);
     return trajectory.get(0);
 }
 

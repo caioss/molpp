@@ -165,60 +165,60 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
 
     std::unique_ptr<MolData> mol_data = std::make_unique<MolData>(m_num_atoms);
 
-    // Register properties
-    mol::internal::PropertyContainer& properties = mol_data->properties();
-    properties.set_size<Atom>(m_num_atoms);
+    // Register Atom
+    mol_data->add_entity<Atom>(m_num_atoms);
 
-    properties.add<Atom, Position>(true);
-    Name* name = properties.add<Atom, Name>(false);
-    Type* type = properties.add<Atom, Type>(false);
+    // Register properties
+    mol_data->add_property<Atom, Position>(true);
+    Name* name = mol_data->add_property<Atom, Name>(false);
+    Type* type = mol_data->add_property<Atom, Type>(false);
 
     Occupancy* occupancy = nullptr;
     if (flags & MOLFILE_OCCUPANCY)
     {
-        occupancy = properties.add<Atom, Occupancy>(false);
+        occupancy = mol_data->add_property<Atom, Occupancy>(false);
     }
 
     TemperatureFactor* temp_factor = nullptr;
     if (flags & MOLFILE_BFACTOR)
     {
-        temp_factor = properties.add<Atom, TemperatureFactor>(false);
+        temp_factor = mol_data->add_property<Atom, TemperatureFactor>(false);
     }
 
     Mass* mass = nullptr;
     if (flags & MOLFILE_MASS)
     {
-        mass = properties.add<Atom, Mass>(false);
+        mass = mol_data->add_property<Atom, Mass>(false);
     }
 
     Charge* charge = nullptr;
     if (flags & MOLFILE_CHARGE)
     {
-        charge = properties.add<Atom, Charge>(false);
+        charge = mol_data->add_property<Atom, Charge>(false);
     }
 
     Radius* radius = nullptr;
     if (flags & MOLFILE_RADIUS)
     {
-        radius = properties.add<Atom, Radius>(false);
+        radius = mol_data->add_property<Atom, Radius>(false);
     }
 
     AtomicNumber* atomic_number = nullptr;
     if (flags & MOLFILE_ATOMICNUMBER)
     {
-        atomic_number = properties.add<Atom, AtomicNumber>(false);
+        atomic_number = mol_data->add_property<Atom, AtomicNumber>(false);
     }
 
     AlternateLocation* alternate_location = nullptr;
     if (flags & MOLFILE_ALTLOC)
     {
-        alternate_location = properties.add<Atom, AlternateLocation>(false);
+        alternate_location = mol_data->add_property<Atom, AlternateLocation>(false);
     }
 
     InsertionCode* insertion_code = nullptr;
     if (flags & MOLFILE_INSERTION)
     {
-        insertion_code = properties.add<Atom, InsertionCode>(false);
+        insertion_code = mol_data->add_property<Atom, InsertionCode>(false);
     }
 
     // Structure detection
@@ -339,7 +339,7 @@ MolReader::Status MolfileReader::check_timestep_read(MolData& mol_data)
         return INVALID;
     }
 
-    if (mol_data.properties().size<Atom>() != (size_t)m_num_atoms)
+    if (mol_data.entity_size<Atom>() != (size_t)m_num_atoms)
     {
         return WRONG_ATOMS;
     }
@@ -349,7 +349,7 @@ MolReader::Status MolfileReader::check_timestep_read(MolData& mol_data)
 
 MolReader::Status MolfileReader::skip_timestep(MolData& mol_data)
 {
-    switch (m_plugin->read_next_timestep(m_handle, mol_data.properties().size<Atom>(), nullptr))
+    switch (m_plugin->read_next_timestep(m_handle, mol_data.entity_size<Atom>(), nullptr))
     {
         case MOLFILE_SUCCESS:
             return SUCCESS;
@@ -369,7 +369,7 @@ MolReader::Status MolfileReader::read_timestep(MolData& mol_data)
     mol_ts.coords = ts_positions.data();
     mol_ts.physical_time = 0.0;
 
-    int result = m_plugin->read_next_timestep(m_handle, mol_data.properties().size<Atom>(), &mol_ts);
+    int result = m_plugin->read_next_timestep(m_handle, mol_data.entity_size<Atom>(), &mol_ts);
 
     if (result == MOLFILE_EOF)
     {
@@ -380,9 +380,8 @@ MolReader::Status MolfileReader::read_timestep(MolData& mol_data)
         return FAILED;
     }
 
-    mol::internal::PropertyContainer& properties = mol_data.properties();
-    Frame const new_frame = properties.add_frame();
-    Position* position = properties.get<Atom, Position>(new_frame);
+    Frame const new_frame = mol_data.add_frame();
+    Position* position = mol_data.property_at<Atom, Position>(new_frame);
     std::swap(position->positions(), ts_positions);
 
     return SUCCESS;
