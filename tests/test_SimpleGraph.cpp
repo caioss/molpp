@@ -109,6 +109,28 @@ TEST_F(SimpleGraphTest, AddExistingNodeDoesNotChangeAdjacency)
     EXPECT_THAT(view2vector(graph.adjacency(3)), UnorderedElementsAre());
 }
 
+TEST_F(SimpleGraphTest, RemoveNode)
+{
+    EXPECT_TRUE(graph.remove_node(2));
+
+    EXPECT_FALSE(graph.contains(2));
+    EXPECT_THAT(view2vector(graph.nodes()), UnorderedElementsAre(0, 1, 3));
+    EXPECT_THAT(view2vector(graph.adjacency(0)), UnorderedElementsAre(1));
+    EXPECT_THAT(view2vector(graph.adjacency(1)), UnorderedElementsAre(0));
+    EXPECT_THAT(view2vector(graph.adjacency(3)), UnorderedElementsAre());
+}
+
+TEST_F(SimpleGraphTest, RemoveInvalidNode)
+{
+    EXPECT_FALSE(graph.remove_node(4));
+
+    EXPECT_THAT(view2vector(graph.nodes()), UnorderedElementsAre(0, 1, 2, 3));
+    EXPECT_THAT(view2vector(graph.adjacency(0)), UnorderedElementsAre(1, 2));
+    EXPECT_THAT(view2vector(graph.adjacency(1)), UnorderedElementsAre(0));
+    EXPECT_THAT(view2vector(graph.adjacency(2)), UnorderedElementsAre(0));
+    EXPECT_THAT(view2vector(graph.adjacency(3)), UnorderedElementsAre());
+}
+
 TEST_F(SimpleGraphTest, Adjacency)
 {
     EXPECT_THAT(view2vector(graph.adjacency(0)), UnorderedElementsAre(1, 2));
