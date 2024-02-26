@@ -50,6 +50,28 @@ public:
         return m_adjacency.insert(std::make_pair<Node const&, adjacency_list>(node, {})).second;
     }
 
+    bool remove_node(Node const& node)
+    {
+        // Check for node existence
+        auto iter = m_adjacency.find(node);
+        if (iter == m_adjacency.end())
+        {
+            return false;
+        }
+        adjacency_list& adjacency = iter->second;
+
+        // Remove edges
+        for (Node const& adj_node : adjacency)
+        {
+            m_adjacency[adj_node].erase(node);
+        }
+
+        // Remove the node itself
+        m_adjacency.erase(iter);
+
+        return true;
+    }
+
     adjacency_list const& adjacency(Node const& node) const
     {
         return m_adjacency.at(node);
