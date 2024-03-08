@@ -9,6 +9,7 @@ option(MOLPP_BUILD_TESTING "Build library tests." OFF)
 
 # Dependencies
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+find_package(peglib REQUIRED)
 
 # The library
 add_library(molpp)
@@ -46,6 +47,7 @@ find_package(Threads)
 target_link_libraries(molpp
     PUBLIC
         Eigen3::Eigen
+        peglib
     PRIVATE
         Threads::Threads
 )
