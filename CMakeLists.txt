@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.13)
 
 # Project
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(libmolpp VERSION 0.1.0)
 
 # Options
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(MOLPP_BUILD_TESTING "Build library tests." OFF)
+
+# Dependencies
+find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
 # The library
 add_library(molpp)
@@ -17,9 +19,6 @@ add_subdirectory("src")
 
 # Third-party
 add_subdirectory("thirdparty")
-
-# Dependencies
-find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
 # Molfile_plugin definitions. Must be set in the same
 # file as the molpp declaration.
