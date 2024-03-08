@@ -18,6 +18,7 @@ project(libmolpp
 # Dependencies
 find_package(Threads REQUIRED)
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+find_package(peglib REQUIRED)
 
 # The library
 add_library(molpp)
@@ -43,6 +44,7 @@ endforeach(FILE)
 target_link_libraries(molpp
     PUBLIC
         Eigen3::Eigen
+        peglib
     PRIVATE
         Threads::Threads
 )

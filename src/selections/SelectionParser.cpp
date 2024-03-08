@@ -111,11 +111,12 @@ SelectionParser::SelectionParser(std::string const& grammar)
         throw mol::MolError("Error loading selection grammar.");
     }
 
-    m_parser.log = [&](size_t /*line*/, size_t column, std::string const& message)
-    {
-        m_error_column = column;
-        m_error_message = message;
-    };
+    m_parser.set_logger([&](size_t /*line*/, size_t column, std::string const& message)
+        {
+            m_error_column = column;
+            m_error_message = message;
+        }
+    );
     m_parser.enable_ast();
 }
 

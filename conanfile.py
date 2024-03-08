@@ -8,6 +8,7 @@ class MolppRecipe(ConanFile):
 
     def requirements(self):
         self.requires("eigen/3.4.0")
+        self.requires("cpp-peglib/1.8.6")
         self.requires("gtest/1.14.0")
 
     def build_requirements(self):
