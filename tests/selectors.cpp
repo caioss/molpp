@@ -65,9 +65,9 @@ TEST(Selection, PropNodes) {
     class SubNumProp : public NumPropSelection
     {
     public:
-        void evaluate(SelectionStack& evaluator, MolData const& data, Frame frame) const override {};
+        void evaluate(SelectionStack& /*evaluator*/, MolData const& /*data*/, Frame /*frame*/) const override {};
     protected:
-        bool selected(index_t atom_idx, MolData const& data) const override
+        bool selected(index_t /*atom_idx*/, MolData const& /*data*/) const override
         {
             return true;
         }

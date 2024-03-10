@@ -21,7 +21,7 @@ public:
 protected:
     void SetUp() override
     {
-        for (int i = 0; i < num_nodes; i++)
+        for (size_t i = 0; i < num_nodes; i++)
         {
             ASSERT_TRUE(graph.add_node(i)) << "Node " << i;
         }
@@ -92,7 +92,7 @@ TYPED_TEST_P(BreadthFirstTraversalTest, StopAtUnknownNode)
 
 TYPED_TEST_P(BreadthFirstTraversalTest, DontStop)
 {
-    EXPECT_FALSE(this->bfs.run(0, [](int const& node) {
+    EXPECT_FALSE(this->bfs.run(0, [](int const& /*node*/) {
         return false;
     }, [](auto){
         return true;
@@ -118,9 +118,9 @@ TYPED_TEST_P(BreadthFirstTraversalTest, StopAtNodeWithMask)
 
 TYPED_TEST_P(BreadthFirstTraversalTest, MaskAllNodes)
 {
-    EXPECT_FALSE(this->bfs.run(0, [](int const& node) {
+    EXPECT_FALSE(this->bfs.run(0, [](int const& /*node*/) {
         return false;
-    }, [](int const& node){
+    }, [](int const& /*node*/){
         return false;
     }));
 

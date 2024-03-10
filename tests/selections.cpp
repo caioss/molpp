@@ -165,7 +165,7 @@ TEST(Selections, Sel) {
      * Iterators
      */
     std::vector<Atom> atoms(some_sel.begin(), some_sel.end());
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::index), {1, 3, 4}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::index), {1ul, 3ul, 4ul}));
     auto it = some_sel.begin();
     auto end = some_sel.end();
     EXPECT_EQ(end - it, 3);
@@ -321,7 +321,7 @@ TEST(Selections, AtomSel) {
      * Iterators
      */
     std::vector<Atom> atoms(some_sel.begin(), some_sel.end());
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::index), {1, 3, 4}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::index), {1ul, 3ul, 4ul}));
     auto it = some_sel.begin();
     auto end = some_sel.end();
     EXPECT_EQ(end - it, 3);

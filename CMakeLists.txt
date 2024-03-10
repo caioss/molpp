@@ -49,13 +49,11 @@ target_link_libraries(molpp
         Threads::Threads
 )
 
-set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU>")
-set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
-target_compile_options(molpp
-    PRIVATE
-        "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-Wextra;-Wshadow;-pedantic>>"
-        "$<${msvc_cxx}:$<BUILD_INTERFACE:-W3>>"
-)
+if (MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif()
 
 # Testing
 if(MOLPP_BUILD_TESTING)

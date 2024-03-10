@@ -234,7 +234,6 @@ TEST_F(PropertyContainerTest, ConstGet)
 
 TEST_F(PropertyContainerTest, ConstGetNotRegistered)
 {
-    Mass* from_add = container.add<Atom, Mass>(false, 0);
     PropertyContainer const& const_container = container;
     Charge const* from_get = const_container.get<Atom, Charge>(0);
 

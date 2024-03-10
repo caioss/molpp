@@ -21,7 +21,7 @@ public:
 protected:
     void SetUp() override
     {
-        for (int i = 0; i < num_nodes; i++)
+        for (size_t i = 0; i < num_nodes; i++)
         {
             ASSERT_TRUE(graph.add_node(i)) << "Node " << i;
         }

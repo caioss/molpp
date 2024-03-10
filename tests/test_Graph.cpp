@@ -21,7 +21,7 @@ public:
 protected:
     void SetUp() override
     {
-        for (int i = 0; i < num_nodes; i++)
+        for (size_t i = 0; i < num_nodes; i++)
         {
             ASSERT_TRUE(graph.add_node(i)) << "Node " << i;
         }
@@ -53,7 +53,7 @@ TEST_F(GraphTest, Clear)
     EXPECT_EQ(graph.size(), 0);
     EXPECT_EQ(graph.edges_size(), 0);
     EXPECT_THAT(view2vector(graph.nodes()), ElementsAre());
-    for (int i = 0; i < num_nodes; i++)
+    for (size_t i = 0; i < num_nodes; i++)
     {
         EXPECT_FALSE(graph.contains(i)) << "Node " << i;
     }
@@ -61,7 +61,7 @@ TEST_F(GraphTest, Clear)
 
 TEST_F(GraphTest, ContainsNode)
 {
-    for (int i = 0; i < num_nodes; i++)
+    for (size_t i = 0; i < num_nodes; i++)
     {
         EXPECT_TRUE(graph.contains(i)) << "Node " << i;
     }
@@ -76,7 +76,7 @@ TEST_F(GraphTest, ContainsInvalidNodes)
 TEST_F(GraphTest, AddNode)
 {
     size_t const extra_nodes = 3;
-    for (int i = num_nodes; i < num_nodes + extra_nodes; i++)
+    for (size_t i = num_nodes; i < num_nodes + extra_nodes; i++)
     {
         EXPECT_TRUE(graph.add_node(i)) << "Node " << i;
         EXPECT_TRUE(graph.contains(i)) << "Node " << i;
@@ -88,7 +88,7 @@ TEST_F(GraphTest, AddNode)
 
 TEST_F(GraphTest, AddExistingNode)
 {
-    for (int i = 0; i < num_nodes; i++)
+    for (size_t i = 0; i < num_nodes; i++)
     {
         EXPECT_FALSE(graph.add_node(i)) << "Node " << i;
     }
@@ -98,7 +98,7 @@ TEST_F(GraphTest, AddExistingNode)
 
 TEST_F(GraphTest, AddExistingNodeDoesNotChangeEdgeData)
 {
-    for (int i = 0; i < num_nodes; i++)
+    for (size_t i = 0; i < num_nodes; i++)
     {
         EXPECT_FALSE(graph.add_node(i)) << "Node " << i;
     }
@@ -110,7 +110,7 @@ TEST_F(GraphTest, AddExistingNodeDoesNotChangeEdgeData)
 
 TEST_F(GraphTest, AddExistingNodeDoesNotChangeAdjacency)
 {
-    for (int i = 0; i < num_nodes; i++)
+    for (size_t i = 0; i < num_nodes; i++)
     {
         EXPECT_FALSE(graph.add_node(i)) << "Node " << i;
     }

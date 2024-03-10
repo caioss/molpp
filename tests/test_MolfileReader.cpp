@@ -23,7 +23,7 @@ protected:
         reader.open(filename);
         auto data = reader.read_atoms();
         reader.close();
-        return std::move(data);
+        return data;
     }
 };
 

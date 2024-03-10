@@ -102,7 +102,7 @@ TEST(Auxiliary, create_moldata) {
     }
 
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::residue_id),
-                                 {0, 0, 1, 1, 2, 2}));
+                                 {0ul, 0ul, 1ul, 1ul, 2ul, 2ul}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid),
                                  {0, 0, 1, 1, 2, 2}));
 
