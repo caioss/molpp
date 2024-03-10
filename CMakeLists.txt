@@ -1,13 +1,22 @@
 cmake_minimum_required(VERSION 3.13)
 
-# Project
-project(libmolpp VERSION 0.1.0)
-
 # Options
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(MOLPP_BUILD_TESTING "Build library tests." OFF)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+
+project(libmolpp
+    VERSION
+        0.1.0
+    LANGUAGES
+        CXX C
+)
+
 # Dependencies
+find_package(Threads REQUIRED)
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 find_package(peglib REQUIRED)
 
@@ -16,6 +25,7 @@ add_library(molpp)
 add_library(Molpp::molpp ALIAS molpp)
 
 # Source files
+add_subdirectory("include")
 add_subdirectory("src")
 
 # Third-party
@@ -31,19 +41,6 @@ foreach(FILE ${MOLFILE_SOURCES})
     )
 endforeach(FILE)
 
-# Include dirs
-target_include_directories(molpp
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-    PRIVATE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-)
-
-# Linkings
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads)
-
 target_link_libraries(molpp
     PUBLIC
         Eigen3::Eigen
@@ -52,14 +49,6 @@ target_link_libraries(molpp
         Threads::Threads
 )
 
-# Compiler options
-target_compile_features(molpp
-    PUBLIC
-        cxx_std_20
-)
-set_target_properties(molpp PROPERTIES
-    CXX_EXTENSIONS OFF
-)
 set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU>")
 set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 target_compile_options(molpp
@@ -70,11 +59,26 @@ target_compile_options(molpp
 
 # Testing
 if(MOLPP_BUILD_TESTING)
+    find_package(GTest 1.12.1 REQUIRED)
     add_subdirectory(tests)
 endif()
 
+# Installation
+install(TARGETS molpp
+    EXPORT
+        MolppTargets
+    FILE_SET molpp_headers DESTINATION
+        include
+    LIBRARY
+        DESTINATION lib
+    ARCHIVE
+        DESTINATION lib
+)
+
 # Exporting targets
 include(CMakePackageConfigHelpers)
+
+SET(EXPORT_DIR "lib/cmake/Molpp")
 
 export(
     TARGETS
@@ -88,7 +92,7 @@ export(
 configure_package_config_file(cmake/MolppConfig.cmake.in
     MolppConfig.cmake
     INSTALL_DESTINATION
-        lib/cmake/Molpp
+        ${EXPORT_DIR}
 )
 
 write_basic_package_version_file(
@@ -99,20 +103,6 @@ write_basic_package_version_file(
         AnyNewerVersion
 )
 
-# Installation
-install(TARGETS molpp
-    EXPORT
-        MolppTargets
-    LIBRARY
-        DESTINATION lib
-    ARCHIVE
-        DESTINATION lib
-)
-
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    DESTINATION include
-)
-
 install(
     EXPORT
         MolppTargets
@@ -121,7 +111,7 @@ install(
     NAMESPACE
         Molpp::
     DESTINATION
-        lib/cmake/Molpp
+        ${EXPORT_DIR}
 )
 
 install(
@@ -129,5 +119,5 @@ install(
         "${CMAKE_CURRENT_BINARY_DIR}/MolppConfig.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/MolppConfigVersion.cmake"
     DESTINATION
-        lib/cmake/Molpp
+        ${EXPORT_DIR}
 )

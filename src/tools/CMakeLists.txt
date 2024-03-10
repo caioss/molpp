@@ -1,2 +1,9 @@
-target_sources(molpp PRIVATE
+target_sources(molpp
+    PRIVATE
+        FILE_SET
+            molpp_private_headers
+        FILES
+            SpatialSearch.hpp
+            algorithms.hpp
+            math.hpp
 )

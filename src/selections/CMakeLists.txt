@@ -1,7 +1,19 @@
-target_sources(molpp PRIVATE
-    AtomSelector.cpp
-    SelectionParser.cpp
-    SelectionStack.cpp
-    boolean.cpp
-    properties.cpp
+target_sources(molpp
+    PRIVATE
+        FILE_SET
+            molpp_private_headers
+        FILES
+            SelectionNode.hpp
+            SelectionParser.hpp
+            SelectionStack.hpp
+            boolean.hpp
+            properties.hpp
+            numbers.hpp
+
+    PRIVATE
+        AtomSelector.cpp
+        SelectionParser.cpp
+        SelectionStack.cpp
+        boolean.cpp
+        properties.cpp
 )

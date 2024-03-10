@@ -12,6 +12,7 @@ set(MOLFILE_SOURCES
     CACHE INTERNAL ""
 )
 
-target_sources(molpp PRIVATE
-    ${MOLFILE_SOURCES}
+target_sources(molpp
+    PRIVATE
+        ${MOLFILE_SOURCES}
 )
