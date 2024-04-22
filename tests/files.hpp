@@ -1,7 +1,7 @@
 #ifndef FILES_HPP
 #define FILES_HPP
 
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include "readers/MolReader.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>

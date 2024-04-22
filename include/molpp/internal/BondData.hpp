@@ -2,8 +2,9 @@
 #define BONDGRAPH_HPP
 
 #include <molpp/MolppCore.hpp>
-#include "tools/Graph.hpp"
+#include <molpp/tools/Graph.hpp>
 #include <molpp/Bond.hpp>
+
 #include <vector>
 #include <memory>
 #include <unordered_set>

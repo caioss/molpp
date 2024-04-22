@@ -1,7 +1,8 @@
 #ifndef AUXILIARY_HPP
 #define AUXILIARY_HPP
 
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
+
 #include <vector>
 
 using namespace mol;

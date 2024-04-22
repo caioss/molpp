@@ -1,6 +1,6 @@
 #include <molpp/AtomSel.hpp>
-#include "molpp/internal/SelIndex.hpp"
-#include "core/MolData.hpp"
+#include <molpp/internal/SelIndex.hpp>
+#include <molpp/internal/MolData.hpp>
 
 using namespace mol;
 

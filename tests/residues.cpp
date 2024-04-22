@@ -1,7 +1,7 @@
 #include "matchers.hpp"
 #include "auxiliary.hpp"
-#include "core/MolData.hpp"
-#include "core/ResidueData.hpp"
+#include <molpp/internal/MolData.hpp>
+#include <molpp/internal/ResidueData.hpp>
 #include "readers/ResidueDetect.hpp"
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>

@@ -1,6 +1,6 @@
 #include "molfile.h"
 #include "MolfileReader.hpp"
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include "ResidueDetect.hpp"
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>

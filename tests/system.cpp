@@ -2,7 +2,7 @@
 #include <molpp/MolError.hpp>
 #include <molpp/MolSystem.hpp>
 #include <molpp/AtomSelector.hpp>
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 

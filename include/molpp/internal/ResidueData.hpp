@@ -1,7 +1,8 @@
 #ifndef RESIDUEDATA_HPP
 #define RESIDUEDATA_HPP
 
-#include "tools/iterators.hpp"
+#include <molpp/tools/iterators.hpp>
+
 #include <vector>
 #include <string>
 #include <ranges>

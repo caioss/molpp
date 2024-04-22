@@ -1,7 +1,7 @@
 #include "matchers.hpp"
 #include "readers/MolReader.hpp"
 #include "readers/MolfileReader.hpp"
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include <molpp/MolError.hpp>
 #include <molpp/Atom.hpp>
 #include <molpp/AtomSel.hpp>

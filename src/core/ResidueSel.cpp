@@ -1,5 +1,5 @@
 #include "molpp/ResidueSel.hpp"
-#include "core/MolData.hpp"
+#include <molpp/internal/MolData.hpp>
 #include "molpp/internal/SelIndex.hpp"
 
 using namespace mol;
