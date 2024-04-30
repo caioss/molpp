@@ -35,6 +35,7 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
         atom_data.name(atom_idx) = code;
         atom_data.type(atom_idx) = code;
         atom_data.altloc(atom_idx) = code;
+        atom_data.insertion_code(atom_idx) = code;
     }
 
     // Set residues
@@ -97,6 +98,8 @@ TEST(Auxiliary, create_moldata) {
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::type),
                                  {"A", "B", "C", "D", "E", "F"}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::altloc),
+                                 {"A", "B", "C", "D", "E", "F"}));
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::insertion_code),
                                  {"A", "B", "C", "D", "E", "F"}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid),
                                  {0, 0, 1, 1, 2, 2}));

@@ -149,6 +149,14 @@ TEST_F(AtomTest, AltLocProperty)
     EXPECT_EQ(atom.altloc(), "C");
 }
 
+TEST_F(AtomTest, InsertionCodeProperty)
+{
+    EXPECT_EQ(const_atom.insertion_code(), "B");
+    EXPECT_EQ(atom.insertion_code(), "B");
+    atom.set_insertion_code("C");
+    EXPECT_EQ(atom.insertion_code(), "C");
+}
+
 TEST_F(AtomTest, ResnameProperty)
 {
     EXPECT_EQ(const_atom.resname(), "B");

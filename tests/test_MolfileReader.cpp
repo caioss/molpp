@@ -349,6 +349,11 @@ TEST_F(PDBMolfileReaderTest, AlternateLocation)
     test_property(&Atom::altloc, std::to_array<std::string>({" ", " ", " ", " ", "A", "B"}), pdb());
 }
 
+TEST_F(PDBMolfileReaderTest, InsertionCode)
+{
+    test_property(&Atom::insertion_code, std::to_array<std::string>({"A", "B", " ", " ", " ", " "}), pdb());
+}
+
 TEST_F(PDBMolfileReaderTest, ResID)
 {
     test_property(&Atom::resid, std::to_array<int>({3, 339, 201, 801, 85}), pdb());
@@ -461,6 +466,11 @@ TEST_F(Mol2MolfileReaderTest, Charge)
 TEST_F(Mol2MolfileReaderTest, AlternateLocation)
 {
     test_property(&Atom::altloc, std::to_array<std::string>({"", "", "", "", "", ""}), mol2());
+}
+
+TEST_F(Mol2MolfileReaderTest, InsertionCode)
+{
+    test_property(&Atom::insertion_code, std::to_array<std::string>({"", "", "", "", "", "", "", "", "", "", "", ""}), mol2());
 }
 
 TEST_F(Mol2MolfileReaderTest, ResID)
@@ -588,6 +598,11 @@ TEST_F(PSFMolfileReaderTest, Charge)
 TEST_F(PSFMolfileReaderTest, AlternateLocation)
 {
     test_property(&Atom::altloc, std::to_array<std::string>({"", "", "", "", "", ""}), psf());
+}
+
+TEST_F(PSFMolfileReaderTest, InsertionCode)
+{
+    test_property(&Atom::insertion_code, std::to_array<std::string>({" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "}), psf());
 }
 
 TEST_F(PSFMolfileReaderTest, ResID)

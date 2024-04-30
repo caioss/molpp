@@ -54,6 +54,9 @@ public:
     std::string altloc() const;
     void set_altloc(std::string const &altloc);
 
+    std::string insertion_code() const;
+    void set_insertion_code(std::string const &insertion_code);
+
     std::shared_ptr<Bond> add_bond(index_t const bonded_to);
     std::shared_ptr<Bond> add_bond(Atom const &bonded_to);
     std::shared_ptr<Bond> bond(index_t const other);

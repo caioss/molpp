@@ -213,6 +213,11 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
             atom.set_atomic(mol_atom.atomicnumber);
         }
 
+        if (flags & MOLFILE_INSERTION)
+        {
+            atom.set_insertion_code(mol_atom.insertion);
+        }
+
         // Detect residues
         mol_data->atoms().residue(i) = residues.register_atom(mol_atom.resid, mol_atom.resname, mol_atom.segid, mol_atom.chain);
     }

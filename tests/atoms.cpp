@@ -68,4 +68,5 @@ TEST(Atoms, AtomData) {
     EXPECT_EQ(props.name(0), "");
     EXPECT_EQ(props.type(0), "");
     EXPECT_EQ(props.altloc(0), "");
+    EXPECT_EQ(props.insertion_code(0), "");
 }

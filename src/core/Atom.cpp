@@ -124,6 +124,16 @@ void Atom::set_altloc(std::string const &altloc)
     data()->atoms().altloc(index()) = altloc;
 }
 
+std::string mol::Atom::insertion_code() const
+{
+    return data()->atoms().insertion_code(index());
+}
+
+void mol::Atom::set_insertion_code(std::string const& insertion_code)
+{
+    data()->atoms().insertion_code(index()) = insertion_code;
+}
+
 std::shared_ptr<Bond> Atom::add_bond(index_t const bonded_to)
 {
     if (bonded_to == index())

@@ -23,7 +23,8 @@ public:
       m_radius(num_atoms, 0),
       m_name(num_atoms),
       m_type(num_atoms),
-      m_altloc(num_atoms)
+      m_altloc(num_atoms),
+      m_insertion_code(num_atoms)
     {}
 
     size_t size() const { return m_num_atoms; }
@@ -47,6 +48,8 @@ public:
     std::string const &type(index_t const index) const { return m_type[index]; }
     std::string &altloc(index_t const index) { return m_altloc[index]; }
     std::string const &altloc(index_t const index) const { return m_altloc[index]; }
+    std::string &insertion_code(index_t const index) { return m_insertion_code[index]; }
+    std::string const &insertion_code(index_t const index) const { return m_insertion_code[index]; }
 
 private:
     size_t m_num_atoms;
@@ -60,6 +63,7 @@ private:
     std::vector<std::string> m_name;
     std::vector<std::string> m_type;
     std::vector<std::string> m_altloc;
+    std::vector<std::string> m_insertion_code;
 };
 
 } // namespace mol::internal
