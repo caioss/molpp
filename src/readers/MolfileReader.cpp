@@ -226,12 +226,12 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
     if (has_bonds())
     {
         int num_bonds = 0, num_types = 0;
-        int *from = nullptr, *to = nullptr, *type = nullptr;
+        int *from = nullptr, *to = nullptr, *bond_type = nullptr;
         float *order = nullptr;
         char **type_name = nullptr;
 
         int rc = m_plugin->read_bonds(m_handle, &num_bonds, &from, &to, &order,
-                                      &type, &num_types, &type_name);
+                                      &bond_type, &num_types, &type_name);
         if (rc == MOLFILE_SUCCESS && num_bonds > 0)
         {
             BondData &bond_graph = mol_data->bonds();
@@ -246,20 +246,21 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
                 }
 
                 bond->set_guessed(false);
+                bond->set_order(1);
+                bond->set_guessed_order(true);
                 if (order)
                 {
-                    float const atom_order = order[i];
-                    if (atom_order > 1 && atom_order < 2)
+                    bond->set_guessed_order(false);
+                    float const bond_order = order[i];
+                    if (bond_order > 1 && bond_order < 2)
                     {
                         bond->set_order(0);
                         bond->set_aromatic(true);
                     }
                     else
                     {
-                        bond->set_order(atom_order);
-                        bond->set_guessed_order(false);
+                        bond->set_order(bond_order);
                     }
-
                 }
             }
         }

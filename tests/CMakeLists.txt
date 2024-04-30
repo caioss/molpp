@@ -5,7 +5,6 @@ add_executable(tests
     test_MolfileReader.cpp
     test_MolData.cpp
     test_AtomAggregate.cpp
-    test_auxiliary.cpp
     test_Graph.cpp
     test_SimpleGraph.cpp
     test_BreadthFirstTraversal.cpp
@@ -15,7 +14,6 @@ add_executable(tests
     atomaggregates.cpp
     selections.cpp
     selectors.cpp
-    readers.cpp
     system.cpp
     bonds.cpp
     tools.cpp

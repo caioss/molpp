@@ -6,7 +6,6 @@ target_sources(molpp
             HEADERS
         FILES
             molpp/MolError.hpp
-            molpp/Property.hpp
             molpp/Timestep.hpp
             molpp/MolSystem.hpp
             molpp/Residue.hpp
@@ -22,16 +21,13 @@ target_sources(molpp
             molpp/Molpp
             molpp/Bond.hpp
             molpp/AtomSelector.hpp
-            molpp/internal/PropertyContainer.hpp
             molpp/internal/SelIndex.hpp
             molpp/internal/MolData.hpp
             molpp/internal/AtomData.hpp
             molpp/internal/VectorView.hpp
             molpp/internal/AtomAggregate.hpp
             molpp/internal/BondData.hpp
-            molpp/internal/Topology.hpp
             molpp/internal/ResidueData.hpp
             molpp/internal/Sel.hpp
             molpp/internal/requirements.hpp
-            molpp/internal/PropertyTrajectory.hpp
 )

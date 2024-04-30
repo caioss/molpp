@@ -61,7 +61,7 @@ public:
     : m_data{data}
     , m_index{sel_index}
     {
-        if (m_data->properties().num_frames())
+        if (m_data->trajectory().num_frames())
         {
             m_frame = 0;
         }
@@ -92,7 +92,7 @@ public:
 
     void set_frame(Frame const frame)
     {
-        if (frame && frame >= m_data->properties().num_frames())
+        if (frame && frame >= m_data->trajectory().num_frames())
         {
             throw mol::MolError("Out of bounds frame: " + std::to_string(*frame));
         }
@@ -161,13 +161,7 @@ public:
     coords_type coords()
     {
         Derived &derived = static_cast<Derived &>(*this);
-        return timestep().coords()(Eigen::all, derived.atom_indices());
-    }
-
-    coords_type coords()
-    {
-        Derived &derived = static_cast<Derived &>(*this);
-        return timestep().coords()(Eigen::all, derived.atom_indices());
+        return m_data->trajectory().timestep(frame().value()).coords()(Eigen::all, derived.atom_indices());
     }
 
     Derived bonded()
@@ -185,30 +179,6 @@ public:
         Derived &derived = static_cast<Derived &>(*this);
         auto atom_indices = derived.atom_indices();
         return m_data->bonds().bonds(atom_indices.begin(), atom_indices.end());
-    }
-
-    template <IsProperty PropertyType>
-    bool has()
-    {
-        return property<PropertyType>();
-    }
-
-    template <IsProperty PropertyType>
-    bool has() const
-    {
-        return property<PropertyType>();
-    }
-
-    template <IsProperty PropertyType>
-    PropertyType* property()
-    {
-        return m_data->properties().template get<Type, PropertyType>(frame());
-    }
-
-    template <IsProperty PropertyType>
-    PropertyType const* property() const
-    {
-        return m_data->properties().template get<Type, PropertyType>(frame());
     }
 
 protected:
