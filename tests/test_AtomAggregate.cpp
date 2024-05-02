@@ -94,20 +94,3 @@ TEST_F(AtomAggregateTest, SetOutOfRangeFrame)
 {
     EXPECT_THROW(aggregate.set_frame(1), MolError);
 }
-
-TEST_F(AtomAggregateTest, Positions)
-{
-    EXPECT_THAT(aggregate.coords().reshaped(), ElementsAre(1, 1, 1));
-    EXPECT_THAT(const_aggregate.coords().reshaped(), ElementsAre(1, 1, 1));
-}
-
-TEST_F(AtomAggregateTest, Bonds)
-{
-    std::vector<std::pair<index_t, index_t>> bonds_indices;
-    for (std::shared_ptr<Bond> bond : aggregate.bonds())
-    {
-        bonds_indices.push_back(std::make_pair<index_t, index_t>(bond->atom1(), bond->atom2()));
-    }
-
-    EXPECT_THAT(bonds_indices, UnorderedElementsAre(Pair(0, 1), Pair(1, 2)));
-}

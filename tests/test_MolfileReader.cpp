@@ -267,7 +267,7 @@ TEST_P(MolfileReaderReadTrajectoryTest, Read)
     {
         AtomSel sel(data.get());
         sel.set_frame(frame);
-        EXPECT_THAT(sel.coords().reshaped(), Pointwise(FloatNear(1e-5), expected_positions[frame])) << "Frame " << frame;
+        EXPECT_THAT(sel.positions().reshaped(), Pointwise(FloatNear(1e-5), expected_positions[frame])) << "Frame " << frame;
     }
 }
 

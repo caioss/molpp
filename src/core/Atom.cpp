@@ -167,3 +167,9 @@ std::vector<index_t> Atom::atom_indices() const
 {
     return {index()};
 }
+
+std::vector<std::shared_ptr<Bond>> mol::Atom::bonds()
+{
+    std::vector<index_t> const& indices = atom_indices();
+    return data()->bonds().bonds(indices.begin(), indices.end());
+}

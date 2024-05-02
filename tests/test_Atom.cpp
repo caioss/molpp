@@ -176,16 +176,16 @@ TEST_F(AtomTest, ChainProperty)
 
 TEST_F(AtomTest, Coordinates)
 {
-    EXPECT_THAT(const_atom.coords().reshaped(), ElementsAre(1, 1, 1));
-    EXPECT_THAT(atom.coords().reshaped(), ElementsAre(1, 1, 1));
-    atom.coords() *= 2;
-    EXPECT_THAT(atom.coords().reshaped(), ElementsAre(2, 2, 2));
+    EXPECT_THAT(const_atom.position().reshaped(), ElementsAre(1, 1, 1));
+    EXPECT_THAT(atom.position().reshaped(), ElementsAre(1, 1, 1));
+    atom.position() *= 2;
+    EXPECT_THAT(atom.position().reshaped(), ElementsAre(2, 2, 2));
 }
 
 TEST_F(AtomTest, CoordinatesOnInvalidFrame)
 {
     ASSERT_FALSE(atom_no_frame.frame());
-    EXPECT_THROW(atom_no_frame.coords(), MolError);
+    EXPECT_THROW(atom_no_frame.position(), MolError);
 }
 
 TEST_F(AtomTest, AddValidBond)
@@ -217,8 +217,11 @@ TEST_F(AtomTest, AddBondFromRValue)
 
 TEST_F(AtomTest, BondsList)
 {
-    auto bonds_list = atom_no_frame.bonds();
-    ASSERT_EQ(bonds_list.size(), 1);
-    EXPECT_EQ(bonds_list[0]->atom1(), 0);
-    EXPECT_EQ(bonds_list[0]->atom2(), 1);
+    std::vector<std::pair<index_t, index_t>> bonds_indices;
+    for (std::shared_ptr<Bond> bond : atom.bonds())
+    {
+        bonds_indices.push_back(std::make_pair<index_t, index_t>(bond->atom1(), bond->atom2()));
+    }
+
+    EXPECT_THAT(bonds_indices, UnorderedElementsAre(Pair(0, 1), Pair(1, 2)));
 }

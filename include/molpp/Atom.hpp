@@ -64,6 +64,26 @@ public:
     std::shared_ptr<Bond> bond(Atom const& other);
 
     std::vector<index_t> atom_indices() const;
+
+    auto position()
+    {
+        if (!frame())
+        {
+            throw mol::MolError("Invalid frame");
+        }
+        return data()->trajectory().timestep(*frame()).coords().col(index());
+    }
+
+    auto position() const
+    {
+        if (!frame())
+        {
+            throw mol::MolError("Invalid frame");
+        }
+        return data()->trajectory().timestep(*frame()).coords().col(index());
+    }
+
+    std::vector<std::shared_ptr<Bond>> bonds();
 };
 
 } // namespace mol

@@ -3,6 +3,7 @@
 
 #include <molpp/internal/Sel.hpp>
 #include <molpp/Atom.hpp>
+
 #include <vector>
 
 namespace mol
@@ -15,6 +16,14 @@ class AtomSel : public internal::Sel<Atom, AtomSel>
 public:
     AtomSel() = delete;
     using internal::Sel<Atom, AtomSel>::Sel;
+
+    auto positions()
+    {
+        return data()->trajectory().timestep(*frame()).coords()(Eigen::all, indices());
+    }
+
+    AtomSel bonded();
+    std::vector<std::shared_ptr<mol::Bond>> bonds();
 
 protected:
     static size_t data_size(internal::MolData const& data);

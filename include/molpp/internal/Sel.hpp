@@ -58,7 +58,6 @@ public:
     using value_type = Type;
     using iterator = Iterator<Type>;
     using const_iterator = Iterator<const Type>;
-    using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<index_t>>;
 
     Sel() = delete;
     Sel(Sel&&) = default;
@@ -166,29 +165,6 @@ public:
             throw mol::MolError("Atom index " + std::to_string(index) + " not found in the selection");
         }
         return Type(index, frame(), m_data);
-    }
-
-    coords_type coords()
-    {
-        Derived& derived = static_cast<Derived&>(*this);
-        return m_data->trajectory().timestep(frame().value()).coords()(Eigen::all, derived.atom_indices());
-    }
-
-    Derived bonded()
-    {
-        Derived& derived = static_cast<Derived&>(*this);
-        auto atom_indices = derived.atom_indices();
-        std::vector<index_t> bonded_atoms = m_data->bonds().bonded(atom_indices.begin(), atom_indices.end());
-        Derived sel(Derived::from_atom_indices(bonded_atoms, *m_data), m_data);
-        sel.set_frame(frame());
-        return sel;
-    }
-
-    std::vector<std::shared_ptr<mol::Bond>> bonds()
-    {
-        Derived& derived = static_cast<Derived&>(*this);
-        auto atom_indices = derived.atom_indices();
-        return m_data->bonds().bonds(atom_indices.begin(), atom_indices.end());
     }
 
 protected:
