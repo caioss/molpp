@@ -19,18 +19,21 @@ using namespace mol::internal;
 class MolfilePlugins
 {
 public:
-    MolfilePlugins(MolfilePlugins const &) = delete;
-    void operator=(MolfilePlugins const &) = delete;
-    static MolfilePlugins &getInstance()
+    MolfilePlugins(MolfilePlugins const&) = delete;
+    void operator=(MolfilePlugins const&) = delete;
+
+    static MolfilePlugins& getInstance()
     {
         static MolfilePlugins instance;
         return instance;
     }
-    molfile_plugin_t *find_plugin(std::string file_ext)
+
+    molfile_plugin_t* find_plugin(std::string file_ext)
     {
         auto it = m_extensions.find(file_ext);
         return (it == m_extensions.end()) ? nullptr : it->second;
     }
+
     bool has_extension(std::string file_ext)
     {
         return m_extensions.count(file_ext);
@@ -40,16 +43,20 @@ private:
     MolfilePlugins()
     {
         // Register plugins
-        if (pdbplugin_init() == VMDPLUGIN_SUCCESS) pdbplugin_register(this, register_cb);
-        if (mol2plugin_init() == VMDPLUGIN_SUCCESS) mol2plugin_register(this, register_cb);
-        if (psfplugin_init() == VMDPLUGIN_SUCCESS) psfplugin_register(this, register_cb);
-        if (gromacsplugin_init() == VMDPLUGIN_SUCCESS) gromacsplugin_register(this, register_cb);
+        if (pdbplugin_init() == VMDPLUGIN_SUCCESS)
+            pdbplugin_register(this, register_cb);
+        if (mol2plugin_init() == VMDPLUGIN_SUCCESS)
+            mol2plugin_register(this, register_cb);
+        if (psfplugin_init() == VMDPLUGIN_SUCCESS)
+            psfplugin_register(this, register_cb);
+        if (gromacsplugin_init() == VMDPLUGIN_SUCCESS)
+            gromacsplugin_register(this, register_cb);
 
         // Register extensions
         std::regex regexz(",");
         std::sregex_token_iterator end;
 
-        for (molfile_plugin_t *plugin : m_plugins)
+        for (molfile_plugin_t* plugin : m_plugins)
         {
             std::string const plugin_ext(plugin->filename_extension);
             std::sregex_token_iterator ext_iter(plugin_ext.begin(), plugin_ext.end(), regexz, -1);
@@ -60,26 +67,25 @@ private:
         }
     }
 
-    static int register_cb(void *c_pointer, vmdplugin_t *p)
+    static int register_cb(void* c_pointer, vmdplugin_t* p)
     {
         if (p == nullptr)
         {
             return VMDPLUGIN_ERROR;
         }
-        MolfilePlugins *self = static_cast<MolfilePlugins *>(c_pointer);
-        molfile_plugin_t *plugin = (molfile_plugin_t *)p;
+        MolfilePlugins* self = static_cast<MolfilePlugins*>(c_pointer);
+        molfile_plugin_t* plugin = (molfile_plugin_t*)p;
         self->m_plugins.push_back(plugin);
         return VMDPLUGIN_SUCCESS;
     }
 
-    std::vector<molfile_plugin_t *> m_plugins;
-    std::unordered_multimap<std::string, molfile_plugin_t *> m_extensions;
-
+    std::vector<molfile_plugin_t*> m_plugins;
+    std::unordered_multimap<std::string, molfile_plugin_t*> m_extensions;
 };
 
-MolfileReader::MolfileReader(std::string const &file_ext)
-: m_num_atoms { 0 },
-  m_handle { nullptr }
+MolfileReader::MolfileReader(std::string const& file_ext)
+: m_num_atoms{0}
+, m_handle{nullptr}
 {
     // Find correspondent plugin
     m_plugin = MolfilePlugins::getInstance().find_plugin(file_ext);
@@ -95,7 +101,7 @@ MolfileReader::~MolfileReader()
     close();
 }
 
-bool MolfileReader::can_read(const std::string &file_ext)
+bool MolfileReader::can_read(std::string const& file_ext)
 {
     return MolfilePlugins::getInstance().has_extension(file_ext);
 }
@@ -120,7 +126,7 @@ bool MolfileReader::has_bonds() const
     return m_plugin->read_bonds != nullptr;
 }
 
-MolReader::Status MolfileReader::open(const std::string &file_name)
+MolReader::Status MolfileReader::open(std::string const& file_name)
 {
     if (m_handle)
     {
@@ -172,7 +178,7 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
         /*
          * Atoms properties
          */
-        molfile_atom_t const &mol_atom = molfile_atoms[i];
+        molfile_atom_t const& mol_atom = molfile_atoms[i];
 
         Atom atom(i, {}, mol_data.get());
         atom.set_name(mol_atom.name);
@@ -232,14 +238,14 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
     {
         int num_bonds = 0, num_types = 0;
         int *from = nullptr, *to = nullptr, *bond_type = nullptr;
-        float *order = nullptr;
-        char **type_name = nullptr;
+        float* order = nullptr;
+        char** type_name = nullptr;
 
         int rc = m_plugin->read_bonds(m_handle, &num_bonds, &from, &to, &order,
                                       &bond_type, &num_types, &type_name);
         if (rc == MOLFILE_SUCCESS && num_bonds > 0)
         {
-            BondData &bond_graph = mol_data->bonds();
+            BondData& bond_graph = mol_data->bonds();
             bond_graph.set_incomplete(flags & MOLFILE_BONDSSPECIAL);
 
             for (index_t i = 0; i < (size_t)num_bonds; ++i)

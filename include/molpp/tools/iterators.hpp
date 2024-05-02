@@ -1,17 +1,18 @@
-#ifndef ITERATORS_HPP
-#define ITERATORS_HPP
+#ifndef MOLPP_TOOLS_ITERATORS_HPP
+#define MOLPP_TOOLS_ITERATORS_HPP
 
-namespace mol::internal {
+namespace mol::internal
+{
 
-template <class Iterator>
+template<class Iterator>
 class IteratorWrapper
 {
 public:
     using iterator_category = typename Iterator::iterator_category;
     using difference_type = typename Iterator::difference_type;
     using value_type = typename Iterator::value_type;
-    using pointer = value_type *;
-    using reference = value_type &;
+    using pointer = value_type*;
+    using reference = value_type&;
 
     IteratorWrapper(Iterator iterator)
     : m_iterator(iterator)
@@ -35,12 +36,12 @@ public:
         return m_iterator - other.m_iterator;
     }
 
-    bool operator==(IteratorWrapper const &other) const
+    bool operator==(IteratorWrapper const& other) const
     {
         return m_iterator == other.m_iterator;
     };
 
-    bool operator!=(IteratorWrapper const &other) const
+    bool operator!=(IteratorWrapper const& other) const
     {
         return !(m_iterator == other.m_iterator);
     };
@@ -51,4 +52,4 @@ protected:
 
 } // namespace mol::internal
 
-#endif // ITERATORS_HPP
+#endif // MOLPP_TOOLS_ITERATORS_HPP

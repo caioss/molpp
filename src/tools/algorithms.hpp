@@ -1,5 +1,5 @@
-#ifndef ALGORITHMS_HPP
-#define ALGORITHMS_HPP
+#ifndef MOLPP_TOOLS_ALGORITHMS_HPP
+#define MOLPP_TOOLS_ALGORITHMS_HPP
 
 #include <list>
 #include <queue>
@@ -114,7 +114,7 @@ public:
                 continue;
             }
 
-            bfs.run(start, [](auto){return false;}, filter);
+            bfs.run(start, [](auto){ return false; }, filter);
 
             for (auto const& node : bfs.visited())
             {
@@ -139,4 +139,4 @@ private:
 
 } // namespace mol::internal
 
-#endif // ALGORITHMS_HPP
+#endif // MOLPP_TOOLS_ALGORITHMS_HPP

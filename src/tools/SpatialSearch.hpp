@@ -1,15 +1,17 @@
-#ifndef SPATIALSEARCH_HPP
-#define SPATIALSEARCH_HPP
+#ifndef MOLPP_TOOLS_SPATIALSEARCH_HPP
+#define MOLPP_TOOLS_SPATIALSEARCH_HPP
 
 #include <molpp/MolppCore.hpp>
 #include <vector>
 #include <utility>
 #include <cstdlib>
 
-namespace mol::internal {
+namespace mol::internal
+{
 
-template <typename T>
-class SpatialSearch {
+template<typename T>
+class SpatialSearch
+{
 public:
     using index_t = ptrdiff_t;
 
@@ -20,13 +22,14 @@ private:
 
 public:
     SpatialSearch() = delete;
-    SpatialSearch(SpatialSearch const &other) = delete;
-    SpatialSearch &operator=(SpatialSearch const &other) = delete;
-    SpatialSearch(SpatialSearch &&other) = delete;
-    SpatialSearch &operator=(SpatialSearch &&other) = delete;
-    SpatialSearch(T const &points, float const cell_size)
-    : m_cell_size(cell_size),
-      m_points{points}
+    SpatialSearch(SpatialSearch const& other) = delete;
+    SpatialSearch& operator=(SpatialSearch const& other) = delete;
+    SpatialSearch(SpatialSearch&& other) = delete;
+    SpatialSearch& operator=(SpatialSearch&& other) = delete;
+
+    SpatialSearch(T const& points, float const cell_size)
+    : m_cell_size(cell_size)
+    , m_points{points}
     {
         update();
     }
@@ -47,7 +50,7 @@ public:
         {
         {
             cell_index_t const current_index{cell_x, cell_y, cell_z};
-            cell_t const &current_data = m_cells[m_strides * current_index];
+            cell_t const& current_data = m_cells[m_strides * current_index];
 
             for (index_t dz = -num_layers; dz <= num_layers; dz++)
             for (index_t dy = -num_layers; dy <= num_layers; dy++)
@@ -159,35 +162,33 @@ private:
         }
     }
 
-    cell_index_t index(Point3 const &point) const
+    cell_index_t index(Point3 const& point) const
     {
         return ((point - m_origin) / m_cell_size).array().floor().cast<index_t>();
     }
 
-    cell_index_t clamped_index(Point3 const &point) const
+    cell_index_t clamped_index(Point3 const& point) const
     {
         return index(point).cwiseMax(cell_index_t{1, 1, 1}).cwiseMin(m_max_clamp);
     }
 
-    void find_cells_pairs(std::vector<std::tuple<index_t, index_t, float>> &pairs_list, cell_t const &current, cell_t const &neighbor, float const cutoff2) const
+    void find_cells_pairs(std::vector<std::tuple<index_t, index_t, float>>& pairs_list, cell_t const& current, cell_t const& neighbor, float const cutoff2) const
     {
         for (index_t const i : current)
-        for (index_t const j : neighbor)
-        {
-        {
-            if (i <= j)
+            for (index_t const j : neighbor)
             {
-                // Avoid duplicates
-                continue;
-            }
+                if (i <= j)
+                {
+                    // Avoid duplicates
+                    continue;
+                }
 
-            float distance = (m_points.col(i) - m_points.col(j)).squaredNorm();
-            if (distance <= cutoff2)
-            {
-                pairs_list.push_back(std::tuple(i, j, distance));
+                float distance = (m_points.col(i) - m_points.col(j)).squaredNorm();
+                if (distance <= cutoff2)
+                {
+                    pairs_list.push_back(std::tuple(i, j, distance));
+                }
             }
-        }
-        }
     }
 
     float m_cell_size;
@@ -195,10 +196,10 @@ private:
     cell_index_t m_grid_size;
     cell_index_t m_max_clamp;
     stride_t m_strides;
-    T const &m_points;
+    T const& m_points;
     std::vector<cell_t> m_cells;
 };
 
 } // namespace mol::internal
 
-#endif // SPATIALSEARCH_HPP
+#endif // MOLPP_TOOLS_SPATIALSEARCH_HPP

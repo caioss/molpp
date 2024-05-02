@@ -1,11 +1,12 @@
-#ifndef RESIDUEDETECT_HPP
-#define RESIDUEDETECT_HPP
+#ifndef MOLPP_READERS_RESIDUEDETECT_HPP
+#define MOLPP_READERS_RESIDUEDETECT_HPP
 
 #include <molpp/internal/MolData.hpp>
 #include <map>
 #include <string>
 
-namespace mol::internal {
+namespace mol::internal
+{
 
 class ResidueDetect
 {
@@ -31,13 +32,9 @@ public:
     : m_iterator{m_residues.end()}
     {}
 
-    index_t register_atom(int const resid, std::string const &resname, std::string const &segid, std::string const chain)
+    index_t register_atom(int const resid, std::string const& resname, std::string const& segid, std::string const chain)
     {
-        if (m_iterator == m_residues.end()
-            || m_current.resid != resid
-            || m_current.resname != resname
-            || m_current.segid != segid
-            || m_current.chain != chain)
+        if (m_iterator == m_residues.end() || m_current.resid != resid || m_current.resname != resname || m_current.segid != segid || m_current.chain != chain)
         {
             index_t const index = m_residues.size();
             m_current = {index, 0, resid, resname, segid, chain};
@@ -46,18 +43,18 @@ public:
             m_iterator = m_residues.insert(std::pair(key, m_current)).first;
         }
 
-        Residue &residue = m_iterator->second;
+        Residue& residue = m_iterator->second;
         residue.count++;
         return residue.index;
     }
 
     void update_residue_data(MolData& mol_data) const
     {
-        ResidueData &residues_data = mol_data.residues();
+        ResidueData& residues_data = mol_data.residues();
         residues_data.resize(m_residues.size());
-        for (auto const &item : m_residues)
+        for (auto const& item : m_residues)
         {
-            Residue const &residue = item.second;
+            Residue const& residue = item.second;
             residues_data.reset(residue.index, residue.count);
             residues_data.set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
         }
@@ -72,4 +69,4 @@ public:
 
 } // namespace mol::internal
 
-#endif // RESIDUEDETECT_HPP
+#endif // MOLPP_READERS_RESIDUEDETECT_HPP

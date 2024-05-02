@@ -11,7 +11,7 @@
 using namespace mol;
 using namespace mol::internal;
 
-MolSystem::MolSystem(std::string const &topology)
+MolSystem::MolSystem(std::string const& topology)
 {
     auto reader = MolReader::from_file_ext(std::filesystem::path(topology).extension());
     if (!reader)

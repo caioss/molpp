@@ -1,5 +1,5 @@
-#ifndef RESIDUEDATA_HPP
-#define RESIDUEDATA_HPP
+#ifndef MOLPP_INTERNAL_RESIDUEDATA_HPP
+#define MOLPP_INTERNAL_RESIDUEDATA_HPP
 
 #include <molpp/tools/iterators.hpp>
 
@@ -8,7 +8,8 @@
 #include <ranges>
 #include <unordered_set>
 
-namespace mol::internal {
+namespace mol::internal
+{
 
 class ResidueData
 {
@@ -39,7 +40,7 @@ public:
         return m_indices[index].size();
     }
 
-    int &resid(index_t const index)
+    int& resid(index_t const index)
     {
         return m_resid[index];
     }
@@ -49,7 +50,7 @@ public:
         return m_resid[index];
     }
 
-    std::string &resname(index_t const index)
+    std::string& resname(index_t const index)
     {
         return m_resname[index];
     }
@@ -59,7 +60,7 @@ public:
         return m_resname[index];
     }
 
-    std::string &segid(index_t const index)
+    std::string& segid(index_t const index)
     {
         return m_segid[index];
     }
@@ -69,7 +70,7 @@ public:
         return m_segid[index];
     }
 
-    std::string &chain(index_t const index)
+    std::string& chain(index_t const index)
     {
         return m_chain[index];
     }
@@ -93,9 +94,9 @@ public:
         return std::ranges::views::all(m_indices[index]);
     }
 
-    void reset(index_t const index, size_t const new_size=0)
+    void reset(index_t const index, size_t const new_size = 0)
     {
-        indices_type &residue = m_indices[index];
+        indices_type& residue = m_indices[index];
         residue.clear();
         residue.reserve(new_size);
     }
@@ -120,4 +121,4 @@ private:
 
 } // namespace mol::internal
 
-#endif // RESIDUEDATA_HPP
+#endif // MOLPP_INTERNAL_RESIDUEDATA_HPP

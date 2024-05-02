@@ -4,8 +4,8 @@
 using namespace mol;
 
 ElementsTable::ElementsTable(std::initializer_list<Element> data)
-: m_max_vdw{0},
-  m_max_covalent{0}
+: m_max_vdw{0}
+, m_max_covalent{0}
 {
     m_atomic.reserve(data.size());
     m_mass.reserve(data.size());
@@ -14,7 +14,7 @@ ElementsTable::ElementsTable(std::initializer_list<Element> data)
     m_symbol.reserve(data.size());
     m_name.reserve(data.size());
 
-    for (Element const &element : data)
+    for (Element const& element : data)
     {
         m_atomic.push_back(element.atomic_number);
         m_mass.push_back(element.mass);

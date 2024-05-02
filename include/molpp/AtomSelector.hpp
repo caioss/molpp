@@ -1,16 +1,18 @@
-#ifndef ATOMSELECTOR_HPP
-#define ATOMSELECTOR_HPP
+#ifndef MOLPP_ATOMSELECTOR_HPP
+#define MOLPP_ATOMSELECTOR_HPP
 
 #include <molpp/MolppCore.hpp>
 #include <molpp/AtomSel.hpp>
 #include <memory>
 
-namespace mol {
+namespace mol
+{
 
-namespace internal {
+namespace internal
+{
 class MolData;
 class SelectionNode;
-}
+} // namespace internal
 
 class AtomSelector
 {
@@ -28,4 +30,4 @@ private:
 
 } // namespace mol
 
-#endif // ATOMSELECTOR_HPP
+#endif // MOLPP_ATOMSELECTOR_HPP

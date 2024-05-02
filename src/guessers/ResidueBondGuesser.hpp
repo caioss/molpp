@@ -1,16 +1,18 @@
-#ifndef RESIDUEBONDGUESSER_HPP
-#define RESIDUEBONDGUESSER_HPP
+#ifndef MOLPP_GUESSERS_RESIDUEBONDGUESSER_HPP
+#define MOLPP_GUESSERS_RESIDUEBONDGUESSER_HPP
 
-namespace mol {
+namespace mol
+{
 
 class ResidueSel;
 
-namespace internal {
+namespace internal
+{
 
 class ResidueBondGuesser
 {
 public:
-    void apply(ResidueSel &residues) const;
+    void apply(ResidueSel& residues) const;
 
 private:
 };
@@ -18,4 +20,4 @@ private:
 } // namespace internal
 } // namespace mol
 
-#endif // RESIDUEBONDGUESSER_HPP
+#endif // MOLPP_GUESSERS_RESIDUEBONDGUESSER_HPP

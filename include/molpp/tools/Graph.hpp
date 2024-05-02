@@ -1,5 +1,5 @@
-#ifndef GRAPH_HPP
-#define GRAPH_HPP
+#ifndef MOLPP_TOOLS_GRAPH_HPP
+#define MOLPP_TOOLS_GRAPH_HPP
 
 #include <list>
 #include <ranges>
@@ -132,4 +132,4 @@ private:
 
 } // namespace mol::internal
 
-#endif // GRAPH_HPP
+#endif // MOLPP_TOOLS_GRAPH_HPP

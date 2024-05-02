@@ -1,10 +1,11 @@
-#ifndef TRAJECTORY_HPP
-#define TRAJECTORY_HPP
+#ifndef MOLPP_TRAJECTORY_HPP
+#define MOLPP_TRAJECTORY_HPP
 
 #include <molpp/Timestep.hpp>
 #include <vector>
 
-namespace mol {
+namespace mol
+{
 
 class Trajectory
 {
@@ -12,19 +13,22 @@ public:
     Trajectory()
     {}
 
-    size_t num_frames() const {
+    size_t num_frames() const
+    {
         return m_timestep.size();
     }
 
-    Timestep &timestep(size_t const index) {
+    Timestep& timestep(size_t const index)
+    {
         return m_timestep[index];
     }
 
-    Timestep const& timestep(size_t const index) const {
+    Timestep const& timestep(size_t const index) const
+    {
         return m_timestep[index];
     }
 
-    void add_timestep(Timestep &&ts)
+    void add_timestep(Timestep&& ts)
     {
         m_timestep.push_back(std::forward<Timestep>(ts));
     }
@@ -35,4 +39,4 @@ private:
 
 } // namespace mol
 
-#endif // TRAJECTORY_HPP
+#endif // MOLPP_TRAJECTORY_HPP

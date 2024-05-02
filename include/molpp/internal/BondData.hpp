@@ -1,5 +1,5 @@
-#ifndef BONDGRAPH_HPP
-#define BONDGRAPH_HPP
+#ifndef MOLPP_INTERNAL_BONDGRAPH_HPP
+#define MOLPP_INTERNAL_BONDGRAPH_HPP
 
 #include <molpp/MolppCore.hpp>
 #include <molpp/tools/Graph.hpp>
@@ -9,7 +9,8 @@
 #include <memory>
 #include <unordered_set>
 
-namespace mol::internal {
+namespace mol::internal
+{
 
 class BondData
 {
@@ -17,13 +18,14 @@ public:
     BondData(size_t const num_atoms);
     BondData() = delete;
     BondData(BondData&&) = default;
-    BondData(const BondData &src) = delete;
-    BondData &operator=(const BondData &rhs) = delete;
+    BondData(BondData const& src) = delete;
+    BondData& operator=(BondData const& rhs) = delete;
 
     bool incomplete() const
     {
         return m_incomplete;
     }
+
     void set_incomplete(bool const incomplete);
 
     size_t size() const
@@ -31,9 +33,9 @@ public:
         return m_graph.edges_size();
     }
 
-    template <class Iterator>
+    template<class Iterator>
     std::vector<std::shared_ptr<Bond>> bonds(Iterator it, Iterator end);
-    template <class Iterator>
+    template<class Iterator>
     std::vector<index_t> bonded(Iterator it, Iterator end) const;
     std::vector<std::shared_ptr<Bond>> bonds(index_t const index);
     std::shared_ptr<Bond> bond(index_t const atom1, index_t const atom2);
@@ -46,7 +48,7 @@ private:
     Graph<index_t, std::shared_ptr<Bond>> m_graph;
 };
 
-template <class Iterator>
+template<class Iterator>
 std::vector<std::shared_ptr<Bond>> BondData::bonds(Iterator it, Iterator end)
 {
     std::unordered_set<std::shared_ptr<Bond>> indices;
@@ -58,7 +60,7 @@ std::vector<std::shared_ptr<Bond>> BondData::bonds(Iterator it, Iterator end)
     return std::vector<std::shared_ptr<Bond>>(indices.begin(), indices.end());
 }
 
-template <class Iterator>
+template<class Iterator>
 std::vector<index_t> BondData::bonded(Iterator it, Iterator end) const
 {
     std::unordered_set<index_t> indices;
@@ -77,4 +79,4 @@ std::vector<index_t> BondData::bonded(Iterator it, Iterator end) const
 
 } // namespace mol::internal
 
-#endif // BONDGRAPH_HPP
+#endif // MOLPP_INTERNAL_BONDGRAPH_HPP

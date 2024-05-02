@@ -1,11 +1,12 @@
-#ifndef MOLPPCORE_HPP
-#define MOLPPCORE_HPP
+#ifndef MOLPP_MOLPPCORE_HPP
+#define MOLPP_MOLPPCORE_HPP
 
 #include "MolError.hpp"
 #include <Eigen/Dense>
 #include <optional>
 
-namespace mol {
+namespace mol
+{
 
 // Substructure indexing (Atom, Residue, etc...)
 using index_t = size_t;
@@ -19,4 +20,4 @@ using Frame = std::optional<size_t>;
 
 }; // namespace mol
 
-#endif // MOLPPCORE_HPP
+#endif // MOLPP_MOLPPCORE_HPP

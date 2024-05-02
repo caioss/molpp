@@ -1,5 +1,5 @@
-#ifndef DSSP_HPP
-#define DSSP_HPP
+#ifndef MOLPP_ANALYSIS_DSSP_DSSP_HPP
+#define MOLPP_ANALYSIS_DSSP_DSSP_HPP
 
 #include <molpp/Atom.hpp>
 #include <molpp/MolSystem.hpp>
@@ -13,7 +13,8 @@ class Residue;
 namespace mol
 {
 
-enum SecondaryStructure {
+enum SecondaryStructure
+{
     Unknown,
     Loop,   //' '
     Helix,  // H
@@ -69,4 +70,4 @@ private:
 
 } // namespace mol
 
-#endif // DSSP_HPP
+#endif // MOLPP_ANALYSIS_DSSP_DSSP_HPP

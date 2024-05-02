@@ -1,16 +1,17 @@
-#ifndef VECTORVIEW_HPP
-#define VECTORVIEW_HPP
+#ifndef MOLPP_INTERNAL_VECTORVIEW_HPP
+#define MOLPP_INTERNAL_VECTORVIEW_HPP
 
 #include <ranges>
 #include <iterator>
 
-namespace mol {
+namespace mol
+{
 
-template <std::ranges::random_access_range Container, std::ranges::bidirectional_range Index>
+template<std::ranges::random_access_range Container, std::ranges::bidirectional_range Index>
 class SequenceView
 {
 private:
-    template <class ItValueType, std::bidirectional_iterator ItType>
+    template<class ItValueType, std::bidirectional_iterator ItType>
     class Iterator;
 
 public:
@@ -22,8 +23,8 @@ public:
     using const_iterator = Iterator<value_type const, typename Index::const_iterator>;
 
     SequenceView(Container& data, Index const& indices)
-    : m_data{data},
-      m_indices{indices}
+    : m_data{data}
+    , m_indices{indices}
     {}
 
     size_t size() const
@@ -65,7 +66,7 @@ private:
     Container& m_data;
     Index const& m_indices;
 
-    template <class ItValueType, std::bidirectional_iterator ItType>
+    template<class ItValueType, std::bidirectional_iterator ItType>
     class Iterator
     {
     public:
@@ -76,8 +77,8 @@ private:
         using reference = value_type&;
 
         Iterator(Container& data, ItType begin)
-        : m_data{data},
-          m_current{begin}
+        : m_data{data}
+        , m_current{begin}
         {}
 
         reference operator*() const
@@ -121,4 +122,4 @@ private:
 
 } // namespace mol
 
-#endif // VECTORVIEW_HPP
+#endif // MOLPP_INTERNAL_VECTORVIEW_HPP

@@ -1,11 +1,12 @@
-#ifndef ELEMENTSTABLE_HPP
-#define ELEMENTSTABLE_HPP
+#ifndef MOLPP_ELEMENTSTABLE_HPP
+#define MOLPP_ELEMENTSTABLE_HPP
 
 #include <vector>
 #include <string>
 #include <initializer_list>
 
-namespace mol {
+namespace mol
+{
 
 class ElementsTable
 {
@@ -22,32 +23,32 @@ public:
 
     ElementsTable(std::initializer_list<Element> data);
 
-    int const &atomic_number(int const atomic) const
+    int const& atomic_number(int const atomic) const
     {
         return m_atomic[atomic];
     }
 
-    float const &mass(int const atomic) const
+    float const& mass(int const atomic) const
     {
         return m_mass[atomic];
     }
 
-    float const &covalent_radius(int const atomic) const
+    float const& covalent_radius(int const atomic) const
     {
         return m_covalent[atomic];
     }
 
-    float const &VDW_radius(int const atomic) const
+    float const& VDW_radius(int const atomic) const
     {
         return m_vdw[atomic];
     }
 
-    std::string const &symbol(int const atomic) const
+    std::string const& symbol(int const atomic) const
     {
         return m_symbol[atomic];
     }
 
-    std::string const &name(int const atomic) const
+    std::string const& name(int const atomic) const
     {
         return m_name[atomic];
     }
@@ -84,4 +85,4 @@ ElementsTable const& ELEMENTS_TABLE();
 
 } // namespace mol
 
-#endif // ELEMENTSTABLE_HPP
+#endif // MOLPP_ELEMENTSTABLE_HPP

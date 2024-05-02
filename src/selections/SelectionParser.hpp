@@ -1,11 +1,12 @@
-#ifndef SELECTIONPARSER_HPP
-#define SELECTIONPARSER_HPP
+#ifndef MOLPP_SELECTIONS_SELECTIONPARSER_HPP
+#define MOLPP_SELECTIONS_SELECTIONPARSER_HPP
 
 #include <memory>
 #include <string>
 #include <peglib.h>
 
-namespace mol::internal {
+namespace mol::internal
+{
 
 class SelectionNode;
 
@@ -27,4 +28,4 @@ extern SelectionParser const SEL_PARSER;
 
 } // namespace mol::internal
 
-#endif // SELECTIONPARSER_HPP
+#endif // MOLPP_SELECTIONS_SELECTIONPARSER_HPP

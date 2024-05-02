@@ -42,6 +42,7 @@ double distance(mol::Point3 const& first, mol::Point3 const& second)
 {
     return (first - second).norm();
 }
+
 struct MBridge
 {
     dssp::BridgeType type;

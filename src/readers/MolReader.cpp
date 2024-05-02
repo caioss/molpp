@@ -4,7 +4,7 @@
 
 using namespace mol::internal;
 
-std::shared_ptr<MolReader> MolReader::from_file_ext(const std::string &file_ext)
+std::shared_ptr<MolReader> MolReader::from_file_ext(std::string const& file_ext)
 {
     if (MolfileReader::can_read(file_ext))
     {
@@ -14,7 +14,7 @@ std::shared_ptr<MolReader> MolReader::from_file_ext(const std::string &file_ext)
     return nullptr;
 }
 
-std::unique_ptr<MolData> MolReader::read_topology(std::string const &file_name)
+std::unique_ptr<MolData> MolReader::read_topology(std::string const& file_name)
 {
     if (!has_topology() || open(file_name) != SUCCESS)
     {
@@ -26,7 +26,7 @@ std::unique_ptr<MolData> MolReader::read_topology(std::string const &file_name)
     return mol_data;
 }
 
-MolReader::Status MolReader::read_trajectory(std::string const &file_name, MolData& atom_data, int begin, int end, int step)
+MolReader::Status MolReader::read_trajectory(std::string const& file_name, MolData& atom_data, int begin, int end, int step)
 {
     // Sanity checks
     if (!has_trajectory())

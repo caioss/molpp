@@ -1,5 +1,5 @@
-#ifndef RESIDUESTABLE_HPP
-#define RESIDUESTABLE_HPP
+#ifndef MOLPP_TABLES_RESIDUESTABLE_HPP
+#define MOLPP_TABLES_RESIDUESTABLE_HPP
 
 #include <molpp/MolppCore.hpp>
 #include <string>
@@ -7,7 +7,8 @@
 #include <unordered_map>
 #include <initializer_list>
 
-namespace mol::internal {
+namespace mol::internal
+{
 
 class ResiduesTable
 {
@@ -25,7 +26,7 @@ public:
         std::unordered_map<std::string, index_t> atoms;
         std::vector<Bond> bonds;
 
-        int atom_index(std::string const &name) const
+        int atom_index(std::string const& name) const
         {
             auto const atom_it = atoms.find(name);
             if (atom_it == atoms.end())
@@ -43,12 +44,12 @@ public:
         return m_max_atoms;
     }
 
-    bool contains(std::string const &resname) const
+    bool contains(std::string const& resname) const
     {
         return m_residues.contains(resname);
     }
 
-    Residue const &operator[](std::string const &resname) const
+    Residue const& operator[](std::string const& resname) const
     {
         return m_residues.at(resname);
     }
@@ -67,4 +68,4 @@ ResiduesTable const& RESIDUES_TABLE();
 
 } // namespace mol::internal
 
-#endif // RESIDUESTABLE_HPP
+#endif // MOLPP_TABLES_RESIDUESTABLE_HPP

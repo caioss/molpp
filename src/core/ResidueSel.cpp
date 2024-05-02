@@ -12,7 +12,7 @@ size_t ResidueSel::data_size(internal::MolData const& data)
 
 std::vector<index_t> ResidueSel::atom_indices() const
 {
-    ResidueData const &residues = data()->residues();
+    ResidueData const& residues = data()->residues();
     size_t num_atoms = 0;
     for (auto const res : indices())
     {

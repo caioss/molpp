@@ -1,5 +1,5 @@
-#ifndef ATOMAGGREGATE_HPP
-#define ATOMAGGREGATE_HPP
+#ifndef MOLPP_INTERNAL_ATOMAGGREGATE_HPP
+#define MOLPP_INTERNAL_ATOMAGGREGATE_HPP
 
 #include <molpp/internal/requirements.hpp>
 #include <memory>
@@ -7,9 +7,10 @@
 #include <concepts>
 #include <molpp/internal/MolData.hpp>
 
-namespace mol::internal {
+namespace mol::internal
+{
 
-template <class Derived>
+template<class Derived>
 class AtomAggregate
 {
 public:
@@ -25,11 +26,9 @@ public:
     , m_data{data}
     {}
 
-    bool operator==(AtomAggregate<Derived> const &other) const
+    bool operator==(AtomAggregate<Derived> const& other) const
     {
-        return m_data == other.m_data
-               && m_index == other.m_index
-               && m_frame == other.m_frame;
+        return m_data == other.m_data && m_index == other.m_index && m_frame == other.m_frame;
     }
 
     //! Index is always read-only
@@ -58,7 +57,7 @@ public:
         {
             throw mol::MolError("Invalid frame");
         }
-        Derived &derived = static_cast<Derived &>(*this);
+        Derived& derived = static_cast<Derived&>(*this);
         return m_data->trajectory().timestep(*m_frame).coords()(Eigen::all, std::forward<std::vector<index_t>>(derived.atom_indices()));
     }
 
@@ -74,7 +73,7 @@ public:
 
     std::vector<std::shared_ptr<Bond>> bonds()
     {
-        Derived &derived = static_cast<Derived &>(*this);
+        Derived& derived = static_cast<Derived&>(*this);
         std::vector<index_t> const& indices = derived.atom_indices();
         return m_data->bonds().bonds(indices.begin(), indices.end());
     }
@@ -101,10 +100,10 @@ private:
     Frame m_frame;
     internal::MolData* m_data;
 
-    template <class, class>
+    template<class, class>
     friend class Sel;
 };
 
 } // namespace mol::internal
 
-#endif // ATOMAGGREGATE_HPP
+#endif // MOLPP_INTERNAL_ATOMAGGREGATE_HPP

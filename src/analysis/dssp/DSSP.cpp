@@ -144,7 +144,6 @@ mol::DSSP::DSSP(MolSystem const& molecule)
         {
             m_num_prot_aa++;
         }
-
     }
 }
 
@@ -183,7 +182,7 @@ std::vector<mol::SecondaryStructure> mol::DSSP::secondary_structures() const
 
     for (SSResidue const& residue : m_residues)
     {
-            structures.push_back(residue.secondary_structure());
+        structures.push_back(residue.secondary_structure());
     }
 
     return structures;

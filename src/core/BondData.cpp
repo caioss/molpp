@@ -4,7 +4,7 @@ using namespace mol;
 using namespace mol::internal;
 
 BondData::BondData(size_t const num_atoms)
-: m_incomplete { true }
+: m_incomplete{true}
 {
     for (index_t i = 0; i < num_atoms; i++)
     {

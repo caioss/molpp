@@ -25,7 +25,7 @@ int Atom::atomic() const
     return data()->atoms().atomic(index());
 }
 
-void Atom::set_atomic(int const &atomic)
+void Atom::set_atomic(int const& atomic)
 {
     data()->atoms().atomic(index()) = atomic;
 }
@@ -35,7 +35,7 @@ float Atom::occupancy() const
     return data()->atoms().occupancy(index());
 }
 
-void Atom::set_occupancy(float const &occupancy)
+void Atom::set_occupancy(float const& occupancy)
 {
     data()->atoms().occupancy(index()) = occupancy;
 }
@@ -45,7 +45,7 @@ float Atom::tempfactor() const
     return data()->atoms().tempfactor(index());
 }
 
-void Atom::set_tempfactor(float const &tempfactor)
+void Atom::set_tempfactor(float const& tempfactor)
 {
     data()->atoms().tempfactor(index()) = tempfactor;
 }
@@ -55,7 +55,7 @@ float Atom::mass() const
     return data()->atoms().mass(index());
 }
 
-void Atom::set_mass(float const &mass)
+void Atom::set_mass(float const& mass)
 {
     data()->atoms().mass(index()) = mass;
 }
@@ -65,7 +65,7 @@ float Atom::charge() const
     return data()->atoms().charge(index());
 }
 
-void Atom::set_charge(float const &charge)
+void Atom::set_charge(float const& charge)
 {
     data()->atoms().charge(index()) = charge;
 }
@@ -75,7 +75,7 @@ float Atom::radius() const
     return data()->atoms().radius(index());
 }
 
-void Atom::set_radius(float const &radius)
+void Atom::set_radius(float const& radius)
 {
     data()->atoms().radius(index()) = radius;
 }
@@ -85,7 +85,8 @@ std::string Atom::name() const
     return data()->atoms().name(index());
 }
 
-void Atom::set_name(std::string const &name) {
+void Atom::set_name(std::string const& name)
+{
     data()->atoms().name(index()) = name;
 }
 
@@ -94,7 +95,7 @@ std::string Atom::type() const
     return data()->atoms().type(index());
 }
 
-void Atom::set_type(std::string const &type)
+void Atom::set_type(std::string const& type)
 {
     data()->atoms().type(index()) = type;
 }
@@ -119,7 +120,7 @@ std::string Atom::altloc() const
     return data()->atoms().altloc(index());
 }
 
-void Atom::set_altloc(std::string const &altloc)
+void Atom::set_altloc(std::string const& altloc)
 {
     data()->atoms().altloc(index()) = altloc;
 }
@@ -147,7 +148,7 @@ std::shared_ptr<Bond> Atom::add_bond(index_t const bonded_to)
     return data()->bonds().add_bond(index(), bonded_to);
 }
 
-std::shared_ptr<Bond> Atom::add_bond(Atom const &bonded_to)
+std::shared_ptr<Bond> Atom::add_bond(Atom const& bonded_to)
 {
     return add_bond(bonded_to.index());
 }
@@ -157,7 +158,7 @@ std::shared_ptr<Bond> Atom::bond(index_t const other)
     return data()->bonds().bond(index(), other);
 }
 
-std::shared_ptr<Bond> Atom::bond(Atom const &other)
+std::shared_ptr<Bond> Atom::bond(Atom const& other)
 {
     return bond(other.index());
 }

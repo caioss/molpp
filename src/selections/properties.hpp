@@ -1,5 +1,5 @@
-#ifndef PROPERTIES_HPP
-#define PROPERTIES_HPP
+#ifndef MOLPP_SELECTIONS_PROPERTIES_HPP
+#define MOLPP_SELECTIONS_PROPERTIES_HPP
 
 #include "selections/SelectionNode.hpp"
 #include "selections/numbers.hpp"
@@ -30,7 +30,7 @@ public:
         m_ranges.push_back(range);
     }
 
-    template <class T>
+    template<class T>
     requires std::integral<T> || std::floating_point<T>
     bool has(T const& value) const
     {
@@ -42,7 +42,7 @@ public:
             }
         }
 
-        for (auto const &number : m_numbers)
+        for (auto const& number : m_numbers)
         {
             if (number == value)
             {
@@ -65,4 +65,4 @@ protected:
 
 } // namespace mol::internal
 
-#endif // PROPERTIES_HPP
+#endif // MOLPP_SELECTIONS_PROPERTIES_HPP

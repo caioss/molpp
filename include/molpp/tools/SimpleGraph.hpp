@@ -1,5 +1,5 @@
-#ifndef SIMPLEGRAPH_HPP
-#define SIMPLEGRAPH_HPP
+#ifndef MOLPP_TOOLS_SIMPLEGRAPH_HPP
+#define MOLPP_TOOLS_SIMPLEGRAPH_HPP
 
 #include <ranges>
 #include <unordered_map>
@@ -107,4 +107,4 @@ private:
 
 } // namespace mol::internal
 
-#endif // SIMPLEGRAPH_HPP
+#endif // MOLPP_TOOLS_SIMPLEGRAPH_HPP

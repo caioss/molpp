@@ -1,12 +1,13 @@
-#ifndef SELINDEX_HPP
-#define SELINDEX_HPP
+#ifndef MOLPP_INTERNAL_SELINDEX_HPP
+#define MOLPP_INTERNAL_SELINDEX_HPP
 
 #include <molpp/MolError.hpp>
 #include <molpp/MolppCore.hpp>
 #include <molpp/internal/requirements.hpp>
 #include <vector>
 
-namespace mol::internal {
+namespace mol::internal
+{
 
 class SelIndex
 {
@@ -77,4 +78,4 @@ private:
 
 } // namespace mol::internal
 
-#endif // SELINDEX_HPP
+#endif // MOLPP_INTERNAL_SELINDEX_HPP

@@ -1,11 +1,12 @@
-#ifndef ATOMSEL_HPP
-#define ATOMSEL_HPP
+#ifndef MOLPP_ATOMSEL_HPP
+#define MOLPP_ATOMSEL_HPP
 
 #include <molpp/internal/Sel.hpp>
 #include <molpp/Atom.hpp>
 #include <vector>
 
-namespace mol {
+namespace mol
+{
 
 class Bond;
 
@@ -24,10 +25,10 @@ protected:
         return {atom_indices, data_size(data)};
     }
 
-    template <class, class>
+    template<class, class>
     friend class internal::Sel;
 };
 
 } // namespace mol
 
-#endif // ATOMSEL_HPP
+#endif // MOLPP_ATOMSEL_HPP

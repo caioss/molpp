@@ -1,11 +1,12 @@
-#ifndef RESIDUESEL_HPP
-#define RESIDUESEL_HPP
+#ifndef MOLPP_RESIDUESEL_HPP
+#define MOLPP_RESIDUESEL_HPP
 
 #include <molpp/internal/Sel.hpp>
 #include <molpp/Residue.hpp>
 #include <unordered_set>
 
-namespace mol {
+namespace mol
+{
 
 class ResidueSel : public internal::Sel<Residue, ResidueSel>
 {
@@ -31,10 +32,10 @@ protected:
 private:
     static size_t atom_index(size_t const atom_index, internal::MolData const& data);
 
-    template <class, class>
+    template<class, class>
     friend class internal::Sel;
 };
 
 } // namespace mol
 
-#endif // RESIDUESEL_HPP
+#endif // MOLPP_RESIDUESEL_HPP

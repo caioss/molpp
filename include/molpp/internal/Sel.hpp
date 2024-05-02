@@ -1,5 +1,5 @@
-#ifndef SEL_HPP
-#define SEL_HPP
+#ifndef MOLPP_INTERNAL_SEL_HPP
+#define MOLPP_INTERNAL_SEL_HPP
 
 #include <molpp/MolError.hpp>
 #include <molpp/MolppCore.hpp>
@@ -10,38 +10,48 @@
 #include <vector>
 #include <concepts>
 
-namespace mol {
+namespace mol
+{
 
 class Bond;
 
-namespace internal {
+namespace internal
+{
 
 class MolData;
 
-template <class Type, class Derived>
+template<class Type, class Derived>
 class Sel;
 
-template <class Derived>
-concept SelDerived = requires(Derived t, MolData data)
-{
+template<class Derived>
+concept SelDerived = requires(Derived t, MolData data) {
     std::derived_from<Derived, Sel<typename Derived::value_type, Derived>>;
-    {t.data_size(data)} -> std::same_as<size_t>;
-    {t.atom_indices()} -> std::convertible_to<std::vector<index_t>>;
+    {
+        t.data_size(data)
+    } -> std::same_as<size_t>;
+    {
+        t.atom_indices()
+    } -> std::convertible_to<std::vector<index_t>>;
 };
 
-template <class Derived, class Other>
-concept SelFromAtoms = requires(Derived sel, Other other, MolData data)
-{
-    {other.data()} -> std::same_as<MolData*>;
-    {other.frame()} -> std::same_as<Frame>;
-    {sel.from_atom_indices(other.atom_indices(), data)} -> std::same_as<SelIndex>;
+template<class Derived, class Other>
+concept SelFromAtoms = requires(Derived sel, Other other, MolData data) {
+    {
+        other.data()
+    } -> std::same_as<MolData*>;
+    {
+        other.frame()
+    } -> std::same_as<Frame>;
+    {
+        sel.from_atom_indices(other.atom_indices(), data)
+    } -> std::same_as<SelIndex>;
 };
 
-template <class Type, class Derived>
+template<class Type, class Derived>
 class Sel
 {
 private:
-    template <class ItType>
+    template<class ItType>
     class Iterator;
 
 public:
@@ -51,9 +61,9 @@ public:
     using coords_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, std::vector<index_t>>;
 
     Sel() = delete;
-    Sel(Sel &&) = default;
+    Sel(Sel&&) = default;
     Sel(Sel const&) = default;
-    Sel& operator=(Sel &&) = default;
+    Sel& operator=(Sel&&) = default;
     Sel& operator=(Sel const&) = default;
 
     explicit Sel(SelIndex&& sel_index, MolData* data)
@@ -67,7 +77,7 @@ public:
         }
     }
 
-    template <class Other>
+    template<class Other>
     explicit Sel(Other&& other)
     requires SelDerived<Derived> && SelFromAtoms<Derived, Other>
     : Sel(Derived::from_atom_indices(other.atom_indices(), *(other.data())), other.data())
@@ -109,7 +119,7 @@ public:
         return m_index.contains(index);
     }
 
-    std::vector<index_t> const &indices() const
+    std::vector<index_t> const& indices() const
     {
         return m_index.indices();
     }
@@ -160,13 +170,13 @@ public:
 
     coords_type coords()
     {
-        Derived &derived = static_cast<Derived &>(*this);
+        Derived& derived = static_cast<Derived&>(*this);
         return m_data->trajectory().timestep(frame().value()).coords()(Eigen::all, derived.atom_indices());
     }
 
     Derived bonded()
     {
-        Derived &derived = static_cast<Derived &>(*this);
+        Derived& derived = static_cast<Derived&>(*this);
         auto atom_indices = derived.atom_indices();
         std::vector<index_t> bonded_atoms = m_data->bonds().bonded(atom_indices.begin(), atom_indices.end());
         Derived sel(Derived::from_atom_indices(bonded_atoms, *m_data), m_data);
@@ -176,7 +186,7 @@ public:
 
     std::vector<std::shared_ptr<mol::Bond>> bonds()
     {
-        Derived &derived = static_cast<Derived &>(*this);
+        Derived& derived = static_cast<Derived&>(*this);
         auto atom_indices = derived.atom_indices();
         return m_data->bonds().bonds(atom_indices.begin(), atom_indices.end());
     }
@@ -192,9 +202,8 @@ protected:
         return m_data;
     };
 
-
 private:
-    template <class ItType>
+    template<class ItType>
     class Iterator
     {
     private:
@@ -204,13 +213,13 @@ private:
         using iterator_category = indices_iterator::iterator_category;
         using difference_type = indices_iterator::difference_type;
         using value_type = ItType;
-        using pointer = ItType *;
-        using reference = ItType &;
+        using pointer = ItType*;
+        using reference = ItType&;
 
         Iterator(MolData* data, indices_iterator begin, Frame frame)
-        : m_frame(frame),
-          m_data(data),
-          m_current(begin)
+        : m_frame(frame)
+        , m_data(data)
+        , m_current(begin)
         {}
 
         value_type operator*() const
@@ -260,4 +269,4 @@ private:
 } // namespace internal
 } // namespace mol
 
-#endif // SEL_HPP
+#endif // MOLPP_INTERNAL_SEL_HPP

@@ -1,5 +1,5 @@
-#ifndef MOLSYSTEM_HPP
-#define MOLSYSTEM_HPP
+#ifndef MOLPP_MOLSYSTEM_HPP
+#define MOLPP_MOLSYSTEM_HPP
 
 #include <molpp/AtomSel.hpp>
 #include <molpp/MolppCore.hpp>
@@ -8,9 +8,11 @@
 #include <memory>
 #include <vector>
 
-namespace mol {
+namespace mol
+{
 
-namespace internal {
+namespace internal
+{
 class MolData;
 }
 
@@ -20,10 +22,10 @@ public:
     MolSystem(std::string const& topology);
     MolSystem(MolSystem&& other);
     ~MolSystem();
-    void add_trajectory(std::string const& file_name, int begin=0, int end=-1, int step=1);
+    void add_trajectory(std::string const& file_name, int begin = 0, int end = -1, int step = 1);
     AtomSel atoms(Frame const frame = std::nullopt) const;
-    AtomSel select(std::vector<index_t> const &indices, Frame const frame = std::nullopt) const;
-    AtomSel select(std::string const &selection, Frame const frame = std::nullopt) const;
+    AtomSel select(std::vector<index_t> const& indices, Frame const frame = std::nullopt) const;
+    AtomSel select(std::string const& selection, Frame const frame = std::nullopt) const;
     AtomSelector selector(std::string const& selection) const;
     void reset_bonds();
     void guess_bonds(Frame const frame);
@@ -34,4 +36,4 @@ private:
 
 } // namespace mol
 
-#endif // MOLSYSTEM_HPP
+#endif // MOLPP_MOLSYSTEM_HPP
