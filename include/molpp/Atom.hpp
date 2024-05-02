@@ -13,12 +13,10 @@ namespace mol
 class Bond;
 class Residue;
 
-class Atom : public internal::AtomAggregate<Atom>
+class Atom : public internal::AtomAggregate
 {
-    friend class internal::AtomAggregate<Atom>;
-
 public:
-    using internal::AtomAggregate<Atom>::AtomAggregate;
+    using internal::AtomAggregate::AtomAggregate;
 
     int resid() const;
     Residue residue();

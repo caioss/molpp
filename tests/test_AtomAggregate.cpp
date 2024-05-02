@@ -17,8 +17,6 @@ using namespace testing;
 class AtomAggregateTest : public ::testing::Test
 {
 public:
-    using Aggregate = AtomAggregate<Atom>;
-
     AtomAggregateTest()
     : data{create_moldata(3, 1, 1, 1, 1)}
     , aggregate{1, 0, &data}
@@ -27,22 +25,22 @@ public:
     }
 
     MolData data;
-    Aggregate aggregate;
-    Aggregate const& const_aggregate;
+    AtomAggregate aggregate;
+    AtomAggregate const& const_aggregate;
 };
 
 TEST_F(AtomAggregateTest, EqualityOperator)
 {
-    EXPECT_TRUE(Aggregate(1, 0, &data) == Aggregate(1, 0, &data));
-    EXPECT_FALSE(Aggregate(0, 0, &data) == Aggregate(1, 0, &data));
-    EXPECT_FALSE(Aggregate(1, std::nullopt, &data) == Aggregate(1, 0, &data));
-    EXPECT_FALSE(Aggregate(1, 0, &data) == Aggregate(1, 0, nullptr));
+    EXPECT_TRUE(AtomAggregate(1, 0, &data) == AtomAggregate(1, 0, &data));
+    EXPECT_FALSE(AtomAggregate(0, 0, &data) == AtomAggregate(1, 0, &data));
+    EXPECT_FALSE(AtomAggregate(1, std::nullopt, &data) == AtomAggregate(1, 0, &data));
+    EXPECT_FALSE(AtomAggregate(1, 0, &data) == AtomAggregate(1, 0, nullptr));
 }
 
 TEST_F(AtomAggregateTest, ValidityOfDefaultConstructed)
 {
-    Aggregate default_aggregate{};
-    Aggregate const default_const_aggregate{};
+    AtomAggregate default_aggregate{};
+    AtomAggregate const default_const_aggregate{};
 
     EXPECT_FALSE(default_aggregate.is_valid());
     EXPECT_FALSE(default_const_aggregate.is_valid());
@@ -50,8 +48,8 @@ TEST_F(AtomAggregateTest, ValidityOfDefaultConstructed)
 
 TEST_F(AtomAggregateTest, ValidityOfNullData)
 {
-    Aggregate null_aggregate(1, 0, nullptr);
-    Aggregate const null_const_aggregate(1, 0, nullptr);
+    AtomAggregate null_aggregate(1, 0, nullptr);
+    AtomAggregate const null_const_aggregate(1, 0, nullptr);
 
     EXPECT_FALSE(null_aggregate.is_valid());
     EXPECT_FALSE(null_const_aggregate.is_valid());

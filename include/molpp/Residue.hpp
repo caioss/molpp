@@ -9,12 +9,10 @@ namespace mol
 
 class Atom;
 
-class Residue : public internal::AtomAggregate<Residue>
+class Residue : public internal::AtomAggregate
 {
-    friend class internal::AtomAggregate<Residue>;
-
 public:
-    using internal::AtomAggregate<Residue>::AtomAggregate;
+    using internal::AtomAggregate::AtomAggregate;
 
     int resid() const;
     void set_resid(int const& resid);

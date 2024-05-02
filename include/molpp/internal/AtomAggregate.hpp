@@ -10,20 +10,18 @@
 namespace mol::internal
 {
 
-template<class Derived>
 class AtomAggregate
 {
 public:
     AtomAggregate() = default;
 
     AtomAggregate(index_t const index, Frame const frame, internal::MolData* data)
-    requires IsAtomAggregate<Derived>
     : m_index{index}
     , m_frame(frame)
     , m_data{data}
     {}
 
-    bool operator==(AtomAggregate<Derived> const& other) const
+    bool operator==(AtomAggregate const& other) const
     {
         return m_data == other.m_data && m_index == other.m_index && m_frame == other.m_frame;
     }
