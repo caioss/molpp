@@ -60,19 +60,19 @@ mol::SSResidue::SSResidue(Residue& residue)
 
 void mol::SSResidue::set_frame(Frame const frame)
 {
-    if (m_N)
+    if (m_N.is_valid())
     {
         m_N.set_frame(frame);
     }
-    if (m_CA)
+    if (m_CA.is_valid())
     {
         m_CA.set_frame(frame);
     }
-    if (m_C)
+    if (m_C.is_valid())
     {
         m_C.set_frame(frame);
     }
-    if (m_O)
+    if (m_O.is_valid())
     {
         m_O.set_frame(frame);
     }
@@ -80,7 +80,7 @@ void mol::SSResidue::set_frame(Frame const frame)
 
 bool mol::SSResidue::is_amino_acid() const
 {
-    return m_CA && m_C && m_O && m_N;
+    return m_CA.is_valid() && m_C.is_valid() && m_O.is_valid() && m_N.is_valid();
 }
 
 mol::SecondaryStructure mol::SSResidue::secondary_structure() const

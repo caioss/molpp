@@ -29,11 +29,10 @@ TEST(Residues, Residue) {
     /*
      * Constructors
      */
-    EXPECT_FALSE(Residue());
-    EXPECT_FALSE(Residue(4, 0, &data));
-    EXPECT_FALSE(Residue(1, 0, nullptr));
-    EXPECT_TRUE(res);
-    EXPECT_TRUE(const_res);
+    EXPECT_FALSE(Residue().is_valid());
+    EXPECT_FALSE(Residue(1, 0, nullptr).is_valid());
+    EXPECT_TRUE(res.is_valid());
+    EXPECT_TRUE(const_res.is_valid());
 
     /*
      * Properties

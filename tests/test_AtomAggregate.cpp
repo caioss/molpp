@@ -44,17 +44,8 @@ TEST_F(AtomAggregateTest, ValidityOfDefaultConstructed)
     Aggregate default_aggregate{};
     Aggregate const default_const_aggregate{};
 
-    EXPECT_FALSE(default_aggregate);
-    EXPECT_FALSE(default_const_aggregate);
-}
-
-TEST_F(AtomAggregateTest, ValidityOfInvalidIndex)
-{
-    Aggregate invalid_aggregate(4, 0, &data);
-    Aggregate const invalid_const_aggregate(4, 0, &data);
-
-    EXPECT_FALSE(invalid_aggregate);
-    EXPECT_FALSE(invalid_const_aggregate);
+    EXPECT_FALSE(default_aggregate.is_valid());
+    EXPECT_FALSE(default_const_aggregate.is_valid());
 }
 
 TEST_F(AtomAggregateTest, ValidityOfNullData)
@@ -62,14 +53,14 @@ TEST_F(AtomAggregateTest, ValidityOfNullData)
     Aggregate null_aggregate(1, 0, nullptr);
     Aggregate const null_const_aggregate(1, 0, nullptr);
 
-    EXPECT_FALSE(null_aggregate);
-    EXPECT_FALSE(null_const_aggregate);
+    EXPECT_FALSE(null_aggregate.is_valid());
+    EXPECT_FALSE(null_const_aggregate.is_valid());
 }
 
 TEST_F(AtomAggregateTest, Validity)
 {
-    EXPECT_TRUE(aggregate);
-    EXPECT_TRUE(const_aggregate);
+    EXPECT_TRUE(aggregate.is_valid());
+    EXPECT_TRUE(const_aggregate.is_valid());
 }
 
 TEST_F(AtomAggregateTest, Index)

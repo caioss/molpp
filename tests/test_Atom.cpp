@@ -33,14 +33,13 @@ TEST_F(AtomTest, Comparison)
     EXPECT_FALSE(Atom(1, 0, &data) == Atom(1, 0, nullptr));
 }
 
-TEST_F(AtomTest, OperatorBool)
+TEST_F(AtomTest, IsValid)
 {
-    EXPECT_FALSE(Atom());
-    EXPECT_FALSE(Atom(4, 0, &data));
-    EXPECT_FALSE(Atom(1, 0, nullptr));
-    EXPECT_TRUE(atom_no_frame);
-    EXPECT_TRUE(atom);
-    EXPECT_TRUE(const_atom);
+    EXPECT_FALSE(Atom().is_valid());
+    EXPECT_FALSE(Atom(1, 0, nullptr).is_valid());
+    EXPECT_TRUE(atom_no_frame.is_valid());
+    EXPECT_TRUE(atom.is_valid());
+    EXPECT_TRUE(const_atom.is_valid());
 }
 
 TEST_F(AtomTest, Frames)

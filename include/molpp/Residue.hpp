@@ -33,9 +33,6 @@ public:
     size_t size() const;
 
     std::vector<index_t> atom_indices() const;
-
-protected:
-    bool validate_index() const;
 };
 
 } // namespace mol

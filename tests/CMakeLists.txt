@@ -11,7 +11,6 @@ add_executable(tests
     test_ConnectedComponents.cpp
     atoms.cpp
     residues.cpp
-    atomaggregates.cpp
     selections.cpp
     selectors.cpp
     system.cpp

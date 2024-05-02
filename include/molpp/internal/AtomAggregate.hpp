@@ -78,10 +78,9 @@ public:
         return m_data->bonds().bonds(indices.begin(), indices.end());
     }
 
-    operator bool() const
+    bool is_valid() const
     {
-        Derived const& derived = static_cast<Derived const&>(*this);
-        return data() && derived.validate_index();
+        return m_data;
     }
 
 protected:
