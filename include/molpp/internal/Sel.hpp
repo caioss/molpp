@@ -26,25 +26,15 @@ class Sel;
 template<class Derived>
 concept SelDerived = requires(Derived t, MolData data) {
     std::derived_from<Derived, Sel<typename Derived::value_type, Derived>>;
-    {
-        t.data_size(data)
-    } -> std::same_as<size_t>;
-    {
-        t.atom_indices()
-    } -> std::convertible_to<std::vector<index_t>>;
+    { t.data_size(data) } -> std::same_as<size_t>;
+    { t.atom_indices() } -> std::convertible_to<std::vector<index_t>>;
 };
 
 template<class Derived, class Other>
 concept SelFromAtoms = requires(Derived sel, Other other, MolData data) {
-    {
-        other.data()
-    } -> std::same_as<MolData*>;
-    {
-        other.frame()
-    } -> std::same_as<Frame>;
-    {
-        sel.from_atom_indices(other.atom_indices(), data)
-    } -> std::same_as<SelIndex>;
+    { other.data() } -> std::same_as<MolData*>;
+    { other.frame() } -> std::same_as<Frame>;
+    { sel.from_atom_indices(other.atom_indices(), data) } -> std::same_as<SelIndex>;
 };
 
 template<class Type, class Derived>
