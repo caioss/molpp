@@ -7,7 +7,7 @@ using namespace mol;
 
 int Atom::resid() const
 {
-    return data()->residues().resid(residue_id());
+    return data()->residues().residue_id(residue_id());
 }
 
 Residue Atom::residue()
@@ -20,14 +20,14 @@ index_t Atom::residue_id() const
     return data()->atoms().residue(index());
 }
 
-int Atom::atomic() const
+int Atom::atomic_number() const
 {
-    return data()->atoms().atomic(index());
+    return data()->atoms().atomic_number(index());
 }
 
-void Atom::set_atomic(int const& atomic)
+void Atom::set_atomic_number(int const atomic)
 {
-    data()->atoms().atomic(index()) = atomic;
+    data()->atoms().atomic_number(index()) = atomic;
 }
 
 float Atom::occupancy() const
@@ -35,19 +35,19 @@ float Atom::occupancy() const
     return data()->atoms().occupancy(index());
 }
 
-void Atom::set_occupancy(float const& occupancy)
+void Atom::set_occupancy(float const occupancy)
 {
     data()->atoms().occupancy(index()) = occupancy;
 }
 
-float Atom::tempfactor() const
+float Atom::temperature_factor() const
 {
-    return data()->atoms().tempfactor(index());
+    return data()->atoms().temperature_factor(index());
 }
 
-void Atom::set_tempfactor(float const& tempfactor)
+void Atom::set_temperature_factor(float const tempfactor)
 {
-    data()->atoms().tempfactor(index()) = tempfactor;
+    data()->atoms().temperature_factor(index()) = tempfactor;
 }
 
 float Atom::mass() const
@@ -55,7 +55,7 @@ float Atom::mass() const
     return data()->atoms().mass(index());
 }
 
-void Atom::set_mass(float const& mass)
+void Atom::set_mass(float const mass)
 {
     data()->atoms().mass(index()) = mass;
 }
@@ -65,7 +65,7 @@ float Atom::charge() const
     return data()->atoms().charge(index());
 }
 
-void Atom::set_charge(float const& charge)
+void Atom::set_charge(float const charge)
 {
     data()->atoms().charge(index()) = charge;
 }
@@ -75,12 +75,12 @@ float Atom::radius() const
     return data()->atoms().radius(index());
 }
 
-void Atom::set_radius(float const& radius)
+void Atom::set_radius(float const radius)
 {
     data()->atoms().radius(index()) = radius;
 }
 
-std::string Atom::name() const
+std::string const& Atom::name() const
 {
     return data()->atoms().name(index());
 }
@@ -90,7 +90,7 @@ void Atom::set_name(std::string const& name)
     data()->atoms().name(index()) = name;
 }
 
-std::string Atom::type() const
+std::string const& Atom::type() const
 {
     return data()->atoms().type(index());
 }
@@ -100,32 +100,32 @@ void Atom::set_type(std::string const& type)
     data()->atoms().type(index()) = type;
 }
 
-std::string Atom::resname() const
+std::string const& Atom::residue_name() const
 {
-    return data()->residues().resname(residue_id());
+    return data()->residues().residue_name(residue_id());
 }
 
-std::string Atom::segid() const
+std::string const& Atom::segid() const
 {
     return data()->residues().segid(residue_id());
 }
 
-std::string Atom::chain() const
+std::string const& Atom::chain() const
 {
     return data()->residues().chain(residue_id());
 }
 
-std::string Atom::altloc() const
+std::string const& Atom::alternate_location() const
 {
-    return data()->atoms().altloc(index());
+    return data()->atoms().alternate_location(index());
 }
 
-void Atom::set_altloc(std::string const& altloc)
+void Atom::set_alternate_location(std::string const& altloc)
 {
-    data()->atoms().altloc(index()) = altloc;
+    data()->atoms().alternate_location(index()) = altloc;
 }
 
-std::string mol::Atom::insertion_code() const
+std::string const& mol::Atom::insertion_code() const
 {
     return data()->atoms().insertion_code(index());
 }

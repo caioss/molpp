@@ -26,15 +26,15 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
         index_t const res_idx = atom_idx / num_res_atoms;
         atom_data.residue(atom_idx) = res_idx;
         res_data.add_atom(res_idx, atom_idx);
-        atom_data.atomic(atom_idx) = atom_idx;
+        atom_data.atomic_number(atom_idx) = atom_idx;
         atom_data.occupancy(atom_idx) = atom_idx;
-        atom_data.tempfactor(atom_idx) = atom_idx;
+        atom_data.temperature_factor(atom_idx) = atom_idx;
         atom_data.mass(atom_idx) = atom_idx;
         atom_data.charge(atom_idx) = atom_idx;
         atom_data.radius(atom_idx) = atom_idx;
         atom_data.name(atom_idx) = code;
         atom_data.type(atom_idx) = code;
-        atom_data.altloc(atom_idx) = code;
+        atom_data.alternate_location(atom_idx) = code;
         atom_data.insertion_code(atom_idx) = code;
     }
 
@@ -81,11 +81,11 @@ TEST(Auxiliary, create_moldata) {
 
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::residue_id),
                                  {0, 0, 1, 1, 2, 2}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::atomic),
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::atomic_number),
                                  {0, 1, 2, 3, 4, 5}));
     EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::occupancy, 1e-5),
                                  {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::tempfactor, 1e-5),
+    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::temperature_factor, 1e-5),
                                  {0, 1, 2, 3, 4, 5}));
     EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::mass, 1e-5),
                                  {0, 1, 2, 3, 4, 5}));
@@ -97,13 +97,13 @@ TEST(Auxiliary, create_moldata) {
                                  {"A", "B", "C", "D", "E", "F"}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::type),
                                  {"A", "B", "C", "D", "E", "F"}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::altloc),
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::alternate_location),
                                  {"A", "B", "C", "D", "E", "F"}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::insertion_code),
                                  {"A", "B", "C", "D", "E", "F"}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resid),
                                  {0, 0, 1, 1, 2, 2}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::resname),
+    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::residue_name),
                                  {"A", "A", "B", "B", "C", "C"}));
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::segid),
                                  {"A", "A", "A", "A", "A", "A"}));

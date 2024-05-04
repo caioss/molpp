@@ -5,7 +5,6 @@
 #include <molpp/internal/AtomAggregate.hpp>
 #include <memory>
 #include <vector>
-#include <optional>
 
 namespace mol
 {
@@ -22,38 +21,38 @@ public:
     Residue residue();
     index_t residue_id() const;
 
-    int atomic() const;
-    void set_atomic(int const& atomic);
+    int atomic_number() const;
+    void set_atomic_number(int const atomic);
 
     float occupancy() const;
-    void set_occupancy(float const& occupancy);
+    void set_occupancy(float const occupancy);
 
-    float tempfactor() const;
-    void set_tempfactor(float const& tempfactor);
+    float temperature_factor() const;
+    void set_temperature_factor(float const tempfactor);
 
     float mass() const;
-    void set_mass(float const& mass);
+    void set_mass(float const mass);
 
     float charge() const;
-    void set_charge(float const& charge);
+    void set_charge(float const charge);
 
     float radius() const;
-    void set_radius(float const& radius);
+    void set_radius(float const radius);
 
-    std::string name() const;
+    std::string const& name() const;
     void set_name(std::string const& name);
 
-    std::string type() const;
+    std::string const& type() const;
     void set_type(std::string const& type);
 
-    std::string resname() const;
-    std::string segid() const;
-    std::string chain() const;
+    std::string const& residue_name() const;
+    std::string const& segid() const;
+    std::string const& chain() const;
 
-    std::string altloc() const;
-    void set_altloc(std::string const& altloc);
+    std::string const& alternate_location() const;
+    void set_alternate_location(std::string const& altloc);
 
-    std::string insertion_code() const;
+    std::string const& insertion_code() const;
     void set_insertion_code(std::string const& insertion_code);
 
     std::shared_ptr<Bond> add_bond(index_t const bonded_to);

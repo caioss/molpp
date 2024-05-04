@@ -78,10 +78,10 @@ TEST_F(AtomTest, Residues)
 
 TEST_F(AtomTest, AtomicProperty)
 {
-    EXPECT_EQ(const_atom.atomic(), 1);
-    EXPECT_EQ(atom.atomic(), 1);
-    atom.set_atomic(2);
-    EXPECT_EQ(atom.atomic(), 2);
+    EXPECT_EQ(const_atom.atomic_number(), 1);
+    EXPECT_EQ(atom.atomic_number(), 1);
+    atom.set_atomic_number(2);
+    EXPECT_EQ(atom.atomic_number(), 2);
 }
 
 TEST_F(AtomTest, OccupancyProperty)
@@ -94,10 +94,10 @@ TEST_F(AtomTest, OccupancyProperty)
 
 TEST_F(AtomTest, TempfactorProperty)
 {
-    EXPECT_EQ(const_atom.tempfactor(), 1.0);
-    EXPECT_EQ(atom.tempfactor(), 1.0);
-    atom.set_tempfactor(0.5);
-    EXPECT_EQ(atom.tempfactor(), 0.5);
+    EXPECT_EQ(const_atom.temperature_factor(), 1.0);
+    EXPECT_EQ(atom.temperature_factor(), 1.0);
+    atom.set_temperature_factor(0.5);
+    EXPECT_EQ(atom.temperature_factor(), 0.5);
 }
 
 TEST_F(AtomTest, MassProperty)
@@ -142,10 +142,10 @@ TEST_F(AtomTest, TypeProperty)
 
 TEST_F(AtomTest, AltLocProperty)
 {
-    EXPECT_EQ(const_atom.altloc(), "B");
-    EXPECT_EQ(atom.altloc(), "B");
-    atom.set_altloc("C");
-    EXPECT_EQ(atom.altloc(), "C");
+    EXPECT_EQ(const_atom.alternate_location(), "B");
+    EXPECT_EQ(atom.alternate_location(), "B");
+    atom.set_alternate_location("C");
+    EXPECT_EQ(atom.alternate_location(), "C");
 }
 
 TEST_F(AtomTest, InsertionCodeProperty)
@@ -158,8 +158,8 @@ TEST_F(AtomTest, InsertionCodeProperty)
 
 TEST_F(AtomTest, ResnameProperty)
 {
-    EXPECT_EQ(const_atom.resname(), "B");
-    EXPECT_EQ(atom.resname(), "B");
+    EXPECT_EQ(const_atom.residue_name(), "B");
+    EXPECT_EQ(atom.residue_name(), "B");
 }
 
 TEST_F(AtomTest, SegidProperty)

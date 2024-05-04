@@ -21,6 +21,6 @@ void PropSelection::evaluate(SelectionStack& stack, MolData const& data, Frame /
 bool ResidSelection::selected(index_t atom_idx, MolData const& data) const
 {
     index_t const res_idx = data.atoms().residue(atom_idx);
-    int const resid = data.residues().resid(res_idx);
+    int const resid = data.residues().residue_id(res_idx);
     return has(resid);
 }

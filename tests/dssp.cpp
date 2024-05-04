@@ -26,19 +26,19 @@ public:
         atoms[1].set_name("CA");
         atoms[2].set_name("C");
         atoms[3].set_name("O");
-        protein_residue.set_resname("ALA");
+        protein_residue.set_residue_name("ALA");
 
         // Proline
         atoms[4].set_name("N");
         atoms[5].set_name("CA");
         atoms[6].set_name("C");
         atoms[7].set_name("O");
-        proline_residue.set_resname("PRO");
+        proline_residue.set_residue_name("PRO");
 
         // Non-proteic
         atoms[8].set_name("CA");
         atoms[9].set_name("N");
-        non_protein_residue.set_resname("PRO");
+        non_protein_residue.set_residue_name("PRO");
     }
 
     MolData mol_data;

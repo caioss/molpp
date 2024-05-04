@@ -22,8 +22,8 @@ void AtomBondGuesser::apply(AtomSel& atoms) const
 
     for (auto& [atom1, atom2, distance_sq] : search.pairs(max_bond_length))
     {
-        int const atomic1 = atoms[atom1].atomic();
-        int const atomic2 = atoms[atom2].atomic();
+        int const atomic1 = atoms[atom1].atomic_number();
+        int const atomic2 = atoms[atom2].atomic_number();
 
         if (atomic1 == 0 || atomic2 == 0)
         {

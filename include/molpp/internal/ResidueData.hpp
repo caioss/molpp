@@ -17,15 +17,13 @@ private:
     using indices_type = std::unordered_set<index_t>;
 
 public:
-    using indices_iterator = indices_type::const_iterator;
-
     ResidueData()
     {}
 
     void set(index_t const index, int const res_id, std::string const& res_name, std::string const& seg_id, std::string const& chain_id)
     {
-        resid(index) = res_id;
-        resname(index) = res_name;
+        residue_id(index) = res_id;
+        residue_name(index) = res_name;
         segid(index) = seg_id;
         chain(index) = chain_id;
     }
@@ -35,47 +33,47 @@ public:
         return m_indices.size();
     }
 
-    size_t size(index_t const index) const
+    size_t size(size_t const index) const
     {
         return m_indices[index].size();
     }
 
-    int& resid(index_t const index)
+    int& residue_id(size_t const index)
     {
-        return m_resid[index];
+        return m_id[index];
     }
 
-    int const& resid(index_t const index) const
+    int const& residue_id(size_t const index) const
     {
-        return m_resid[index];
+        return m_id[index];
     }
 
-    std::string& resname(index_t const index)
+    std::string& residue_name(size_t const index)
     {
-        return m_resname[index];
+        return m_name[index];
     }
 
-    std::string const& resname(index_t const index) const
+    std::string const& residue_name(size_t const index) const
     {
-        return m_resname[index];
+        return m_name[index];
     }
 
-    std::string& segid(index_t const index)
-    {
-        return m_segid[index];
-    }
-
-    std::string const& segid(index_t const index) const
+    std::string& segid(size_t const index)
     {
         return m_segid[index];
     }
 
-    std::string& chain(index_t const index)
+    std::string const& segid(size_t const index) const
+    {
+        return m_segid[index];
+    }
+
+    std::string& chain(size_t const index)
     {
         return m_chain[index];
     }
 
-    std::string const& chain(index_t const index) const
+    std::string const& chain(size_t const index) const
     {
         return m_chain[index];
     }
@@ -83,8 +81,8 @@ public:
     void resize(size_t const size)
     {
         m_indices.resize(size);
-        m_resid.resize(size, -1);
-        m_resname.resize(size);
+        m_id.resize(size, -1);
+        m_name.resize(size);
         m_segid.resize(size);
         m_chain.resize(size);
     }
@@ -112,8 +110,8 @@ public:
     }
 
 private:
-    std::vector<int> m_resid;
-    std::vector<std::string> m_resname;
+    std::vector<int> m_id;
+    std::vector<std::string> m_name;
     std::vector<std::string> m_segid;
     std::vector<std::string> m_chain;
     std::vector<indices_type> m_indices;

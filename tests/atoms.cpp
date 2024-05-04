@@ -59,14 +59,14 @@ TEST(Atoms, AtomData) {
     AtomData props(1);
     EXPECT_EQ(props.size(), 1);
     EXPECT_EQ(props.residue(0), -1);
-    EXPECT_EQ(props.atomic(0), 0);
+    EXPECT_EQ(props.atomic_number(0), 0);
     EXPECT_EQ(props.occupancy(0), 0);
-    EXPECT_EQ(props.tempfactor(0), 0);
+    EXPECT_EQ(props.temperature_factor(0), 0);
     EXPECT_EQ(props.mass(0), 0);
     EXPECT_EQ(props.charge(0), 0);
     EXPECT_EQ(props.radius(0), 0);
     EXPECT_EQ(props.name(0), "");
     EXPECT_EQ(props.type(0), "");
-    EXPECT_EQ(props.altloc(0), "");
+    EXPECT_EQ(props.alternate_location(0), "");
     EXPECT_EQ(props.insertion_code(0), "");
 }

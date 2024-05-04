@@ -4,27 +4,27 @@
 
 using namespace mol;
 
-int Residue::resid() const
+int Residue::residue_id() const
 {
-    return data()->residues().resid(index());
+    return data()->residues().residue_id(index());
 }
 
-void Residue::set_resid(int const& resid)
+void Residue::set_residue_id(int const resid)
 {
-    data()->residues().resid(index()) = resid;
+    data()->residues().residue_id(index()) = resid;
 }
 
-std::string Residue::resname() const
+std::string const& Residue::residue_name() const
 {
-    return data()->residues().resname(index());
+    return data()->residues().residue_name(index());
 }
 
-void Residue::set_resname(std::string const& resname)
+void Residue::set_residue_name(std::string const& resname)
 {
-    data()->residues().resname(index()) = resname;
+    data()->residues().residue_name(index()) = resname;
 }
 
-std::string Residue::segid() const
+std::string const& Residue::segid() const
 {
     return data()->residues().segid(index());
 }
@@ -34,7 +34,7 @@ void Residue::set_segid(std::string const& segid)
     data()->residues().segid(index()) = segid;
 }
 
-std::string Residue::chain() const
+std::string const& Residue::chain() const
 {
     return data()->residues().chain(index());
 }

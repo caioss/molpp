@@ -47,7 +47,7 @@ mol::SSResidue::SSResidue(Residue& residue)
 
     if (is_amino_acid())
     {
-        m_is_proline = residue.resname() == "PRO";
+        m_is_proline = residue.residue_name() == "PRO";
     }
     else
     {

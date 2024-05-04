@@ -45,11 +45,11 @@ TEST(Residues, Residue) {
     EXPECT_EQ(res.frame(), 0);
     EXPECT_THROW(res.set_frame(1), MolError);
 
-    res.set_resid(20);
-    EXPECT_EQ(res.resid(), 20);
+    res.set_residue_id(20);
+    EXPECT_EQ(res.residue_id(), 20);
 
-    res.set_resname("ARG");
-    EXPECT_EQ(res.resname(), "ARG");
+    res.set_residue_name("ARG");
+    EXPECT_EQ(res.residue_name(), "ARG");
 
     res.set_segid("SEG1");
     EXPECT_EQ(res.segid(), "SEG1");
@@ -78,14 +78,14 @@ TEST(Residues, ResidueData) {
     props.resize(1);
     EXPECT_EQ(props.size(), 1);
 
-    EXPECT_EQ(props.resid(0), -1);
-    EXPECT_EQ(props.resname(0), "");
+    EXPECT_EQ(props.residue_id(0), -1);
+    EXPECT_EQ(props.residue_name(0), "");
     EXPECT_EQ(props.segid(0), "");
     EXPECT_EQ(props.chain(0), "");
 
     props.set(0, 1, "A", "B", "C");
-    EXPECT_EQ(props.resid(0), 1);
-    EXPECT_EQ(props.resname(0), "A");
+    EXPECT_EQ(props.residue_id(0), 1);
+    EXPECT_EQ(props.residue_name(0), "A");
     EXPECT_EQ(props.segid(0), "B");
     EXPECT_EQ(props.chain(0), "C");
 
@@ -146,8 +146,8 @@ TEST(Residues, ResidueDetect) {
 
     for (index_t i = 0; i < 5; i++)
     {
-        EXPECT_EQ(residues_data.resid(i), resid[i]) << "Residue " << i;
-        EXPECT_EQ(residues_data.resname(i), resname[i]) << "Residue " << i;
+        EXPECT_EQ(residues_data.residue_id(i), resid[i]) << "Residue " << i;
+        EXPECT_EQ(residues_data.residue_name(i), resname[i]) << "Residue " << i;
         EXPECT_EQ(residues_data.segid(i), segid[i]) << "Residue " << i;
         EXPECT_EQ(residues_data.chain(i), chain[i]) << "Residue " << i;
     }

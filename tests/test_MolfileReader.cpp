@@ -321,7 +321,7 @@ TEST_F(PDBMolfileReaderTest, Occupancy)
 
 TEST_F(PDBMolfileReaderTest, TemperatureFactor)
 {
-    test_property(&Atom::tempfactor, std::to_array<float>({-99, -1, -1, -1, -1, -1}), pdb());
+    test_property(&Atom::temperature_factor, std::to_array<float>({-99, -1, -1, -1, -1, -1}), pdb());
 }
 
 TEST_F(PDBMolfileReaderTest, Mass)
@@ -336,7 +336,7 @@ TEST_F(PDBMolfileReaderTest, Radius)
 
 TEST_F(PDBMolfileReaderTest, AtomicNumber)
 {
-    test_property(&Atom::atomic, std::to_array<int>({7, 7, 8, 8, 7, 7}), pdb());
+    test_property(&Atom::atomic_number, std::to_array<int>({7, 7, 8, 8, 7, 7}), pdb());
 }
 
 TEST_F(PDBMolfileReaderTest, Charge)
@@ -346,7 +346,7 @@ TEST_F(PDBMolfileReaderTest, Charge)
 
 TEST_F(PDBMolfileReaderTest, AlternateLocation)
 {
-    test_property(&Atom::altloc, std::to_array<std::string>({" ", " ", " ", " ", "A", "B"}), pdb());
+    test_property(&Atom::alternate_location, std::to_array<std::string>({" ", " ", " ", " ", "A", "B"}), pdb());
 }
 
 TEST_F(PDBMolfileReaderTest, InsertionCode)
@@ -361,7 +361,7 @@ TEST_F(PDBMolfileReaderTest, ResID)
 
 TEST_F(PDBMolfileReaderTest, ResName)
 {
-    test_property(&Atom::resname, std::to_array<std::string>({"GLY", "ASP", "HOH", "HOH", "ASP"}), pdb());
+    test_property(&Atom::residue_name, std::to_array<std::string>({"GLY", "ASP", "HOH", "HOH", "ASP"}), pdb());
 }
 
 TEST_F(PDBMolfileReaderTest, Bonded)
@@ -440,7 +440,7 @@ TEST_F(Mol2MolfileReaderTest, Occupancy)
 
 TEST_F(Mol2MolfileReaderTest, TemperatureFactor)
 {
-    test_property(&Atom::tempfactor, std::to_array<float>({0, 0, 0, 0, 0, 0}), mol2());
+    test_property(&Atom::temperature_factor, std::to_array<float>({0, 0, 0, 0, 0, 0}), mol2());
 }
 
 TEST_F(Mol2MolfileReaderTest, Mass)
@@ -455,7 +455,7 @@ TEST_F(Mol2MolfileReaderTest, Radius)
 
 TEST_F(Mol2MolfileReaderTest, AtomicNumber)
 {
-    test_property(&Atom::atomic, std::to_array<int>({0, 0, 0, 0, 0, 0}), mol2());
+    test_property(&Atom::atomic_number, std::to_array<int>({0, 0, 0, 0, 0, 0}), mol2());
 }
 
 TEST_F(Mol2MolfileReaderTest, Charge)
@@ -465,7 +465,7 @@ TEST_F(Mol2MolfileReaderTest, Charge)
 
 TEST_F(Mol2MolfileReaderTest, AlternateLocation)
 {
-    test_property(&Atom::altloc, std::to_array<std::string>({"", "", "", "", "", ""}), mol2());
+    test_property(&Atom::alternate_location, std::to_array<std::string>({"", "", "", "", "", ""}), mol2());
 }
 
 TEST_F(Mol2MolfileReaderTest, InsertionCode)
@@ -480,7 +480,7 @@ TEST_F(Mol2MolfileReaderTest, ResID)
 
 TEST_F(Mol2MolfileReaderTest, ResName)
 {
-    test_property(&Atom::resname, std::to_array<std::string>({"FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1"}), mol2());
+    test_property(&Atom::residue_name, std::to_array<std::string>({"FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1", "FLB1"}), mol2());
 }
 
 TEST_F(Mol2MolfileReaderTest, Bonded)
@@ -572,7 +572,7 @@ TEST_F(PSFMolfileReaderTest, Occupancy)
 
 TEST_F(PSFMolfileReaderTest, TemperatureFactor)
 {
-    test_property(&Atom::tempfactor, std::to_array<float>({0, 0, 0, 0, 0, 0}), psf());
+    test_property(&Atom::temperature_factor, std::to_array<float>({0, 0, 0, 0, 0, 0}), psf());
 }
 
 TEST_F(PSFMolfileReaderTest, Mass)
@@ -587,7 +587,7 @@ TEST_F(PSFMolfileReaderTest, Radius)
 
 TEST_F(PSFMolfileReaderTest, AtomicNumber)
 {
-    test_property(&Atom::atomic, std::to_array<int>({0, 0, 0, 0, 0, 0}), psf());
+    test_property(&Atom::atomic_number, std::to_array<int>({0, 0, 0, 0, 0, 0}), psf());
 }
 
 TEST_F(PSFMolfileReaderTest, Charge)
@@ -597,7 +597,7 @@ TEST_F(PSFMolfileReaderTest, Charge)
 
 TEST_F(PSFMolfileReaderTest, AlternateLocation)
 {
-    test_property(&Atom::altloc, std::to_array<std::string>({"", "", "", "", "", ""}), psf());
+    test_property(&Atom::alternate_location, std::to_array<std::string>({"", "", "", "", "", ""}), psf());
 }
 
 TEST_F(PSFMolfileReaderTest, InsertionCode)
@@ -612,7 +612,7 @@ TEST_F(PSFMolfileReaderTest, ResID)
 
 TEST_F(PSFMolfileReaderTest, ResName)
 {
-    test_property(&Atom::resname, std::to_array<std::string>({"GLY", "GLY", "GLY", "GLY", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO", "GLY", "GLY", "GLY", "GLY", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO"}), psf());
+    test_property(&Atom::residue_name, std::to_array<std::string>({"GLY", "GLY", "GLY", "GLY", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO", "GLY", "GLY", "GLY", "GLY", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO", "PRO"}), psf());
 }
 
 TEST_F(PSFMolfileReaderTest, Bonded)

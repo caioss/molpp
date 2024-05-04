@@ -14,12 +14,12 @@ void ResidueBondGuesser::apply(ResidueSel& residues) const
 
     for (Residue res : residues)
     {
-        if (!residues_table.contains(res.resname()))
+        if (!residues_table.contains(res.residue_name()))
         {
             continue;
         }
 
-        auto const& res_info = residues_table[res.resname()];
+        auto const& res_info = residues_table[res.residue_name()];
         std::fill(bonds_map.begin(), bonds_map.end(), -1);
 
         AtomSel atoms(res);

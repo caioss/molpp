@@ -14,16 +14,16 @@ class Residue : public internal::AtomAggregate
 public:
     using internal::AtomAggregate::AtomAggregate;
 
-    int resid() const;
-    void set_resid(int const& resid);
+    int residue_id() const;
+    void set_residue_id(int const resid);
 
-    std::string resname() const;
-    void set_resname(std::string const& resname);
+    std::string const& residue_name() const;
+    void set_residue_name(std::string const& resname);
 
-    std::string segid() const;
+    std::string const& segid() const;
     void set_segid(std::string const& segid);
 
-    std::string chain() const;
+    std::string const& chain() const;
     void set_chain(std::string const& chain);
 
     void add_atom(index_t index);

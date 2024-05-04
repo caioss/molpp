@@ -186,7 +186,7 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
 
         if (flags & MOLFILE_INSERTION)
         {
-            atom.set_altloc(mol_atom.altloc);
+            atom.set_alternate_location(mol_atom.altloc);
         }
 
         if (flags & MOLFILE_OCCUPANCY)
@@ -196,7 +196,7 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
 
         if (flags & MOLFILE_BFACTOR)
         {
-            atom.set_tempfactor(mol_atom.bfactor);
+            atom.set_temperature_factor(mol_atom.bfactor);
         }
 
         if (flags & MOLFILE_MASS)
@@ -216,7 +216,7 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
 
         if (flags & MOLFILE_ATOMICNUMBER)
         {
-            atom.set_atomic(mol_atom.atomicnumber);
+            atom.set_atomic_number(mol_atom.atomicnumber);
         }
 
         if (flags & MOLFILE_INSERTION)

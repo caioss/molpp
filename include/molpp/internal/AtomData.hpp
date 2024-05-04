@@ -33,112 +33,112 @@ public:
         return m_num_atoms;
     }
 
-    index_t& residue(index_t const index)
+    index_t& residue(size_t const index)
     {
         return m_residue[index];
     }
 
-    index_t const& residue(index_t const index) const
+    index_t const& residue(size_t const index) const
     {
         return m_residue[index];
     }
 
-    index_t& atomic(index_t const index)
+    int& atomic_number(size_t const index)
     {
         return m_atomic[index];
     }
 
-    index_t const& atomic(index_t const index) const
+    int const& atomic_number(size_t const index) const
     {
         return m_atomic[index];
     }
 
-    float& occupancy(index_t const index)
+    float& occupancy(size_t const index)
     {
         return m_occupancy[index];
     }
 
-    float const& occupancy(index_t const index) const
+    float const& occupancy(size_t const index) const
     {
         return m_occupancy[index];
     }
 
-    float& tempfactor(index_t const index)
+    float& temperature_factor(size_t const index)
     {
         return m_tempfactor[index];
     }
 
-    float const& tempfactor(index_t const index) const
+    float const& temperature_factor(size_t const index) const
     {
         return m_tempfactor[index];
     }
 
-    float& mass(index_t const index)
+    float& mass(size_t const index)
     {
         return m_mass[index];
     }
 
-    float const& mass(index_t const index) const
+    float const& mass(size_t const index) const
     {
         return m_mass[index];
     }
 
-    float& charge(index_t const index)
+    float& charge(size_t const index)
     {
         return m_charge[index];
     }
 
-    float const& charge(index_t const index) const
+    float const& charge(size_t const index) const
     {
         return m_charge[index];
     }
 
-    float& radius(index_t const index)
+    float& radius(size_t const index)
     {
         return m_radius[index];
     }
 
-    float const& radius(index_t const index) const
+    float const& radius(size_t const index) const
     {
         return m_radius[index];
     }
 
-    std::string& name(index_t const index)
+    std::string& name(size_t const index)
     {
         return m_name[index];
     }
 
-    std::string const& name(index_t const index) const
+    std::string const& name(size_t const index) const
     {
         return m_name[index];
     }
 
-    std::string& type(index_t const index)
+    std::string& type(size_t const index)
     {
         return m_type[index];
     }
 
-    std::string const& type(index_t const index) const
+    std::string const& type(size_t const index) const
     {
         return m_type[index];
     }
 
-    std::string& altloc(index_t const index)
+    std::string& alternate_location(size_t const index)
     {
         return m_altloc[index];
     }
 
-    std::string const& altloc(index_t const index) const
+    std::string const& alternate_location(size_t const index) const
     {
         return m_altloc[index];
     }
 
-    std::string& insertion_code(index_t const index)
+    std::string& insertion_code(size_t const index)
     {
         return m_insertion_code[index];
     }
 
-    std::string const& insertion_code(index_t const index) const
+    std::string const& insertion_code(size_t const index) const
     {
         return m_insertion_code[index];
     }
@@ -146,7 +146,7 @@ public:
 private:
     size_t m_num_atoms;
     std::vector<index_t> m_residue;
-    std::vector<index_t> m_atomic;
+    std::vector<int> m_atomic;
     std::vector<float> m_occupancy;
     std::vector<float> m_tempfactor;
     std::vector<float> m_mass;
