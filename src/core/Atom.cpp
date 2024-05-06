@@ -188,8 +188,3 @@ Coord3::ConstColXpr mol::Atom::position() const
     }
     return data()->trajectory().timestep(*frame()).coords().col(index());
 }
-
-std::vector<index_t> Atom::as_atom_indices() const
-{
-    return {index()};
-}

@@ -24,11 +24,10 @@ class Sel;
 
 template<class LHS, class RHS>
 concept SelConvertible = requires(LHS lhs, RHS rhs) {
-    typename LHS::indices_type;
     { rhs.data() } -> std::same_as<MolData*>;
     { rhs.frame() } -> std::same_as<Frame>;
-    { rhs.as_atom_indices() } -> std::convertible_to<typename LHS::indices_type>;
-    { lhs.from_atom_indices(rhs.as_atom_indices(), std::declval<MolData>()) } -> std::convertible_to<typename LHS::indices_type>;
+    { rhs.as_atom_indices() } -> internal::IndexRange;
+    { lhs.from_atom_indices(rhs.as_atom_indices(), std::declval<MolData>()) } -> internal::IndexRange;
 };
 
 template<class Type, class Derived>

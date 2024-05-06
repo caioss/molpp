@@ -13,9 +13,9 @@ public:
     ResidueSel() = delete;
     using internal::Sel<Residue, ResidueSel>::Sel;
 
-    ResidueSel::indices_type as_atom_indices() const;
+    indices_type as_atom_indices() const;
 
-    static ResidueSel::indices_type from_atom_indices(internal::IndexRange auto const& atom_indices, internal::MolData const& data)
+    static indices_type from_atom_indices(internal::IndexRange auto const& atom_indices, internal::MolData const& data)
     {
         ResidueSel::indices_type residues;
         mol::internal::AtomData const& atom_data = data.atoms();

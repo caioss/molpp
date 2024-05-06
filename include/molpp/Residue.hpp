@@ -30,7 +30,10 @@ public:
     void add_atom(Atom const& atom);
     size_t size() const;
 
-    std::vector<index_t> as_atom_indices() const;
+    auto const as_atom_indices() const
+    {
+        return data()->residues().indices(index());
+    }
 };
 
 } // namespace mol

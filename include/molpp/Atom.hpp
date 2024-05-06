@@ -5,6 +5,7 @@
 #include <molpp/internal/AtomAggregate.hpp>
 #include <memory>
 #include <vector>
+#include <ranges>
 
 namespace mol
 {
@@ -64,7 +65,10 @@ public:
     Coord3::ColXpr position();
     Coord3::ConstColXpr position() const;
 
-    std::vector<index_t> as_atom_indices() const;
+    auto as_atom_indices() const
+    {
+        return std::ranges::single_view(index());
+    }
 };
 
 } // namespace mol

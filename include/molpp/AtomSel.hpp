@@ -27,7 +27,7 @@ public:
 
     indices_type const& as_atom_indices() const;
 
-    static indices_type from_atom_indices(internal::IndexRange auto atom_indices, internal::MolData const& /*data*/)
+    static auto from_atom_indices(internal::IndexRange auto&& atom_indices, internal::MolData const&)
     {
         return atom_indices;
     }

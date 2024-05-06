@@ -63,9 +63,3 @@ size_t Residue::size() const
 {
     return data()->residues().size(index());
 }
-
-std::vector<index_t> Residue::as_atom_indices() const
-{
-    auto const indices = data()->residues().indices(index());
-    return {indices.begin(), indices.end()};
-}
