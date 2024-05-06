@@ -165,13 +165,31 @@ std::shared_ptr<Bond> Atom::bond(Atom const& other)
     return bond(other.index());
 }
 
-std::vector<index_t> Atom::as_atom_indices() const
-{
-    return {index()};
-}
-
 std::vector<std::shared_ptr<Bond>> mol::Atom::bonds()
 {
     std::ranges::single_view indices{index()};
     return data()->bonds().bonds(indices.begin(), indices.end());
+}
+
+Coord3::ColXpr mol::Atom::position()
+{
+    if (!frame())
+    {
+        throw mol::MolError("Invalid frame");
+    }
+    return data()->trajectory().timestep(*frame()).coords().col(index());
+}
+
+Coord3::ConstColXpr mol::Atom::position() const
+{
+    if (!frame())
+    {
+        throw mol::MolError("Invalid frame");
+    }
+    return data()->trajectory().timestep(*frame()).coords().col(index());
+}
+
+std::vector<index_t> Atom::as_atom_indices() const
+{
+    return {index()};
 }

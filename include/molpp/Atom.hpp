@@ -59,28 +59,12 @@ public:
     std::shared_ptr<Bond> add_bond(Atom const& bonded_to);
     std::shared_ptr<Bond> bond(index_t const other);
     std::shared_ptr<Bond> bond(Atom const& other);
+    std::vector<std::shared_ptr<Bond>> bonds();
+
+    Coord3::ColXpr position();
+    Coord3::ConstColXpr position() const;
 
     std::vector<index_t> as_atom_indices() const;
-
-    auto position()
-    {
-        if (!frame())
-        {
-            throw mol::MolError("Invalid frame");
-        }
-        return data()->trajectory().timestep(*frame()).coords().col(index());
-    }
-
-    auto position() const
-    {
-        if (!frame())
-        {
-            throw mol::MolError("Invalid frame");
-        }
-        return data()->trajectory().timestep(*frame()).coords().col(index());
-    }
-
-    std::vector<std::shared_ptr<Bond>> bonds();
 };
 
 } // namespace mol
