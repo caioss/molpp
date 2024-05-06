@@ -4,7 +4,7 @@ add_executable(tests
     test_Atom.cpp
     test_MolfileReader.cpp
     test_MolData.cpp
-    test_AtomAggregate.cpp
+    test_MolecularEntity.cpp
     test_Graph.cpp
     test_SimpleGraph.cpp
     test_BreadthFirstTraversal.cpp

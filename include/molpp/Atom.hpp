@@ -2,7 +2,7 @@
 #define MOLPP_ATOM_HPP
 
 #include <molpp/MolppCore.hpp>
-#include <molpp/internal/AtomAggregate.hpp>
+#include <molpp/internal/MolecularEntity.hpp>
 #include <memory>
 #include <vector>
 #include <ranges>
@@ -13,10 +13,10 @@ namespace mol
 class Bond;
 class Residue;
 
-class Atom : public internal::AtomAggregate
+class Atom : public internal::MolecularEntity
 {
 public:
-    using internal::AtomAggregate::AtomAggregate;
+    using internal::MolecularEntity::MolecularEntity;
 
     int resid() const;
     Residue residue();

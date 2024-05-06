@@ -25,7 +25,7 @@ target_sources(molpp
             molpp/internal/MolData.hpp
             molpp/internal/AtomData.hpp
             molpp/internal/VectorView.hpp
-            molpp/internal/AtomAggregate.hpp
+            molpp/internal/MolecularEntity.hpp
             molpp/internal/BondData.hpp
             molpp/internal/ResidueData.hpp
             molpp/internal/Sel.hpp

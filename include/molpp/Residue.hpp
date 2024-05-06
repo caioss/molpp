@@ -2,17 +2,17 @@
 #define MOLPP_RESIDUE_HPP
 
 #include <molpp/MolppCore.hpp>
-#include <molpp/internal/AtomAggregate.hpp>
+#include <molpp/internal/MolecularEntity.hpp>
 
 namespace mol
 {
 
 class Atom;
 
-class Residue : public internal::AtomAggregate
+class Residue : public internal::MolecularEntity
 {
 public:
-    using internal::AtomAggregate::AtomAggregate;
+    using internal::MolecularEntity::MolecularEntity;
 
     int residue_id() const;
     void set_residue_id(int const resid);
