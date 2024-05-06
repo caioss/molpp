@@ -1,11 +1,11 @@
 #ifndef MOLPP_INTERNAL_ATOMAGGREGATE_HPP
 #define MOLPP_INTERNAL_ATOMAGGREGATE_HPP
 
-#include <molpp/internal/requirements.hpp>
+#include <molpp/internal/MolData.hpp>
+
 #include <memory>
 #include <vector>
 #include <concepts>
-#include <molpp/internal/MolData.hpp>
 
 namespace mol::internal
 {

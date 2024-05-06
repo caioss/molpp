@@ -3,8 +3,7 @@
 
 #include <molpp/MolError.hpp>
 #include <molpp/MolppCore.hpp>
-#include <molpp/internal/SelIndex.hpp>
-#include <molpp/internal/requirements.hpp>
+#include <molpp/internal/SelIndices.hpp>
 #include <molpp/internal/MolData.hpp>
 
 #include <vector>
@@ -23,18 +22,13 @@ class MolData;
 template<class Type, class Derived>
 class Sel;
 
-template<class Derived>
-concept SelDerived = requires(Derived t, MolData data) {
-    std::derived_from<Derived, Sel<typename Derived::value_type, Derived>>;
-    { t.data_size(data) } -> std::same_as<size_t>;
-    { t.atom_indices() } -> std::convertible_to<std::vector<index_t>>;
-};
-
-template<class Derived, class Other>
-concept SelFromAtoms = requires(Derived sel, Other other, MolData data) {
-    { other.data() } -> std::same_as<MolData*>;
-    { other.frame() } -> std::same_as<Frame>;
-    { sel.from_atom_indices(other.atom_indices(), data) } -> std::same_as<SelIndex>;
+template<class LHS, class RHS>
+concept SelConvertible = requires(LHS lhs, RHS rhs) {
+    typename LHS::indices_type;
+    { rhs.data() } -> std::same_as<MolData*>;
+    { rhs.frame() } -> std::same_as<Frame>;
+    { rhs.as_atom_indices() } -> std::convertible_to<typename LHS::indices_type>;
+    { lhs.from_atom_indices(rhs.as_atom_indices(), std::declval<MolData>()) } -> std::convertible_to<typename LHS::indices_type>;
 };
 
 template<class Type, class Derived>
@@ -45,6 +39,7 @@ private:
     class Iterator;
 
 public:
+    using indices_type = std::vector<index_t>;
     using value_type = Type;
     using iterator = Iterator<Type>;
     using const_iterator = Iterator<const Type>;
@@ -55,10 +50,9 @@ public:
     Sel& operator=(Sel&&) = default;
     Sel& operator=(Sel const&) = default;
 
-    explicit Sel(SelIndex&& sel_index, MolData* data)
-    requires SelDerived<Derived>
+    explicit Sel(SelIndices&& sel_index, MolData* data)
     : m_data{data}
-    , m_index{sel_index}
+    , m_index{std::forward<SelIndices>(sel_index)}
     {
         if (m_data->trajectory().num_frames())
         {
@@ -66,22 +60,20 @@ public:
         }
     }
 
-    template<class Other>
-    explicit Sel(Other&& other)
-    requires SelDerived<Derived> && SelFromAtoms<Derived, Other>
-    : Sel(Derived::from_atom_indices(other.atom_indices(), *(other.data())), other.data())
+    template<class RHS>
+    explicit Sel(RHS&& rhs)
+    requires SelConvertible<Derived, RHS>
+    : Sel(SelIndices(Derived::from_atom_indices(rhs.as_atom_indices(), *(rhs.data()))), rhs.data())
     {
-        set_frame(other.frame());
+        set_frame(rhs.frame());
     }
 
     explicit Sel(IndexRange auto const& indices, MolData* data)
-    requires SelDerived<Derived>
-    : Sel(SelIndex(indices, Derived::data_size(*data)), data)
+    : Sel(SelIndices(indices), data)
     {}
 
     explicit Sel(MolData* data)
-    requires SelDerived<Derived>
-    : Sel(SelIndex(Derived::data_size(*data)), data)
+    : Sel(SelIndices(data->size<Type>()), data)
     {}
 
     Frame frame() const
@@ -173,7 +165,7 @@ private:
     class Iterator
     {
     private:
-        using indices_iterator = SelIndex::iterator;
+        using indices_iterator = SelIndices::const_iterator;
 
     public:
         using iterator_category = indices_iterator::iterator_category;
@@ -229,7 +221,7 @@ private:
 
     Frame m_frame;
     MolData* m_data;
-    SelIndex m_index;
+    SelIndices m_index;
 };
 
 } // namespace internal

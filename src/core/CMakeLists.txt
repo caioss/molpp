@@ -7,5 +7,5 @@ target_sources(molpp PRIVATE
     AtomSel.cpp
     BondData.cpp
     ResidueSel.cpp
-    SelIndex.cpp
+    SelIndices.cpp
 )

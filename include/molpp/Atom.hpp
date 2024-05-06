@@ -60,7 +60,7 @@ public:
     std::shared_ptr<Bond> bond(index_t const other);
     std::shared_ptr<Bond> bond(Atom const& other);
 
-    std::vector<index_t> atom_indices() const;
+    std::vector<index_t> as_atom_indices() const;
 
     auto position()
     {

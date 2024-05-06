@@ -21,7 +21,7 @@ target_sources(molpp
             molpp/Molpp
             molpp/Bond.hpp
             molpp/AtomSelector.hpp
-            molpp/internal/SelIndex.hpp
+            molpp/internal/SelIndices.hpp
             molpp/internal/MolData.hpp
             molpp/internal/AtomData.hpp
             molpp/internal/VectorView.hpp
@@ -29,5 +29,4 @@ target_sources(molpp
             molpp/internal/BondData.hpp
             molpp/internal/ResidueData.hpp
             molpp/internal/Sel.hpp
-            molpp/internal/requirements.hpp
 )

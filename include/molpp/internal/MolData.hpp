@@ -6,6 +6,12 @@
 #include <molpp/internal/ResidueData.hpp>
 #include <molpp/Trajectory.hpp>
 
+namespace mol
+{
+class Atom;
+class Residue;
+} // namespace mol
+
 namespace mol::internal
 {
 
@@ -15,19 +21,17 @@ public:
     MolData() = delete;
     MolData(size_t const num_atoms);
 
-    size_t size() const
-    {
-        return m_num_atoms;
-    };
+    template<class Entity>
+    size_t size() const;
 
     AtomData& atoms()
     {
-        return m_properties;
+        return m_atoms;
     }
 
     AtomData const& atoms() const
     {
-        return m_properties;
+        return m_atoms;
     }
 
     BondData& bonds()
@@ -61,12 +65,23 @@ public:
     }
 
 private:
-    size_t m_num_atoms;
-    AtomData m_properties;
+    AtomData m_atoms;
     BondData m_bonds;
     ResidueData m_residues;
     Trajectory m_trajectory;
 };
+
+template<>
+inline size_t MolData::size<mol::Atom>() const
+{
+    return m_atoms.size();
+}
+
+template<>
+inline size_t MolData::size<mol::Residue>() const
+{
+    return m_residues.size();
+}
 
 } // namespace mol::internal
 

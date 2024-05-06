@@ -4,7 +4,7 @@
 #include "tools/math.hpp"
 #include "tools/SpatialSearch.hpp"
 #include <molpp/MolppCore.hpp>
-#include <molpp/internal/SelIndex.hpp>
+#include <molpp/internal/SelIndices.hpp>
 #include <molpp/internal/VectorView.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -105,8 +105,8 @@ TEST(Views, SequenceView) {
     EXPECT_EQ(view.at(1), 13);
     EXPECT_EQ(view.at(2), 14);
 
-    // Vector from SelIndex
-    SelIndex sel_indices(indices, 5);
+    // Vector from SelIndices
+    SelIndices sel_indices(indices);
     SequenceView sel_view(vec, sel_indices.indices());
     EXPECT_THAT(sel_view, ElementsAre(11, 13, 14));
     EXPECT_EQ(view.size(), 3);

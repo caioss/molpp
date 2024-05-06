@@ -13,11 +13,11 @@ using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
-TEST(Selections, SelIndex) {
+TEST(Selections, SelIndices) {
     /*
      * Construction
      */
-    SelIndex all(5);
+    SelIndices all(5);
     EXPECT_EQ(all.size(), 5);
     EXPECT_THAT(all.indices(), ElementsAre(0, 1, 2, 3, 4));
     for (index_t i = 0; i < 5; ++i)
@@ -30,9 +30,9 @@ TEST(Selections, SelIndex) {
 
     // Constructors accepting indexes
     std::vector<index_t> indices{4, 1, 1, 3};
-    SelIndex some(indices, 5);
-    SelIndex rvalue(std::vector<index_t>{4, 1, 1, 3}, 5);
-    EXPECT_THROW(SelIndex(std::vector<index_t>{4, 1, 1, 3}, 1), MolError);
+    SelIndices some(indices, 5);
+    SelIndices rvalue(std::vector<index_t>{4, 1, 1, 3}, 5);
+    EXPECT_THROW(SelIndices(std::vector<index_t>{4, 1, 1, 3}, 1), MolError);
     EXPECT_EQ(some.size(), 3);
     EXPECT_EQ(rvalue.size(), 3);
     EXPECT_THAT(some.indices(), ElementsAre(1, 3, 4));

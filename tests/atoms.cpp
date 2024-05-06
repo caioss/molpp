@@ -36,7 +36,7 @@ TEST(Atoms, Timestep) {
 TEST(Atoms, MolData) {
     size_t const num_atoms { 3 };
     MolData data(num_atoms);
-    EXPECT_EQ(data.size(), num_atoms);
+    EXPECT_EQ(data.size<Atom>(), num_atoms);
     EXPECT_EQ(data.atoms().size(), num_atoms);
     EXPECT_EQ(data.bonds().size(), 0);
     EXPECT_EQ(data.residues().size(), 0);
@@ -46,7 +46,7 @@ TEST(Atoms, MolData) {
 TEST(Atoms, Trajectory) {
     size_t const num_atoms { 3 };
     MolData data(num_atoms);
-    EXPECT_EQ(data.size(), num_atoms);
+    EXPECT_EQ(data.size<Atom>(), num_atoms);
 
     Trajectory &traj_data = data.trajectory();
     EXPECT_EQ(traj_data.num_frames(), 0);

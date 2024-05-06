@@ -3,6 +3,8 @@
 #include <molpp/Residue.hpp>
 #include <molpp/MolError.hpp>
 
+#include <ranges>
+
 using namespace mol;
 
 int Atom::resid() const
@@ -141,7 +143,7 @@ std::shared_ptr<Bond> Atom::add_bond(index_t const bonded_to)
     {
         throw mol::MolError("Atoms can't have bonds to themselves");
     }
-    if (bonded_to >= data()->size())
+    if (bonded_to >= data()->size<Atom>())
     {
         throw mol::MolError("Out of bounds index: " + std::to_string(bonded_to));
     }
@@ -163,13 +165,13 @@ std::shared_ptr<Bond> Atom::bond(Atom const& other)
     return bond(other.index());
 }
 
-std::vector<index_t> Atom::atom_indices() const
+std::vector<index_t> Atom::as_atom_indices() const
 {
     return {index()};
 }
 
 std::vector<std::shared_ptr<Bond>> mol::Atom::bonds()
 {
-    std::vector<index_t> const& indices = atom_indices();
+    std::ranges::single_view indices{index()};
     return data()->bonds().bonds(indices.begin(), indices.end());
 }

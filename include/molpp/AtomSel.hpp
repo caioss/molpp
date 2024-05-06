@@ -25,13 +25,11 @@ public:
     AtomSel bonded();
     std::vector<std::shared_ptr<mol::Bond>> bonds();
 
-protected:
-    static size_t data_size(internal::MolData const& data);
-    std::vector<index_t> const& atom_indices() const;
+    indices_type const& as_atom_indices() const;
 
-    static internal::SelIndex from_atom_indices(internal::IndexRange auto const& atom_indices, internal::MolData const& data)
+    static indices_type from_atom_indices(internal::IndexRange auto atom_indices, internal::MolData const& /*data*/)
     {
-        return {atom_indices, data_size(data)};
+        return atom_indices;
     }
 
     template<class, class>

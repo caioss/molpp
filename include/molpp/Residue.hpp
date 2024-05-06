@@ -30,7 +30,7 @@ public:
     void add_atom(Atom const& atom);
     size_t size() const;
 
-    std::vector<index_t> atom_indices() const;
+    std::vector<index_t> as_atom_indices() const;
 };
 
 } // namespace mol

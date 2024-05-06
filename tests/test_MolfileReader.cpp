@@ -140,7 +140,7 @@ TEST_P(MolfileReaderTopologyReadingTest, Read)
     auto data = reader.read_atoms();
     reader.close();
     ASSERT_THAT(data, NotNull());
-    EXPECT_EQ(data->size(), GetParam().num_atoms);
+    EXPECT_EQ(data->size<Atom>(), GetParam().num_atoms);
 }
 
 INSTANTIATE_TEST_SUITE_P(Files, MolfileReaderTopologyReadingTest, Values(
@@ -156,7 +156,7 @@ protected:
     {
         data = read("tiny.pdb", ".pdb");
         ASSERT_THAT(data, NotNull());
-        ASSERT_EQ(data->size(), 6);
+        ASSERT_EQ(data->size<Atom>(), 6);
     }
 
     std::unique_ptr<MolData> data;
@@ -294,7 +294,7 @@ protected:
     void SetUp() override
     {
         ASSERT_THAT(pdb(), NotNull());
-        ASSERT_EQ(pdb()->size(), 6);
+        ASSERT_EQ(pdb()->size<Atom>(), 6);
     }
 
     MolData* pdb()
@@ -373,7 +373,7 @@ TEST_F(PDBMolfileReaderTest, Bonded)
 
 TEST_F(PDBMolfileReaderTest, GuessedBond)
 {
-    size_t const num_atoms = pdb()->size();
+    size_t const num_atoms = pdb()->size<Atom>();
     for (size_t i = 0; i < num_atoms; i++)
     {
         for (auto bond : Atom(i, std::nullopt, pdb()).bonds())
@@ -385,7 +385,7 @@ TEST_F(PDBMolfileReaderTest, GuessedBond)
 
 TEST_F(PDBMolfileReaderTest, BondOrder)
 {
-    size_t const num_atoms = pdb()->size();
+    size_t const num_atoms = pdb()->size<Atom>();
     for (size_t i = 0; i < num_atoms; i++)
     {
         for (auto bond : Atom(i, std::nullopt, pdb()).bonds())
@@ -397,7 +397,7 @@ TEST_F(PDBMolfileReaderTest, BondOrder)
 
 TEST_F(PDBMolfileReaderTest, GuessedOrder)
 {
-    size_t const num_atoms = pdb()->size();
+    size_t const num_atoms = pdb()->size<Atom>();
     for (size_t i = 0; i < num_atoms; i++)
     {
         for (auto bond : Atom(i, std::nullopt, pdb()).bonds())
@@ -413,7 +413,7 @@ protected:
     void SetUp() override
     {
         ASSERT_THAT(mol2(), NotNull());
-        ASSERT_EQ(mol2()->size(), 12);
+        ASSERT_EQ(mol2()->size<Atom>(), 12);
     }
 
     MolData* mol2()
@@ -501,7 +501,7 @@ TEST_F(Mol2MolfileReaderTest, Bonded)
 
 TEST_F(Mol2MolfileReaderTest, GuessedBond)
 {
-    size_t const num_atoms = mol2()->size();
+    size_t const num_atoms = mol2()->size<Atom>();
     for (size_t i = 0; i < num_atoms; i++)
     {
         for (auto bond : Atom(i, std::nullopt, mol2()).bonds())
@@ -529,7 +529,7 @@ TEST_F(Mol2MolfileReaderTest, BondOrder)
 
 TEST_F(Mol2MolfileReaderTest, GuessedOrder)
 {
-    size_t const num_atoms = mol2()->size();
+    size_t const num_atoms = mol2()->size<Atom>();
     for (size_t i = 0; i < num_atoms; i++)
     {
         for (auto bond : Atom(i, std::nullopt, mol2()).bonds())
@@ -545,7 +545,7 @@ protected:
     void SetUp() override
     {
         ASSERT_THAT(psf(), NotNull());
-        ASSERT_EQ(psf()->size(), 22);
+        ASSERT_EQ(psf()->size<Atom>(), 22);
     }
 
     MolData* psf()
@@ -643,7 +643,7 @@ TEST_F(PSFMolfileReaderTest, Bonded)
 
 TEST_F(PSFMolfileReaderTest, GuessedBond)
 {
-    size_t const num_atoms = psf()->size();
+    size_t const num_atoms = psf()->size<Atom>();
     for (size_t i = 0; i < num_atoms; i++)
     {
         for (auto bond : Atom(i, std::nullopt, psf()).bonds())
@@ -655,7 +655,7 @@ TEST_F(PSFMolfileReaderTest, GuessedBond)
 
 TEST_F(PSFMolfileReaderTest, BondOrder)
 {
-    size_t const num_atoms = psf()->size();
+    size_t const num_atoms = psf()->size<Atom>();
     for (size_t i = 0; i < num_atoms; i++)
     {
         for (auto bond : Atom(i, std::nullopt, psf()).bonds())
@@ -667,7 +667,7 @@ TEST_F(PSFMolfileReaderTest, BondOrder)
 
 TEST_F(PSFMolfileReaderTest, GuessedOrder)
 {
-    size_t const num_atoms = psf()->size();
+    size_t const num_atoms = psf()->size<Atom>();
     for (size_t i = 0; i < num_atoms; i++)
     {
         for (auto bond : Atom(i, std::nullopt, psf()).bonds())

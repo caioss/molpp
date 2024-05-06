@@ -3,7 +3,6 @@
 
 #include <molpp/internal/Sel.hpp>
 #include <molpp/Residue.hpp>
-#include <unordered_set>
 
 namespace mol
 {
@@ -14,23 +13,19 @@ public:
     ResidueSel() = delete;
     using internal::Sel<Residue, ResidueSel>::Sel;
 
-protected:
-    static size_t data_size(internal::MolData const& data);
-    std::vector<index_t> atom_indices() const;
+    ResidueSel::indices_type as_atom_indices() const;
 
-    static internal::SelIndex from_atom_indices(internal::IndexRange auto const& atom_indices, internal::MolData const& data)
+    static ResidueSel::indices_type from_atom_indices(internal::IndexRange auto const& atom_indices, internal::MolData const& data)
     {
-        std::unordered_set<index_t> residues;
+        ResidueSel::indices_type residues;
+        mol::internal::AtomData const& atom_data = data.atoms();
         for (auto const index : atom_indices)
         {
-            residues.insert(atom_index(index, data));
+            residues.push_back(atom_data.residue(index));
         }
 
-        return internal::SelIndex(residues, data_size(data));
+        return residues;
     }
-
-private:
-    static size_t atom_index(size_t const atom_index, internal::MolData const& data);
 
     template<class, class>
     friend class internal::Sel;

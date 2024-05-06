@@ -5,7 +5,11 @@
 #include <map>
 #include <string>
 
-namespace mol::internal
+namespace mol
+{
+class Atom;
+
+namespace internal
 {
 
 class ResidueDetect
@@ -59,7 +63,7 @@ public:
             residues_data.set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
         }
 
-        for (index_t index = 0; index < mol_data.size(); ++index)
+        for (index_t index = 0; index < mol_data.size<Atom>(); ++index)
         {
             index_t const residue_idx = mol_data.atoms().residue(index);
             residues_data.add_atom(residue_idx, index);
@@ -67,6 +71,7 @@ public:
     }
 };
 
-} // namespace mol::internal
+} // namespace internal
+} // namespace mol
 
 #endif // MOLPP_READERS_RESIDUEDETECT_HPP
