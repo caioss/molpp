@@ -1,14 +1,25 @@
 #include <molpp/AtomSel.hpp>
 #include <molpp/internal/MolData.hpp>
 
-using namespace mol;
+namespace mol
+{
+
+AtomSel::position_type AtomSel::positions()
+{
+    return data()->trajectory().timestep(*frame()).coords()(Eigen::all, indices());
+}
+
+AtomSel::const_position_type AtomSel::positions() const
+{
+    return data()->trajectory().timestep(*frame()).coords()(Eigen::all, indices());
+}
 
 AtomSel::indices_type const& AtomSel::as_atom_indices() const
 {
     return indices();
 }
 
-mol::AtomSel mol::AtomSel::bonded()
+AtomSel AtomSel::bonded()
 {
     std::vector<index_t> bonded_atoms = data()->bonds().bonded(indices().begin(), indices().end());
     AtomSel sel(from_atom_indices(bonded_atoms, *data()), data());
@@ -16,7 +27,9 @@ mol::AtomSel mol::AtomSel::bonded()
     return sel;
 }
 
-std::vector<std::shared_ptr<mol::Bond>> mol::AtomSel::bonds()
+std::vector<std::shared_ptr<Bond>> AtomSel::bonds()
 {
     return data()->bonds().bonds(indices().begin(), indices().end());
 }
+
+} // namespace mol

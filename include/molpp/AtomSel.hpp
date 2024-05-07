@@ -14,13 +14,14 @@ class Bond;
 class AtomSel : public internal::Sel<Atom, AtomSel>
 {
 public:
+    using position_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, indices_type>;
+    using const_position_type = Eigen::IndexedView<Coord3 const, Eigen::internal::AllRange<3>, indices_type>;
+
     AtomSel() = delete;
     using internal::Sel<Atom, AtomSel>::Sel;
 
-    auto positions()
-    {
-        return data()->trajectory().timestep(*frame()).coords()(Eigen::all, indices());
-    }
+    position_type positions();
+    const_position_type positions() const;
 
     AtomSel bonded();
     std::vector<std::shared_ptr<mol::Bond>> bonds();
