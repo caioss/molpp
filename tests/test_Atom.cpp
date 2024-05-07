@@ -1,7 +1,7 @@
 #include "auxiliary.hpp"
-#include "molpp/Atom.hpp"
-#include "molpp/Residue.hpp"
-#include "molpp/MolError.hpp"
+#include <molpp/Atom.hpp>
+#include <molpp/Residue.hpp>
+#include <molpp/MolError.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -9,6 +9,7 @@
 using namespace mol;
 using namespace testing;
 
+//! Test fixture for Atom class.
 class AtomTest : public ::testing::Test
 {
 public:
@@ -16,16 +17,16 @@ public:
     : data(create_moldata(3, 1, 1, 1, 1))
     , atom(1, 0, &data)
     , const_atom(1, 0, &data)
-    , atom_no_frame(0, std::nullopt, &data)
+    , null_frame_atom(0, std::nullopt, &data)
     {}
 
     MolData data;
     Atom atom;
     Atom const const_atom;
-    Atom atom_no_frame;
+    Atom null_frame_atom;
 };
 
-TEST_F(AtomTest, Comparison)
+TEST_F(AtomTest, compare_atoms)
 {
     EXPECT_TRUE(Atom(1, 0, &data) == Atom(1, 0, &data));
     EXPECT_FALSE(Atom(0, 0, &data) == Atom(1, 0, &data));
@@ -33,189 +34,272 @@ TEST_F(AtomTest, Comparison)
     EXPECT_FALSE(Atom(1, 0, &data) == Atom(1, 0, nullptr));
 }
 
-TEST_F(AtomTest, IsValid)
+TEST_F(AtomTest, default_is_valid)
 {
     EXPECT_FALSE(Atom().is_valid());
+}
+
+TEST_F(AtomTest, is_valid_with_null_data)
+{
     EXPECT_FALSE(Atom(1, 0, nullptr).is_valid());
-    EXPECT_TRUE(atom_no_frame.is_valid());
+}
+
+TEST_F(AtomTest, is_valid_on_valid_atoms)
+{
+    EXPECT_TRUE(null_frame_atom.is_valid());
     EXPECT_TRUE(atom.is_valid());
     EXPECT_TRUE(const_atom.is_valid());
 }
 
-TEST_F(AtomTest, Frames)
+TEST_F(AtomTest, frames)
 {
     EXPECT_EQ(atom.frame(), 0);
     EXPECT_EQ(const_atom.frame(), 0);
-    EXPECT_FALSE(atom_no_frame.frame());
+    EXPECT_FALSE(null_frame_atom.frame());
 }
 
-TEST_F(AtomTest, SetValidFrame)
+TEST_F(AtomTest, set_valid_frame)
 {
     atom.set_frame(0);
     EXPECT_EQ(atom.frame(), 0);
 }
 
-TEST_F(AtomTest, SetNullFrame)
+TEST_F(AtomTest, set_null_frame)
 {
     atom.set_frame(std::nullopt);
     EXPECT_FALSE(atom.frame());
 }
 
-TEST_F(AtomTest, SetInvalidFrame)
+TEST_F(AtomTest, set_invalid_frame)
 {
     EXPECT_THROW(atom.set_frame(1), MolError);
 }
 
-TEST_F(AtomTest, Residues)
+TEST_F(AtomTest, residue_id)
 {
-    EXPECT_EQ(const_atom.resid(), 1);
-    EXPECT_EQ(const_atom.residue_id(), 1);
-
     EXPECT_EQ(atom.resid(), 1);
+    EXPECT_EQ(const_atom.resid(), 1);
+}
+
+TEST_F(AtomTest, residue_index)
+{
     EXPECT_EQ(atom.residue_id(), 1);
+    EXPECT_EQ(const_atom.residue_id(), 1);
+}
+
+TEST_F(AtomTest, fetch_residue)
+{
+    EXPECT_EQ(atom.residue(), Residue(1, 0, &data));
     EXPECT_EQ(atom.residue(), Residue(1, 0, &data));
 }
 
-TEST_F(AtomTest, AtomicProperty)
+TEST_F(AtomTest, change_residue)
+{
+    Residue new_res(0, 0, &data);
+    new_res.add_atom(atom);
+
+    EXPECT_EQ(atom.resid(), 0);
+    EXPECT_EQ(atom.residue_id(), 0);
+}
+
+TEST_F(AtomTest, atomic_property)
 {
     EXPECT_EQ(const_atom.atomic_number(), 1);
     EXPECT_EQ(atom.atomic_number(), 1);
+}
+
+TEST_F(AtomTest, set_atomic_property)
+{
     atom.set_atomic_number(2);
+
     EXPECT_EQ(atom.atomic_number(), 2);
 }
 
-TEST_F(AtomTest, OccupancyProperty)
+TEST_F(AtomTest, occupancy_property)
 {
     EXPECT_EQ(const_atom.occupancy(), 1.0);
     EXPECT_EQ(atom.occupancy(), 1.0);
+}
+
+TEST_F(AtomTest, set_occupancy_property)
+{
     atom.set_occupancy(0.5);
+
     EXPECT_EQ(atom.occupancy(), 0.5);
 }
 
-TEST_F(AtomTest, TempfactorProperty)
+TEST_F(AtomTest, temperature_factor_property)
 {
     EXPECT_EQ(const_atom.temperature_factor(), 1.0);
     EXPECT_EQ(atom.temperature_factor(), 1.0);
+}
+
+TEST_F(AtomTest, set_temperature_factor_property)
+{
     atom.set_temperature_factor(0.5);
+
     EXPECT_EQ(atom.temperature_factor(), 0.5);
 }
 
-TEST_F(AtomTest, MassProperty)
+TEST_F(AtomTest, mass_property)
 {
     EXPECT_EQ(const_atom.mass(), 1.0);
     EXPECT_EQ(atom.mass(), 1.0);
+}
+
+TEST_F(AtomTest, set_mass_property)
+{
     atom.set_mass(0.5);
+
     EXPECT_EQ(atom.mass(), 0.5);
 }
 
-TEST_F(AtomTest, ChargeProperty)
+TEST_F(AtomTest, charge_property)
 {
     EXPECT_EQ(const_atom.charge(), 1.0);
     EXPECT_EQ(atom.charge(), 1.0);
-    atom.set_charge(0.5);
-    EXPECT_EQ(atom.charge(), 0.5);
 }
 
-TEST_F(AtomTest, RadiusProperty)
+TEST_F(AtomTest, set_charge_property)
+{
+    atom.set_charge(-0.5);
+
+    EXPECT_EQ(atom.charge(), -0.5);
+}
+
+TEST_F(AtomTest, radius_property)
 {
     EXPECT_EQ(const_atom.radius(), 1.0);
     EXPECT_EQ(atom.radius(), 1.0);
+}
+
+TEST_F(AtomTest, set_radius_property)
+{
     atom.set_radius(0.5);
+
     EXPECT_EQ(atom.radius(), 0.5);
 }
 
-TEST_F(AtomTest, NameProperty)
+TEST_F(AtomTest, name_property)
 {
     EXPECT_EQ(const_atom.name(), "B");
     EXPECT_EQ(atom.name(), "B");
+}
+
+TEST_F(AtomTest, set_name_property)
+{
     atom.set_name("CA");
+
     EXPECT_EQ(atom.name(), "CA");
 }
 
-TEST_F(AtomTest, TypeProperty)
+TEST_F(AtomTest, type_property)
 {
     EXPECT_EQ(const_atom.type(), "B");
     EXPECT_EQ(atom.type(), "B");
+}
+
+TEST_F(AtomTest, set_type_property)
+{
     atom.set_type("C");
+
     EXPECT_EQ(atom.type(), "C");
 }
 
-TEST_F(AtomTest, AltLocProperty)
+TEST_F(AtomTest, alternate_location_property)
 {
     EXPECT_EQ(const_atom.alternate_location(), "B");
     EXPECT_EQ(atom.alternate_location(), "B");
+}
+
+TEST_F(AtomTest, set_alternate_location_property)
+{
     atom.set_alternate_location("C");
+
     EXPECT_EQ(atom.alternate_location(), "C");
 }
 
-TEST_F(AtomTest, InsertionCodeProperty)
+TEST_F(AtomTest, insertion_code_property)
 {
     EXPECT_EQ(const_atom.insertion_code(), "B");
     EXPECT_EQ(atom.insertion_code(), "B");
+}
+
+TEST_F(AtomTest, set_insertion_code_property)
+{
     atom.set_insertion_code("C");
+
     EXPECT_EQ(atom.insertion_code(), "C");
 }
 
-TEST_F(AtomTest, ResnameProperty)
+TEST_F(AtomTest, resname_property)
 {
     EXPECT_EQ(const_atom.residue_name(), "B");
     EXPECT_EQ(atom.residue_name(), "B");
 }
 
-TEST_F(AtomTest, SegidProperty)
+TEST_F(AtomTest, segid_property)
 {
     EXPECT_EQ(const_atom.segid(), "A");
     EXPECT_EQ(atom.segid(), "A");
 }
 
-TEST_F(AtomTest, ChainProperty)
+TEST_F(AtomTest, chain_property)
 {
     EXPECT_EQ(const_atom.chain(), "A");
     EXPECT_EQ(atom.chain(), "A");
 }
 
-TEST_F(AtomTest, Coordinates)
+TEST_F(AtomTest, positions)
 {
     EXPECT_THAT(const_atom.position().reshaped(), ElementsAre(1, 1, 1));
     EXPECT_THAT(atom.position().reshaped(), ElementsAre(1, 1, 1));
+}
+
+TEST_F(AtomTest, modify_positions)
+{
     atom.position() *= 2;
+
     EXPECT_THAT(atom.position().reshaped(), ElementsAre(2, 2, 2));
 }
 
-TEST_F(AtomTest, CoordinatesOnInvalidFrame)
+TEST_F(AtomTest, positions_on_invalid_frame)
 {
-    ASSERT_FALSE(atom_no_frame.frame());
-    EXPECT_THROW(atom_no_frame.position(), MolError);
+    ASSERT_FALSE(null_frame_atom.frame());
+    EXPECT_THROW(null_frame_atom.position(), MolError);
 }
 
-TEST_F(AtomTest, AddValidBond)
+TEST_F(AtomTest, add_valid_bond)
 {
-    ASSERT_THAT(atom.add_bond(2), NotNull());
-    ASSERT_THAT(atom.bond(2), NotNull());
+    auto added_bond = atom.add_bond(2);
     auto bond = atom.bond(2);
+
+    ASSERT_THAT(added_bond, NotNull());
     ASSERT_THAT(bond, NotNull());
-    EXPECT_EQ(bond->atom1(), 1);
-    EXPECT_EQ(bond->atom2(), 2);
+    EXPECT_EQ(added_bond, bond);
+    EXPECT_EQ(added_bond->atom1(), 1);
+    EXPECT_EQ(added_bond->atom2(), 2);
 }
 
-TEST_F(AtomTest, AddInvalidBond)
+TEST_F(AtomTest, add_invalid_bond)
 {
     EXPECT_THROW(atom.add_bond(1), MolError);
     EXPECT_THROW(atom.add_bond(3), MolError);
 }
 
-TEST_F(AtomTest, ReAddBond)
+TEST_F(AtomTest, re_add_bond)
 {
     atom.add_bond(2);
+
     EXPECT_EQ(atom.add_bond(2), atom.bond(2));
 }
 
-TEST_F(AtomTest, AddBondFromRValue)
+TEST_F(AtomTest, add_bond_from_r_value)
 {
     EXPECT_EQ(atom.add_bond(Atom(2, 0, &data)), atom.bond(Atom(2, 0, &data)));
 }
 
-TEST_F(AtomTest, BondsList)
+TEST_F(AtomTest, bonds_list)
 {
     std::vector<std::pair<index_t, index_t>> bonds_indices;
     for (std::shared_ptr<Bond> bond : atom.bonds())
@@ -224,4 +308,11 @@ TEST_F(AtomTest, BondsList)
     }
 
     EXPECT_THAT(bonds_indices, UnorderedElementsAre(Pair(0, 1), Pair(1, 2)));
+}
+
+TEST_F(AtomTest, as_atom_indices)
+{
+    EXPECT_THAT(view2vector(atom.as_atom_indices()), ElementsAre(1));
+    EXPECT_THAT(view2vector(const_atom.as_atom_indices()), ElementsAre(1));
+    EXPECT_THAT(view2vector(null_frame_atom.as_atom_indices()), ElementsAre(0));
 }
