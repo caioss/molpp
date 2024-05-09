@@ -2,6 +2,7 @@ enable_testing()
 
 add_executable(tests
     test_Atom.cpp
+    test_Residue.cpp
     test_MolfileReader.cpp
     test_MolData.cpp
     test_MolecularEntity.cpp

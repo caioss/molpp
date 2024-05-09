@@ -14,64 +14,6 @@ using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
-TEST(Residues, Residue) {
-    MolData data = create_moldata(3, 1, 1, 1, 1);
-
-    // Comparison
-    EXPECT_TRUE(Residue(1, 0, &data) == Residue(1, 0, &data));
-    EXPECT_FALSE(Residue(0, 0, &data) == Residue(1, 0, &data));
-    EXPECT_FALSE(Residue(1, std::nullopt, &data) == Residue(1, 0, &data));
-    EXPECT_FALSE(Residue(1, 0, &data) == Residue(1, 0, nullptr));
-
-    Residue res(1, 0, &data);
-    Residue const const_res(1, 0, &data);
-
-    /*
-     * Constructors
-     */
-    EXPECT_FALSE(Residue().is_valid());
-    EXPECT_FALSE(Residue(1, 0, nullptr).is_valid());
-    EXPECT_TRUE(res.is_valid());
-    EXPECT_TRUE(const_res.is_valid());
-
-    /*
-     * Properties
-     */
-    EXPECT_EQ(res.index(), 1);
-    EXPECT_EQ(res.frame(), 0);
-    res.set_frame(std::nullopt);
-    EXPECT_FALSE(res.frame());
-    res.set_frame(0);
-    EXPECT_EQ(res.frame(), 0);
-    EXPECT_THROW(res.set_frame(1), MolError);
-
-    res.set_residue_id(20);
-    EXPECT_EQ(res.residue_id(), 20);
-
-    res.set_residue_name("ARG");
-    EXPECT_EQ(res.residue_name(), "ARG");
-
-    res.set_segid("SEG1");
-    EXPECT_EQ(res.segid(), "SEG1");
-
-    res.set_chain("B");
-    EXPECT_EQ(res.chain(), "B");
-
-    /*
-     * Addition/removal
-     */
-    Atom atom = Atom(0, 0, &data);
-    res.add_atom(atom);
-    res.add_atom(2);
-    AtomSel atomsel(res);
-    ASSERT_EQ(atomsel.size(), 3);
-    for (index_t i = 0; i < 3; i++)
-    {
-        EXPECT_EQ(atomsel[i].index(), i);
-        EXPECT_EQ(atomsel[i].residue_id(), 1);
-    }
-}
-
 TEST(Residues, ResidueData) {
     ResidueData props;
     EXPECT_EQ(props.size(), 0);

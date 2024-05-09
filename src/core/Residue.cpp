@@ -46,12 +46,12 @@ void Residue::set_chain(std::string const& chain)
 
 void Residue::add_atom(index_t atom_index)
 {
-    mol::internal::AtomData& properties = data()->atoms();
-    mol::internal::ResidueData& residues = data()->residues();
-    index_t const old_res = properties.residue(atom_index);
-    residues.remove_atom(old_res, atom_index);
-    residues.add_atom(index(), atom_index);
-    properties.residue(atom_index) = index();
+    mol::internal::AtomData& atom_data = data()->atoms();
+    mol::internal::ResidueData& residue_data = data()->residues();
+    index_t const old_res = atom_data.residue(atom_index);
+    residue_data.remove_atom(old_res, atom_index);
+    residue_data.add_atom(index(), atom_index);
+    atom_data.residue(atom_index) = index();
 }
 
 void Residue::add_atom(Atom const& atom)
