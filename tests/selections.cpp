@@ -13,46 +13,6 @@ using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
-TEST(Selections, SelIndices) {
-    /*
-     * Construction
-     */
-    SelIndices all(5);
-    EXPECT_EQ(all.size(), 5);
-    EXPECT_THAT(all.indices(), ElementsAre(0, 1, 2, 3, 4));
-    for (index_t i = 0; i < 5; ++i)
-    {
-        EXPECT_TRUE(all.contains(i)) << "index " << i;
-    }
-    EXPECT_FALSE(all.contains(6));
-    EXPECT_TRUE(all.indices_begin() != all.indices_end());
-    EXPECT_EQ(all.indices_end() - all.indices_begin(), 5);
-
-    // Constructors accepting indexes
-    std::vector<index_t> indices{4, 1, 1, 3};
-    SelIndices some(indices, 5);
-    SelIndices rvalue(std::vector<index_t>{4, 1, 1, 3}, 5);
-    EXPECT_THROW(SelIndices(std::vector<index_t>{4, 1, 1, 3}, 1), MolError);
-    EXPECT_EQ(some.size(), 3);
-    EXPECT_EQ(rvalue.size(), 3);
-    EXPECT_THAT(some.indices(), ElementsAre(1, 3, 4));
-    EXPECT_THAT(rvalue.indices(), ElementsAre(1, 3, 4));
-    for (index_t i : {1, 3, 4})
-    {
-        EXPECT_TRUE(some.contains(i)) << "Index " << i;
-        EXPECT_TRUE(rvalue.contains(i)) << "Index " << i;
-    }
-    for (index_t i : {0, 2, 5})
-    {
-        EXPECT_FALSE(some.contains(i)) << "Index " << i;
-        EXPECT_FALSE(rvalue.contains(i)) << "Index " << i;
-    }
-    EXPECT_TRUE(some.indices_begin() != some.indices_end());
-    EXPECT_EQ(some.indices_end() - some.indices_begin(), 3);
-    EXPECT_TRUE(rvalue.indices_begin() != rvalue.indices_end());
-    EXPECT_EQ(rvalue.indices_end() - rvalue.indices_begin(), 3);
-}
-
 TEST(Selections, Sel) {
     // Data
     MolData* pdb_tiny = PDBFiles::tiny();

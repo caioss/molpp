@@ -106,22 +106,22 @@ public:
 
     iterator begin()
     {
-        return iterator(m_data, m_index.indices_begin(), frame());
+        return iterator(m_data, m_index.begin(), frame());
     }
 
     iterator end()
     {
-        return iterator(m_data, m_index.indices_end(), frame());
+        return iterator(m_data, m_index.end(), frame());
     }
 
     const_iterator begin() const
     {
-        return const_iterator(m_data, m_index.indices_begin(), frame());
+        return const_iterator(m_data, m_index.begin(), frame());
     }
 
     const_iterator end() const
     {
-        return const_iterator(m_data, m_index.indices_end(), frame());
+        return const_iterator(m_data, m_index.end(), frame());
     }
 
     Type operator[](size_t const index)

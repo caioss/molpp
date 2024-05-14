@@ -1,11 +1,9 @@
 #ifndef MOLPP_INTERNAL_SELINDICES_HPP
 #define MOLPP_INTERNAL_SELINDICES_HPP
 
-#include <molpp/MolError.hpp>
 #include <molpp/MolppCore.hpp>
 
 #include <vector>
-#include <algorithm>
 #include <unordered_set>
 
 namespace mol::internal
@@ -19,7 +17,6 @@ public:
     using const_iterator = indices_type::const_iterator;
 
     SelIndices() = delete;
-
     explicit SelIndices(size_t const max_size);
 
     SelIndices(IndexRange auto const& indices)
@@ -34,26 +31,10 @@ public:
         std::sort(m_indices.begin(), m_indices.end());
     }
 
-    indices_type const& indices() const
-    {
-        return m_indices;
-    }
-
-    value_type size() const
-    {
-        return m_indices.size();
-    }
-
-    const_iterator indices_begin() const
-    {
-        return m_indices.cbegin();
-    }
-
-    const_iterator indices_end() const
-    {
-        return m_indices.cend();
-    }
-
+    indices_type const& indices() const;
+    value_type size() const;
+    const_iterator begin() const;
+    const_iterator end() const;
     bool contains(index_t const index) const;
 
 private:
