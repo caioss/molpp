@@ -17,7 +17,7 @@ ResidueSel::indices_type ResidueSel::as_atom_indices() const
     atoms.reserve(num_atoms);
     for (auto const res : indices())
     {
-        for (auto const index : residues.indices(res))
+        for (auto const index : residues.atom_indices(res))
         {
             atoms.push_back(index);
         }

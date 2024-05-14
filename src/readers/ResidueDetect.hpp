@@ -1,21 +1,28 @@
 #ifndef MOLPP_READERS_RESIDUEDETECT_HPP
 #define MOLPP_READERS_RESIDUEDETECT_HPP
 
-#include <molpp/internal/MolData.hpp>
+#include <molpp/MolppCore.hpp>
+
 #include <map>
 #include <string>
 
 namespace mol
 {
-class Atom;
 
 namespace internal
 {
 
+class MolData;
+
 class ResidueDetect
 {
+public:
+    ResidueDetect();
+    index_t register_atom(int const resid, std::string const& resname, std::string const& segid, std::string const chain);
+    void update_residue_data(MolData& mol_data) const;
+
 private:
-    struct Residue
+    struct ResidueInfo
     {
         index_t index;
         size_t count;
@@ -25,50 +32,11 @@ private:
         std::string chain;
     };
 
-    using residues_type = std::map<std::tuple<int, std::string, std::string, std::string>, Residue>;
+    using residues_map = std::map<std::tuple<int, std::string, std::string, std::string>, ResidueInfo>;
 
-    residues_type m_residues;
-    residues_type::iterator m_iterator;
-    Residue m_current;
-
-public:
-    ResidueDetect()
-    : m_iterator{m_residues.end()}
-    {}
-
-    index_t register_atom(int const resid, std::string const& resname, std::string const& segid, std::string const chain)
-    {
-        if (m_iterator == m_residues.end() || m_current.resid != resid || m_current.resname != resname || m_current.segid != segid || m_current.chain != chain)
-        {
-            index_t const index = m_residues.size();
-            m_current = {index, 0, resid, resname, segid, chain};
-
-            std::tuple const key{resid, resname, segid, chain};
-            m_iterator = m_residues.insert(std::pair(key, m_current)).first;
-        }
-
-        Residue& residue = m_iterator->second;
-        residue.count++;
-        return residue.index;
-    }
-
-    void update_residue_data(MolData& mol_data) const
-    {
-        ResidueData& residues_data = mol_data.residues();
-        residues_data.resize(m_residues.size());
-        for (auto const& item : m_residues)
-        {
-            Residue const& residue = item.second;
-            residues_data.reset(residue.index, residue.count);
-            residues_data.set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
-        }
-
-        for (index_t index = 0; index < mol_data.size<Atom>(); ++index)
-        {
-            index_t const residue_idx = mol_data.atoms().residue(index);
-            residues_data.add_atom(residue_idx, index);
-        }
-    }
+    residues_map m_residues;
+    residues_map::iterator m_iterator;
+    ResidueInfo m_current;
 };
 
 } // namespace internal

@@ -1,8 +1,6 @@
 #ifndef MOLPP_INTERNAL_RESIDUEDATA_HPP
 #define MOLPP_INTERNAL_RESIDUEDATA_HPP
 
-#include <molpp/tools/iterators.hpp>
-
 #include <vector>
 #include <string>
 #include <ranges>
@@ -13,13 +11,7 @@ namespace mol::internal
 
 class ResidueData
 {
-private:
-    using indices_type = std::unordered_set<index_t>;
-
 public:
-    ResidueData()
-    {}
-
     void set(index_t const index, int const res_id, std::string const& res_name, std::string const& seg_id, std::string const& chain_id)
     {
         residue_id(index) = res_id;
@@ -87,12 +79,12 @@ public:
         m_chain.resize(size);
     }
 
-    auto const indices(index_t const index) const
+    auto const atom_indices(index_t const index) const
     {
         return std::ranges::views::all(m_indices[index]);
     }
 
-    void reset(index_t const index, size_t const new_size = 0)
+    void clear_and_reserve(index_t const index, size_t const new_size = 0)
     {
         indices_type& residue = m_indices[index];
         residue.clear();
@@ -110,6 +102,8 @@ public:
     }
 
 private:
+    using indices_type = std::unordered_set<index_t>;
+
     std::vector<int> m_id;
     std::vector<std::string> m_name;
     std::vector<std::string> m_segid;
