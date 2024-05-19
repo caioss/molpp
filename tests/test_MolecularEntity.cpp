@@ -37,15 +37,6 @@ TEST_F(AtomAggregateTest, EqualityOperator)
     EXPECT_FALSE(MolecularEntity(1, 0, &data) == MolecularEntity(1, 0, nullptr));
 }
 
-TEST_F(AtomAggregateTest, ValidityOfDefaultConstructed)
-{
-    MolecularEntity default_aggregate{};
-    MolecularEntity const default_const_aggregate{};
-
-    EXPECT_FALSE(default_aggregate.is_valid());
-    EXPECT_FALSE(default_const_aggregate.is_valid());
-}
-
 TEST_F(AtomAggregateTest, ValidityOfNullData)
 {
     MolecularEntity null_aggregate(1, 0, nullptr);

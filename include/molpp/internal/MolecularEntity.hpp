@@ -16,7 +16,7 @@ class MolData;
 class MolecularEntity
 {
 public:
-    MolecularEntity() = default;
+    MolecularEntity() = delete;
     MolecularEntity(index_t const index, Frame const frame, internal::MolData* data);
     bool operator==(MolecularEntity const& other) const;
     //! Index is always read-only

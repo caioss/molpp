@@ -34,11 +34,6 @@ TEST_F(AtomTest, compare_atoms)
     EXPECT_FALSE(Atom(1, 0, &data) == Atom(1, 0, nullptr));
 }
 
-TEST_F(AtomTest, default_is_valid)
-{
-    EXPECT_FALSE(Atom().is_valid());
-}
-
 TEST_F(AtomTest, is_valid_with_null_data)
 {
     EXPECT_FALSE(Atom(1, 0, nullptr).is_valid());

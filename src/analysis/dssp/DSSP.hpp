@@ -3,7 +3,9 @@
 
 #include <molpp/Atom.hpp>
 #include <molpp/MolSystem.hpp>
+
 #include <vector>
+#include <optional>
 
 namespace dssp
 {
@@ -39,19 +41,19 @@ public:
     bool is_chain_break() const;
     void set_chain_break(bool const is_break);
     std::string const& chain() const;
-    Atom const& N() const;
-    Atom const& CA() const;
-    Atom const& C() const;
-    Atom const& O() const;
+    std::optional<Atom> const& N() const;
+    std::optional<Atom> const& CA() const;
+    std::optional<Atom> const& C() const;
+    std::optional<Atom> const& O() const;
 
 private:
     bool m_is_proline;
     bool m_is_chain_break;
     SecondaryStructure m_structure;
-    Atom m_N;
-    Atom m_CA;
-    Atom m_C;
-    Atom m_O;
+    std::optional<Atom> m_N;
+    std::optional<Atom> m_CA;
+    std::optional<Atom> m_C;
+    std::optional<Atom> m_O;
     std::string m_chain;
 };
 

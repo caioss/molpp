@@ -8,20 +8,12 @@ mol::SSResidue::SSResidue()
 : m_is_proline{false}
 , m_is_chain_break{false}
 , m_structure{mol::Unknown}
-, m_N()
-, m_CA()
-, m_C()
-, m_O()
 {
 }
 
 mol::SSResidue::SSResidue(Residue& residue)
 : m_is_chain_break{false}
 , m_structure{mol::Unknown}
-, m_N()
-, m_CA()
-, m_C()
-, m_O()
 , m_chain{residue.chain()}
 {
     for (Atom atom : AtomSel(residue))
@@ -51,36 +43,36 @@ mol::SSResidue::SSResidue(Residue& residue)
     }
     else
     {
-        m_N = Atom();
-        m_CA = Atom();
-        m_C = Atom();
-        m_O = Atom();
+        m_N.reset();
+        m_CA.reset();
+        m_C.reset();
+        m_O.reset();
     }
 }
 
 void mol::SSResidue::set_frame(Frame const frame)
 {
-    if (m_N.is_valid())
+    if (m_N)
     {
-        m_N.set_frame(frame);
+        m_N->set_frame(frame);
     }
-    if (m_CA.is_valid())
+    if (m_CA)
     {
-        m_CA.set_frame(frame);
+        m_CA->set_frame(frame);
     }
-    if (m_C.is_valid())
+    if (m_C)
     {
-        m_C.set_frame(frame);
+        m_C->set_frame(frame);
     }
-    if (m_O.is_valid())
+    if (m_O)
     {
-        m_O.set_frame(frame);
+        m_O->set_frame(frame);
     }
 }
 
 bool mol::SSResidue::is_amino_acid() const
 {
-    return m_CA.is_valid() && m_C.is_valid() && m_O.is_valid() && m_N.is_valid();
+    return m_CA && m_C && m_O && m_N;
 }
 
 mol::SecondaryStructure mol::SSResidue::secondary_structure() const
@@ -113,22 +105,22 @@ std::string const& mol::SSResidue::chain() const
     return m_chain;
 }
 
-mol::Atom const& mol::SSResidue::N() const
+std::optional<mol::Atom> const& mol::SSResidue::N() const
 {
     return m_N;
 }
 
-mol::Atom const& mol::SSResidue::CA() const
+std::optional<mol::Atom> const& mol::SSResidue::CA() const
 {
     return m_CA;
 }
 
-mol::Atom const& mol::SSResidue::C() const
+std::optional<mol::Atom> const& mol::SSResidue::C() const
 {
     return m_C;
 }
 
-mol::Atom const& mol::SSResidue::O() const
+std::optional<mol::Atom> const& mol::SSResidue::O() const
 {
     return m_O;
 }
@@ -153,9 +145,9 @@ void mol::DSSP::run(mol::Frame frame)
     for (size_t index = 0; index < m_residues.size(); index++)
     {
         SSResidue& residue = m_residues[index];
-        residue.set_frame(frame);
         if (residue.is_amino_acid())
         {
+            residue.set_frame(frame);
             protein.emplace_residue(index, residue);
         }
     }

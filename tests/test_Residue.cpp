@@ -28,11 +28,6 @@ public:
     Residue null_frame_residue;
 };
 
-TEST_F(ResidueTest, default_is_valid)
-{
-    EXPECT_FALSE(Residue().is_valid());
-}
-
 TEST_F(ResidueTest, is_valid_with_null_data)
 {
     EXPECT_FALSE(Residue(1, 0, nullptr).is_valid());

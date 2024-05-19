@@ -56,10 +56,10 @@ TEST_F(SSResidueTest, DefaultConstructor)
     EXPECT_FALSE(ss_residue.is_proline());
     EXPECT_FALSE(ss_residue.is_chain_break());
     EXPECT_EQ(ss_residue.chain(), "");
-    EXPECT_FALSE(ss_residue.N().is_valid());
-    EXPECT_FALSE(ss_residue.CA().is_valid());
-    EXPECT_FALSE(ss_residue.C().is_valid());
-    EXPECT_FALSE(ss_residue.O().is_valid());
+    EXPECT_FALSE(ss_residue.N());
+    EXPECT_FALSE(ss_residue.CA());
+    EXPECT_FALSE(ss_residue.C());
+    EXPECT_FALSE(ss_residue.O());
 }
 
 TEST_F(SSResidueTest, FromProteinResidue)
@@ -71,10 +71,10 @@ TEST_F(SSResidueTest, FromProteinResidue)
     EXPECT_FALSE(ss_residue.is_proline());
     EXPECT_FALSE(ss_residue.is_chain_break());
     EXPECT_EQ(ss_residue.chain(), "A");
-    EXPECT_TRUE(ss_residue.N().is_valid());
-    EXPECT_TRUE(ss_residue.CA().is_valid());
-    EXPECT_TRUE(ss_residue.C().is_valid());
-    EXPECT_TRUE(ss_residue.O().is_valid());
+    EXPECT_TRUE(ss_residue.N());
+    EXPECT_TRUE(ss_residue.CA());
+    EXPECT_TRUE(ss_residue.C());
+    EXPECT_TRUE(ss_residue.O());
 }
 
 TEST_F(SSResidueTest, FromProlineResidue)
@@ -86,10 +86,10 @@ TEST_F(SSResidueTest, FromProlineResidue)
     EXPECT_TRUE(ss_residue.is_proline());
     EXPECT_FALSE(ss_residue.is_chain_break());
     EXPECT_EQ(ss_residue.chain(), "B");
-    EXPECT_TRUE(ss_residue.N().is_valid());
-    EXPECT_TRUE(ss_residue.CA().is_valid());
-    EXPECT_TRUE(ss_residue.C().is_valid());
-    EXPECT_TRUE(ss_residue.O().is_valid());
+    EXPECT_TRUE(ss_residue.N());
+    EXPECT_TRUE(ss_residue.CA());
+    EXPECT_TRUE(ss_residue.C());
+    EXPECT_TRUE(ss_residue.O());
 }
 
 TEST_F(SSResidueTest, FromNonProteinResidue)
@@ -101,74 +101,54 @@ TEST_F(SSResidueTest, FromNonProteinResidue)
     EXPECT_FALSE(ss_residue.is_proline());
     EXPECT_FALSE(ss_residue.is_chain_break());
     EXPECT_EQ(ss_residue.chain(), "C");
-    EXPECT_FALSE(ss_residue.N().is_valid());
-    EXPECT_FALSE(ss_residue.CA().is_valid());
-    EXPECT_FALSE(ss_residue.C().is_valid());
-    EXPECT_FALSE(ss_residue.O().is_valid());
+    EXPECT_FALSE(ss_residue.N());
+    EXPECT_FALSE(ss_residue.CA());
+    EXPECT_FALSE(ss_residue.C());
+    EXPECT_FALSE(ss_residue.O());
 }
 
 TEST_F(SSResidueTest, DefaultFrame)
 {
     SSResidue ss_protein_residue(protein_residue);
     SSResidue ss_proline_residue(proline_residue);
-    SSResidue ss_non_protein_residue(non_protein_residue);
 
-    EXPECT_EQ(ss_protein_residue.N().frame(), 0);
-    EXPECT_EQ(ss_protein_residue.CA().frame(), 0);
-    EXPECT_EQ(ss_protein_residue.C().frame(), 0);
-    EXPECT_EQ(ss_protein_residue.O().frame(), 0);
+    EXPECT_EQ(ss_protein_residue.N()->frame(), 0);
+    EXPECT_EQ(ss_protein_residue.CA()->frame(), 0);
+    EXPECT_EQ(ss_protein_residue.C()->frame(), 0);
+    EXPECT_EQ(ss_protein_residue.O()->frame(), 0);
 
-    EXPECT_EQ(ss_proline_residue.N().frame(), 0);
-    EXPECT_EQ(ss_proline_residue.CA().frame(), 0);
-    EXPECT_EQ(ss_proline_residue.C().frame(), 0);
-    EXPECT_EQ(ss_proline_residue.O().frame(), 0);
-
-    EXPECT_FALSE(ss_non_protein_residue.N().frame());
-    EXPECT_FALSE(ss_non_protein_residue.CA().frame());
-    EXPECT_FALSE(ss_non_protein_residue.C().frame());
-    EXPECT_FALSE(ss_non_protein_residue.O().frame());
+    EXPECT_EQ(ss_proline_residue.N()->frame(), 0);
+    EXPECT_EQ(ss_proline_residue.CA()->frame(), 0);
+    EXPECT_EQ(ss_proline_residue.C()->frame(), 0);
+    EXPECT_EQ(ss_proline_residue.O()->frame(), 0);
 }
 
 TEST_F(SSResidueTest, SetValidFrame)
 {
     SSResidue ss_protein_residue(protein_residue);
     SSResidue ss_proline_residue(proline_residue);
-    SSResidue ss_non_protein_residue(non_protein_residue);
 
     ss_protein_residue.set_frame(1);
     ss_proline_residue.set_frame(1);
-    ss_non_protein_residue.set_frame(1);
 
-    EXPECT_EQ(ss_protein_residue.N().frame(), 1);
-    EXPECT_EQ(ss_protein_residue.CA().frame(), 1);
-    EXPECT_EQ(ss_protein_residue.C().frame(), 1);
-    EXPECT_EQ(ss_protein_residue.O().frame(), 1);
+    EXPECT_EQ(ss_protein_residue.N()->frame(), 1);
+    EXPECT_EQ(ss_protein_residue.CA()->frame(), 1);
+    EXPECT_EQ(ss_protein_residue.C()->frame(), 1);
+    EXPECT_EQ(ss_protein_residue.O()->frame(), 1);
 
-    EXPECT_EQ(ss_protein_residue.N().frame(), 1);
-    EXPECT_EQ(ss_protein_residue.CA().frame(), 1);
-    EXPECT_EQ(ss_protein_residue.C().frame(), 1);
-    EXPECT_EQ(ss_protein_residue.O().frame(), 1);
-
-    EXPECT_FALSE(ss_non_protein_residue.N().frame());
-    EXPECT_FALSE(ss_non_protein_residue.CA().frame());
-    EXPECT_FALSE(ss_non_protein_residue.C().frame());
-    EXPECT_FALSE(ss_non_protein_residue.O().frame());
+    EXPECT_EQ(ss_protein_residue.N()->frame(), 1);
+    EXPECT_EQ(ss_protein_residue.CA()->frame(), 1);
+    EXPECT_EQ(ss_protein_residue.C()->frame(), 1);
+    EXPECT_EQ(ss_protein_residue.O()->frame(), 1);
 }
 
 TEST_F(SSResidueTest, SetInvalidFrame)
 {
     SSResidue ss_protein_residue(protein_residue);
     SSResidue ss_proline_residue(proline_residue);
-    SSResidue ss_non_protein_residue(non_protein_residue);
 
     EXPECT_THROW(ss_protein_residue.set_frame(2), MolError);
     EXPECT_THROW(ss_proline_residue.set_frame(2), MolError);
-    EXPECT_NO_THROW(ss_non_protein_residue.set_frame(2));
-
-    EXPECT_FALSE(ss_non_protein_residue.N().frame());
-    EXPECT_FALSE(ss_non_protein_residue.CA().frame());
-    EXPECT_FALSE(ss_non_protein_residue.C().frame());
-    EXPECT_FALSE(ss_non_protein_residue.O().frame());
 }
 
 TEST_F(SSResidueTest, SetSecondaryStructure)

@@ -215,11 +215,11 @@ dssp::Residue::Residue(size_t const index, size_t const original_index, mol::SSR
 , m_index{index}
 , m_external_index{original_index}
 , m_chain{std::hash<std::string>{}(residue.chain())}
-, m_N{residue.N().position()}
-, m_CA{residue.CA().position()}
-, m_C{residue.C().position()}
-, m_O{residue.O().position()}
-, m_H{residue.N().position()}
+, m_N{residue.N()->position()}
+, m_CA{residue.CA()->position()}
+, m_C{residue.C()->position()}
+, m_O{residue.O()->position()}
+, m_H{residue.N()->position()}
 {
     std::fill(m_helix_flags, m_helix_flags + 3, HelixType::None);
 }
