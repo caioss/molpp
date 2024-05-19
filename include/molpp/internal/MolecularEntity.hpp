@@ -34,7 +34,7 @@ private:
     Frame m_frame;
     internal::MolData* m_data;
 
-    template<class, class>
+    template<class>
     friend class Sel;
 };
 

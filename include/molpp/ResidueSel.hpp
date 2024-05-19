@@ -7,11 +7,24 @@
 namespace mol
 {
 
-class ResidueSel : public internal::Sel<Residue, ResidueSel>
+class ResidueSel;
+
+namespace internal
+{
+
+template<>
+struct SelTraits<ResidueSel>
+{
+    using entity_type = Residue;
+};
+
+} // namespace internal
+
+class ResidueSel : public internal::Sel<ResidueSel>
 {
 public:
     ResidueSel() = delete;
-    using internal::Sel<Residue, ResidueSel>::Sel;
+    using internal::Sel<ResidueSel>::Sel;
 
     indices_type as_atom_indices() const;
 
@@ -27,7 +40,7 @@ public:
         return residues;
     }
 
-    template<class, class>
+    template<class>
     friend class internal::Sel;
 };
 

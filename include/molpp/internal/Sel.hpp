@@ -19,7 +19,7 @@ namespace internal
 
 class MolData;
 
-template<class Type, class Derived>
+template<class Derived>
 class Sel;
 
 template<class LHS, class RHS>
@@ -30,7 +30,10 @@ concept SelConvertible = requires(LHS lhs, RHS rhs) {
     { lhs.from_atom_indices(rhs.as_atom_indices(), std::declval<MolData>()) } -> internal::IndexRange;
 };
 
-template<class Type, class Derived>
+template<class Derived>
+struct SelTraits;
+
+template<class Derived>
 class Sel
 {
 private:
@@ -39,9 +42,9 @@ private:
 
 public:
     using indices_type = std::vector<index_t>;
-    using value_type = Type;
-    using iterator = Iterator<Type>;
-    using const_iterator = Iterator<const Type>;
+    using value_type = typename SelTraits<Derived>::entity_type;
+    using iterator = Iterator<value_type>;
+    using const_iterator = Iterator<const value_type>;
 
     Sel() = delete;
     Sel(Sel&&) = default;
@@ -72,7 +75,7 @@ public:
     {}
 
     explicit Sel(MolData* data)
-    : Sel(SelIndices(data->size<Type>()), data)
+    : Sel(SelIndices(data->size<value_type>()), data)
     {}
 
     Frame frame() const
@@ -124,28 +127,28 @@ public:
         return const_iterator(m_data, m_index.end(), frame());
     }
 
-    Type operator[](size_t const index)
+    value_type operator[](size_t const index)
     {
-        return Type(indices()[index], frame(), m_data);
+        return value_type(indices()[index], frame(), m_data);
     }
 
-    Type at(size_t const index)
+    value_type at(size_t const index)
     {
         if (index >= size())
         {
             throw mol::MolError("Out of bounds index: " + std::to_string(index));
         }
 
-        return Type(indices()[index], frame(), m_data);
+        return value_type(indices()[index], frame(), m_data);
     }
 
-    Type by_index(size_t const index)
+    value_type by_index(size_t const index)
     {
         if (!contains(index))
         {
             throw mol::MolError("Atom index " + std::to_string(index) + " not found in the selection");
         }
-        return Type(index, frame(), m_data);
+        return value_type(index, frame(), m_data);
     }
 
 protected:
@@ -179,6 +182,9 @@ private:
         , m_current(begin)
         {}
 
+        Iterator(Iterator&&) = default;
+        Iterator(Iterator const& other) = default;
+
         value_type operator*() const
         {
             return ItType(*m_current, m_frame, m_data);
@@ -197,17 +203,42 @@ private:
             return tmp;
         }
 
+        Iterator& operator--()
+        {
+            m_current--;
+            return *this;
+        }
+
+        Iterator operator--(int)
+        {
+            Iterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
         difference_type operator-(const Iterator& other)
         {
             return m_current - other.m_current;
         }
 
-        bool operator==(const Iterator& other)
+        Iterator& operator+=(difference_type n)
+        {
+            m_current += n;
+            return *this;
+        }
+
+        Iterator& operator-=(difference_type n)
+        {
+            m_current -= n;
+            return *this;
+        }
+
+        bool operator==(const Iterator& other) const
         {
             return m_current == other.m_current;
         };
 
-        bool operator!=(const Iterator& other)
+        bool operator!=(const Iterator& other) const
         {
             return m_current != other.m_current;
         };

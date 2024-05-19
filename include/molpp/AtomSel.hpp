@@ -10,15 +10,27 @@ namespace mol
 {
 
 class Bond;
+class AtomSel;
 
-class AtomSel : public internal::Sel<Atom, AtomSel>
+namespace internal
+{
+
+template<>
+struct SelTraits<AtomSel>
+{
+    using entity_type = Atom;
+};
+
+} // namespace internal
+
+class AtomSel : public internal::Sel<AtomSel>
 {
 public:
     using position_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, indices_type>;
     using const_position_type = Eigen::IndexedView<Coord3 const, Eigen::internal::AllRange<3>, indices_type>;
 
     AtomSel() = delete;
-    using internal::Sel<Atom, AtomSel>::Sel;
+    using internal::Sel<AtomSel>::Sel;
 
     position_type positions();
     const_position_type positions() const;
@@ -33,7 +45,7 @@ public:
         return atom_indices;
     }
 
-    template<class, class>
+    template<class>
     friend class internal::Sel;
 };
 

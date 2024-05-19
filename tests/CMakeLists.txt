@@ -13,6 +13,7 @@ add_executable(tests
     test_ResidueDetect.cpp
     test_ResidueData.cpp
     test_SelIndices.cpp
+    test_Sel.cpp
     atoms.cpp
     selections.cpp
     selectors.cpp
