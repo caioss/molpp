@@ -5,10 +5,7 @@
 
 #include <vector>
 
-using namespace mol;
-using namespace mol::internal;
-
-MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t const num_chains, size_t const num_segments, size_t const num_frames);
+mol::internal::MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t const num_chains, size_t const num_segments, size_t const num_frames);
 
 template<std::ranges::range Range>
 constexpr auto view2vector(Range&& r)

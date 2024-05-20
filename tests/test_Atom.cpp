@@ -20,7 +20,7 @@ public:
     , null_frame_atom(0, std::nullopt, data)
     {}
 
-    MolData data;
+    mol::internal::MolData data;
     Atom atom;
     Atom const const_atom;
     Atom null_frame_atom;

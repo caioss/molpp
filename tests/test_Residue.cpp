@@ -22,7 +22,7 @@ public:
     , null_frame_residue(0, std::nullopt, data)
     {}
 
-    MolData data;
+    mol::internal::MolData data;
     Residue residue;
     Residue const const_residue;
     Residue null_frame_residue;

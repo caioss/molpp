@@ -25,7 +25,7 @@ public:
     {
     }
 
-    MolData data;
+    mol::internal::MolData data;
     SelType selection;
 };
 
@@ -45,7 +45,7 @@ TYPED_TEST_P(SelTest, construct_from_indices_and_data)
 // Construct from SelIndices and data
 TYPED_TEST_P(SelTest, construct_from_selindices_and_data)
 {
-    SelIndices sel_indices{std::to_array<mol::index_t>({1, 2})};
+    mol::internal::SelIndices sel_indices{std::to_array<mol::index_t>({1, 2})};
     TypeParam new_selection(sel_indices, this->data);
 
     EXPECT_EQ(new_selection.size(), 2);
@@ -89,7 +89,7 @@ TYPED_TEST_P(SelTest, default_frame_with_trajectory)
 // Frame should be set to nullopt if the trajectory has no frames
 TYPED_TEST_P(SelTest, default_frame_without_trajectory)
 {
-    MolData data_no_frames(1);
+    mol::internal::MolData data_no_frames(1);
     TypeParam selection_no_frames(data_no_frames);
 
     EXPECT_FALSE(selection_no_frames.frame());
@@ -331,5 +331,5 @@ struct SelMock : public mol::internal::Sel<SelMock>
 };
 
 // Test all types that implement the Sel interface
-using SelTypes = ::testing::Types<SelMock, AtomSel, ResidueSel>;
+using SelTypes = ::testing::Types<SelMock, mol::AtomSel, mol::ResidueSel>;
 INSTANTIATE_TYPED_TEST_SUITE_P(SelInterface, SelTest, SelTypes);

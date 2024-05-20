@@ -92,10 +92,10 @@ TEST(Views, SequenceView) {
     // Supporting data
     std::vector<int> vec(5);
     std::iota(vec.begin(), vec.end(), 10);
-    std::vector<index_t> indices{1, 3, 4};
+    std::vector<mol::index_t> indices{1, 3, 4};
 
     // Only vectors
-    SequenceView view(vec, indices);
+    mol::SequenceView view(vec, indices);
     EXPECT_THAT(view, ElementsAre(11, 13, 14));
     EXPECT_EQ(view.size(), 3);
     EXPECT_EQ(view[0], 11);
@@ -106,8 +106,8 @@ TEST(Views, SequenceView) {
     EXPECT_EQ(view.at(2), 14);
 
     // Vector from SelIndices
-    SelIndices sel_indices(indices);
-    SequenceView sel_view(vec, sel_indices.indices());
+    mol::internal::SelIndices sel_indices(indices);
+    mol::SequenceView sel_view(vec, sel_indices.indices());
     EXPECT_THAT(sel_view, ElementsAre(11, 13, 14));
     EXPECT_EQ(view.size(), 3);
     EXPECT_EQ(sel_view[0], 11);
