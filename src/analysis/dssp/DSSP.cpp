@@ -21,19 +21,19 @@ mol::SSResidue::SSResidue(Residue& residue)
         std::string const name = atom.name();
         if (name == "N")
         {
-            m_N = atom;
+            m_N.emplace(atom);
         }
         else if (name == "CA")
         {
-            m_CA = atom;
+            m_CA.emplace(atom);
         }
         else if (name == "C")
         {
-            m_C = atom;
+            m_C.emplace(atom);
         }
         else if (name == "O")
         {
-            m_O = atom;
+            m_O.emplace(atom);
         }
     }
 

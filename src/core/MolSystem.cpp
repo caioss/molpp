@@ -60,14 +60,14 @@ void MolSystem::add_trajectory(std::string const& file_name, int begin, int end,
 
 AtomSel MolSystem::atoms(Frame const frame) const
 {
-    AtomSel sel(m_data.get());
+    AtomSel sel(*m_data);
     sel.set_frame(frame);
     return sel;
 }
 
 AtomSel MolSystem::select(std::vector<index_t> const& indices, Frame const frame) const
 {
-    AtomSel sel(indices, m_data.get());
+    AtomSel sel(indices, *m_data);
     sel.set_frame(frame);
     return sel;
 }
@@ -84,7 +84,7 @@ AtomSel MolSystem::select(std::string const& selection, Frame const frame) const
 
 AtomSelector MolSystem::selector(std::string const& selection) const
 {
-    return AtomSelector(selection, m_data.get());
+    return AtomSelector(selection, *m_data);
 }
 
 void MolSystem::reset_bonds()

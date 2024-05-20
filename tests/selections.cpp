@@ -15,10 +15,8 @@ using namespace testing;
 
 TEST(Selections, AtomSel) {
     // Data
-    MolData* pdb_tiny = PDBFiles::tiny();
-    MolData* pdb_traj = PDBFiles::traj();
-    ASSERT_TRUE(pdb_tiny);
-    ASSERT_TRUE(pdb_traj);
+    MolData& pdb_tiny = PDBFiles::tiny();
+    MolData& pdb_traj = PDBFiles::traj();
 
     /*
      * Construction
@@ -184,8 +182,8 @@ TEST(Selections, AtomSel) {
 
 TEST(Selections, ResidueSel) {
     // Data
-    MolData* pdb_tiny = PDBFiles::tiny();
-    MolData* pdb_traj = PDBFiles::traj();
+    MolData& pdb_tiny = PDBFiles::tiny();
+    MolData& pdb_traj = PDBFiles::traj();
     ASSERT_TRUE(pdb_tiny);
     ASSERT_TRUE(pdb_traj);
 

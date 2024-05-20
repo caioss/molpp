@@ -18,7 +18,7 @@ class AtomSelector
 {
 public:
     AtomSelector() = delete;
-    AtomSelector(std::string const& selection, internal::MolData* data);
+    AtomSelector(std::string const& selection, internal::MolData& data);
     AtomSel apply(Frame frame);
 
 private:

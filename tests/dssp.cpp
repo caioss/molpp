@@ -17,11 +17,11 @@ class SSResidueTest : public ::testing::Test
 public:
     SSResidueTest()
     : mol_data(create_moldata(3, 4, 3, 2, 2))
-    , protein_residue(0, 0, &mol_data)
-    , proline_residue(1, 0, &mol_data)
-    , non_protein_residue(2, 0, &mol_data)
+    , protein_residue(0, 0, mol_data)
+    , proline_residue(1, 0, mol_data)
+    , non_protein_residue(2, 0, mol_data)
     {
-        AtomSel atoms(&mol_data);
+        AtomSel atoms(mol_data);
         atoms[0].set_name("N");
         atoms[1].set_name("CA");
         atoms[2].set_name("C");

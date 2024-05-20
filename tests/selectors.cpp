@@ -353,8 +353,7 @@ TEST(Selection, NumPropParsing) {
 
 TEST(Selection, AtomSelector) {
     // Data
-    MolData* pdb_big = PDBFiles::big();
-    ASSERT_TRUE(pdb_big);
+    MolData& pdb_big = PDBFiles::big();
 
     // Valid selections
     AtomSelector selector("resid 203:205", pdb_big);

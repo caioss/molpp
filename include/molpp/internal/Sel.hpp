@@ -24,7 +24,7 @@ class Sel;
 
 template<class LHS, class RHS>
 concept SelConvertible = requires(LHS lhs, RHS rhs) {
-    { rhs.data() } -> std::same_as<MolData*>;
+    { rhs.data() } -> std::same_as<MolData&>;
     { rhs.frame() } -> std::same_as<Frame>;
     { rhs.as_atom_indices() } -> internal::IndexRange;
     { lhs.from_atom_indices(rhs.as_atom_indices(), std::declval<MolData>()) } -> internal::IndexRange;
@@ -52,8 +52,8 @@ public:
     Sel& operator=(Sel&&) = default;
     Sel& operator=(Sel const&) = default;
 
-    explicit Sel(SelIndices&& sel_index, MolData* data)
-    : m_data{data}
+    explicit Sel(SelIndices&& sel_index, MolData& data)
+    : m_data{&data}
     , m_index{std::forward<SelIndices>(sel_index)}
     {
         if (m_data->trajectory().num_frames())
@@ -65,17 +65,17 @@ public:
     template<class RHS>
     explicit Sel(RHS&& rhs)
     requires SelConvertible<Derived, RHS>
-    : Sel(SelIndices(Derived::from_atom_indices(rhs.as_atom_indices(), *(rhs.data()))), rhs.data())
+    : Sel(SelIndices(Derived::from_atom_indices(rhs.as_atom_indices(), rhs.data())), rhs.data())
     {
         set_frame(rhs.frame());
     }
 
-    explicit Sel(IndexRange auto const& indices, MolData* data)
+    explicit Sel(IndexRange auto const& indices, MolData& data)
     : Sel(SelIndices(indices), data)
     {}
 
-    explicit Sel(MolData* data)
-    : Sel(SelIndices(data->size<value_type>()), data)
+    explicit Sel(MolData& data)
+    : Sel(SelIndices(data.size<value_type>()), data)
     {}
 
     Frame frame() const
@@ -109,27 +109,27 @@ public:
 
     iterator begin()
     {
-        return iterator(m_data, m_index.begin(), frame());
+        return iterator(*m_data, m_index.begin(), frame());
     }
 
     iterator end()
     {
-        return iterator(m_data, m_index.end(), frame());
+        return iterator(*m_data, m_index.end(), frame());
     }
 
     const_iterator begin() const
     {
-        return const_iterator(m_data, m_index.begin(), frame());
+        return const_iterator(*m_data, m_index.begin(), frame());
     }
 
     const_iterator end() const
     {
-        return const_iterator(m_data, m_index.end(), frame());
+        return const_iterator(*m_data, m_index.end(), frame());
     }
 
     value_type operator[](size_t const index)
     {
-        return value_type(indices()[index], frame(), m_data);
+        return value_type(indices()[index], frame(), *m_data);
     }
 
     value_type at(size_t const index)
@@ -139,7 +139,7 @@ public:
             throw mol::MolError("Out of bounds index: " + std::to_string(index));
         }
 
-        return value_type(indices()[index], frame(), m_data);
+        return value_type(indices()[index], frame(), *m_data);
     }
 
     value_type by_index(size_t const index)
@@ -148,18 +148,18 @@ public:
         {
             throw mol::MolError("Atom index " + std::to_string(index) + " not found in the selection");
         }
-        return value_type(index, frame(), m_data);
+        return value_type(index, frame(), *m_data);
     }
 
 protected:
-    MolData* data()
+    MolData& data()
     {
-        return m_data;
+        return *m_data;
     };
 
-    MolData const* data() const
+    MolData const& data() const
     {
-        return m_data;
+        return *m_data;
     };
 
 private:
@@ -176,9 +176,9 @@ private:
         using pointer = ItType*;
         using reference = ItType&;
 
-        Iterator(MolData* data, indices_iterator begin, Frame frame)
+        Iterator(MolData& data, indices_iterator begin, Frame frame)
         : m_frame(frame)
-        , m_data(data)
+        , m_data(&data)
         , m_current(begin)
         {}
 
@@ -187,7 +187,7 @@ private:
 
         value_type operator*() const
         {
-            return ItType(*m_current, m_frame, m_data);
+            return ItType(*m_current, m_frame, *m_data);
         }
 
         Iterator& operator++()

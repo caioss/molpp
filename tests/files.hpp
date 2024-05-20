@@ -17,9 +17,9 @@ public:
     void operator=(PDBFiles const &) = delete;
 
     static std::shared_ptr<MolReader> const reader();
-    static MolData* tiny();
-    static MolData* big();
-    static MolData* traj();
+    static MolData& tiny();
+    static MolData& big();
+    static MolData& traj();
 
 private:
     PDBFiles();

@@ -19,7 +19,7 @@ class AtomAggregateTest : public ::testing::Test
 public:
     AtomAggregateTest()
     : data{create_moldata(3, 1, 1, 1, 1)}
-    , aggregate{1, 0, &data}
+    , aggregate{1, 0, data}
     , const_aggregate{aggregate}
     {
     }
@@ -31,25 +31,9 @@ public:
 
 TEST_F(AtomAggregateTest, EqualityOperator)
 {
-    EXPECT_TRUE(MolecularEntity(1, 0, &data) == MolecularEntity(1, 0, &data));
-    EXPECT_FALSE(MolecularEntity(0, 0, &data) == MolecularEntity(1, 0, &data));
-    EXPECT_FALSE(MolecularEntity(1, std::nullopt, &data) == MolecularEntity(1, 0, &data));
-    EXPECT_FALSE(MolecularEntity(1, 0, &data) == MolecularEntity(1, 0, nullptr));
-}
-
-TEST_F(AtomAggregateTest, ValidityOfNullData)
-{
-    MolecularEntity null_aggregate(1, 0, nullptr);
-    MolecularEntity const null_const_aggregate(1, 0, nullptr);
-
-    EXPECT_FALSE(null_aggregate.is_valid());
-    EXPECT_FALSE(null_const_aggregate.is_valid());
-}
-
-TEST_F(AtomAggregateTest, Validity)
-{
-    EXPECT_TRUE(aggregate.is_valid());
-    EXPECT_TRUE(const_aggregate.is_valid());
+    EXPECT_TRUE(MolecularEntity(1, 0, data) == MolecularEntity(1, 0, data));
+    EXPECT_FALSE(MolecularEntity(0, 0, data) == MolecularEntity(1, 0, data));
+    EXPECT_FALSE(MolecularEntity(1, std::nullopt, data) == MolecularEntity(1, 0, data));
 }
 
 TEST_F(AtomAggregateTest, Index)

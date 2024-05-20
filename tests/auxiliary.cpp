@@ -76,7 +76,7 @@ TEST(Auxiliary, create_moldata) {
     std::vector<mol::Atom> atoms;
     for (index_t i = 0; i < data.size<Atom>(); ++i)
     {
-        atoms.push_back(Atom(i, std::nullopt, &data));
+        atoms.push_back(Atom(i, std::nullopt, data));
     }
 
     EXPECT_THAT(atoms, Pointwise(Prop(&Atom::residue_id),

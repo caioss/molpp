@@ -21,7 +21,7 @@ class SelTest : public ::testing::Test
 public:
     SelTest()
     : data(create_moldata(4, 1, 4, 4, 2))
-    , selection{std::to_array<mol::index_t>({1, 2, 3}), &data}
+    , selection{std::to_array<mol::index_t>({1, 2, 3}), data}
     {
     }
 
@@ -34,7 +34,7 @@ TYPED_TEST_SUITE_P(SelTest);
 // Construct from indices and data
 TYPED_TEST_P(SelTest, construct_from_indices_and_data)
 {
-    TypeParam new_selection(std::to_array<mol::index_t>({1, 2}), &this->data);
+    TypeParam new_selection(std::to_array<mol::index_t>({1, 2}), this->data);
 
     EXPECT_EQ(new_selection.size(), 2);
     EXPECT_EQ(new_selection.frame(), 0);
@@ -46,7 +46,7 @@ TYPED_TEST_P(SelTest, construct_from_indices_and_data)
 TYPED_TEST_P(SelTest, construct_from_selindices_and_data)
 {
     SelIndices sel_indices{std::to_array<mol::index_t>({1, 2})};
-    TypeParam new_selection(sel_indices, &this->data);
+    TypeParam new_selection(sel_indices, this->data);
 
     EXPECT_EQ(new_selection.size(), 2);
     EXPECT_EQ(new_selection.frame(), 0);
@@ -57,7 +57,7 @@ TYPED_TEST_P(SelTest, construct_from_selindices_and_data)
 // Construct only from data
 TYPED_TEST_P(SelTest, construct_from_data)
 {
-    TypeParam new_selection(&this->data);
+    TypeParam new_selection(this->data);
 
     EXPECT_EQ(new_selection.size(), 4);
     EXPECT_EQ(new_selection.frame(), 0);
@@ -71,7 +71,7 @@ TYPED_TEST_P(SelTest, construct_from_data)
 TYPED_TEST_P(SelTest, construct_from_entity)
 {
     using Entity = mol::internal::SelTraits<TypeParam>::entity_type;
-    Entity entity(1, 1, &this->data);
+    Entity entity(1, 1, this->data);
 
     TypeParam new_selection(entity);
 
@@ -90,7 +90,7 @@ TYPED_TEST_P(SelTest, default_frame_with_trajectory)
 TYPED_TEST_P(SelTest, default_frame_without_trajectory)
 {
     MolData data_no_frames(1);
-    TypeParam selection_no_frames(&data_no_frames);
+    TypeParam selection_no_frames(data_no_frames);
 
     EXPECT_FALSE(selection_no_frames.frame());
 }

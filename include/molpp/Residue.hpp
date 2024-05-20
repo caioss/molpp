@@ -32,7 +32,7 @@ public:
 
     auto const as_atom_indices() const
     {
-        return data()->residues().atom_indices(index());
+        return data().residues().atom_indices(index());
     }
 };
 

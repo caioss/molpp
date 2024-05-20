@@ -17,22 +17,21 @@ class MolecularEntity
 {
 public:
     MolecularEntity() = delete;
-    MolecularEntity(index_t const index, Frame const frame, internal::MolData* data);
+    MolecularEntity(index_t const index, Frame const frame, internal::MolData& data);
     bool operator==(MolecularEntity const& other) const;
     //! Index is always read-only
     index_t index() const;
     Frame frame() const;
     void set_frame(Frame const frame);
-    bool is_valid() const;
 
 protected:
-    MolData* data();
-    MolData const* data() const;
+    MolData& data();
+    MolData const& data() const;
 
 private:
     index_t m_index;
     Frame m_frame;
-    internal::MolData* m_data;
+    MolData* m_data;
 
     template<class>
     friend class Sel;

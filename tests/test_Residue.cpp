@@ -17,9 +17,9 @@ class ResidueTest : public ::testing::Test
 public:
     ResidueTest()
     : data(create_moldata(3, 1, 1, 1, 1))
-    , residue(1, 0, &data)
-    , const_residue(1, 0, &data)
-    , null_frame_residue(0, std::nullopt, &data)
+    , residue(1, 0, data)
+    , const_residue(1, 0, data)
+    , null_frame_residue(0, std::nullopt, data)
     {}
 
     MolData data;
@@ -27,18 +27,6 @@ public:
     Residue const const_residue;
     Residue null_frame_residue;
 };
-
-TEST_F(ResidueTest, is_valid_with_null_data)
-{
-    EXPECT_FALSE(Residue(1, 0, nullptr).is_valid());
-}
-
-TEST_F(ResidueTest, is_valid_on_valid_residues)
-{
-    EXPECT_TRUE(null_frame_residue.is_valid());
-    EXPECT_TRUE(residue.is_valid());
-    EXPECT_TRUE(const_residue.is_valid());
-}
 
 TEST_F(ResidueTest, frames)
 {
@@ -84,8 +72,8 @@ TEST_F(ResidueTest, size)
 
 TEST_F(ResidueTest, add_atom_from_index)
 {
-    Residue old_residue(0, std::nullopt, &data);
-    Atom new_atom(0, std::nullopt, &data);
+    Residue old_residue(0, std::nullopt, data);
+    Atom new_atom(0, std::nullopt, data);
 
     residue.add_atom(new_atom.index());
 
@@ -98,8 +86,8 @@ TEST_F(ResidueTest, add_atom_from_index)
 
 TEST_F(ResidueTest, add_atom_from_atom)
 {
-    Residue old_residue(0, std::nullopt, &data);
-    Atom new_atom(0, std::nullopt, &data);
+    Residue old_residue(0, std::nullopt, data);
+    Atom new_atom(0, std::nullopt, data);
 
     residue.add_atom(new_atom);
 

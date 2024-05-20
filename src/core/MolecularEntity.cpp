@@ -3,10 +3,10 @@
 namespace mol
 {
 
-internal::MolecularEntity::MolecularEntity(index_t const index, Frame const frame, internal::MolData* data)
+internal::MolecularEntity::MolecularEntity(index_t const index, Frame const frame, internal::MolData& data)
 : m_index{index}
 , m_frame(frame)
-, m_data{data}
+, m_data{&data}
 {}
 
 bool internal::MolecularEntity::operator==(MolecularEntity const& other) const
@@ -33,19 +33,14 @@ void internal::MolecularEntity::set_frame(Frame const frame)
     m_frame = frame;
 }
 
-bool internal::MolecularEntity::is_valid() const
+internal::MolData& internal::MolecularEntity::data()
 {
-    return m_data;
+    return *m_data;
 }
 
-internal::MolData* internal::MolecularEntity::data()
+internal::MolData const& internal::MolecularEntity::data() const
 {
-    return m_data;
-}
-
-internal::MolData const* internal::MolecularEntity::data() const
-{
-    return m_data;
+    return *m_data;
 }
 
 } // namespace mol

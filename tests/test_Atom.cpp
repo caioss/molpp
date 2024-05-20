@@ -15,9 +15,9 @@ class AtomTest : public ::testing::Test
 public:
     AtomTest()
     : data(create_moldata(3, 1, 1, 1, 1))
-    , atom(1, 0, &data)
-    , const_atom(1, 0, &data)
-    , null_frame_atom(0, std::nullopt, &data)
+    , atom(1, 0, data)
+    , const_atom(1, 0, data)
+    , null_frame_atom(0, std::nullopt, data)
     {}
 
     MolData data;
@@ -28,22 +28,9 @@ public:
 
 TEST_F(AtomTest, compare_atoms)
 {
-    EXPECT_TRUE(Atom(1, 0, &data) == Atom(1, 0, &data));
-    EXPECT_FALSE(Atom(0, 0, &data) == Atom(1, 0, &data));
-    EXPECT_FALSE(Atom(1, std::nullopt, &data) == Atom(1, 0, &data));
-    EXPECT_FALSE(Atom(1, 0, &data) == Atom(1, 0, nullptr));
-}
-
-TEST_F(AtomTest, is_valid_with_null_data)
-{
-    EXPECT_FALSE(Atom(1, 0, nullptr).is_valid());
-}
-
-TEST_F(AtomTest, is_valid_on_valid_atoms)
-{
-    EXPECT_TRUE(null_frame_atom.is_valid());
-    EXPECT_TRUE(atom.is_valid());
-    EXPECT_TRUE(const_atom.is_valid());
+    EXPECT_TRUE(Atom(1, 0, data) == Atom(1, 0, data));
+    EXPECT_FALSE(Atom(0, 0, data) == Atom(1, 0, data));
+    EXPECT_FALSE(Atom(1, std::nullopt, data) == Atom(1, 0, data));
 }
 
 TEST_F(AtomTest, frames)
@@ -84,13 +71,13 @@ TEST_F(AtomTest, residue_index)
 
 TEST_F(AtomTest, fetch_residue)
 {
-    EXPECT_EQ(atom.residue(), Residue(1, 0, &data));
-    EXPECT_EQ(atom.residue(), Residue(1, 0, &data));
+    EXPECT_EQ(atom.residue(), Residue(1, 0, data));
+    EXPECT_EQ(atom.residue(), Residue(1, 0, data));
 }
 
 TEST_F(AtomTest, change_residue)
 {
-    Residue new_res(0, 0, &data);
+    Residue new_res(0, 0, data);
     new_res.add_atom(atom);
 
     EXPECT_EQ(atom.resid(), 0);
@@ -291,7 +278,7 @@ TEST_F(AtomTest, re_add_bond)
 
 TEST_F(AtomTest, add_bond_from_r_value)
 {
-    EXPECT_EQ(atom.add_bond(Atom(2, 0, &data)), atom.bond(Atom(2, 0, &data)));
+    EXPECT_EQ(atom.add_bond(Atom(2, 0, data)), atom.bond(Atom(2, 0, data)));
 }
 
 TEST_F(AtomTest, bonds_list)

@@ -20,19 +20,19 @@ std::shared_ptr<MolReader> const PDBFiles::reader()
     return instance().m_reader;
 }
 
-MolData* PDBFiles::tiny()
+MolData& PDBFiles::tiny()
 {
-    return instance().m_tiny.get();
+    return *instance().m_tiny;
 }
 
-MolData* PDBFiles::big()
+MolData& PDBFiles::big()
 {
-    return instance().m_big.get();
+    return *instance().m_big;
 }
 
-MolData* PDBFiles::traj()
+MolData& PDBFiles::traj()
 {
-    return instance().m_traj.get();
+    return *instance().m_traj;
 }
 
 PDBFiles::PDBFiles()

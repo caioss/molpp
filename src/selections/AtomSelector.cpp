@@ -9,8 +9,8 @@
 using namespace mol;
 using namespace mol::internal;
 
-AtomSelector::AtomSelector(std::string const& selection, MolData* data)
-: m_data(data)
+AtomSelector::AtomSelector(std::string const& selection, MolData& data)
+: m_data{&data}
 {
     parse(selection);
 }
@@ -26,7 +26,7 @@ AtomSel AtomSelector::apply(Frame frame)
     SelectionStack sel_stack(m_tree);
     sel_stack.evaluate(*m_data, flags, frame);
 
-    AtomSel sel(*(flags.selected), m_data);
+    AtomSel sel(*(flags.selected), *m_data);
     sel.set_frame(frame);
 
     return sel;
