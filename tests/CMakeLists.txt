@@ -14,6 +14,7 @@ add_executable(tests
     test_ResidueData.cpp
     test_SelIndices.cpp
     test_Sel.cpp
+    test_AtomSel.cpp
     atoms.cpp
     selections.cpp
     selectors.cpp

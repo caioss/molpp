@@ -22,7 +22,7 @@ AtomSel::indices_type const& AtomSel::as_atom_indices() const
 AtomSel AtomSel::bonded()
 {
     std::vector<index_t> bonded_atoms = data().bonds().bonded(indices().begin(), indices().end());
-    AtomSel sel(from_atom_indices(bonded_atoms, data()), data());
+    AtomSel sel(bonded_atoms, data());
     sel.set_frame(frame());
     return sel;
 }
