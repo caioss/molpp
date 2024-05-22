@@ -48,10 +48,15 @@ void Residue::add_atom(index_t atom_index)
 {
     mol::internal::AtomData& atom_data = data().atoms();
     mol::internal::ResidueData& residue_data = data().residues();
-    index_t const old_res = atom_data.residue(atom_index);
-    residue_data.remove_atom(old_res, atom_index);
+
+    std::optional<index_t> const old_residue = atom_data.residue(atom_index);
+    if (old_residue)
+    {
+        residue_data.remove_atom(*old_residue, atom_index);
+    }
+
     residue_data.add_atom(index(), atom_index);
-    atom_data.residue(atom_index) = index();
+    atom_data.set_residue(atom_index, index());
 }
 
 void Residue::add_atom(Atom const& atom)

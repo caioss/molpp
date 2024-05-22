@@ -58,7 +58,7 @@ TEST(Atoms, Trajectory) {
 TEST(Atoms, AtomData) {
     AtomData props(1);
     EXPECT_EQ(props.size(), 1);
-    EXPECT_EQ(props.residue(0), -1);
+    EXPECT_FALSE(props.residue(0));
     EXPECT_EQ(props.atomic_number(0), 0);
     EXPECT_EQ(props.occupancy(0), 0);
     EXPECT_EQ(props.temperature_factor(0), 0);

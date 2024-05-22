@@ -57,22 +57,26 @@ TEST_F(AtomTest, set_invalid_frame)
     EXPECT_THROW(atom.set_frame(1), MolError);
 }
 
-TEST_F(AtomTest, residue_id)
-{
-    EXPECT_EQ(atom.resid(), 1);
-    EXPECT_EQ(const_atom.resid(), 1);
-}
-
 TEST_F(AtomTest, residue_index)
 {
-    EXPECT_EQ(atom.residue_id(), 1);
-    EXPECT_EQ(const_atom.residue_id(), 1);
+    ASSERT_TRUE(atom.residue_index());
+    EXPECT_EQ(atom.residue_index(), 1);
+    EXPECT_EQ(const_atom.residue_index(), 1);
 }
 
 TEST_F(AtomTest, fetch_residue)
 {
+    ASSERT_TRUE(atom.residue());
     EXPECT_EQ(atom.residue(), Residue(1, 0, data));
-    EXPECT_EQ(atom.residue(), Residue(1, 0, data));
+}
+
+// Atom::residue should return a null optional if the atom is not part of a residue.
+TEST_F(AtomTest, fetch_null_residue)
+{
+    mol::internal::MolData data(1);
+    mol::Atom atom(0, std::nullopt, data);
+
+    EXPECT_FALSE(atom.residue());
 }
 
 TEST_F(AtomTest, change_residue)
@@ -80,8 +84,7 @@ TEST_F(AtomTest, change_residue)
     Residue new_res(0, 0, data);
     new_res.add_atom(atom);
 
-    EXPECT_EQ(atom.resid(), 0);
-    EXPECT_EQ(atom.residue_id(), 0);
+    EXPECT_EQ(atom.residue_index(), 0);
 }
 
 TEST_F(AtomTest, atomic_property)
@@ -212,24 +215,6 @@ TEST_F(AtomTest, set_insertion_code_property)
     atom.set_insertion_code("C");
 
     EXPECT_EQ(atom.insertion_code(), "C");
-}
-
-TEST_F(AtomTest, resname_property)
-{
-    EXPECT_EQ(const_atom.residue_name(), "B");
-    EXPECT_EQ(atom.residue_name(), "B");
-}
-
-TEST_F(AtomTest, segid_property)
-{
-    EXPECT_EQ(const_atom.segid(), "A");
-    EXPECT_EQ(atom.segid(), "A");
-}
-
-TEST_F(AtomTest, chain_property)
-{
-    EXPECT_EQ(const_atom.chain(), "A");
-    EXPECT_EQ(atom.chain(), "A");
 }
 
 TEST_F(AtomTest, positions)

@@ -2,8 +2,11 @@
 #define MOLPP_INTERNAL_ATOMDATA_HPP
 
 #include <molpp/MolppCore.hpp>
+
 #include <vector>
 #include <string>
+#include <optional>
+#include <unordered_map>
 
 namespace mol::internal
 {
@@ -15,7 +18,6 @@ public:
 
     AtomData(size_t const num_atoms)
     : m_num_atoms{num_atoms}
-    , m_residue(num_atoms, -1)
     , m_atomic(num_atoms, 0)
     , m_occupancy(num_atoms, 0)
     , m_tempfactor(num_atoms, 0)
@@ -26,21 +28,29 @@ public:
     , m_type(num_atoms)
     , m_altloc(num_atoms)
     , m_insertion_code(num_atoms)
-    {}
+    {
+        m_residue.reserve(num_atoms);
+    }
 
     size_t size() const
     {
         return m_num_atoms;
     }
 
-    index_t& residue(size_t const index)
+    std::optional<index_t> residue(index_t const atom_index) const
     {
-        return m_residue[index];
+        auto iter = m_residue.find(atom_index);
+        if (iter == m_residue.end())
+        {
+            return std::nullopt;
+        }
+
+        return iter->second;
     }
 
-    index_t const& residue(size_t const index) const
+    void set_residue(index_t const atom_index, index_t const residue_index)
     {
-        return m_residue[index];
+        m_residue[atom_index] = residue_index;
     }
 
     int& atomic_number(size_t const index)
@@ -145,7 +155,7 @@ public:
 
 private:
     size_t m_num_atoms;
-    std::vector<index_t> m_residue;
+    std::unordered_map<index_t, index_t> m_residue;
     std::vector<int> m_atomic;
     std::vector<float> m_occupancy;
     std::vector<float> m_tempfactor;

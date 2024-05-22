@@ -3,9 +3,11 @@
 
 #include <molpp/MolppCore.hpp>
 #include <molpp/internal/MolecularEntity.hpp>
+
 #include <memory>
 #include <vector>
 #include <ranges>
+#include <optional>
 
 namespace mol
 {
@@ -18,9 +20,8 @@ class Atom : public internal::MolecularEntity
 public:
     using internal::MolecularEntity::MolecularEntity;
 
-    int resid() const;
-    Residue residue();
-    index_t residue_id() const;
+    std::optional<Residue> residue();
+    std::optional<index_t> residue_index() const;
 
     int atomic_number() const;
     void set_atomic_number(int const atomic);
@@ -45,10 +46,6 @@ public:
 
     std::string const& type() const;
     void set_type(std::string const& type);
-
-    std::string const& residue_name() const;
-    std::string const& segid() const;
-    std::string const& chain() const;
 
     std::string const& alternate_location() const;
     void set_alternate_location(std::string const& altloc);

@@ -34,7 +34,11 @@ public:
         mol::internal::AtomData const& atom_data = data.atoms();
         for (auto const index : atom_indices)
         {
-            residues.push_back(atom_data.residue(index));
+            std::optional<index_t> const residue_index = atom_data.residue(index);
+            if (residue_index)
+            {
+                residues.push_back(*residue_index);
+            }
         }
 
         return residues;

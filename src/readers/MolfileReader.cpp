@@ -170,6 +170,7 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
     }
 
     std::unique_ptr<MolData> mol_data = std::make_unique<MolData>(m_num_atoms);
+    mol::internal::AtomData& atom_data = mol_data->atoms();
     ResidueDetect residue_detect;
 
     // Loop over all atoms
@@ -225,7 +226,8 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
         }
 
         // Detect residues
-        mol_data->atoms().residue(i) = residue_detect.register_atom(mol_atom.resid, mol_atom.resname, mol_atom.segid, mol_atom.chain);
+        index_t const residue_id = residue_detect.register_atom(mol_atom.resid, mol_atom.resname, mol_atom.segid, mol_atom.chain);
+        atom_data.set_residue(i, residue_id);
     }
 
     // Update residues data

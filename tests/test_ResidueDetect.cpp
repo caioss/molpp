@@ -78,10 +78,11 @@ TEST_F(ResidueDetectTest, register_residues_out_of_order)
 TEST_F(ResidueDetectTest, update_residue_data)
 {
     // Register atoms
-    data.atoms().residue(0) = detect.register_atom(1, "ALA", "BB", "A");
-    data.atoms().residue(1) = detect.register_atom(2, "LYS", "AA", "C");
-    data.atoms().residue(2) = detect.register_atom(2, "LYS", "AA", "C");
-    data.atoms().residue(3) = detect.register_atom(1, "ALA", "BB", "A");
+    mol::internal::AtomData& atom_data = data.atoms();
+    atom_data.set_residue(0, detect.register_atom(1, "ALA", "BB", "A"));
+    atom_data.set_residue(1, detect.register_atom(2, "LYS", "AA", "C"));
+    atom_data.set_residue(2, detect.register_atom(2, "LYS", "AA", "C"));
+    atom_data.set_residue(3, detect.register_atom(1, "ALA", "BB", "A"));
 
     // Apply residues data
     detect.update_residue_data(data);

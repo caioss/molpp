@@ -7,17 +7,18 @@
 
 using namespace mol;
 
-int Atom::resid() const
+std::optional<Residue> Atom::residue()
 {
-    return data().residues().residue_id(residue_id());
+    std::optional<index_t> const index = residue_index();
+    if (!index)
+    {
+        return std::nullopt;
+    }
+
+    return Residue(*index, frame(), data());
 }
 
-Residue Atom::residue()
-{
-    return Residue(residue_id(), frame(), data());
-}
-
-index_t Atom::residue_id() const
+std::optional<index_t> Atom::residue_index() const
 {
     return data().atoms().residue(index());
 }
@@ -100,21 +101,6 @@ std::string const& Atom::type() const
 void Atom::set_type(std::string const& type)
 {
     data().atoms().type(index()) = type;
-}
-
-std::string const& Atom::residue_name() const
-{
-    return data().residues().residue_name(residue_id());
-}
-
-std::string const& Atom::segid() const
-{
-    return data().residues().segid(residue_id());
-}
-
-std::string const& Atom::chain() const
-{
-    return data().residues().chain(residue_id());
 }
 
 std::string const& Atom::alternate_location() const

@@ -35,10 +35,15 @@ void ResidueDetect::update_residue_data(MolData& mol_data) const
         residues_data.set(residue.index, residue.resid, residue.resname, residue.segid, residue.chain);
     }
 
-    for (index_t index = 0; index < mol_data.size<Atom>(); ++index)
+    mol::internal::AtomData& atom_data = mol_data.atoms();
+    for (index_t atom_index = 0; atom_index < mol_data.size<Atom>(); ++atom_index)
     {
-        index_t const residue_idx = mol_data.atoms().residue(index);
-        residues_data.add_atom(residue_idx, index);
+        std::optional<index_t> const residue_index = atom_data.residue(atom_index);
+        if (!residue_index)
+        {
+            continue;
+        }
+        residues_data.add_atom(*residue_index, atom_index);
     }
 }
 

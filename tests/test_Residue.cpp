@@ -79,7 +79,7 @@ TEST_F(ResidueTest, add_atom_from_index)
 
     EXPECT_THAT(view2vector(residue.as_atom_indices()), UnorderedElementsAre(0, 1));
     EXPECT_THAT(view2vector(old_residue.as_atom_indices()), ElementsAre());
-    EXPECT_EQ(new_atom.residue_id(), residue.index());
+    EXPECT_EQ(new_atom.residue_index(), residue.index());
     EXPECT_EQ(residue.size(), 2);
     EXPECT_EQ(old_residue.size(), 0);
 }
@@ -93,7 +93,7 @@ TEST_F(ResidueTest, add_atom_from_atom)
 
     EXPECT_THAT(view2vector(residue.as_atom_indices()), UnorderedElementsAre(0, 1));
     EXPECT_THAT(view2vector(old_residue.as_atom_indices()), ElementsAre());
-    EXPECT_EQ(new_atom.residue_id(), residue.index());
+    EXPECT_EQ(new_atom.residue_index(), residue.index());
     EXPECT_EQ(residue.size(), 2);
     EXPECT_EQ(old_residue.size(), 0);
 }
