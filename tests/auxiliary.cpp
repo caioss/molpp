@@ -110,9 +110,9 @@ TEST(Auxiliary, create_moldata) {
     {
         residues.push_back(mol::Residue(i, std::nullopt, data));
     }
-    EXPECT_THAT(residues, Pointwise(Prop(&Residue::residue_id),
+    EXPECT_THAT(residues, Pointwise(Prop(&Residue::id),
                                  {0, 1, 2}));
-    EXPECT_THAT(residues, Pointwise(Prop(&Residue::residue_name),
+    EXPECT_THAT(residues, Pointwise(Prop(&Residue::name),
                                  {"A", "B", "C"}));
 
     // Bonds

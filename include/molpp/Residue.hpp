@@ -14,11 +14,11 @@ class Residue : public internal::MolecularEntity
 public:
     using internal::MolecularEntity::MolecularEntity;
 
-    int residue_id() const;
-    void set_residue_id(int const resid);
+    int id() const;
+    void set_id(int const resid);
 
-    std::string const& residue_name() const;
-    void set_residue_name(std::string const& resname);
+    std::string const& name() const;
+    void set_name(std::string const& resname);
 
     std::string const& segid() const;
     void set_segid(std::string const& segid);

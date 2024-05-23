@@ -26,6 +26,6 @@ bool ResidSelection::selected(index_t atom_idx, MolData const& data) const
         return false;
     }
 
-    int const resid = data.residues().residue_id(*residue_index);
+    int const resid = data.residues().id(*residue_index);
     return has(resid);
 }

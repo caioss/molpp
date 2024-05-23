@@ -355,12 +355,12 @@ TEST_F(PDBMolfileReaderTest, InsertionCode)
 
 TEST_F(PDBMolfileReaderTest, ResID)
 {
-    test_property<Residue>(&Residue::residue_id, std::to_array<int>({3, 339, 201, 801, 85}), pdb());
+    test_property<Residue>(&Residue::id, std::to_array<int>({3, 339, 201, 801, 85}), pdb());
 }
 
 TEST_F(PDBMolfileReaderTest, ResName)
 {
-    test_property<Residue>(&Residue::residue_name, std::to_array<std::string>({"GLY", "ASP", "HOH", "HOH", "ASP"}), pdb());
+    test_property<Residue>(&Residue::name, std::to_array<std::string>({"GLY", "ASP", "HOH", "HOH", "ASP"}), pdb());
 }
 
 TEST_F(PDBMolfileReaderTest, Bonded)
@@ -473,12 +473,12 @@ TEST_F(Mol2MolfileReaderTest, InsertionCode)
 
 TEST_F(Mol2MolfileReaderTest, ResID)
 {
-    test_property<Residue>(&Residue::residue_id, std::to_array<int>({1}), mol2());
+    test_property<Residue>(&Residue::id, std::to_array<int>({1}), mol2());
 }
 
 TEST_F(Mol2MolfileReaderTest, ResName)
 {
-    test_property<Residue>(&Residue::residue_name, std::to_array<std::string>({"FLB1"}), mol2());
+    test_property<Residue>(&Residue::name, std::to_array<std::string>({"FLB1"}), mol2());
 }
 
 TEST_F(Mol2MolfileReaderTest, Bonded)
@@ -604,12 +604,12 @@ TEST_F(PSFMolfileReaderTest, InsertionCode)
 
 TEST_F(PSFMolfileReaderTest, ResID)
 {
-    test_property<Residue>(&Residue::residue_id, std::to_array<int>({129, 130, 129, 130}), psf());
+    test_property<Residue>(&Residue::id, std::to_array<int>({129, 130, 129, 130}), psf());
 }
 
 TEST_F(PSFMolfileReaderTest, ResName)
 {
-    test_property<Residue>(&Residue::residue_name, std::to_array<std::string>({"GLY", "PRO", "GLY", "PRO"}), psf());
+    test_property<Residue>(&Residue::name, std::to_array<std::string>({"GLY", "PRO", "GLY", "PRO"}), psf());
 }
 
 TEST_F(PSFMolfileReaderTest, Bonded)

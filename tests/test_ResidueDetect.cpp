@@ -90,10 +90,10 @@ TEST_F(ResidueDetectTest, update_residue_data)
 
     // Check residues data
     EXPECT_EQ(residues_data.size(), 2);
-    EXPECT_EQ(residues_data.residue_id(0), 1);
-    EXPECT_EQ(residues_data.residue_id(1), 2);
-    EXPECT_EQ(residues_data.residue_name(0), "ALA");
-    EXPECT_EQ(residues_data.residue_name(1), "LYS");
+    EXPECT_EQ(residues_data.id(0), 1);
+    EXPECT_EQ(residues_data.id(1), 2);
+    EXPECT_EQ(residues_data.name(0), "ALA");
+    EXPECT_EQ(residues_data.name(1), "LYS");
     EXPECT_EQ(residues_data.chain(0), "A");
     EXPECT_EQ(residues_data.chain(1), "C");
     EXPECT_EQ(residues_data.segid(0), "BB");

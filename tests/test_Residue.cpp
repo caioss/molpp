@@ -54,15 +54,15 @@ TEST_F(ResidueTest, set_invalid_frame)
 
 TEST_F(ResidueTest, residue_id_property)
 {
-    EXPECT_EQ(const_residue.residue_id(), 1);
-    EXPECT_EQ(residue.residue_id(), 1);
+    EXPECT_EQ(const_residue.id(), 1);
+    EXPECT_EQ(residue.id(), 1);
 }
 
 TEST_F(ResidueTest, set_residue_id_property)
 {
-    residue.set_residue_id(2);
+    residue.set_id(2);
 
-    EXPECT_EQ(residue.residue_id(), 2);
+    EXPECT_EQ(residue.id(), 2);
 }
 
 TEST_F(ResidueTest, size)

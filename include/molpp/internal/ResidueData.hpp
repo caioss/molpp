@@ -14,8 +14,8 @@ class ResidueData
 public:
     void set(index_t const index, int const res_id, std::string const& res_name, std::string const& seg_id, std::string const& chain_id)
     {
-        residue_id(index) = res_id;
-        residue_name(index) = res_name;
+        id(index) = res_id;
+        name(index) = res_name;
         segid(index) = seg_id;
         chain(index) = chain_id;
     }
@@ -30,22 +30,22 @@ public:
         return m_indices[index].size();
     }
 
-    int& residue_id(size_t const index)
+    int& id(size_t const index)
     {
         return m_id[index];
     }
 
-    int const& residue_id(size_t const index) const
+    int const& id(size_t const index) const
     {
         return m_id[index];
     }
 
-    std::string& residue_name(size_t const index)
+    std::string& name(size_t const index)
     {
         return m_name[index];
     }
 
-    std::string const& residue_name(size_t const index) const
+    std::string const& name(size_t const index) const
     {
         return m_name[index];
     }
