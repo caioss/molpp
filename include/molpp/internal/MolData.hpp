@@ -1,6 +1,7 @@
 #ifndef MOLPP_INTERNAL_MOLDATA_HPP
 #define MOLPP_INTERNAL_MOLDATA_HPP
 
+#include <molpp/internal/Topology.hpp>
 #include <molpp/internal/AtomData.hpp>
 #include <molpp/internal/BondData.hpp>
 #include <molpp/internal/ResidueData.hpp>
@@ -23,6 +24,16 @@ public:
 
     template<class Entity>
     size_t size() const;
+
+    Topology& topology()
+    {
+        return m_topology;
+    }
+
+    Topology const& topology() const
+    {
+        return m_topology;
+    }
 
     AtomData& atoms()
     {
@@ -65,6 +76,7 @@ public:
     }
 
 private:
+    Topology m_topology;
     AtomData m_atoms;
     BondData m_bonds;
     ResidueData m_residues;

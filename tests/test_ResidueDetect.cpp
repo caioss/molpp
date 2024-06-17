@@ -1,12 +1,13 @@
 #include "auxiliary.hpp"
 
 #include "readers/ResidueDetect.hpp"
+#include <molpp/MolppCore.hpp>
 #include <molpp/internal/MolData.hpp>
-#include <molpp/Atom.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
@@ -16,79 +17,106 @@ class ResidueDetectTest : public ::testing::Test
 public:
     ResidueDetectTest()
     : data{4}
+    , topology{data.topology()}
+    , detect{data}
     {}
 
     MolData data;
+    Topology const& topology;
     ResidueDetect detect;
 };
 
-// Register atom with same residue fields should return same residue index
+// Register atom with same residue fields should render same residue
 TEST_F(ResidueDetectTest, register_same_residue)
 {
-    size_t const index = detect.register_atom(1, "ALA", "AA", "A");
+    detect.register_atom(0, 1, "ALA", "AA", "A");
+    detect.register_atom(1, 1, "ALA", "AA", "A");
+    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
 
-    EXPECT_EQ(detect.register_atom(1, "ALA", "AA", "A"), index);
+    EXPECT_THAT(residue_0, UnorderedElementsAre(0, 1));
 }
 
-// Register atom with different resid should return new residue index
+// Register atom with different resid should render different residue
 TEST_F(ResidueDetectTest, register_different_resid)
 {
-    size_t const index = detect.register_atom(1, "ALA", "AA", "A");
+    detect.register_atom(0, 1, "ALA", "AA", "A");
+    detect.register_atom(1, 2, "ALA", "AA", "A");
+    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
+    std::vector<index_t> const residue_1 = topology.all_links({MolecularEntityCategory::Residue, 1}, MolecularEntityCategory::Atom);
 
-    EXPECT_NE(detect.register_atom(2, "ALA", "AA", "A"), index);
+    EXPECT_THAT(residue_0, UnorderedElementsAre(0));
+    EXPECT_THAT(residue_1, UnorderedElementsAre(1));
 }
 
-// Register atom with different chain should return new residue index
+// Register atom with different chain should render different residue
 TEST_F(ResidueDetectTest, register_different_chain)
 {
-    size_t const index = detect.register_atom(1, "ALA", "AA", "A");
+    detect.register_atom(0, 1, "ALA", "AA", "A");
+    detect.register_atom(1, 1, "ALA", "AA", "B");
+    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
+    std::vector<index_t> const residue_1 = topology.all_links({MolecularEntityCategory::Residue, 1}, MolecularEntityCategory::Atom);
 
-    EXPECT_NE(detect.register_atom(1, "ALA", "AA", "B"), index);
+    EXPECT_THAT(residue_0, UnorderedElementsAre(0));
+    EXPECT_THAT(residue_1, UnorderedElementsAre(1));
 }
 
-// Register atom with different resname should return new residue index
+// Register atom with different resname should render different residue
 TEST_F(ResidueDetectTest, register_different_resname)
 {
-    size_t const index = detect.register_atom(1, "ALA", "AA", "A");
+    detect.register_atom(0, 1, "ALA", "AA", "A");
+    detect.register_atom(1, 1, "LYS", "AA", "A");
+    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
+    std::vector<index_t> const residue_1 = topology.all_links({MolecularEntityCategory::Residue, 1}, MolecularEntityCategory::Atom);
 
-    EXPECT_NE(detect.register_atom(1, "LYS", "AA", "A"), index);
+    EXPECT_THAT(residue_0, UnorderedElementsAre(0));
+    EXPECT_THAT(residue_1, UnorderedElementsAre(1));
 }
 
-// Register atom with different segid should return new residue index
+// Register atom with different segid should render different residue
 TEST_F(ResidueDetectTest, register_different_segid)
 {
-    size_t const index = detect.register_atom(1, "ALA", "AA", "A");
+    detect.register_atom(0, 1, "ALA", "AA", "A");
+    detect.register_atom(1, 1, "ALA", "BB", "A");
+    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
+    std::vector<index_t> const residue_1 = topology.all_links({MolecularEntityCategory::Residue, 1}, MolecularEntityCategory::Atom);
 
-    EXPECT_NE(detect.register_atom(1, "ALA", "BB", "A"), index);
+    EXPECT_THAT(residue_0, UnorderedElementsAre(0));
+    EXPECT_THAT(residue_1, UnorderedElementsAre(1));
 }
 
-// Register atom with same residue fields out of order should return same residue index
+// Register atom with same residue fields out of order should create same residue
 TEST_F(ResidueDetectTest, register_residues_out_of_order)
 {
-    size_t const index1 = detect.register_atom(1, "ALA", "AA", "A");
-    size_t const index2 = detect.register_atom(1, "LYS", "AA", "A");
-    size_t const index3 = detect.register_atom(1, "LYS", "BB", "A");
+    detect.register_atom(0, 1, "ALA", "AA", "A");
+    detect.register_atom(1, 1, "LYS", "AA", "A");
+    detect.register_atom(2, 1, "LYS", "BB", "A");
+    detect.register_atom(3, 1, "LYS", "AA", "A");
+    detect.register_atom(4, 1, "LYS", "BB", "A");
+    detect.register_atom(5, 1, "ALA", "AA", "A");
 
-    EXPECT_EQ(detect.register_atom(1, "LYS", "AA", "A"), index2);
-    EXPECT_EQ(detect.register_atom(1, "LYS", "BB", "A"), index3);
-    EXPECT_EQ(detect.register_atom(1, "ALA", "AA", "A"), index1);
+    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
+    std::vector<index_t> const residue_1 = topology.all_links({MolecularEntityCategory::Residue, 1}, MolecularEntityCategory::Atom);
+    std::vector<index_t> const residue_2 = topology.all_links({MolecularEntityCategory::Residue, 2}, MolecularEntityCategory::Atom);
+
+    EXPECT_THAT(residue_0, UnorderedElementsAre(0, 5));
+    EXPECT_THAT(residue_1, UnorderedElementsAre(1, 3));
+    EXPECT_THAT(residue_2, UnorderedElementsAre(2, 4));
 }
 
-// Update MolData should set residues data
+// Update MolData should set structures data
 TEST_F(ResidueDetectTest, update_residue_data)
 {
     // Register atoms
-    mol::internal::AtomData& atom_data = data.atoms();
-    atom_data.set_residue(0, detect.register_atom(1, "ALA", "BB", "A"));
-    atom_data.set_residue(1, detect.register_atom(2, "LYS", "AA", "C"));
-    atom_data.set_residue(2, detect.register_atom(2, "LYS", "AA", "C"));
-    atom_data.set_residue(3, detect.register_atom(1, "ALA", "BB", "A"));
+    detect.register_atom(0, 1, "ALA", "BB", "A");
+    detect.register_atom(1, 2, "LYS", "AA", "C");
+    detect.register_atom(2, 2, "LYS", "AA", "C");
+    detect.register_atom(3, 1, "ALA", "BB", "A");
 
-    // Apply residues data
+    // Update data
     detect.update_residue_data(data);
-    ResidueData const& residues_data = data.residues();
 
     // Check residues data
+    ResidueData const& residues_data = data.residues();
     EXPECT_EQ(residues_data.size(), 2);
     EXPECT_EQ(residues_data.id(0), 1);
     EXPECT_EQ(residues_data.id(1), 2);
@@ -98,6 +126,4 @@ TEST_F(ResidueDetectTest, update_residue_data)
     EXPECT_EQ(residues_data.chain(1), "C");
     EXPECT_EQ(residues_data.segid(0), "BB");
     EXPECT_EQ(residues_data.segid(1), "AA");
-    EXPECT_THAT(view2vector(residues_data.atom_indices(0)), UnorderedElementsAre(0, 3));
-    EXPECT_THAT(view2vector(residues_data.atom_indices(1)), UnorderedElementsAre(1, 2));
 }

@@ -1,26 +1,28 @@
 #include "selections/properties.hpp"
 #include "selections/SelectionStack.hpp"
+#include <molpp/MolppCore.hpp>
 #include <molpp/internal/MolData.hpp>
 
-using namespace mol;
-using namespace mol::internal;
+namespace mol::internal
+{
 
 void PropSelection::evaluate(SelectionStack& stack, MolData const& data, Frame /*frame*/) const
 {
     SelectionFlags flags = stack.pop_flags();
 
-    for (index_t atom_idx : *(flags.mask))
+    for (index_t atom_index : *(flags.mask))
     {
-        if (selected(atom_idx, data))
+        if (selected(atom_index, data))
         {
-            flags.selected->insert(atom_idx);
+            flags.selected->insert(atom_index);
         }
     }
 }
 
-bool ResidSelection::selected(index_t atom_idx, MolData const& data) const
+bool ResidSelection::selected(index_t atom_index, MolData const& data) const
 {
-    std::optional<index_t> const residue_index = data.atoms().residue(atom_idx);
+    Topology const& topology = data.topology();
+    std::optional<index_t> const residue_index = topology.first_link({MolecularEntityCategory::Atom, atom_index}, MolecularEntityCategory::Residue);
     if (!residue_index)
     {
         return false;
@@ -29,3 +31,5 @@ bool ResidSelection::selected(index_t atom_idx, MolData const& data) const
     int const resid = data.residues().id(*residue_index);
     return has(resid);
 }
+
+} // namespace mol::internal

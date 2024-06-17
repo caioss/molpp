@@ -26,6 +26,11 @@ public:
     Atom null_frame_atom;
 };
 
+TEST_F(AtomTest, category)
+{
+    EXPECT_EQ(Atom::category(), MolecularEntityCategory::Atom);
+}
+
 TEST_F(AtomTest, compare_atoms)
 {
     EXPECT_TRUE(Atom(1, 0, data) == Atom(1, 0, data));

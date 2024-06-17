@@ -20,6 +20,8 @@ class Atom : public internal::MolecularEntity
 public:
     using internal::MolecularEntity::MolecularEntity;
 
+    static MolecularEntityCategory category();
+
     std::optional<Residue> residue();
     std::optional<index_t> residue_index() const;
 

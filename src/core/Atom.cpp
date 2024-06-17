@@ -5,7 +5,13 @@
 
 #include <ranges>
 
-using namespace mol;
+namespace mol
+{
+
+MolecularEntityCategory Atom::category()
+{
+    return MolecularEntityCategory::Atom;
+}
 
 std::optional<Residue> Atom::residue()
 {
@@ -20,7 +26,8 @@ std::optional<Residue> Atom::residue()
 
 std::optional<index_t> Atom::residue_index() const
 {
-    return data().atoms().residue(index());
+    internal::Topology const& topology = data().topology();
+    return topology.first_link({Atom::category(), index()}, Residue::category());
 }
 
 int Atom::atomic_number() const
@@ -174,3 +181,5 @@ Coord3::ConstColXpr mol::Atom::position() const
     }
     return data().trajectory().timestep(*frame()).coords().col(index());
 }
+
+} // namespace mol

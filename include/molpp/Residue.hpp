@@ -14,6 +14,8 @@ class Residue : public internal::MolecularEntity
 public:
     using internal::MolecularEntity::MolecularEntity;
 
+    static MolecularEntityCategory category();
+
     int id() const;
     void set_id(int const resid);
 
@@ -30,10 +32,7 @@ public:
     void add_atom(Atom const& atom);
     size_t size() const;
 
-    auto const as_atom_indices() const
-    {
-        return data().residues().atom_indices(index());
-    }
+    std::vector<index_t> as_atom_indices() const;
 };
 
 } // namespace mol

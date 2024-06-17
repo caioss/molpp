@@ -29,4 +29,5 @@ target_sources(molpp
             molpp/internal/BondData.hpp
             molpp/internal/ResidueData.hpp
             molpp/internal/Sel.hpp
+            molpp/internal/Topology.hpp
 )

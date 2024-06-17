@@ -1,8 +1,14 @@
-#include <molpp/internal/MolData.hpp>
 #include <molpp/Residue.hpp>
-#include <molpp/AtomSel.hpp>
+#include <molpp/Atom.hpp>
+#include <molpp/internal/MolData.hpp>
 
-using namespace mol;
+namespace mol
+{
+
+MolecularEntityCategory Residue::category()
+{
+    return MolecularEntityCategory::Residue;
+}
 
 int Residue::id() const
 {
@@ -46,17 +52,15 @@ void Residue::set_chain(std::string const& chain)
 
 void Residue::add_atom(index_t atom_index)
 {
-    mol::internal::AtomData& atom_data = data().atoms();
-    mol::internal::ResidueData& residue_data = data().residues();
+    internal::Topology& topology = data().topology();
 
-    std::optional<index_t> const old_residue = atom_data.residue(atom_index);
+    std::optional<index_t> const old_residue = topology.first_link({MolecularEntityCategory::Atom, atom_index}, Residue::category());
     if (old_residue)
     {
-        residue_data.remove_atom(*old_residue, atom_index);
+        topology.remove_link({MolecularEntityCategory::Atom, atom_index}, {Residue::category(), *old_residue});
     }
 
-    residue_data.add_atom(index(), atom_index);
-    atom_data.set_residue(atom_index, index());
+    topology.add_link({MolecularEntityCategory::Atom, atom_index}, {Residue::category(), index()});
 }
 
 void Residue::add_atom(Atom const& atom)
@@ -66,5 +70,12 @@ void Residue::add_atom(Atom const& atom)
 
 size_t Residue::size() const
 {
-    return data().residues().size(index());
+    return data().topology().count_links({Residue::category(), index()}, MolecularEntityCategory::Atom);
 }
+
+std::vector<index_t> mol::Residue::as_atom_indices() const
+{
+    return data().topology().all_links({Residue::category(), index()}, MolecularEntityCategory::Atom);
+}
+
+} // namespace mol

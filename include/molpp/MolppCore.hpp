@@ -16,6 +16,13 @@ namespace mol
 using index_t = size_t;
 using position_t = float;
 
+enum class MolecularEntityCategory
+{
+    Atom,
+    Residue,
+    Custom
+};
+
 using Point3 = Eigen::Vector<position_t, 3>;
 using Coord3 = Eigen::Matrix<position_t, 3, Eigen::Dynamic>;
 using Coord2 = Eigen::Matrix<position_t, 2, Eigen::Dynamic>;

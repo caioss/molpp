@@ -45,6 +45,16 @@ public:
         return m_adjacency.contains(node);
     }
 
+    bool contains_edge(Node const& node1, Node const& node2) const
+    {
+        auto iter = m_adjacency.find(node1);
+        if (iter == m_adjacency.end())
+        {
+            return false;
+        }
+        return iter->second.contains(node2);
+    }
+
     bool add_node(Node const& node)
     {
         return m_adjacency.insert(std::make_pair<Node const&, adjacency_list>(node, {})).second;
@@ -82,7 +92,47 @@ public:
         return std::views::keys(m_adjacency);
     }
 
-    bool add_edge(Node const& node1, Node const& node2)
+    bool add_edge(Node const& node1, Node const& node2, bool const add_nodes = false)
+    {
+        // Check nodes existence
+        auto adj1_iter = m_adjacency.find(node1);
+        if (adj1_iter == m_adjacency.end())
+        {
+            if (!add_nodes)
+            {
+                return false;
+            }
+            adj1_iter = m_adjacency.insert(std::make_pair<Node const&, adjacency_list>(node1, {})).first;
+        }
+
+        auto adj2_iter = m_adjacency.find(node2);
+        if (adj2_iter == m_adjacency.end())
+        {
+            if (!add_nodes)
+            {
+                return false;
+            }
+            adj2_iter = m_adjacency.insert(std::make_pair<Node const&, adjacency_list>(node2, {})).first;
+        }
+
+        adjacency_list& adj1 = adj1_iter->second;
+        adjacency_list& adj2 = adj2_iter->second;
+
+        // Insert new edge
+        if (!adj1.insert(node2).second)
+        {
+            return false;
+        }
+        if (!adj2.insert(node1).second)
+        {
+            adj1.erase(node2);
+            return false;
+        }
+
+        return true;
+    }
+
+    bool remove_edge(Node const& node1, Node const& node2)
     {
         // Check nodes existence
         auto adj1_iter = m_adjacency.find(node1);
@@ -94,11 +144,11 @@ public:
         adjacency_list& adj1 = adj1_iter->second;
         adjacency_list& adj2 = adj2_iter->second;
 
-        // Insert new edge
-        adj1.insert(node2);
-        adj2.insert(node1);
+        // Remove edge
+        bool result = adj1.erase(node2) > 0;
+        result &= adj2.erase(node1) > 0;
 
-        return true;
+        return result;
     }
 
 private:

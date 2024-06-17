@@ -28,29 +28,11 @@ public:
     , m_type(num_atoms)
     , m_altloc(num_atoms)
     , m_insertion_code(num_atoms)
-    {
-        m_residue.reserve(num_atoms);
-    }
+    {}
 
     size_t size() const
     {
         return m_num_atoms;
-    }
-
-    std::optional<index_t> residue(index_t const atom_index) const
-    {
-        auto iter = m_residue.find(atom_index);
-        if (iter == m_residue.end())
-        {
-            return std::nullopt;
-        }
-
-        return iter->second;
-    }
-
-    void set_residue(index_t const atom_index, index_t const residue_index)
-    {
-        m_residue[atom_index] = residue_index;
     }
 
     int& atomic_number(size_t const index)
@@ -155,7 +137,6 @@ public:
 
 private:
     size_t m_num_atoms;
-    std::unordered_map<index_t, index_t> m_residue;
     std::vector<int> m_atomic;
     std::vector<float> m_occupancy;
     std::vector<float> m_tempfactor;

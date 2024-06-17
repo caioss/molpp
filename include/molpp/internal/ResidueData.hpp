@@ -22,12 +22,7 @@ public:
 
     size_t size() const
     {
-        return m_indices.size();
-    }
-
-    size_t size(size_t const index) const
-    {
-        return m_indices[index].size();
+        return m_id.size();
     }
 
     int& id(size_t const index)
@@ -72,33 +67,10 @@ public:
 
     void resize(size_t const size)
     {
-        m_indices.resize(size);
         m_id.resize(size, -1);
         m_name.resize(size);
         m_segid.resize(size);
         m_chain.resize(size);
-    }
-
-    auto const atom_indices(index_t const index) const
-    {
-        return std::ranges::views::all(m_indices[index]);
-    }
-
-    void clear_and_reserve(index_t const index, size_t const new_size = 0)
-    {
-        indices_type& residue = m_indices[index];
-        residue.clear();
-        residue.reserve(new_size);
-    }
-
-    void add_atom(index_t const residue, index_t const atom)
-    {
-        m_indices[residue].insert(atom);
-    }
-
-    void remove_atom(index_t const residue, index_t const atom)
-    {
-        m_indices[residue].erase(atom);
     }
 
 private:
@@ -108,7 +80,6 @@ private:
     std::vector<std::string> m_name;
     std::vector<std::string> m_segid;
     std::vector<std::string> m_chain;
-    std::vector<indices_type> m_indices;
 };
 
 } // namespace mol::internal

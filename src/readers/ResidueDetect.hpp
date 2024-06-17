@@ -4,7 +4,6 @@
 #include <molpp/MolppCore.hpp>
 
 #include <map>
-#include <tuple>
 #include <string>
 
 namespace mol
@@ -18,7 +17,8 @@ class MolData;
 class ResidueDetect
 {
 public:
-    index_t register_atom(int const resid, std::string const& resname, std::string const& segid, std::string const& chain);
+    ResidueDetect(MolData& data);
+    void register_atom(index_t const atom_index, int const resid, std::string const& resname, std::string const& segid, std::string const& chain);
     void update_residue_data(MolData& mol_data) const;
 
 private:
@@ -30,17 +30,13 @@ private:
         std::string resname;
     };
 
-    struct EntityInfo
-    {
-        index_t index;
-        size_t size;
-    };
-
     friend bool operator<(ResidueKey const& lhs, ResidueKey const& rhs);
 
-    std::map<ResidueKey, EntityInfo> m_residues;
-    std::map<std::string, EntityInfo> m_chains;
-    std::map<std::string, EntityInfo> m_segments;
+    MolData& m_data;
+    std::map<ResidueKey, index_t> m_residues;
+    std::map<std::string, index_t> m_chains;
+    std::map<std::string, index_t> m_segments;
+
     std::vector<std::string> m_chain_name;
     std::vector<std::string> m_segment_name;
 };

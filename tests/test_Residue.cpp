@@ -28,6 +28,11 @@ public:
     Residue null_frame_residue;
 };
 
+TEST_F(ResidueTest, category)
+{
+    EXPECT_EQ(Residue::category(), MolecularEntityCategory::Residue);
+}
+
 TEST_F(ResidueTest, frames)
 {
     EXPECT_EQ(residue.frame(), 0);
@@ -70,6 +75,7 @@ TEST_F(ResidueTest, size)
     EXPECT_EQ(residue.size(), 1);
 }
 
+// Residue::add_atom with an index should make the atom exclusive to the new residue
 TEST_F(ResidueTest, add_atom_from_index)
 {
     Residue old_residue(0, std::nullopt, data);
@@ -84,6 +90,7 @@ TEST_F(ResidueTest, add_atom_from_index)
     EXPECT_EQ(old_residue.size(), 0);
 }
 
+// Residue::add_atom with an Atom should make the atom exclusive to the new residue
 TEST_F(ResidueTest, add_atom_from_atom)
 {
     Residue old_residue(0, std::nullopt, data);

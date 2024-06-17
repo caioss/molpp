@@ -2,8 +2,10 @@
 #include "matchers.hpp"
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
+
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+
 #include <optional>
 
 using namespace testing;
@@ -14,9 +16,10 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
 {
     size_t const num_atoms { num_res * num_res_atoms };
     MolData data(num_atoms);
+    Topology& topology = data.topology();
     AtomData& atom_data = data.atoms();
     ResidueData& res_data = data.residues();
-    data.residues().resize(num_res);
+    res_data.resize(num_res);
     std::string const letters("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
     // Set atoms
@@ -25,8 +28,7 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
         std::string const code = letters.substr(atom_idx % 26, 1);
 
         index_t const res_idx = atom_idx / num_res_atoms;
-        atom_data.set_residue(atom_idx, res_idx);
-        res_data.add_atom(res_idx, atom_idx);
+        topology.add_link({MolecularEntityCategory::Residue, res_idx}, {MolecularEntityCategory::Atom, atom_idx});
         atom_data.atomic_number(atom_idx) = atom_idx;
         atom_data.occupancy(atom_idx) = atom_idx;
         atom_data.temperature_factor(atom_idx) = atom_idx;

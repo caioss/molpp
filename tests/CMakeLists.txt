@@ -17,6 +17,7 @@ add_executable(tests
     test_conversions.cpp
     test_AtomSel.cpp
     test_ResidueSel.cpp
+    test_Topology.cpp
     atoms.cpp
     selectors.cpp
     system.cpp

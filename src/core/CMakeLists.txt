@@ -9,4 +9,5 @@ target_sources(molpp PRIVATE
     BondData.cpp
     ResidueSel.cpp
     SelIndices.cpp
+    Topology.cpp
 )

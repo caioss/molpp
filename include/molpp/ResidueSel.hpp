@@ -31,10 +31,10 @@ public:
     static indices_type from_atom_indices(internal::IndexRange auto const& atom_indices, internal::MolData const& data)
     {
         ResidueSel::indices_type residues;
-        mol::internal::AtomData const& atom_data = data.atoms();
         for (auto const index : atom_indices)
         {
-            std::optional<index_t> const residue_index = atom_data.residue(index);
+            internal::Topology const& topology = data.topology();
+            std::optional<index_t> const residue_index = topology.first_link({MolecularEntityCategory::Atom, index}, MolecularEntityCategory::Residue);
             if (residue_index)
             {
                 residues.push_back(*residue_index);
