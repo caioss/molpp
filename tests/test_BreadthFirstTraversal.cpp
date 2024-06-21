@@ -61,6 +61,18 @@ TYPED_TEST_P(BreadthFirstTraversalTest, InitialState)
     EXPECT_THAT(this->bfs.parent_map(), UnorderedElementsAre());
 }
 
+TYPED_TEST_P(BreadthFirstTraversalTest, StartAtInvalidNode)
+{
+    EXPECT_FALSE(this->bfs.run(-1, [](int const& node) {
+        return node == 3;
+    }, [](auto){
+        return true;
+    }));
+
+    EXPECT_THAT(this->bfs.visited(), UnorderedElementsAre());
+    EXPECT_THAT(this->bfs.parent_map(), UnorderedElementsAre());
+}
+
 TYPED_TEST_P(BreadthFirstTraversalTest, StopAtNode)
 {
     EXPECT_TRUE(this->bfs.run(0, [](int const& node) {
@@ -128,7 +140,7 @@ TYPED_TEST_P(BreadthFirstTraversalTest, MaskAllNodes)
     EXPECT_THAT(this->bfs.parent_map(), UnorderedElementsAre());
 }
 
-REGISTER_TYPED_TEST_SUITE_P(BreadthFirstTraversalTest, InitialState, StopAtNode, StopAtUnknownNode, DontStop, StopAtNodeWithMask, MaskAllNodes);
+REGISTER_TYPED_TEST_SUITE_P(BreadthFirstTraversalTest, InitialState, StartAtInvalidNode, StopAtNode, StopAtUnknownNode, DontStop, StopAtNodeWithMask, MaskAllNodes);
 
 using GraphTypes = testing::Types<Graph<int, int>, SimpleGraph<int>>;
 INSTANTIATE_TYPED_TEST_SUITE_P(BreadthFirstTraversalAllGraphs, BreadthFirstTraversalTest, GraphTypes);

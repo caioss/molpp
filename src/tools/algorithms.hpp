@@ -28,6 +28,12 @@ public:
     template<std::predicate<node_type> Stop, std::predicate<node_type> Filter>
     bool run(node_type const& start, Stop stop, Filter filter)
     {
+        // Sanity check
+        if (!m_container.contains(start))
+        {
+            return false;
+        }
+
         m_visited.clear();
         m_parent.clear();
         if (!filter(start))

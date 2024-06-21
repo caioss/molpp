@@ -54,13 +54,13 @@ void Residue::add_atom(index_t atom_index)
 {
     internal::Topology& topology = data().topology();
 
-    std::optional<index_t> const old_residue = topology.first_link({MolecularEntityCategory::Atom, atom_index}, Residue::category());
+    std::optional<index_t> const old_residue = topology.find_link({MolecularEntityCategory::Atom, atom_index}, Residue::category());
     if (old_residue)
     {
         topology.remove_link({MolecularEntityCategory::Atom, atom_index}, {Residue::category(), *old_residue});
     }
 
-    topology.add_link({MolecularEntityCategory::Atom, atom_index}, {Residue::category(), index()});
+    topology.link_entities({MolecularEntityCategory::Atom, atom_index}, {Residue::category(), index()});
 }
 
 void Residue::add_atom(Atom const& atom)

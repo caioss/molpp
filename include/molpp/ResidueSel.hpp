@@ -34,7 +34,7 @@ public:
         for (auto const index : atom_indices)
         {
             internal::Topology const& topology = data.topology();
-            std::optional<index_t> const residue_index = topology.first_link({MolecularEntityCategory::Atom, index}, MolecularEntityCategory::Residue);
+            std::optional<index_t> const residue_index = topology.find_link({MolecularEntityCategory::Atom, index}, MolecularEntityCategory::Residue);
             if (residue_index)
             {
                 residues.push_back(*residue_index);

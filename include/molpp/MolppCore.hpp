@@ -20,7 +20,11 @@ enum class MolecularEntityCategory
 {
     Atom,
     Residue,
-    Custom
+    Custom0,
+    Custom1,
+    Custom2,
+    Custom3,
+    Custom4
 };
 
 using Point3 = Eigen::Vector<position_t, 3>;

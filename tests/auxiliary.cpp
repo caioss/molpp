@@ -28,7 +28,7 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
         std::string const code = letters.substr(atom_idx % 26, 1);
 
         index_t const res_idx = atom_idx / num_res_atoms;
-        topology.add_link({MolecularEntityCategory::Residue, res_idx}, {MolecularEntityCategory::Atom, atom_idx});
+        topology.link_entities({MolecularEntityCategory::Residue, res_idx}, {MolecularEntityCategory::Atom, atom_idx});
         atom_data.atomic_number(atom_idx) = atom_idx;
         atom_data.occupancy(atom_idx) = atom_idx;
         atom_data.temperature_factor(atom_idx) = atom_idx;
