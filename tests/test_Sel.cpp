@@ -80,6 +80,12 @@ TYPED_TEST_P(SelTest, construct_from_entity)
     EXPECT_EQ(new_selection[0].index(), 1);
 }
 
+// Category should be the same as the entity category
+TYPED_TEST_P(SelTest, category)
+{
+    EXPECT_EQ(TypeParam::category(), mol::internal::SelTraits<TypeParam>::entity_type::category());
+}
+
 // Frame should be set to the first one if the trajectory has frames
 TYPED_TEST_P(SelTest, default_frame_with_trajectory)
 {
@@ -300,7 +306,7 @@ TYPED_TEST_P(SelTest, iterator_inequality_comparable)
     EXPECT_NE(iter1, iter2);
 }
 
-REGISTER_TYPED_TEST_SUITE_P(SelTest, construct_from_indices_and_data, construct_from_selindices_and_data, construct_from_data, construct_from_entity, default_frame_with_trajectory, default_frame_without_trajectory, set_valid_frame, set_invalid_frame, set_null_frame, size, contains, does_not_contain, indices, begin, end, valid_range, indexable, at, at_out_of_bounds, by_index, by_index_not_found, iterator_dereferenceable, iterator_pre_incrementable, iterator_post_incrementable, iterator_pre_decrementable, iterator_post_decrementable, iterator_incrementable_by_integer, iterator_decrementable_by_integer, iterator_subtractable, iterator_comparable, iterator_inequality_comparable);
+REGISTER_TYPED_TEST_SUITE_P(SelTest, construct_from_indices_and_data, construct_from_selindices_and_data, construct_from_data, construct_from_entity, category, default_frame_with_trajectory, default_frame_without_trajectory, set_valid_frame, set_invalid_frame, set_null_frame, size, contains, does_not_contain, indices, begin, end, valid_range, indexable, at, at_out_of_bounds, by_index, by_index_not_found, iterator_dereferenceable, iterator_pre_incrementable, iterator_post_incrementable, iterator_pre_decrementable, iterator_post_decrementable, iterator_incrementable_by_integer, iterator_decrementable_by_integer, iterator_subtractable, iterator_comparable, iterator_inequality_comparable);
 
 class SelMock;
 
@@ -320,11 +326,6 @@ struct SelMock : public mol::internal::Sel<SelMock>
 {
     using entity_type = mol::Atom;
     using mol::internal::Sel<SelMock>::Sel;
-
-    static auto from_atom_indices(auto&& atom_indices, mol::internal::MolData const&)
-    {
-        return atom_indices;
-    }
 
     template<class, class>
     friend class mol::internal::Sel;

@@ -19,6 +19,11 @@ index_t internal::MolecularEntity::index() const
     return m_index;
 }
 
+std::vector<index_t> internal::MolecularEntity::indices() const
+{
+    return std::vector<index_t>{m_index};
+}
+
 Frame internal::MolecularEntity::frame() const
 {
     return m_frame;

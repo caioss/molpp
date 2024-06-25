@@ -271,3 +271,15 @@ TEST_F(TopologyTest, convert_non_existent_target_category)
 
     EXPECT_TRUE(result.empty());
 }
+
+// Topology::convert should return same indices if source and target category are the same
+TEST_F(TopologyTest, convert_same_category)
+{
+    ASSERT_TRUE(topology.link_categories(MolecularEntityCategory::Atom, MolecularEntityCategory::Residue));
+    ASSERT_TRUE(topology.link_entities(atom1, residue1));
+    std::vector<index_t> const source_indices{residue1.index};
+
+    std::vector<index_t> const result = topology.convert(source_indices, residue1.category, residue1.category);
+
+    EXPECT_THAT(result, UnorderedElementsAre(residue1.index));
+}

@@ -21,6 +21,7 @@ public:
     bool operator==(MolecularEntity const& other) const;
     //! Index is always read-only
     index_t index() const;
+    std::vector<index_t> indices() const;
     Frame frame() const;
     void set_frame(Frame const frame);
 

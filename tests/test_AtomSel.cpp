@@ -42,7 +42,7 @@ TEST_F(AtomSelTest, bonded)
 {
     mol::AtomSel bonded = selection.bonded();
 
-    EXPECT_THAT(bonded.as_atom_indices(), ElementsAre(0, 1, 2, 3));
+    EXPECT_THAT(bonded.indices(), ElementsAre(0, 1, 2, 3));
 }
 
 // AtomSel::bonds should return the bonds to the selected atoms
@@ -55,19 +55,4 @@ TEST_F(AtomSelTest, bonds)
     }
 
     EXPECT_THAT(bonds_indices, UnorderedElementsAre(Pair(0, 1), Pair(1, 2), Pair(2, 3)));
-}
-
-// AtomSel::as_atom_indices should return the indices of the selected atoms
-TEST_F(AtomSelTest, as_atom_indices)
-{
-    EXPECT_THAT(selection.as_atom_indices(), ElementsAre(1, 2, 3));
-}
-
-// AtomSel::from_atom_indices should return the atom indices
-TEST_F(AtomSelTest, from_atom_indices)
-{
-    mol::AtomSel::indices_type const indices{1, 2};
-    mol::AtomSel::indices_type from_atom_indices = mol::AtomSel::from_atom_indices(indices, data);
-
-    EXPECT_THAT(from_atom_indices, ElementsAre(1, 2));
 }

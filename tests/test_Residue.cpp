@@ -3,6 +3,7 @@
 #include <molpp/internal/MolData.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/Atom.hpp>
+#include <molpp/AtomSel.hpp>
 #include <molpp/MolError.hpp>
 
 #include <gtest/gtest.h>
@@ -31,6 +32,18 @@ public:
 TEST_F(ResidueTest, category)
 {
     EXPECT_EQ(Residue::category(), MolecularEntityCategory::Residue);
+}
+
+TEST_F(ResidueTest, index)
+{
+    EXPECT_EQ(residue.index(), 1);
+    EXPECT_EQ(const_residue.index(), 1);
+}
+
+TEST_F(ResidueTest, indices)
+{
+    EXPECT_THAT(residue.indices(), ElementsAre(1));
+    EXPECT_THAT(const_residue.indices(), ElementsAre(1));
 }
 
 TEST_F(ResidueTest, frames)
@@ -82,9 +95,11 @@ TEST_F(ResidueTest, add_atom_from_index)
     Atom new_atom(0, std::nullopt, data);
 
     residue.add_atom(new_atom.index());
+    AtomSel residue_atoms(residue);
+    AtomSel old_residue_atoms(old_residue);
 
-    EXPECT_THAT(view2vector(residue.as_atom_indices()), UnorderedElementsAre(0, 1));
-    EXPECT_THAT(view2vector(old_residue.as_atom_indices()), ElementsAre());
+    EXPECT_THAT(residue_atoms.indices(), UnorderedElementsAre(0, 1));
+    EXPECT_THAT(old_residue_atoms.indices(), ElementsAre());
     EXPECT_EQ(new_atom.residue_index(), residue.index());
     EXPECT_EQ(residue.size(), 2);
     EXPECT_EQ(old_residue.size(), 0);
@@ -97,15 +112,12 @@ TEST_F(ResidueTest, add_atom_from_atom)
     Atom new_atom(0, std::nullopt, data);
 
     residue.add_atom(new_atom);
+    AtomSel residue_atoms(residue);
+    AtomSel old_residue_atoms(old_residue);
 
-    EXPECT_THAT(view2vector(residue.as_atom_indices()), UnorderedElementsAre(0, 1));
-    EXPECT_THAT(view2vector(old_residue.as_atom_indices()), ElementsAre());
+    EXPECT_THAT(residue_atoms.indices(), UnorderedElementsAre(0, 1));
+    EXPECT_THAT(old_residue_atoms.indices(), ElementsAre());
     EXPECT_EQ(new_atom.residue_index(), residue.index());
     EXPECT_EQ(residue.size(), 2);
     EXPECT_EQ(old_residue.size(), 0);
-}
-
-TEST_F(ResidueTest, as_atom_indices)
-{
-    EXPECT_THAT(view2vector(residue.as_atom_indices()), UnorderedElementsAre(1));
 }

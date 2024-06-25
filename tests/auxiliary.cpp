@@ -42,6 +42,10 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     }
 
     // Set residues
+    if (num_res > 0)
+    {
+        topology.link_categories(MolecularEntityCategory::Residue, MolecularEntityCategory::Atom);
+    }
     for (index_t res_idx = 0; res_idx < num_res; res_idx++)
     {
         std::string const resname = letters.substr(res_idx % 26, 1);

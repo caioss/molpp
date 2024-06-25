@@ -14,11 +14,6 @@ AtomSel::const_position_type AtomSel::positions() const
     return data().trajectory().timestep(*frame()).coords()(Eigen::all, indices());
 }
 
-AtomSel::indices_type const& AtomSel::as_atom_indices() const
-{
-    return indices();
-}
-
 AtomSel AtomSel::bonded()
 {
     std::vector<index_t> bonded_atoms = data().bonds().bonded(indices().begin(), indices().end());

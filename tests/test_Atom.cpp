@@ -38,6 +38,18 @@ TEST_F(AtomTest, compare_atoms)
     EXPECT_FALSE(Atom(1, std::nullopt, data) == Atom(1, 0, data));
 }
 
+TEST_F(AtomTest, index)
+{
+    EXPECT_EQ(atom.index(), 1);
+    EXPECT_EQ(const_atom.index(), 1);
+}
+
+TEST_F(AtomTest, indices)
+{
+    EXPECT_THAT(atom.indices(), ElementsAre(1));
+    EXPECT_THAT(const_atom.indices(), ElementsAre(1));
+}
+
 TEST_F(AtomTest, frames)
 {
     EXPECT_EQ(atom.frame(), 0);
@@ -280,11 +292,4 @@ TEST_F(AtomTest, bonds_list)
     }
 
     EXPECT_THAT(bonds_indices, UnorderedElementsAre(Pair(0, 1), Pair(1, 2)));
-}
-
-TEST_F(AtomTest, as_atom_indices)
-{
-    EXPECT_THAT(view2vector(atom.as_atom_indices()), ElementsAre(1));
-    EXPECT_THAT(view2vector(const_atom.as_atom_indices()), ElementsAre(1));
-    EXPECT_THAT(view2vector(null_frame_atom.as_atom_indices()), ElementsAre(0));
 }

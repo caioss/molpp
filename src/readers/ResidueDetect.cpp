@@ -38,11 +38,18 @@ void ResidueDetect::register_atom(index_t const atom_index, int const resid, std
 
     index_t const residue_index = residue_iter->second;
     Topology& topology = m_data.topology();
-    topology.add_link({MolecularEntityCategory::Residue, residue_index}, {MolecularEntityCategory::Atom, atom_index});
+    topology.link_entities({MolecularEntityCategory::Residue, residue_index}, {MolecularEntityCategory::Atom, atom_index});
 }
 
 void ResidueDetect::update_residue_data(MolData& mol_data) const
 {
+    // Update the hierarchy
+    Topology& topology = mol_data.topology();
+    if (!m_residues.empty())
+    {
+        topology.link_categories(MolecularEntityCategory::Residue, MolecularEntityCategory::Atom);
+    }
+
     ResidueData& residues_data = mol_data.residues();
     residues_data.resize(m_residues.size());
     for (auto const& item : m_residues)

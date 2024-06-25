@@ -73,9 +73,4 @@ size_t Residue::size() const
     return data().topology().count_links({Residue::category(), index()}, MolecularEntityCategory::Atom);
 }
 
-std::vector<index_t> mol::Residue::as_atom_indices() const
-{
-    return data().topology().all_links({Residue::category(), index()}, MolecularEntityCategory::Atom);
-}
-
 } // namespace mol

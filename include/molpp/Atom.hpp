@@ -63,11 +63,6 @@ public:
 
     Coord3::ColXpr position();
     Coord3::ConstColXpr position() const;
-
-    auto as_atom_indices() const
-    {
-        return std::ranges::single_view(index());
-    }
 };
 
 } // namespace mol

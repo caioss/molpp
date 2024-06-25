@@ -22,12 +22,12 @@ class MolData;
 template<class Derived>
 class Sel;
 
-template<class LHS, class RHS>
-concept SelConvertible = requires(LHS lhs, RHS rhs) {
+template<class RHS>
+concept SelConvertible = requires(RHS rhs) {
     { rhs.data() } -> std::same_as<MolData&>;
     { rhs.frame() } -> std::same_as<Frame>;
-    { rhs.as_atom_indices() } -> internal::IndexRange;
-    { lhs.from_atom_indices(rhs.as_atom_indices(), std::declval<MolData>()) } -> internal::IndexRange;
+    { rhs.category() } -> std::same_as<MolecularEntityCategory>;
+    { rhs.indices() } -> internal::IndexRange;
 };
 
 template<class Derived>
@@ -64,8 +64,8 @@ public:
 
     template<class RHS>
     explicit Sel(RHS&& rhs)
-    requires SelConvertible<Derived, RHS>
-    : Sel(SelIndices(Derived::from_atom_indices(rhs.as_atom_indices(), rhs.data())), rhs.data())
+    requires SelConvertible<RHS>
+    : Sel(SelIndices(rhs.data().topology().convert(rhs.indices(), rhs.category(), category())), rhs.data())
     {
         set_frame(rhs.frame());
     }
@@ -77,6 +77,11 @@ public:
     explicit Sel(MolData& data)
     : Sel(SelIndices(data.size<value_type>()), data)
     {}
+
+    static MolecularEntityCategory category()
+    {
+        return value_type::category();
+    }
 
     Frame frame() const
     {

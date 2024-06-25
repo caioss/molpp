@@ -101,6 +101,11 @@ bool Topology::contains_link(MolecularEntityId const entity1, MolecularEntityId 
 
 std::vector<index_t> Topology::convert(std::vector<index_t> const& source_indices, MolecularEntityCategory const source_category, MolecularEntityCategory const target_category)
 {
+    if (source_category == target_category)
+    {
+        return source_indices;
+    }
+
     std::vector<MolecularEntityCategory>& path = m_conversion_paths[{source_category, target_category}];
 
     if (path.empty())
