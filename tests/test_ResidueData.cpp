@@ -57,14 +57,3 @@ TEST_F(ResidueDataTest, default_chain)
 {
     EXPECT_EQ(data.chain(0), "");
 }
-
-// ResidueData::set should set all data of a residue
-TEST_F(ResidueDataTest, set)
-{
-    data.set(0, 1, "A", "B", "C");
-
-    EXPECT_EQ(data.id(0), 1);
-    EXPECT_EQ(data.name(0), "A");
-    EXPECT_EQ(data.segid(0), "B");
-    EXPECT_EQ(data.chain(0), "C");
-}

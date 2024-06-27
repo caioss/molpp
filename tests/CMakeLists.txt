@@ -15,6 +15,7 @@ add_executable(tests
     test_SelIndices.cpp
     test_Sel.cpp
     test_conversions.cpp
+    test_ChainData.cpp
     test_AtomSel.cpp
     test_ResidueSel.cpp
     test_Topology.cpp

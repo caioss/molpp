@@ -18,8 +18,6 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     MolData data(num_atoms);
     Topology& topology = data.topology();
     AtomData& atom_data = data.atoms();
-    ResidueData& res_data = data.residues();
-    res_data.resize(num_res);
     std::string const letters("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
     // Set atoms
@@ -42,16 +40,32 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     }
 
     // Set residues
+    ResidueData& res_data = data.residues();
+    res_data.resize(num_res);
     if (num_res > 0)
     {
         topology.link_categories(MolecularEntityCategory::Residue, MolecularEntityCategory::Atom);
     }
     for (index_t res_idx = 0; res_idx < num_res; res_idx++)
     {
-        std::string const resname = letters.substr(res_idx % 26, 1);
-        std::string const chain = letters.substr(res_idx % num_chains % 26, 1);
-        std::string const segid = letters.substr(res_idx % num_segments % 26, 1);
-        res_data.set(res_idx, res_idx, resname, segid, chain);
+        res_data.id(res_idx) = res_idx;
+        res_data.name(res_idx) = letters.substr(res_idx % 26, 1);;
+        res_data.segid(res_idx) = letters.substr(res_idx % num_segments % 26, 1);
+        res_data.chain(res_idx) = letters.substr(res_idx % num_chains % 26, 1);
+
+        topology.link_entities({MolecularEntityCategory::Residue, res_idx}, {MolecularEntityCategory::Chain, res_idx % num_chains});
+    }
+
+    // Set chains
+    ChainData& chain_data = data.chains();
+    chain_data.resize(num_chains);
+    if (num_chains > 1)
+    {
+        topology.link_categories(MolecularEntityCategory::Chain, MolecularEntityCategory::Residue);
+    }
+    for (index_t chain_idx = 0; chain_idx < num_chains; chain_idx++)
+    {
+        chain_data.name(chain_idx) = letters.substr(chain_idx % 26, 1);
     }
 
     // Bonds between first atoms of consecutive residues

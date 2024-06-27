@@ -3,8 +3,6 @@
 
 #include <vector>
 #include <string>
-#include <ranges>
-#include <unordered_set>
 
 namespace mol::internal
 {
@@ -12,14 +10,6 @@ namespace mol::internal
 class ResidueData
 {
 public:
-    void set(index_t const index, int const res_id, std::string const& res_name, std::string const& seg_id, std::string const& chain_id)
-    {
-        id(index) = res_id;
-        name(index) = res_name;
-        segid(index) = seg_id;
-        chain(index) = chain_id;
-    }
-
     size_t size() const
     {
         return m_id.size();
@@ -74,8 +64,6 @@ public:
     }
 
 private:
-    using indices_type = std::unordered_set<index_t>;
-
     std::vector<int> m_id;
     std::vector<std::string> m_name;
     std::vector<std::string> m_segid;

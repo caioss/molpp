@@ -30,6 +30,7 @@ private:
         std::string resname;
     };
 
+    index_t register_chain(std::string const& chain);
     friend bool operator<(ResidueKey const& lhs, ResidueKey const& rhs);
 
     MolData& m_data;

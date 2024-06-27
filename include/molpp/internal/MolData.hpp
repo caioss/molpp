@@ -5,6 +5,7 @@
 #include <molpp/internal/AtomData.hpp>
 #include <molpp/internal/BondData.hpp>
 #include <molpp/internal/ResidueData.hpp>
+#include <molpp/internal/ChainData.hpp>
 #include <molpp/Trajectory.hpp>
 
 namespace mol
@@ -65,6 +66,16 @@ public:
         return m_residues;
     }
 
+    ChainData& chains()
+    {
+        return m_chains;
+    }
+
+    ChainData const& chains() const
+    {
+        return m_chains;
+    }
+
     Trajectory& trajectory()
     {
         return m_trajectory;
@@ -80,6 +91,7 @@ private:
     AtomData m_atoms;
     BondData m_bonds;
     ResidueData m_residues;
+    ChainData m_chains;
     Trajectory m_trajectory;
 };
 
