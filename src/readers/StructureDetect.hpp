@@ -1,5 +1,5 @@
-#ifndef MOLPP_READERS_RESIDUEDETECT_HPP
-#define MOLPP_READERS_RESIDUEDETECT_HPP
+#ifndef MOLPP_READERS_STRUCTUREDETECT_HPP
+#define MOLPP_READERS_STRUCTUREDETECT_HPP
 
 #include <molpp/MolppCore.hpp>
 
@@ -14,10 +14,10 @@ namespace internal
 
 class MolData;
 
-class ResidueDetect
+class StructureDetect
 {
 public:
-    ResidueDetect(MolData& data);
+    StructureDetect(MolData& data);
     void register_atom(index_t const atom_index, int const resid, std::string const& resname, std::string const& segid, std::string const& chain);
     void update_residue_data(MolData& mol_data) const;
 
@@ -45,4 +45,4 @@ private:
 } // namespace internal
 } // namespace mol
 
-#endif // MOLPP_READERS_RESIDUEDETECT_HPP
+#endif // MOLPP_READERS_STRUCTUREDETECT_HPP

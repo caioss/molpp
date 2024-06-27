@@ -1,7 +1,7 @@
 #include "molfile.h"
 #include "MolfileReader.hpp"
 #include <molpp/internal/MolData.hpp>
-#include "ResidueDetect.hpp"
+#include "StructureDetect.hpp"
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/MolError.hpp>
@@ -170,7 +170,7 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
     }
 
     std::unique_ptr<MolData> mol_data = std::make_unique<MolData>(m_num_atoms);
-    ResidueDetect residue_detect(*mol_data);
+    StructureDetect residue_detect(*mol_data);
 
     // Loop over all atoms
     for (index_t i = 0; i < (size_t)m_num_atoms; ++i)

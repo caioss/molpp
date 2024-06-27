@@ -1,6 +1,6 @@
 #include "auxiliary.hpp"
 
-#include "readers/ResidueDetect.hpp"
+#include "readers/StructureDetect.hpp"
 #include <molpp/MolppCore.hpp>
 #include <molpp/internal/MolData.hpp>
 
@@ -11,11 +11,11 @@ using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
-//! Test fixture for ResidueDetect class
-class ResidueDetectTest : public ::testing::Test
+//! Test fixture for StructureDetect class
+class StructureDetectTest : public ::testing::Test
 {
 public:
-    ResidueDetectTest()
+    StructureDetectTest()
     : data{4}
     , topology{data.topology()}
     , detect{data}
@@ -23,11 +23,11 @@ public:
 
     MolData data;
     Topology const& topology;
-    ResidueDetect detect;
+    StructureDetect detect;
 };
 
 // Register atom with same residue fields should render same residue
-TEST_F(ResidueDetectTest, register_same_residue)
+TEST_F(StructureDetectTest, register_same_residue)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "AA", "A");
@@ -37,7 +37,7 @@ TEST_F(ResidueDetectTest, register_same_residue)
 }
 
 // Register atom with different resid should render different residues
-TEST_F(ResidueDetectTest, register_different_resid)
+TEST_F(StructureDetectTest, register_different_resid)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 2, "ALA", "AA", "A");
@@ -49,7 +49,7 @@ TEST_F(ResidueDetectTest, register_different_resid)
 }
 
 // Register atom with different chain should render different residues and chains
-TEST_F(ResidueDetectTest, register_different_chain)
+TEST_F(StructureDetectTest, register_different_chain)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "AA", "B");
@@ -65,7 +65,7 @@ TEST_F(ResidueDetectTest, register_different_chain)
 }
 
 // Register atom with different resname should render different residues
-TEST_F(ResidueDetectTest, register_different_resname)
+TEST_F(StructureDetectTest, register_different_resname)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "LYS", "AA", "A");
@@ -77,7 +77,7 @@ TEST_F(ResidueDetectTest, register_different_resname)
 }
 
 // Register atom with different segid should render different residues
-TEST_F(ResidueDetectTest, register_different_segid)
+TEST_F(StructureDetectTest, register_different_segid)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "BB", "A");
@@ -89,7 +89,7 @@ TEST_F(ResidueDetectTest, register_different_segid)
 }
 
 // Register atom with non-empty chain should link chain and residues
-TEST_F(ResidueDetectTest, register_chain)
+TEST_F(StructureDetectTest, register_chain)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
 
@@ -99,7 +99,7 @@ TEST_F(ResidueDetectTest, register_chain)
 }
 
 // Register same residue with different chains should render different residues linked to different chains
-TEST_F(ResidueDetectTest, register_same_residue_different_chain)
+TEST_F(StructureDetectTest, register_same_residue_different_chain)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "AA", "B");
@@ -112,7 +112,7 @@ TEST_F(ResidueDetectTest, register_same_residue_different_chain)
 }
 
 // Register atom with same chain should render same chain
-TEST_F(ResidueDetectTest, register_same_chain)
+TEST_F(StructureDetectTest, register_same_chain)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "AA", "A");
@@ -123,7 +123,7 @@ TEST_F(ResidueDetectTest, register_same_chain)
 }
 
 // Register atom with empty chain should not link chain and residues
-TEST_F(ResidueDetectTest, register_empty_chain)
+TEST_F(StructureDetectTest, register_empty_chain)
 {
     detect.register_atom(0, 1, "ALA", "AA", "");
 
@@ -133,7 +133,7 @@ TEST_F(ResidueDetectTest, register_empty_chain)
 }
 
 // Register atom with same residue fields out of order should re-use residues
-TEST_F(ResidueDetectTest, register_residues_out_of_order)
+TEST_F(StructureDetectTest, register_residues_out_of_order)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "LYS", "AA", "A");
@@ -152,7 +152,7 @@ TEST_F(ResidueDetectTest, register_residues_out_of_order)
 }
 
 // Register atom with same chain out of order should re-use chains
-TEST_F(ResidueDetectTest, register_chains_out_of_order)
+TEST_F(StructureDetectTest, register_chains_out_of_order)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "AA", "B");
@@ -170,8 +170,8 @@ TEST_F(ResidueDetectTest, register_chains_out_of_order)
     EXPECT_THAT(chain_2, UnorderedElementsAre(2));
 }
 
-// ResidueDetect::update_residue_data should set structures data
-TEST_F(ResidueDetectTest, update_residue_data)
+// StructureDetect::update_residue_data should set structures data
+TEST_F(StructureDetectTest, update_residue_data)
 {
     // Register atoms
     detect.register_atom(0, 1, "ALA", "BB", "A");
@@ -197,8 +197,8 @@ TEST_F(ResidueDetectTest, update_residue_data)
     EXPECT_EQ(chain_data.name(1), "C");
 }
 
-// ResidueDetect::update_residue_data should not set empty chain data
-TEST_F(ResidueDetectTest, update_residue_data_empty_chain)
+// StructureDetect::update_residue_data should not set empty chain data
+TEST_F(StructureDetectTest, update_residue_data_empty_chain)
 {
     // Register atoms
     detect.register_atom(0, 1, "ALA", "BB", "");

@@ -10,7 +10,7 @@ add_executable(tests
     test_SimpleGraph.cpp
     test_BreadthFirstTraversal.cpp
     test_ConnectedComponents.cpp
-    test_ResidueDetect.cpp
+    test_StructureDetect.cpp
     test_ResidueData.cpp
     test_SelIndices.cpp
     test_Sel.cpp

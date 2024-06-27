@@ -1,4 +1,4 @@
-#include "readers/ResidueDetect.hpp"
+#include "readers/StructureDetect.hpp"
 #include <molpp/MolppCore.hpp>
 #include <molpp/internal/MolData.hpp>
 
@@ -10,7 +10,7 @@ namespace mol::internal
 // Use the maximum value of index_t to avoid overlapping with valid indices
 constexpr index_t const INVALID_INDEX = std::numeric_limits<index_t>::max();
 
-ResidueDetect::ResidueDetect(MolData& data)
+StructureDetect::StructureDetect(MolData& data)
 : m_data{data}
 {
     // Register the empty chain and segment to allow computing further indices
@@ -18,7 +18,7 @@ ResidueDetect::ResidueDetect(MolData& data)
     m_segments[""] = INVALID_INDEX;
 }
 
-void ResidueDetect::register_atom(index_t const atom_index, int const resid, std::string const& resname, std::string const& segid, std::string const& chain)
+void StructureDetect::register_atom(index_t const atom_index, int const resid, std::string const& resname, std::string const& segid, std::string const& chain)
 {
     auto segment_iter = m_segments.find(segid);
     if (segment_iter == m_segments.end())
@@ -47,7 +47,7 @@ void ResidueDetect::register_atom(index_t const atom_index, int const resid, std
     topology.link_entities({MolecularEntityCategory::Residue, residue_index}, {MolecularEntityCategory::Atom, atom_index});
 }
 
-void ResidueDetect::update_residue_data(MolData& mol_data) const
+void StructureDetect::update_residue_data(MolData& mol_data) const
 {
     // Update the hierarchy
     Topology& topology = mol_data.topology();
@@ -84,7 +84,7 @@ void ResidueDetect::update_residue_data(MolData& mol_data) const
     }
 }
 
-index_t ResidueDetect::register_chain(std::string const& chain)
+index_t StructureDetect::register_chain(std::string const& chain)
 {
     auto chain_iter = m_chains.find(chain);
     if (chain_iter == m_chains.end())
@@ -97,7 +97,7 @@ index_t ResidueDetect::register_chain(std::string const& chain)
     return chain_iter->second;
 }
 
-bool operator<(ResidueDetect::ResidueKey const& lhs, ResidueDetect::ResidueKey const& rhs)
+bool operator<(StructureDetect::ResidueKey const& lhs, StructureDetect::ResidueKey const& rhs)
 {
     return std::tie(lhs.resid, lhs.resname, lhs.segment, lhs.chain) < std::tie(rhs.resid, rhs.resname, rhs.segment, rhs.chain);
 }

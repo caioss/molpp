@@ -5,11 +5,11 @@ target_sources(molpp
         FILES
             MolReader.hpp
             molfile.h
-            ResidueDetect.hpp
+            StructureDetect.hpp
             MolfileReader.hpp
 
     PRIVATE
         MolReader.cpp
-        ResidueDetect.cpp
+        StructureDetect.cpp
         MolfileReader.cpp
 )
