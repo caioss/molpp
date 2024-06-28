@@ -30,6 +30,7 @@ target_sources(molpp
             molpp/internal/MolecularEntity.hpp
             molpp/internal/BondData.hpp
             molpp/internal/ResidueData.hpp
+            molpp/internal/ChainData.hpp
             molpp/internal/Sel.hpp
             molpp/internal/Topology.hpp
 )
