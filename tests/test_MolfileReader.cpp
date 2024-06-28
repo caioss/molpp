@@ -18,6 +18,7 @@ using namespace testing;
 using namespace mol;
 using namespace mol::internal;
 
+// TODO Add segid (Segment) properties and respective classes
 class BaseMolfileReaderTest : public ::testing::Test
 {
 protected:
@@ -280,38 +281,6 @@ INSTANTIATE_TEST_SUITE_P(Files, MolfileReaderReadTrajectoryTest, Values(
     TrajectoryInfo{"fluorobenzene.mol2", ".mol2", "fluorobenzene.mol2", ".mol2", 1, {{-2.3436,  0.0000, -.0001, -1.0043,  0.0000, 0.0002, -0.30690,  1.2080,  0.0000, -0.30680, -1.2079,  0.0000,  1.0880,  1.2079,  0.0000, 1.0880, -1.2080,  0.0000,  1.7855,  0.0000, 0.0000, -0.85010,  2.1483, -0.0001, -0.85010, -2.1483, -0.0001,  1.6310,  2.1485, -0.0001, 1.6311, -2.1485,  0.0000,  2.8716,  0.0001, 0.0000}}},
     TrajectoryInfo{"dipeptide.psf", ".psf", "dipeptide.xtc", ".xtc", 2, {{488.93002, 780.79004, -2.42000, 488.31000, 779.74005, -1.57000, 488.95001, 778.40002, -1.68000, 489.36002, 778.07007, -2.80000, 488.83002, 777.53003, -0.60000, 488.71002, 777.94006, 0.79000, 489.25003, 776.12006, -0.75000, 489.37006, 775.66003, 0.70000, 489.78000, 776.99005, 1.34000, 488.46002, 775.29004, -1.63000, 487.31003, 775.13000, -1.27000, 438.54004, 830.56006, -3.76000, 439.46002, 831.70007, -3.88000, 440.85004, 831.40009, -4.47000, 441.05005, 830.21002, -4.75000, 441.64001, 832.37006, -4.79000, 441.41003, 833.80005, -4.52000, 443.00003, 832.08002, -5.41000, 443.75003, 833.43005, -5.27000, 442.56000, 834.47009, -5.24000, 443.85004, 831.02002, -4.66000, 443.70001, 830.90002, -3.40000}, {488.76004, 782.39008, -1.81000, 487.96002, 781.47003, -1.06000, 488.48004, 780.12000, -1.26000, 488.72003, 779.78003, -2.39000, 488.78003, 779.27002, -0.28000, 488.90002, 779.65002, 1.13000, 489.07001, 777.84003, -0.42000, 489.22000, 777.34998, 0.98000, 489.68002, 778.56006, 1.77000, 488.13004, 776.95007, -1.27000, 486.92001, 776.92004, -1.05000, 437.76001, 830.54004, -4.03000, 438.49002, 831.81006, -3.87000, 439.61002, 832.06000, -4.89000, 439.85001, 831.20001, -5.72000, 440.36005, 833.23004, -4.93000, 439.95001, 834.44000, -4.13000, 441.73001, 833.40002, -5.36000, 442.09003, 834.89008, -5.01000, 440.76001, 835.60004, -4.67000, 442.71002, 832.34998, -4.79000, 442.83002, 832.17004, -3.55000}}}
 ));
-
-template<class Property, class ArrayType = MemberFunctionTraits<Property>::return_base_type, size_t Size>
-void test_property(Property property, std::array<ArrayType, Size> const expected, MolData& data)
-{
-    for (size_t i = 0; i < Size; i++)
-    {
-        using PropertyTraits = MemberFunctionTraits<Property>;
-        using Entity = PropertyTraits::class_base_type;
-
-        Entity entity(i, std::nullopt, data);
-        Entity const const_entity(i, std::nullopt, data);
-
-        typename PropertyTraits::return_type const value = std::invoke(property, &entity);
-        typename PropertyTraits::return_type const const_value = std::invoke(property, &const_entity);
-
-        if constexpr (std::is_same_v<typename PropertyTraits::return_base_type, float>)
-        {
-            EXPECT_FLOAT_EQ(value, expected[i]) << i << " (non-const)";
-            EXPECT_FLOAT_EQ(const_value, expected[i]) << i << " (const)";
-        }
-        else if constexpr (std::is_same_v<typename PropertyTraits::return_base_type, double>)
-        {
-            EXPECT_DOUBLE_EQ(value, expected[i]) << i << " (non-const)";
-            EXPECT_DOUBLE_EQ(const_value, expected[i]) << i << " (const)";
-        }
-        else
-        {
-            EXPECT_EQ(value, expected[i]) << i << " (non-const)";
-            EXPECT_EQ(const_value, expected[i]) << i << " (const)";
-        }
-    }
-}
 
 class PDBMolfileReaderTest : public BaseMolfileReaderTest
 {

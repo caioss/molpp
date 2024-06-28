@@ -3,6 +3,8 @@
 
 #include <molpp/internal/MolData.hpp>
 
+#include <gtest/gtest.h>
+
 #include <vector>
 #include <type_traits>
 
@@ -43,5 +45,38 @@ MemberFunctionTraitsDetails(Return (Class::*)(Args...) const) -> MemberFunctionT
 //! Traits for member functions
 template<class MFP>
 using MemberFunctionTraits = decltype(MemberFunctionTraitsDetails((MFP){}));
+
+//! Test an entity's property against a set of expected values
+template<class Property, class ArrayType = MemberFunctionTraits<Property>::return_base_type, size_t Size>
+void test_property(Property property, std::array<ArrayType, Size> const expected, mol::internal::MolData& data)
+{
+    for (size_t i = 0; i < Size; i++)
+    {
+        using PropertyTraits = MemberFunctionTraits<Property>;
+        using Entity = PropertyTraits::class_base_type;
+
+        Entity entity(i, std::nullopt, data);
+        Entity const const_entity(i, std::nullopt, data);
+
+        typename PropertyTraits::return_type const value = std::invoke(property, &entity);
+        typename PropertyTraits::return_type const const_value = std::invoke(property, &const_entity);
+
+        if constexpr (std::is_same_v<typename PropertyTraits::return_base_type, float>)
+        {
+            EXPECT_FLOAT_EQ(value, expected[i]) << i << " (non-const)";
+            EXPECT_FLOAT_EQ(const_value, expected[i]) << i << " (const)";
+        }
+        else if constexpr (std::is_same_v<typename PropertyTraits::return_base_type, double>)
+        {
+            EXPECT_DOUBLE_EQ(value, expected[i]) << i << " (non-const)";
+            EXPECT_DOUBLE_EQ(const_value, expected[i]) << i << " (const)";
+        }
+        else
+        {
+            EXPECT_EQ(value, expected[i]) << i << " (non-const)";
+            EXPECT_EQ(const_value, expected[i]) << i << " (const)";
+        }
+    }
+}
 
 #endif // AUXILIARY_HPP
