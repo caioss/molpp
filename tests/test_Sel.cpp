@@ -5,6 +5,7 @@
 #include <molpp/Atom.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/ResidueSel.hpp>
+#include <molpp/ChainSel.hpp>
 #include <molpp/MolError.hpp>
 
 #include <gtest/gtest.h>
@@ -332,5 +333,5 @@ struct SelMock : public mol::internal::Sel<SelMock>
 };
 
 // Test all types that implement the Sel interface
-using SelTypes = ::testing::Types<SelMock, mol::AtomSel, mol::ResidueSel>;
+using SelTypes = ::testing::Types<SelMock, mol::AtomSel, mol::ResidueSel, mol::ChainSel>;
 INSTANTIATE_TYPED_TEST_SUITE_P(SelInterface, SelTest, SelTypes);

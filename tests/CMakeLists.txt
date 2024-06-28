@@ -20,6 +20,7 @@ add_executable(tests
     test_ResidueSel.cpp
     test_Topology.cpp
     test_Chain.cpp
+    test_ChainSel.cpp
     atoms.cpp
     selectors.cpp
     system.cpp

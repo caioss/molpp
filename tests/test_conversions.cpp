@@ -3,8 +3,10 @@
 #include <molpp/internal/MolData.hpp>
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
+#include <molpp/Chain.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/ResidueSel.hpp>
+#include <molpp/ChainSel.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -57,6 +59,11 @@ REGISTER_TYPED_TEST_SUITE_P(ConversionTest, construct_from_entity);
 using ConversionTypes = ::testing::Types<
     ConversionTraits<mol::AtomSel, mol::Atom>,
     ConversionTraits<mol::AtomSel, mol::Residue>,
+    ConversionTraits<mol::AtomSel, mol::Chain>,
     ConversionTraits<mol::ResidueSel, mol::Atom>,
-    ConversionTraits<mol::ResidueSel, mol::Residue>>;
+    ConversionTraits<mol::ResidueSel, mol::Residue>,
+    ConversionTraits<mol::ResidueSel, mol::Chain>,
+    ConversionTraits<mol::ChainSel, mol::Atom>,
+    ConversionTraits<mol::ChainSel, mol::Residue>,
+    ConversionTraits<mol::ChainSel, mol::Chain>>;
 INSTANTIATE_TYPED_TEST_SUITE_P(SelFromEntity, ConversionTest, ConversionTypes);

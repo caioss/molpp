@@ -12,6 +12,7 @@ namespace mol
 {
 class Atom;
 class Residue;
+class Chain;
 } // namespace mol
 
 namespace mol::internal
@@ -105,6 +106,12 @@ template<>
 inline size_t MolData::size<mol::Residue>() const
 {
     return m_residues.size();
+}
+
+template<>
+inline size_t MolData::size<mol::Chain>() const
+{
+    return m_chains.size();
 }
 
 } // namespace mol::internal

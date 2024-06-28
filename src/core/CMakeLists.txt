@@ -9,6 +9,7 @@ target_sources(molpp PRIVATE
     AtomSel.cpp
     BondData.cpp
     ResidueSel.cpp
+    ChainSel.cpp
     SelIndices.cpp
     Topology.cpp
 )

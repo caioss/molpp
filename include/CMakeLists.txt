@@ -15,6 +15,7 @@ target_sources(molpp
             molpp/ResidueSel.hpp
             molpp/ElementsTable.hpp
             molpp/AtomSel.hpp
+            molpp/ChainSel.hpp
             molpp/tools
             molpp/tools/Graph.hpp
             molpp/tools/SimpleGraph.hpp
