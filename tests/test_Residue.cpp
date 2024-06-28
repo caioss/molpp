@@ -3,6 +3,7 @@
 #include <molpp/internal/MolData.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/Atom.hpp>
+#include <molpp/Chain.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/MolError.hpp>
 
@@ -17,7 +18,7 @@ class ResidueTest : public ::testing::Test
 {
 public:
     ResidueTest()
-    : data(create_moldata(3, 1, 1, 1, 1))
+    : data(create_moldata(3, 1, 2, 1, 1))
     , residue(1, 0, data)
     , const_residue(1, 0, data)
     , null_frame_residue(0, std::nullopt, data)
@@ -29,23 +30,27 @@ public:
     Residue null_frame_residue;
 };
 
+// Residue::category should return the correct category
 TEST_F(ResidueTest, category)
 {
     EXPECT_EQ(Residue::category(), MolecularEntityCategory::Residue);
 }
 
+// Residue::index should return the correct index
 TEST_F(ResidueTest, index)
 {
     EXPECT_EQ(residue.index(), 1);
     EXPECT_EQ(const_residue.index(), 1);
 }
 
+// Residue::indices should return a list with only the index
 TEST_F(ResidueTest, indices)
 {
     EXPECT_THAT(residue.indices(), ElementsAre(1));
     EXPECT_THAT(const_residue.indices(), ElementsAre(1));
 }
 
+// Residue::frames should return the correct frame
 TEST_F(ResidueTest, frames)
 {
     EXPECT_EQ(residue.frame(), 0);
@@ -53,36 +58,72 @@ TEST_F(ResidueTest, frames)
     EXPECT_FALSE(null_frame_residue.frame());
 }
 
+// Setting a valid frame should update the frame
 TEST_F(ResidueTest, set_valid_frame)
 {
     residue.set_frame(0);
     EXPECT_EQ(residue.frame(), 0);
 }
 
+// Setting a null frame should update the frame
 TEST_F(ResidueTest, set_null_frame)
 {
     residue.set_frame(std::nullopt);
     EXPECT_FALSE(residue.frame());
 }
 
+// Setting an invalid frame should throw a MolError
 TEST_F(ResidueTest, set_invalid_frame)
 {
     EXPECT_THROW(residue.set_frame(1), MolError);
 }
 
-TEST_F(ResidueTest, residue_id_property)
+// Residue::chain should return the correct chain
+TEST_F(ResidueTest, chain)
+{
+    ASSERT_TRUE(residue.chain());
+    EXPECT_EQ(residue.chain(), Chain(1, residue.frame(), data));
+}
+
+// Residue::chain_index should return the correct chain index
+TEST_F(ResidueTest, chain_index)
+{
+    ASSERT_TRUE(residue.chain_index());
+    EXPECT_EQ(residue.chain_index(), 1);
+    EXPECT_EQ(const_residue.chain_index(), 1);
+}
+
+// Residue::name should return the correct name
+TEST_F(ResidueTest, name_property)
+{
+    EXPECT_EQ(const_residue.name(), "B");
+    EXPECT_EQ(residue.name(), "B");
+}
+
+// Residue::set_name should update the name
+TEST_F(ResidueTest, set_name_property)
+{
+    residue.set_name("C");
+
+    EXPECT_EQ(residue.name(), "C");
+}
+
+// Residue::id should return the correct ID
+TEST_F(ResidueTest, id_property)
 {
     EXPECT_EQ(const_residue.id(), 1);
     EXPECT_EQ(residue.id(), 1);
 }
 
-TEST_F(ResidueTest, set_residue_id_property)
+// Residue::set_id should update the ID
+TEST_F(ResidueTest, set_id_property)
 {
     residue.set_id(2);
 
     EXPECT_EQ(residue.id(), 2);
 }
 
+// Residue::size should return the number of atoms in the residue
 TEST_F(ResidueTest, size)
 {
     EXPECT_EQ(residue.size(), 1);
@@ -91,8 +132,9 @@ TEST_F(ResidueTest, size)
 // Residue::add_atom with an index should make the atom exclusive to the new residue
 TEST_F(ResidueTest, add_atom_from_index)
 {
-    Residue old_residue(0, std::nullopt, data);
     Atom new_atom(0, std::nullopt, data);
+    Residue old_residue = new_atom.residue().value();
+    ASSERT_NE(old_residue, residue);
 
     residue.add_atom(new_atom.index());
     AtomSel residue_atoms(residue);
@@ -108,8 +150,9 @@ TEST_F(ResidueTest, add_atom_from_index)
 // Residue::add_atom with an Atom should make the atom exclusive to the new residue
 TEST_F(ResidueTest, add_atom_from_atom)
 {
-    Residue old_residue(0, std::nullopt, data);
     Atom new_atom(0, std::nullopt, data);
+    Residue old_residue = new_atom.residue().value();
+    ASSERT_NE(old_residue, residue);
 
     residue.add_atom(new_atom);
     AtomSel residue_atoms(residue);

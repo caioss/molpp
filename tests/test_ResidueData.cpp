@@ -51,9 +51,3 @@ TEST_F(ResidueDataTest, default_segid)
 {
     EXPECT_EQ(data.segid(0), "");
 }
-
-// Default chain should be an empty string
-TEST_F(ResidueDataTest, default_chain)
-{
-    EXPECT_EQ(data.chain(0), "");
-}

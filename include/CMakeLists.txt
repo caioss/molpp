@@ -9,6 +9,7 @@ target_sources(molpp
             molpp/Timestep.hpp
             molpp/MolSystem.hpp
             molpp/Residue.hpp
+            molpp/Chain.hpp
             molpp/MolppCore.hpp
             molpp/Atom.hpp
             molpp/ResidueSel.hpp

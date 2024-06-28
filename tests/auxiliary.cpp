@@ -51,7 +51,6 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
         res_data.id(res_idx) = res_idx;
         res_data.name(res_idx) = letters.substr(res_idx % 26, 1);;
         res_data.segid(res_idx) = letters.substr(res_idx % num_segments % 26, 1);
-        res_data.chain(res_idx) = letters.substr(res_idx % num_chains % 26, 1);
 
         topology.link_entities({MolecularEntityCategory::Residue, res_idx}, {MolecularEntityCategory::Chain, res_idx % num_chains});
     }

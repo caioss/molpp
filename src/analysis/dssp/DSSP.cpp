@@ -1,8 +1,11 @@
 #include "analysis/dssp/DSSP.hpp"
 #include "analysis/dssp/structure.hpp"
+#include <molpp/Chain.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/ResidueSel.hpp>
 #include "DSSP.hpp"
+
+#include <optional>
 
 mol::SSResidue::SSResidue()
 : m_is_proline{false}
@@ -14,8 +17,10 @@ mol::SSResidue::SSResidue()
 mol::SSResidue::SSResidue(Residue& residue)
 : m_is_chain_break{false}
 , m_structure{mol::Unknown}
-, m_chain{residue.chain()}
 {
+    std::optional<mol::Chain> const chain = residue.chain();
+    m_chain = chain ? chain->name() : "";
+
     for (Atom atom : AtomSel(residue))
     {
         std::string const name = atom.name();

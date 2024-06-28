@@ -1,5 +1,6 @@
 #include <molpp/Residue.hpp>
 #include <molpp/Atom.hpp>
+#include <molpp/Chain.hpp>
 #include <molpp/internal/MolData.hpp>
 
 namespace mol
@@ -8,6 +9,23 @@ namespace mol
 MolecularEntityCategory Residue::category()
 {
     return MolecularEntityCategory::Residue;
+}
+
+std::optional<Chain> Residue::chain()
+{
+    std::optional<index_t> const index = chain_index();
+    if (!index)
+    {
+        return std::nullopt;
+    }
+
+    return Chain(*index, frame(), data());
+}
+
+std::optional<index_t> Residue::chain_index() const
+{
+    internal::Topology const& topology = data().topology();
+    return topology.find_link({category(), index()}, MolecularEntityCategory::Chain);
 }
 
 int Residue::id() const
@@ -40,27 +58,18 @@ void Residue::set_segid(std::string const& segid)
     data().residues().segid(index()) = segid;
 }
 
-std::string const& Residue::chain() const
-{
-    return data().residues().chain(index());
-}
-
-void Residue::set_chain(std::string const& chain)
-{
-    data().residues().chain(index()) = chain;
-}
-
 void Residue::add_atom(index_t atom_index)
 {
     internal::Topology& topology = data().topology();
+    internal::Topology::MolecularEntityId const atom_id{MolecularEntityCategory::Atom, atom_index};
 
-    std::optional<index_t> const old_residue = topology.find_link({MolecularEntityCategory::Atom, atom_index}, Residue::category());
+    std::optional<index_t> const old_residue = topology.find_link(atom_id, category());
     if (old_residue)
     {
-        topology.remove_link({MolecularEntityCategory::Atom, atom_index}, {Residue::category(), *old_residue});
+        topology.remove_link(atom_id, {category(), *old_residue});
     }
 
-    topology.link_entities({MolecularEntityCategory::Atom, atom_index}, {Residue::category(), index()});
+    topology.link_entities(atom_id, {category(), index()});
 }
 
 void Residue::add_atom(Atom const& atom)
@@ -70,7 +79,7 @@ void Residue::add_atom(Atom const& atom)
 
 size_t Residue::size() const
 {
-    return data().topology().count_links({Residue::category(), index()}, MolecularEntityCategory::Atom);
+    return data().topology().count_links({category(), index()}, MolecularEntityCategory::Atom);
 }
 
 } // namespace mol

@@ -3,6 +3,7 @@ target_sources(molpp PRIVATE
     MolecularEntity.cpp
     Atom.cpp
     Residue.cpp
+    Chain.cpp
     MolData.cpp
     Timestep.cpp
     AtomSel.cpp

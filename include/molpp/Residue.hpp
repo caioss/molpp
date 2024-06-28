@@ -4,10 +4,13 @@
 #include <molpp/MolppCore.hpp>
 #include <molpp/internal/MolecularEntity.hpp>
 
+#include <optional>
+
 namespace mol
 {
 
 class Atom;
+class Chain;
 
 class Residue : public internal::MolecularEntity
 {
@@ -15,6 +18,9 @@ public:
     using internal::MolecularEntity::MolecularEntity;
 
     static MolecularEntityCategory category();
+
+    std::optional<Chain> chain();
+    std::optional<index_t> chain_index() const;
 
     int id() const;
     void set_id(int const resid);
@@ -24,9 +30,6 @@ public:
 
     std::string const& segid() const;
     void set_segid(std::string const& segid);
-
-    std::string const& chain() const;
-    void set_chain(std::string const& chain);
 
     void add_atom(index_t index);
     void add_atom(Atom const& atom);

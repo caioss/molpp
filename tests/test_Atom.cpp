@@ -84,7 +84,7 @@ TEST_F(AtomTest, residue_index)
 TEST_F(AtomTest, fetch_residue)
 {
     ASSERT_TRUE(atom.residue());
-    EXPECT_EQ(atom.residue(), Residue(1, 0, data));
+    EXPECT_EQ(atom.residue(), Residue(1, atom.frame(), data));
 }
 
 // Atom::residue should return a null optional if the atom is not part of a residue.
