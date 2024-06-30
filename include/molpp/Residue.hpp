@@ -1,7 +1,7 @@
 #ifndef MOLPP_RESIDUE_HPP
 #define MOLPP_RESIDUE_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/internal/MolecularEntity.hpp>
 
 #include <optional>

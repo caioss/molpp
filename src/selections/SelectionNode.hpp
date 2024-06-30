@@ -1,7 +1,7 @@
 #ifndef SELECTIONNODE_HPP
 #define SELECTIONNODE_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <memory>
 
 namespace mol::internal

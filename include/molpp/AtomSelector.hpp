@@ -1,7 +1,7 @@
 #ifndef MOLPP_ATOMSELECTOR_HPP
 #define MOLPP_ATOMSELECTOR_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/AtomSel.hpp>
 #include <memory>
 

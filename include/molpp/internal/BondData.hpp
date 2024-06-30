@@ -1,7 +1,7 @@
 #ifndef MOLPP_INTERNAL_BONDGRAPH_HPP
 #define MOLPP_INTERNAL_BONDGRAPH_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/tools/Graph.hpp>
 #include <molpp/Bond.hpp>
 

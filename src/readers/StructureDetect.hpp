@@ -1,7 +1,7 @@
 #ifndef MOLPP_READERS_STRUCTUREDETECT_HPP
 #define MOLPP_READERS_STRUCTUREDETECT_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 
 #include <map>
 #include <string>

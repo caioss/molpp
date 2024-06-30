@@ -1,7 +1,7 @@
 #ifndef SELECTIONSTACK_HPP
 #define SELECTIONSTACK_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <set>
 #include <memory>
 #include <forward_list>

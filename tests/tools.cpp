@@ -3,7 +3,7 @@
 #include "tools/algorithms.hpp"
 #include "tools/math.hpp"
 #include "tools/SpatialSearch.hpp"
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/internal/SelIndices.hpp>
 #include <molpp/internal/VectorView.hpp>
 #include <gtest/gtest.h>

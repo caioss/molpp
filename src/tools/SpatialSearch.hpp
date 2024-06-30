@@ -1,7 +1,7 @@
 #ifndef MOLPP_TOOLS_SPATIALSEARCH_HPP
 #define MOLPP_TOOLS_SPATIALSEARCH_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <vector>
 #include <utility>
 #include <cstdlib>

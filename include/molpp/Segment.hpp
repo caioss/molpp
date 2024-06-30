@@ -1,7 +1,7 @@
 #ifndef MOLPP_SEGMENT_HPP
 #define MOLPP_SEGMENT_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/internal/MolecularEntity.hpp>
 
 namespace mol

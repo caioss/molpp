@@ -1,7 +1,7 @@
 #ifndef MOLPP_CHAIN_HPP
 #define MOLPP_CHAIN_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/internal/MolecularEntity.hpp>
 
 namespace mol

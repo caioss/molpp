@@ -1,7 +1,7 @@
 #ifndef MOLPP_INTERNAL_SELINDICES_HPP
 #define MOLPP_INTERNAL_SELINDICES_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 
 #include <vector>
 #include <unordered_set>

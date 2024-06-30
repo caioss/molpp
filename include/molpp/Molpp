@@ -1,5 +1,5 @@
 // Core
-#include "MolppCore.hpp"
+#include "Common.hpp"
 #include "MolSystem.hpp"
 #include "Trajectory.hpp"
 #include "Timestep.hpp"

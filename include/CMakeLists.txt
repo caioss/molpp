@@ -11,7 +11,7 @@ target_sources(molpp
             molpp/Residue.hpp
             molpp/Chain.hpp
             molpp/Segment.hpp
-            molpp/MolppCore.hpp
+            molpp/Common.hpp
             molpp/Atom.hpp
             molpp/ResidueSel.hpp
             molpp/ElementsTable.hpp

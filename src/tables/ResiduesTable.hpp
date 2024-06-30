@@ -1,7 +1,7 @@
 #ifndef MOLPP_TABLES_RESIDUESTABLE_HPP
 #define MOLPP_TABLES_RESIDUESTABLE_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <string>
 #include <vector>
 #include <unordered_map>

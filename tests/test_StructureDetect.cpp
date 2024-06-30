@@ -1,7 +1,7 @@
 #include "utils.hpp"
 
 #include "readers/StructureDetect.hpp"
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/internal/MolData.hpp>
 
 #include <gtest/gtest.h>

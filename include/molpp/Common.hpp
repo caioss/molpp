@@ -1,5 +1,5 @@
-#ifndef MOLPP_MOLPPCORE_HPP
-#define MOLPP_MOLPPCORE_HPP
+#ifndef MOLPP_COMMON_HPP
+#define MOLPP_COMMON_HPP
 
 #include "MolError.hpp"
 
@@ -55,4 +55,4 @@ concept IndexRange = std::ranges::range<Range> && std::same_as<std::ranges::rang
 
 }; // namespace mol
 
-#endif // MOLPP_MOLPPCORE_HPP
+#endif // MOLPP_COMMON_HPP

@@ -1,5 +1,5 @@
 #include <molpp/internal/Topology.hpp>
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>

@@ -1,7 +1,7 @@
 #ifndef MOLPP_INTERNAL_MOLECULARENTITY_HPP
 #define MOLPP_INTERNAL_MOLECULARENTITY_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/internal/MolData.hpp>
 
 #include <memory>

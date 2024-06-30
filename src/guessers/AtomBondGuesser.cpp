@@ -2,7 +2,7 @@
 #include "tools/SpatialSearch.hpp"
 #include <molpp/Bond.hpp>
 #include <molpp/AtomSel.hpp>
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/ElementsTable.hpp>
 
 using namespace mol::internal;

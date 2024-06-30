@@ -1,7 +1,7 @@
 #ifndef MOLPP_TIMESTEP_HPP
 #define MOLPP_TIMESTEP_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 
 namespace mol
 {

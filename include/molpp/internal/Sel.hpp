@@ -2,7 +2,7 @@
 #define MOLPP_INTERNAL_SEL_HPP
 
 #include <molpp/MolError.hpp>
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/internal/SelIndices.hpp>
 #include <molpp/internal/MolData.hpp>
 

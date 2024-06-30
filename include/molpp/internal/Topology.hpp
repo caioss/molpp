@@ -1,7 +1,7 @@
 #ifndef MOLPP_INTERNAL_TOPOLOGY_HPP
 #define MOLPP_INTERNAL_TOPOLOGY_HPP
 
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/tools/SimpleGraph.hpp>
 
 #include <vector>

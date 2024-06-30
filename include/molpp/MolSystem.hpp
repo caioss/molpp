@@ -2,7 +2,7 @@
 #define MOLPP_MOLSYSTEM_HPP
 
 #include <molpp/AtomSel.hpp>
-#include <molpp/MolppCore.hpp>
+#include <molpp/Common.hpp>
 #include <molpp/AtomSelector.hpp>
 #include <string>
 #include <memory>
