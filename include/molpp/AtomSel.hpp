@@ -26,8 +26,8 @@ struct SelTraits<AtomSel>
 class AtomSel : public internal::Sel<AtomSel>
 {
 public:
-    using position_type = Eigen::IndexedView<Coord3, Eigen::internal::AllRange<3>, indices_type>;
-    using const_position_type = Eigen::IndexedView<Coord3 const, Eigen::internal::AllRange<3>, indices_type>;
+    using position_type = Eigen::IndexedView<Positions3, Eigen::internal::AllRange<3>, indices_type>;
+    using const_position_type = Eigen::IndexedView<Positions3 const, Eigen::internal::AllRange<3>, indices_type>;
 
     AtomSel() = delete;
     using internal::Sel<AtomSel>::Sel;

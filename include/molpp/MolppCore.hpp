@@ -12,10 +12,13 @@
 namespace mol
 {
 
-// Substructure indexing (Atom, Residue, etc...)
+//! Substructure indexing (Atom, Residue, etc...).
 using index_t = size_t;
+
+//! Type of positions.
 using position_t = float;
 
+//! Entity category.
 enum class MolecularEntityCategory
 {
     Atom,
@@ -29,15 +32,22 @@ enum class MolecularEntityCategory
     Custom4
 };
 
+//! Storage of a 3D point.
 using Point3 = Eigen::Vector<position_t, 3>;
-using Coord3 = Eigen::Matrix<position_t, 3, Eigen::Dynamic>;
-using Coord2 = Eigen::Matrix<position_t, 2, Eigen::Dynamic>;
 
+//! Storage of a set of 3D points.
+using Positions3 = Eigen::Matrix<position_t, 3, Eigen::Dynamic>;
+
+//! Storage of a set of 2D points.
+using Positions2 = Eigen::Matrix<position_t, 2, Eigen::Dynamic>;
+
+//! Frame number that may not be defined.
 using Frame = std::optional<size_t>;
 
 namespace internal
 {
 
+//! Concept for a range of indices.
 template<class Range>
 concept IndexRange = std::ranges::range<Range> && std::same_as<std::ranges::range_value_t<Range>, index_t>;
 

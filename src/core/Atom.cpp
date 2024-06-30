@@ -164,7 +164,7 @@ std::vector<std::shared_ptr<Bond>> mol::Atom::bonds()
     return data().bonds().bonds(indices.begin(), indices.end());
 }
 
-Coord3::ColXpr mol::Atom::position()
+Positions3::ColXpr mol::Atom::position()
 {
     if (!frame())
     {
@@ -173,7 +173,7 @@ Coord3::ColXpr mol::Atom::position()
     return data().trajectory().timestep(*frame()).coords().col(index());
 }
 
-Coord3::ConstColXpr mol::Atom::position() const
+Positions3::ConstColXpr mol::Atom::position() const
 {
     if (!frame())
     {

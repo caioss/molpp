@@ -60,8 +60,8 @@ public:
     std::shared_ptr<Bond> bond(Atom const& other);
     std::vector<std::shared_ptr<Bond>> bonds();
 
-    Coord3::ColXpr position();
-    Coord3::ConstColXpr position() const;
+    Positions3::ColXpr position();
+    Positions3::ConstColXpr position() const;
 };
 
 } // namespace mol

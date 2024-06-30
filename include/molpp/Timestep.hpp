@@ -17,19 +17,19 @@ public:
     Timestep& operator=(Timestep&& rhs);
     void swap(Timestep& rhs);
 
-    Coord3& coords()
+    Positions3& coords()
     {
         return m_coords;
     }
 
-    Coord3 const& coords() const
+    Positions3 const& coords() const
     {
         return m_coords;
     }
 
 private:
     size_t m_num_atoms;
-    Coord3 m_coords;
+    Positions3 m_coords;
 };
 
 } // namespace mol

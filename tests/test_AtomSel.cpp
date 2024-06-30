@@ -30,8 +30,8 @@ public:
 // AtomSel::positions should the positions of only the selected atoms
 TEST_F(AtomSelTest, positions)
 {
-     mol::Coord3 positions = selection.positions();
-     mol::Coord3 const const_positions = const_selection.positions();
+     mol::Positions3 positions = selection.positions();
+     mol::Positions3 const const_positions = const_selection.positions();
 
     EXPECT_THAT(positions.reshaped(), ElementsAre(1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0));
     EXPECT_THAT(const_positions.reshaped(), ElementsAre(1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0));
