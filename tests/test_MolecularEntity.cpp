@@ -3,7 +3,7 @@
 
 #include <molpp/Residue.hpp>
 #include <molpp/AtomSel.hpp>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -71,5 +71,5 @@ TEST_F(MolecularEntityTest, ChangeFrame)
 
 TEST_F(MolecularEntityTest, SetOutOfRangeFrame)
 {
-    EXPECT_THROW(entity.set_frame(1), MolError);
+    EXPECT_THROW(entity.set_frame(1), Error);
 }

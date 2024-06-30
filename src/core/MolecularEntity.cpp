@@ -33,7 +33,7 @@ void internal::MolecularEntity::set_frame(Frame const frame)
 {
     if (frame && frame >= m_data->trajectory().num_frames())
     {
-        throw MolError("Out of bounds frame: " + std::to_string(*frame));
+        throw Error("Out of bounds frame: " + std::to_string(*frame));
     }
     m_frame = frame;
 }

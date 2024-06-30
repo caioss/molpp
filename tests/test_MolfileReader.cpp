@@ -7,7 +7,7 @@
 #include <molpp/Segment.hpp>
 #include <molpp/internal/MolData.hpp>
 #include <molpp/AtomSel.hpp>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -35,9 +35,9 @@ protected:
 
 TEST(MolfileReaderTest, UnknownExtension)
 {
-    EXPECT_THROW(MolfileReader(""), MolError);
-    EXPECT_THROW(MolfileReader("bar"), MolError);
-    EXPECT_THROW(MolfileReader(".foo"), MolError);
+    EXPECT_THROW(MolfileReader(""), Error);
+    EXPECT_THROW(MolfileReader("bar"), Error);
+    EXPECT_THROW(MolfileReader(".foo"), Error);
 }
 
 TEST(MolfileReaderTest, InvalidCanRead)
@@ -48,7 +48,7 @@ TEST(MolfileReaderTest, InvalidCanRead)
 TEST(MolfileReaderTest, ReadBeforeOpen)
 {
     MolfileReader reader(".pdb");
-    EXPECT_THROW(reader.read_atoms(), MolError);
+    EXPECT_THROW(reader.read_atoms(), Error);
 }
 
 TEST(MolfileReaderTest, OpenValid)

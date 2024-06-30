@@ -5,7 +5,7 @@
 #include "selections/SelectionParser.hpp"
 #include "utils.hpp"
 #include "files.hpp"
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <set>
@@ -199,8 +199,8 @@ TEST(Selection, Evaluation) {
 }
 
 TEST(Selection, SelectionParser) {
-    EXPECT_THROW(SelectionParser("not valid"), MolError);
-    EXPECT_THROW(SEL_PARSER.parse("not valid"), MolError);
+    EXPECT_THROW(SelectionParser("not valid"), Error);
+    EXPECT_THROW(SEL_PARSER.parse("not valid"), Error);
     EXPECT_TRUE(SEL_PARSER.parse("resid 1"));
 }
 
@@ -371,6 +371,6 @@ TEST(Selection, AtomSelector) {
     EXPECT_THAT(selector.apply(0).indices(), ElementsAre());
 
     // Errors
-    EXPECT_THROW(selector.apply(1), MolError);
-    EXPECT_THROW(AtomSelector("nonsense", pdb_big), MolError);
+    EXPECT_THROW(selector.apply(1), Error);
+    EXPECT_THROW(AtomSelector("nonsense", pdb_big), Error);
 }

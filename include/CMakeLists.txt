@@ -5,7 +5,7 @@ target_sources(molpp
         TYPE
             HEADERS
         FILES
-            molpp/MolError.hpp
+            molpp/Error.hpp
             molpp/Timestep.hpp
             molpp/MolSystem.hpp
             molpp/Residue.hpp

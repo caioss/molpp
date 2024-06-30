@@ -1,7 +1,7 @@
 #ifndef MOLPP_INTERNAL_SEL_HPP
 #define MOLPP_INTERNAL_SEL_HPP
 
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 #include <molpp/Common.hpp>
 #include <molpp/internal/SelIndices.hpp>
 #include <molpp/internal/MolData.hpp>
@@ -92,7 +92,7 @@ public:
     {
         if (frame && frame >= m_data->trajectory().num_frames())
         {
-            throw mol::MolError("Out of bounds frame: " + std::to_string(*frame));
+            throw mol::Error("Out of bounds frame: " + std::to_string(*frame));
         }
         m_frame = frame;
     }
@@ -141,7 +141,7 @@ public:
     {
         if (index >= size())
         {
-            throw mol::MolError("Out of bounds index: " + std::to_string(index));
+            throw mol::Error("Out of bounds index: " + std::to_string(index));
         }
 
         return value_type(indices()[index], frame(), *m_data);
@@ -151,7 +151,7 @@ public:
     {
         if (!contains(index))
         {
-            throw mol::MolError("Atom index " + std::to_string(index) + " not found in the selection");
+            throw mol::Error("Atom index " + std::to_string(index) + " not found in the selection");
         }
         return value_type(index, frame(), *m_data);
     }

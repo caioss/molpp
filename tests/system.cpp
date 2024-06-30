@@ -1,5 +1,5 @@
 #include <molpp/Atom.hpp>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 #include <molpp/MolSystem.hpp>
 #include <molpp/AtomSelector.hpp>
 #include <molpp/internal/MolData.hpp>
@@ -10,14 +10,14 @@ using namespace mol;
 using namespace testing;
 
 TEST(System, MolSystem) {
-    EXPECT_THROW(MolSystem(""), MolError);
-    EXPECT_THROW(MolSystem("file.unk"), MolError);
-    EXPECT_THROW(MolSystem("no_file.pdb"), MolError);
+    EXPECT_THROW(MolSystem(""), Error);
+    EXPECT_THROW(MolSystem("file.unk"), Error);
+    EXPECT_THROW(MolSystem("no_file.pdb"), Error);
     MolSystem mol("traj.pdb");
 
-    EXPECT_THROW(mol.add_trajectory("traj.unk"), MolError);
-    EXPECT_THROW(mol.add_trajectory("tiny.pdb"), MolError);
-    EXPECT_THROW(mol.add_trajectory("no_file.pdb"), MolError);
+    EXPECT_THROW(mol.add_trajectory("traj.unk"), Error);
+    EXPECT_THROW(mol.add_trajectory("tiny.pdb"), Error);
+    EXPECT_THROW(mol.add_trajectory("no_file.pdb"), Error);
     EXPECT_NO_THROW(mol.add_trajectory("traj.pdb"));
 
 }

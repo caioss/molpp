@@ -6,7 +6,6 @@
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/AtomSel.hpp>
-#include <molpp/MolError.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 

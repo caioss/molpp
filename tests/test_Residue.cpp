@@ -6,7 +6,7 @@
 #include <molpp/Chain.hpp>
 #include <molpp/Segment.hpp>
 #include <molpp/AtomSel.hpp>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -73,10 +73,10 @@ TEST_F(ResidueTest, set_null_frame)
     EXPECT_FALSE(residue.frame());
 }
 
-// Setting an invalid frame should throw a MolError
+// Setting an invalid frame should throw a Error
 TEST_F(ResidueTest, set_invalid_frame)
 {
-    EXPECT_THROW(residue.set_frame(1), MolError);
+    EXPECT_THROW(residue.set_frame(1), Error);
 }
 
 // Residue::chain should return the correct chain

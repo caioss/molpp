@@ -4,7 +4,7 @@
 #include <molpp/Segment.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/ResidueSel.hpp>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -77,10 +77,10 @@ TEST_F(SegmentTest, set_null_frame)
     EXPECT_FALSE(segment.frame());
 }
 
-// Setting an invalid frame should throw a MolError
+// Setting an invalid frame should throw a Error
 TEST_F(SegmentTest, set_invalid_frame)
 {
-    EXPECT_THROW(segment.set_frame(1), MolError);
+    EXPECT_THROW(segment.set_frame(1), Error);
 }
 
 // Segment::name should return the correct name

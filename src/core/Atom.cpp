@@ -1,7 +1,7 @@
 #include <molpp/internal/MolData.hpp>
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 
 #include <ranges>
 
@@ -134,11 +134,11 @@ std::shared_ptr<Bond> Atom::add_bond(index_t const bonded_to)
 {
     if (bonded_to == index())
     {
-        throw mol::MolError("Atoms can't have bonds to themselves");
+        throw mol::Error("Atoms can't have bonds to themselves");
     }
     if (bonded_to >= data().size<Atom>())
     {
-        throw mol::MolError("Out of bounds index: " + std::to_string(bonded_to));
+        throw mol::Error("Out of bounds index: " + std::to_string(bonded_to));
     }
     return data().bonds().add_bond(index(), bonded_to);
 }
@@ -168,7 +168,7 @@ Positions3::ColXpr mol::Atom::position()
 {
     if (!frame())
     {
-        throw mol::MolError("Invalid frame");
+        throw mol::Error("Invalid frame");
     }
     return data().trajectory().timestep(*frame()).coords().col(index());
 }
@@ -177,7 +177,7 @@ Positions3::ConstColXpr mol::Atom::position() const
 {
     if (!frame())
     {
-        throw mol::MolError("Invalid frame");
+        throw mol::Error("Invalid frame");
     }
     return data().trajectory().timestep(*frame()).coords().col(index());
 }

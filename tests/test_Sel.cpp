@@ -7,7 +7,7 @@
 #include <molpp/ResidueSel.hpp>
 #include <molpp/ChainSel.hpp>
 #include <molpp/SegmentSel.hpp>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -114,7 +114,7 @@ TYPED_TEST_P(SelTest, set_valid_frame)
 // Setting frame to an invalid frame should throw
 TYPED_TEST_P(SelTest, set_invalid_frame)
 {
-    EXPECT_THROW(this->selection.set_frame(2), mol::MolError);
+    EXPECT_THROW(this->selection.set_frame(2), mol::Error);
 }
 
 // Setting frame to nullopt should update the frame
@@ -199,7 +199,7 @@ TYPED_TEST_P(SelTest, at)
 // Sel::at should throw if the index is out of bounds
 TYPED_TEST_P(SelTest, at_out_of_bounds)
 {
-    EXPECT_THROW(this->selection.at(3), mol::MolError);
+    EXPECT_THROW(this->selection.at(3), mol::Error);
 }
 
 // Sel::by_index should return the atom whose index is the given one
@@ -213,8 +213,8 @@ TYPED_TEST_P(SelTest, by_index)
 // Sel::by_index should throw if the index is not in the selection
 TYPED_TEST_P(SelTest, by_index_not_found)
 {
-    EXPECT_THROW(this->selection.by_index(0), mol::MolError);
-    EXPECT_THROW(this->selection.by_index(4), mol::MolError);
+    EXPECT_THROW(this->selection.by_index(0), mol::Error);
+    EXPECT_THROW(this->selection.by_index(4), mol::Error);
 }
 
 // Iterator should be dereferenceable

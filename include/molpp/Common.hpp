@@ -1,7 +1,7 @@
 #ifndef MOLPP_COMMON_HPP
 #define MOLPP_COMMON_HPP
 
-#include "MolError.hpp"
+#include "Error.hpp"
 
 #include <Eigen/Dense>
 

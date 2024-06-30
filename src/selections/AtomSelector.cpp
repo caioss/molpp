@@ -1,4 +1,3 @@
-#include <molpp/MolError.hpp>
 #include <molpp/AtomSelector.hpp>
 #include <molpp/internal/MolData.hpp>
 #include "selections/SelectionStack.hpp"

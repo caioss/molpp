@@ -1,5 +1,5 @@
 #include <molpp/AtomSel.hpp>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 #include <molpp/MolSystem.hpp>
 #include <molpp/ResidueSel.hpp>
 #include <molpp/internal/MolData.hpp>
@@ -16,13 +16,13 @@ MolSystem::MolSystem(std::string const& topology)
     auto reader = MolReader::from_file_ext(std::filesystem::path(topology).extension());
     if (!reader)
     {
-        throw mol::MolError("No reader for file " + topology);
+        throw mol::Error("No reader for file " + topology);
     }
 
     m_data = reader->read_topology(topology);
     if (!m_data)
     {
-        throw mol::MolError("Error reading file " + topology);
+        throw mol::Error("Error reading file " + topology);
     }
 }
 
@@ -40,7 +40,7 @@ void MolSystem::add_trajectory(std::string const& file_name, int begin, int end,
     auto reader = MolReader::from_file_ext(std::filesystem::path(file_name).extension());
     if (!reader)
     {
-        throw mol::MolError("No reader for file " + file_name);
+        throw mol::Error("No reader for file " + file_name);
     }
 
     MolReader::Status status = reader->read_trajectory(file_name, *m_data, begin, end, step);
@@ -50,10 +50,10 @@ void MolSystem::add_trajectory(std::string const& file_name, int begin, int end,
         switch (status)
         {
             case MolReader::WRONG_ATOMS:
-                throw mol::MolError("Trajectory with wrong number of atoms");
+                throw mol::Error("Trajectory with wrong number of atoms");
 
             default:
-                throw mol::MolError("Error reading file " + file_name);
+                throw mol::Error("Error reading file " + file_name);
         }
     }
 }

@@ -4,7 +4,7 @@
 #include "StructureDetect.hpp"
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 #include <map>
 #include <tuple>
 #include <regex>
@@ -91,7 +91,7 @@ MolfileReader::MolfileReader(std::string const& file_ext)
     m_plugin = MolfilePlugins::getInstance().find_plugin(file_ext);
     if (!m_plugin)
     {
-        throw mol::MolError("Unknown plugin for extension " + file_ext);
+        throw mol::Error("Unknown plugin for extension " + file_ext);
     }
     m_name = m_plugin->name;
 }
@@ -158,7 +158,7 @@ std::unique_ptr<MolData> MolfileReader::read_atoms()
 {
     if (!m_handle)
     {
-        throw mol::MolError("No opened file");
+        throw mol::Error("No opened file");
     }
 
     // Read data and allocate atoms

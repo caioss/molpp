@@ -1,7 +1,7 @@
 #include "utils.hpp"
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -71,7 +71,7 @@ TEST_F(AtomTest, set_null_frame)
 
 TEST_F(AtomTest, set_invalid_frame)
 {
-    EXPECT_THROW(atom.set_frame(1), MolError);
+    EXPECT_THROW(atom.set_frame(1), Error);
 }
 
 TEST_F(AtomTest, residue_index)
@@ -250,7 +250,7 @@ TEST_F(AtomTest, modify_positions)
 TEST_F(AtomTest, positions_on_invalid_frame)
 {
     ASSERT_FALSE(null_frame_atom.frame());
-    EXPECT_THROW(null_frame_atom.position(), MolError);
+    EXPECT_THROW(null_frame_atom.position(), Error);
 }
 
 TEST_F(AtomTest, add_valid_bond)
@@ -267,8 +267,8 @@ TEST_F(AtomTest, add_valid_bond)
 
 TEST_F(AtomTest, add_invalid_bond)
 {
-    EXPECT_THROW(atom.add_bond(1), MolError);
-    EXPECT_THROW(atom.add_bond(3), MolError);
+    EXPECT_THROW(atom.add_bond(1), Error);
+    EXPECT_THROW(atom.add_bond(3), Error);
 }
 
 TEST_F(AtomTest, re_add_bond)

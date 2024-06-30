@@ -1,7 +1,7 @@
 #include "analysis/dssp/DSSP.hpp"
 #include "matchers.hpp"
 #include "utils.hpp"
-#include "molpp/MolError.hpp"
+#include "molpp/Error.hpp"
 #include "molpp/AtomSel.hpp"
 #include "molpp/Residue.hpp"
 #include <gtest/gtest.h>
@@ -147,8 +147,8 @@ TEST_F(SSResidueTest, SetInvalidFrame)
     SSResidue ss_protein_residue(protein_residue);
     SSResidue ss_proline_residue(proline_residue);
 
-    EXPECT_THROW(ss_protein_residue.set_frame(2), MolError);
-    EXPECT_THROW(ss_proline_residue.set_frame(2), MolError);
+    EXPECT_THROW(ss_protein_residue.set_frame(2), Error);
+    EXPECT_THROW(ss_proline_residue.set_frame(2), Error);
 }
 
 TEST_F(SSResidueTest, SetSecondaryStructure)
@@ -244,7 +244,7 @@ TEST_F(DSSPTest, AllStructures)
 TEST_F(DSSPTest, InvalidFrame)
 {
     DSSP dssp(all_structures());
-    EXPECT_THROW(dssp.run(1), MolError);
+    EXPECT_THROW(dssp.run(1), Error);
 }
 
 TEST_F(DSSPTest, ProlineDetection)

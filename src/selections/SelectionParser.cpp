@@ -4,7 +4,7 @@
 #include "selections/SelectionStack.hpp"
 #include <stack>
 #include <string_view>
-#include <molpp/MolError.hpp>
+#include <molpp/Error.hpp>
 
 using namespace mol;
 using namespace mol::internal;
@@ -59,7 +59,7 @@ std::shared_ptr<SelectionNode> make_numprop_node(std::shared_ptr<peg::Ast> const
     else
     {
         // We should never get here
-        throw mol::MolError("Unknown NumProp node: " + std::string(type));
+        throw mol::Error("Unknown NumProp node: " + std::string(type));
     }
 
     for (std::shared_ptr<peg::Ast> child : ast->nodes)
@@ -108,7 +108,7 @@ SelectionParser::SelectionParser(std::string const& grammar)
 {
     if (!m_parser.load_grammar(m_grammar))
     {
-        throw mol::MolError("Error loading selection grammar.");
+        throw mol::Error("Error loading selection grammar.");
     }
 
     m_parser.set_logger([&](size_t /*line*/, size_t column, std::string const& message) {
@@ -124,7 +124,7 @@ std::shared_ptr<SelectionNode> SelectionParser::parse(std::string const& express
     std::shared_ptr<peg::Ast> ast;
     if (!m_parser.parse(expression, ast))
     {
-        throw mol::MolError(error_message(expression));
+        throw mol::Error(error_message(expression));
     }
     ast = m_parser.optimize_ast(ast);
 
@@ -133,7 +133,7 @@ std::shared_ptr<SelectionNode> SelectionParser::parse(std::string const& express
     std::shared_ptr<SelectionNode> root = make_node(ast);
     if (!root)
     {
-        throw mol::MolError("Error while building the selection tree.");
+        throw mol::Error("Error while building the selection tree.");
     }
 
     node_stack.push(root);
@@ -149,7 +149,7 @@ std::shared_ptr<SelectionNode> SelectionParser::parse(std::string const& express
             std::shared_ptr<SelectionNode> right = make_node(right_ast);
             if (!right)
             {
-                throw mol::MolError("Error while building the selection tree.");
+                throw mol::Error("Error while building the selection tree.");
             }
             current->right = right;
             node_stack.push(right);
@@ -162,7 +162,7 @@ std::shared_ptr<SelectionNode> SelectionParser::parse(std::string const& express
             std::shared_ptr<SelectionNode> left = make_node(left_ast);
             if (!left)
             {
-                throw mol::MolError("Error while building the selection tree.");
+                throw mol::Error("Error while building the selection tree.");
             }
             current->left = left;
             node_stack.push(left);
