@@ -6,6 +6,7 @@
 #include <molpp/internal/BondData.hpp>
 #include <molpp/internal/ResidueData.hpp>
 #include <molpp/internal/ChainData.hpp>
+#include <molpp/internal/SegmentData.hpp>
 #include <molpp/Trajectory.hpp>
 
 namespace mol
@@ -13,6 +14,7 @@ namespace mol
 class Atom;
 class Residue;
 class Chain;
+class Segment;
 } // namespace mol
 
 namespace mol::internal
@@ -77,6 +79,16 @@ public:
         return m_chains;
     }
 
+    SegmentData& segments()
+    {
+        return m_segments;
+    }
+
+    SegmentData const& segments() const
+    {
+        return m_segments;
+    }
+
     Trajectory& trajectory()
     {
         return m_trajectory;
@@ -93,6 +105,7 @@ private:
     BondData m_bonds;
     ResidueData m_residues;
     ChainData m_chains;
+    SegmentData m_segments;
     Trajectory m_trajectory;
 };
 
@@ -112,6 +125,12 @@ template<>
 inline size_t MolData::size<mol::Chain>() const
 {
     return m_chains.size();
+}
+
+template<>
+inline size_t MolData::size<mol::Segment>() const
+{
+    return m_segments.size();
 }
 
 } // namespace mol::internal

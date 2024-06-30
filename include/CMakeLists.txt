@@ -10,12 +10,14 @@ target_sources(molpp
             molpp/MolSystem.hpp
             molpp/Residue.hpp
             molpp/Chain.hpp
+            molpp/Segment.hpp
             molpp/MolppCore.hpp
             molpp/Atom.hpp
             molpp/ResidueSel.hpp
             molpp/ElementsTable.hpp
             molpp/AtomSel.hpp
             molpp/ChainSel.hpp
+            molpp/SegmentSel.hpp
             molpp/tools
             molpp/tools/Graph.hpp
             molpp/tools/SimpleGraph.hpp
@@ -31,6 +33,7 @@ target_sources(molpp
             molpp/internal/BondData.hpp
             molpp/internal/ResidueData.hpp
             molpp/internal/ChainData.hpp
+            molpp/internal/SegmentData.hpp
             molpp/internal/Sel.hpp
             molpp/internal/Topology.hpp
 )

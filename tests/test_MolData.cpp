@@ -36,3 +36,9 @@ TEST_F(MolDataTest, size_chains)
 {
     EXPECT_EQ(data.size<mol::Chain>(), 4);
 }
+
+// MolData::size should return the correct number of segments
+TEST_F(MolDataTest, size_segments)
+{
+    EXPECT_EQ(data.size<mol::Segment>(), 4);
+}

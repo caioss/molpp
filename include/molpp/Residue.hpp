@@ -11,6 +11,7 @@ namespace mol
 
 class Atom;
 class Chain;
+class Segment;
 
 class Residue : public internal::MolecularEntity
 {
@@ -22,14 +23,14 @@ public:
     std::optional<Chain> chain();
     std::optional<index_t> chain_index() const;
 
+    std::optional<Segment> segment();
+    std::optional<index_t> segment_index() const;
+
     int id() const;
     void set_id(int const resid);
 
     std::string const& name() const;
     void set_name(std::string const& resname);
-
-    std::string const& segid() const;
-    void set_segid(std::string const& segid);
 
     void add_atom(index_t index);
     void add_atom(Atom const& atom);

@@ -21,6 +21,7 @@ enum class MolecularEntityCategory
     Atom,
     Residue,
     Chain,
+    Segment,
     Custom0,
     Custom1,
     Custom2,

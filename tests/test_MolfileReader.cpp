@@ -4,6 +4,7 @@
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/Chain.hpp>
+#include <molpp/Segment.hpp>
 #include <molpp/internal/MolData.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/MolError.hpp>
@@ -18,7 +19,6 @@ using namespace testing;
 using namespace mol;
 using namespace mol::internal;
 
-// TODO Add segid (Segment) properties and respective classes
 class BaseMolfileReaderTest : public ::testing::Test
 {
 protected:
@@ -362,6 +362,11 @@ TEST_F(PDBMolfileReaderTest, ChainName)
     test_property(&Chain::name, std::to_array({"A", "B"}), pdb());
 }
 
+TEST_F(PDBMolfileReaderTest, SegmentName)
+{
+    test_property(&Segment::name, std::to_array({"SEG1", "SEG2"}), pdb());
+}
+
 TEST_F(PDBMolfileReaderTest, Bonded)
 {
     EXPECT_THAT(AtomSel(Atom(0, std::nullopt, pdb())).bonded().indices(), ElementsAre(0, 2, 3));
@@ -483,6 +488,11 @@ TEST_F(Mol2MolfileReaderTest, ResName)
 TEST_F(Mol2MolfileReaderTest, NoChain)
 {
     EXPECT_EQ(mol2().chains().size(), 0);
+}
+
+TEST_F(Mol2MolfileReaderTest, NoSegment)
+{
+    EXPECT_EQ(mol2().segments().size(), 0);
 }
 
 TEST_F(Mol2MolfileReaderTest, Bonded)
@@ -619,6 +629,11 @@ TEST_F(PSFMolfileReaderTest, ResName)
 TEST_F(PSFMolfileReaderTest, ChainName)
 {
     test_property(&Chain::name, std::to_array({"K"}), psf());
+}
+
+TEST_F(PSFMolfileReaderTest, SegmentName)
+{
+    test_property(&Segment::name, std::to_array({"KCH1", "KCH3"}), psf());
 }
 
 TEST_F(PSFMolfileReaderTest, Bonded)

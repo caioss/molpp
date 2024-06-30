@@ -18,17 +18,10 @@ StructureDetect::StructureDetect(MolData& data)
     m_segments[""] = INVALID_INDEX;
 }
 
-void StructureDetect::register_atom(index_t const atom_index, int const resid, std::string const& resname, std::string const& segid, std::string const& chain)
+void StructureDetect::register_atom(index_t const atom_index, int const resid, std::string const& resname, std::string const& segment, std::string const& chain)
 {
-    auto segment_iter = m_segments.find(segid);
-    if (segment_iter == m_segments.end())
-    {
-        segment_iter = m_segments.emplace(segid, m_segments.size() - 1).first;
-        m_segment_name.push_back(segid);
-    }
-
     index_t const chain_index = register_chain(chain);
-    index_t const segment_index = segment_iter->second;
+    index_t const segment_index = register_segment(segment);
 
     Topology& topology = m_data.topology();
     ResidueKey query{resid, chain_index, segment_index, resname};
@@ -40,6 +33,11 @@ void StructureDetect::register_atom(index_t const atom_index, int const resid, s
         if (!chain.empty())
         {
             topology.link_entities({MolecularEntityCategory::Chain, chain_index}, {MolecularEntityCategory::Residue, residue_iter->second});
+        }
+
+        if (!segment.empty())
+        {
+            topology.link_entities({MolecularEntityCategory::Segment, segment_index}, {MolecularEntityCategory::Residue, residue_iter->second});
         }
     }
 
@@ -61,6 +59,11 @@ void StructureDetect::update_residue_data(MolData& mol_data) const
         topology.link_categories(MolecularEntityCategory::Chain, MolecularEntityCategory::Residue);
     }
 
+    if (m_segments.size() > 1)
+    {
+        topology.link_categories(MolecularEntityCategory::Segment, MolecularEntityCategory::Residue);
+    }
+
     ChainData& chain_data = mol_data.chains();
     chain_data.resize(m_chains.size() - 1);
     for (auto const& item : m_chains)
@@ -71,6 +74,18 @@ void StructureDetect::update_residue_data(MolData& mol_data) const
         }
 
         chain_data.name(item.second) = item.first;
+    }
+
+    SegmentData& segment_data = mol_data.segments();
+    segment_data.resize(m_segments.size() - 1);
+    for (auto const& item : m_segments)
+    {
+        if (item.first.empty())
+        {
+            continue;
+        }
+
+        segment_data.name(item.second) = item.first;
     }
 
     ResidueData& residues_data = mol_data.residues();
@@ -95,6 +110,19 @@ index_t StructureDetect::register_chain(std::string const& chain)
     }
 
     return chain_iter->second;
+}
+
+index_t StructureDetect::register_segment(std::string const& segment)
+{
+    auto segment_iter = m_segments.find(segment);
+    if (segment_iter == m_segments.end())
+    {
+        index_t const index = m_segments.size() - 1; // Remove the empty one
+        segment_iter = m_segments.emplace(segment, index).first;
+        return index;
+    }
+
+    return segment_iter->second;
 }
 
 bool operator<(StructureDetect::ResidueKey const& lhs, StructureDetect::ResidueKey const& rhs)

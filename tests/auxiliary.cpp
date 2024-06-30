@@ -50,9 +50,10 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     {
         res_data.id(res_idx) = res_idx;
         res_data.name(res_idx) = letters.substr(res_idx % 26, 1);;
-        res_data.segid(res_idx) = letters.substr(res_idx % num_segments % 26, 1);
 
         topology.link_entities({MolecularEntityCategory::Residue, res_idx}, {MolecularEntityCategory::Chain, res_idx % num_chains});
+
+        topology.link_entities({MolecularEntityCategory::Residue, res_idx}, {MolecularEntityCategory::Segment, res_idx % num_segments});
     }
 
     // Set chains
@@ -65,6 +66,18 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     for (index_t chain_idx = 0; chain_idx < num_chains; chain_idx++)
     {
         chain_data.name(chain_idx) = letters.substr(chain_idx % 26, 1);
+    }
+
+    // Set segments
+    SegmentData& segment_data = data.segments();
+    segment_data.resize(num_segments);
+    if (num_segments > 1)
+    {
+        topology.link_categories(MolecularEntityCategory::Segment, MolecularEntityCategory::Residue);
+    }
+    for (index_t segment_idx = 0; segment_idx < num_segments; segment_idx++)
+    {
+        segment_data.name(segment_idx) = letters.substr(segment_idx % 26, 1);
     }
 
     // Bonds between first atoms of consecutive residues

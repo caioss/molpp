@@ -4,9 +4,11 @@
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/Chain.hpp>
+#include <molpp/Segment.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/ResidueSel.hpp>
 #include <molpp/ChainSel.hpp>
+#include <molpp/SegmentSel.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -60,10 +62,17 @@ using ConversionTypes = ::testing::Types<
     ConversionTraits<mol::AtomSel, mol::Atom>,
     ConversionTraits<mol::AtomSel, mol::Residue>,
     ConversionTraits<mol::AtomSel, mol::Chain>,
+    ConversionTraits<mol::AtomSel, mol::Segment>,
     ConversionTraits<mol::ResidueSel, mol::Atom>,
     ConversionTraits<mol::ResidueSel, mol::Residue>,
     ConversionTraits<mol::ResidueSel, mol::Chain>,
+    ConversionTraits<mol::ResidueSel, mol::Segment>,
     ConversionTraits<mol::ChainSel, mol::Atom>,
     ConversionTraits<mol::ChainSel, mol::Residue>,
-    ConversionTraits<mol::ChainSel, mol::Chain>>;
+    ConversionTraits<mol::ChainSel, mol::Chain>,
+    ConversionTraits<mol::ChainSel, mol::Segment>,
+    ConversionTraits<mol::SegmentSel, mol::Atom>,
+    ConversionTraits<mol::SegmentSel, mol::Residue>,
+    ConversionTraits<mol::SegmentSel, mol::Chain>,
+    ConversionTraits<mol::SegmentSel, mol::Segment>>;
 INSTANTIATE_TYPED_TEST_SUITE_P(SelFromEntity, ConversionTest, ConversionTypes);

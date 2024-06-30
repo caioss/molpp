@@ -1,5 +1,7 @@
-#ifndef MOLPP_INTERNAL_RESIDUEDATA_HPP
-#define MOLPP_INTERNAL_RESIDUEDATA_HPP
+#ifndef MOLPP_INTERNAL_SEGMENTDATA_HPP
+#define MOLPP_INTERNAL_SEGMENTDATA_HPP
+
+#include <molpp/MolppCore.hpp>
 
 #include <vector>
 #include <string>
@@ -7,22 +9,12 @@
 namespace mol::internal
 {
 
-class ResidueData
+class SegmentData
 {
 public:
     size_t size() const
     {
-        return m_id.size();
-    }
-
-    int& id(size_t const index)
-    {
-        return m_id[index];
-    }
-
-    int const& id(size_t const index) const
-    {
-        return m_id[index];
+        return m_name.size();
     }
 
     std::string& name(size_t const index)
@@ -37,15 +29,13 @@ public:
 
     void resize(size_t const size)
     {
-        m_id.resize(size, -1);
         m_name.resize(size);
     }
 
 private:
-    std::vector<int> m_id;
     std::vector<std::string> m_name;
 };
 
 } // namespace mol::internal
 
-#endif // MOLPP_INTERNAL_RESIDUEDATA_HPP
+#endif // MOLPP_INTERNAL_SEGMENTDATA_HPP

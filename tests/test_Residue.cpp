@@ -4,6 +4,7 @@
 #include <molpp/Residue.hpp>
 #include <molpp/Atom.hpp>
 #include <molpp/Chain.hpp>
+#include <molpp/Segment.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/MolError.hpp>
 
@@ -18,7 +19,7 @@ class ResidueTest : public ::testing::Test
 {
 public:
     ResidueTest()
-    : data(create_moldata(3, 1, 2, 1, 1))
+    : data(create_moldata(3, 1, 2, 2, 1))
     , residue(1, 0, data)
     , const_residue(1, 0, data)
     , null_frame_residue(0, std::nullopt, data)
@@ -91,6 +92,21 @@ TEST_F(ResidueTest, chain_index)
     ASSERT_TRUE(residue.chain_index());
     EXPECT_EQ(residue.chain_index(), 1);
     EXPECT_EQ(const_residue.chain_index(), 1);
+}
+
+// Residue::segment should return the correct segment
+TEST_F(ResidueTest, segment)
+{
+    ASSERT_TRUE(residue.segment());
+    EXPECT_EQ(residue.segment(), Segment(1, residue.frame(), data));
+}
+
+// Residue::segment_index should return the correct segment index
+TEST_F(ResidueTest, segment_index)
+{
+    ASSERT_TRUE(residue.segment_index());
+    EXPECT_EQ(residue.segment_index(), 1);
+    EXPECT_EQ(const_residue.segment_index(), 1);
 }
 
 // Residue::name should return the correct name

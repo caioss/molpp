@@ -45,9 +45,3 @@ TEST_F(ResidueDataTest, default_name)
 {
     EXPECT_EQ(data.name(0), "");
 }
-
-// Default segid should be an empty string
-TEST_F(ResidueDataTest, default_segid)
-{
-    EXPECT_EQ(data.segid(0), "");
-}

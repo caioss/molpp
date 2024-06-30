@@ -21,6 +21,9 @@ add_executable(tests
     test_Topology.cpp
     test_Chain.cpp
     test_ChainSel.cpp
+    test_Segment.cpp
+    test_SegmentData.cpp
+    test_SegmentSel.cpp
     atoms.cpp
     selectors.cpp
     system.cpp

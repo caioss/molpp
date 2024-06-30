@@ -18,7 +18,7 @@ class StructureDetect
 {
 public:
     StructureDetect(MolData& data);
-    void register_atom(index_t const atom_index, int const resid, std::string const& resname, std::string const& segid, std::string const& chain);
+    void register_atom(index_t const atom_index, int const resid, std::string const& resname, std::string const& segment, std::string const& chain);
     void update_residue_data(MolData& mol_data) const;
 
 private:
@@ -31,15 +31,13 @@ private:
     };
 
     index_t register_chain(std::string const& chain);
+    index_t register_segment(std::string const& segment);
     friend bool operator<(ResidueKey const& lhs, ResidueKey const& rhs);
 
     MolData& m_data;
     std::map<ResidueKey, index_t> m_residues;
     std::map<std::string, index_t> m_chains;
     std::map<std::string, index_t> m_segments;
-
-    std::vector<std::string> m_chain_name;
-    std::vector<std::string> m_segment_name;
 };
 
 } // namespace internal

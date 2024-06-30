@@ -1,6 +1,7 @@
 #include <molpp/Residue.hpp>
 #include <molpp/Atom.hpp>
 #include <molpp/Chain.hpp>
+#include <molpp/Segment.hpp>
 #include <molpp/internal/MolData.hpp>
 
 namespace mol
@@ -28,6 +29,23 @@ std::optional<index_t> Residue::chain_index() const
     return topology.find_link({category(), index()}, MolecularEntityCategory::Chain);
 }
 
+std::optional<Segment> Residue::segment()
+{
+    std::optional<index_t> const index = segment_index();
+    if (!index)
+    {
+        return std::nullopt;
+    }
+
+    return Segment(*index, frame(), data());
+}
+
+std::optional<index_t> Residue::segment_index() const
+{
+    internal::Topology const& topology = data().topology();
+    return topology.find_link({category(), index()}, MolecularEntityCategory::Segment);
+}
+
 int Residue::id() const
 {
     return data().residues().id(index());
@@ -46,16 +64,6 @@ std::string const& Residue::name() const
 void Residue::set_name(std::string const& resname)
 {
     data().residues().name(index()) = resname;
-}
-
-std::string const& Residue::segid() const
-{
-    return data().residues().segid(index());
-}
-
-void Residue::set_segid(std::string const& segid)
-{
-    data().residues().segid(index()) = segid;
 }
 
 void Residue::add_atom(index_t atom_index)
