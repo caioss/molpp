@@ -28,7 +28,7 @@ public:
 
 TEST_F(AtomTest, category)
 {
-    EXPECT_EQ(Atom::category(), MolecularEntityCategory::Atom);
+    EXPECT_EQ(Atom::category(), EntityCategory::Atom);
 }
 
 TEST_F(AtomTest, compare_atoms)

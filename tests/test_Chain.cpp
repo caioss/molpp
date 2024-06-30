@@ -32,7 +32,7 @@ public:
 // Chain::category should return the correct category
 TEST_F(ChainTest, category)
 {
-    EXPECT_EQ(Chain::category(), MolecularEntityCategory::Chain);
+    EXPECT_EQ(Chain::category(), EntityCategory::Chain);
 }
 
 // Chain::size should return the number of residues in the chain

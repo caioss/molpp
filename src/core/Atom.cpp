@@ -8,9 +8,9 @@
 namespace mol
 {
 
-MolecularEntityCategory Atom::category()
+EntityCategory Atom::category()
 {
-    return MolecularEntityCategory::Atom;
+    return EntityCategory::Atom;
 }
 
 std::optional<Residue> Atom::residue()

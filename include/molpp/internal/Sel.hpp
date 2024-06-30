@@ -26,7 +26,7 @@ template<class RHS>
 concept SelConvertible = requires(RHS rhs) {
     { rhs.data() } -> std::same_as<MolData&>;
     { rhs.frame() } -> std::same_as<Frame>;
-    { rhs.category() } -> std::same_as<MolecularEntityCategory>;
+    { rhs.category() } -> std::same_as<EntityCategory>;
     { rhs.indices() } -> internal::IndexRange;
 };
 
@@ -78,7 +78,7 @@ public:
     : Sel(SelIndices(data.size<value_type>()), data)
     {}
 
-    static MolecularEntityCategory category()
+    static EntityCategory category()
     {
         return value_type::category();
     }

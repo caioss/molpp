@@ -2,7 +2,7 @@
 #define MOLPP_RESIDUE_HPP
 
 #include <molpp/Common.hpp>
-#include <molpp/internal/MolecularEntity.hpp>
+#include <molpp/internal/Entity.hpp>
 
 #include <optional>
 
@@ -13,12 +13,12 @@ class Atom;
 class Chain;
 class Segment;
 
-class Residue : public internal::MolecularEntity
+class Residue : public internal::Entity
 {
 public:
-    using internal::MolecularEntity::MolecularEntity;
+    using internal::Entity::Entity;
 
-    static MolecularEntityCategory category();
+    static EntityCategory category();
 
     std::optional<Chain> chain();
     std::optional<index_t> chain_index() const;

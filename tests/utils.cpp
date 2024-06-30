@@ -17,7 +17,7 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
         std::string const code = letters.substr(atom_idx % 26, 1);
 
         index_t const res_idx = atom_idx / num_res_atoms;
-        topology.link_entities({MolecularEntityCategory::Residue, res_idx}, {MolecularEntityCategory::Atom, atom_idx});
+        topology.link_entities({EntityCategory::Residue, res_idx}, {EntityCategory::Atom, atom_idx});
         atom_data.atomic_number(atom_idx) = atom_idx;
         atom_data.occupancy(atom_idx) = atom_idx;
         atom_data.temperature_factor(atom_idx) = atom_idx;
@@ -35,16 +35,16 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     res_data.resize(num_res);
     if (num_res > 0)
     {
-        topology.link_categories(MolecularEntityCategory::Residue, MolecularEntityCategory::Atom);
+        topology.link_categories(EntityCategory::Residue, EntityCategory::Atom);
     }
     for (index_t res_idx = 0; res_idx < num_res; res_idx++)
     {
         res_data.id(res_idx) = res_idx;
         res_data.name(res_idx) = letters.substr(res_idx % 26, 1);;
 
-        topology.link_entities({MolecularEntityCategory::Residue, res_idx}, {MolecularEntityCategory::Chain, res_idx % num_chains});
+        topology.link_entities({EntityCategory::Residue, res_idx}, {EntityCategory::Chain, res_idx % num_chains});
 
-        topology.link_entities({MolecularEntityCategory::Residue, res_idx}, {MolecularEntityCategory::Segment, res_idx % num_segments});
+        topology.link_entities({EntityCategory::Residue, res_idx}, {EntityCategory::Segment, res_idx % num_segments});
     }
 
     // Set chains
@@ -52,7 +52,7 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     chain_data.resize(num_chains);
     if (num_chains > 1)
     {
-        topology.link_categories(MolecularEntityCategory::Chain, MolecularEntityCategory::Residue);
+        topology.link_categories(EntityCategory::Chain, EntityCategory::Residue);
     }
     for (index_t chain_idx = 0; chain_idx < num_chains; chain_idx++)
     {
@@ -64,7 +64,7 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     segment_data.resize(num_segments);
     if (num_segments > 1)
     {
-        topology.link_categories(MolecularEntityCategory::Segment, MolecularEntityCategory::Residue);
+        topology.link_categories(EntityCategory::Segment, EntityCategory::Residue);
     }
     for (index_t segment_idx = 0; segment_idx < num_segments; segment_idx++)
     {

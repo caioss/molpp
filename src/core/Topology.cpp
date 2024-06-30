@@ -18,27 +18,27 @@ size_t pair_hash(size_t const first, size_t const second)
 namespace mol::internal
 {
 
-bool operator==(Topology::MolecularEntityId const& lhs, Topology::MolecularEntityId const& rhs)
+bool operator==(Topology::EntityId const& lhs, Topology::EntityId const& rhs)
 {
     return lhs.category == rhs.category && lhs.index == rhs.index;
 }
 
-bool Topology::link_entities(MolecularEntityId const entity1, MolecularEntityId const entity2)
+bool Topology::link_entities(EntityId const entity1, EntityId const entity2)
 {
     return m_topology.add_edge(entity1, entity2, true);
 }
 
-bool Topology::link_categories(MolecularEntityCategory const category1, MolecularEntityCategory const category2)
+bool Topology::link_categories(EntityCategory const category1, EntityCategory const category2)
 {
     return m_hierarchy.add_edge(category1, category2, true);
 }
 
-bool Topology::remove_link(MolecularEntityId const entity1, MolecularEntityId const entity2)
+bool Topology::remove_link(EntityId const entity1, EntityId const entity2)
 {
     return m_topology.remove_edge(entity1, entity2);
 }
 
-std::optional<index_t> Topology::find_link(MolecularEntityId const entity, MolecularEntityCategory const category) const
+std::optional<index_t> Topology::find_link(EntityId const entity, EntityCategory const category) const
 {
     if (!m_topology.contains(entity))
     {
@@ -56,7 +56,7 @@ std::optional<index_t> Topology::find_link(MolecularEntityId const entity, Molec
     return std::nullopt;
 }
 
-std::vector<index_t> Topology::all_links(MolecularEntityId const entity, MolecularEntityCategory const category) const
+std::vector<index_t> Topology::all_links(EntityId const entity, EntityCategory const category) const
 {
     std::vector<index_t> links;
     if (!m_topology.contains(entity))
@@ -75,7 +75,7 @@ std::vector<index_t> Topology::all_links(MolecularEntityId const entity, Molecul
     return links;
 }
 
-size_t Topology::count_links(MolecularEntityId const entity, MolecularEntityCategory const category) const
+size_t Topology::count_links(EntityId const entity, EntityCategory const category) const
 {
     if (!m_topology.contains(entity))
     {
@@ -94,24 +94,24 @@ size_t Topology::count_links(MolecularEntityId const entity, MolecularEntityCate
     return count;
 }
 
-bool Topology::contains_link(MolecularEntityId const entity1, MolecularEntityId const entity2) const
+bool Topology::contains_link(EntityId const entity1, EntityId const entity2) const
 {
     return m_topology.contains_edge(entity1, entity2);
 }
 
-std::vector<index_t> Topology::convert(std::vector<index_t> const& source_indices, MolecularEntityCategory const source_category, MolecularEntityCategory const target_category)
+std::vector<index_t> Topology::convert(std::vector<index_t> const& source_indices, EntityCategory const source_category, EntityCategory const target_category)
 {
     if (source_category == target_category)
     {
         return source_indices;
     }
 
-    std::vector<MolecularEntityCategory>& path = m_conversion_paths[{source_category, target_category}];
+    std::vector<EntityCategory>& path = m_conversion_paths[{source_category, target_category}];
 
     if (path.empty())
     {
         BreadthFirstTraversal bfs(m_hierarchy);
-        bool const result = bfs.run(source_category, [=](MolecularEntityCategory const category) {
+        bool const result = bfs.run(source_category, [=](EntityCategory const category) {
             return category == target_category;
         }, [=](auto) {
             return true;
@@ -123,10 +123,10 @@ std::vector<index_t> Topology::convert(std::vector<index_t> const& source_indice
         }
 
         // Build both paths
-        std::vector<MolecularEntityCategory>& inverse_path = m_conversion_paths[{target_category, source_category}];
+        std::vector<EntityCategory>& inverse_path = m_conversion_paths[{target_category, source_category}];
         auto& parents = bfs.parent_map();
 
-        MolecularEntityCategory current = parents.at(target_category);
+        EntityCategory current = parents.at(target_category);
         while (current != source_category)
         {
             inverse_path.push_back(current);
@@ -141,10 +141,10 @@ std::vector<index_t> Topology::convert(std::vector<index_t> const& source_indice
         inverse_path.push_back(source_category);
     }
 
-    MolecularEntityCategory current_category = source_category;
+    EntityCategory current_category = source_category;
     std::vector<index_t> indices = source_indices;
     std::vector<index_t> new_indices;
-    for (MolecularEntityCategory const next_category : path)
+    for (EntityCategory const next_category : path)
     {
         new_indices.clear();
         for (index_t const index : indices)
@@ -160,12 +160,12 @@ std::vector<index_t> Topology::convert(std::vector<index_t> const& source_indice
     return indices;
 }
 
-std::size_t Topology::EntityHash::operator()(MolecularEntityId const& entity) const
+std::size_t Topology::EntityHash::operator()(EntityId const& entity) const
 {
     return pair_hash(static_cast<size_t>(entity.category), entity.index);
 }
 
-std::size_t Topology::CategoryHash::operator()(std::pair<MolecularEntityCategory, MolecularEntityCategory> ends) const
+std::size_t Topology::CategoryHash::operator()(std::pair<EntityCategory, EntityCategory> ends) const
 {
     return pair_hash(static_cast<size_t>(ends.first), static_cast<size_t>(ends.second));
 }

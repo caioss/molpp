@@ -34,7 +34,7 @@ public:
 // Residue::category should return the correct category
 TEST_F(ResidueTest, category)
 {
-    EXPECT_EQ(Residue::category(), MolecularEntityCategory::Residue);
+    EXPECT_EQ(Residue::category(), EntityCategory::Residue);
 }
 
 // Residue::index should return the correct index

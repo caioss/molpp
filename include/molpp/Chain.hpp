@@ -2,19 +2,19 @@
 #define MOLPP_CHAIN_HPP
 
 #include <molpp/Common.hpp>
-#include <molpp/internal/MolecularEntity.hpp>
+#include <molpp/internal/Entity.hpp>
 
 namespace mol
 {
 
 class Residue;
 
-class Chain : public internal::MolecularEntity
+class Chain : public internal::Entity
 {
 public:
-    using internal::MolecularEntity::MolecularEntity;
+    using internal::Entity::Entity;
 
-    static MolecularEntityCategory category();
+    static EntityCategory category();
     size_t size() const;
 
     std::string const& name() const;

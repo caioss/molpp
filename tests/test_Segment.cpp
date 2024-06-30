@@ -32,7 +32,7 @@ public:
 // Segment::category should return the correct category
 TEST_F(SegmentTest, category)
 {
-    EXPECT_EQ(Segment::category(), MolecularEntityCategory::Segment);
+    EXPECT_EQ(Segment::category(), EntityCategory::Segment);
 }
 
 // Segment::size should return the number of residues in the segment

@@ -5,14 +5,14 @@
 namespace mol
 {
 
-MolecularEntityCategory Segment::category()
+EntityCategory Segment::category()
 {
-    return MolecularEntityCategory::Segment;
+    return EntityCategory::Segment;
 }
 
 size_t Segment::size() const
 {
-    return data().topology().count_links({category(), index()}, MolecularEntityCategory::Residue);
+    return data().topology().count_links({category(), index()}, EntityCategory::Residue);
 }
 
 std::string const& Segment::name() const
@@ -28,7 +28,7 @@ void Segment::set_name(std::string const& resname)
 void Segment::add_residue(index_t residue_index)
 {
     internal::Topology& topology = data().topology();
-    internal::Topology::MolecularEntityId const residue_id{MolecularEntityCategory::Residue, residue_index};
+    internal::Topology::EntityId const residue_id{EntityCategory::Residue, residue_index};
 
     std::optional<index_t> const old_segment = topology.find_link(residue_id, category());
     if (old_segment)

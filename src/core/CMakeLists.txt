@@ -1,6 +1,6 @@
 target_sources(molpp PRIVATE
     MolSystem.cpp
-    MolecularEntity.cpp
+    Entity.cpp
     Atom.cpp
     Residue.cpp
     Chain.cpp

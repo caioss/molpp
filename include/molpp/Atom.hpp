@@ -2,7 +2,7 @@
 #define MOLPP_ATOM_HPP
 
 #include <molpp/Common.hpp>
-#include <molpp/internal/MolecularEntity.hpp>
+#include <molpp/internal/Entity.hpp>
 
 #include <memory>
 #include <vector>
@@ -14,12 +14,12 @@ namespace mol
 class Bond;
 class Residue;
 
-class Atom : public internal::MolecularEntity
+class Atom : public internal::Entity
 {
 public:
-    using internal::MolecularEntity::MolecularEntity;
+    using internal::Entity::Entity;
 
-    static MolecularEntityCategory category();
+    static EntityCategory category();
 
     std::optional<Residue> residue();
     std::optional<index_t> residue_index() const;

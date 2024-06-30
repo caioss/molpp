@@ -18,8 +18,8 @@ using index_t = size_t;
 //! Type of positions.
 using position_t = float;
 
-//! Entity category.
-enum class MolecularEntityCategory
+//! Entity category tag.
+enum class EntityCategory
 {
     Atom,
     Residue,

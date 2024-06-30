@@ -32,17 +32,17 @@ void StructureDetect::register_atom(index_t const atom_index, int const resid, s
 
         if (!chain.empty())
         {
-            topology.link_entities({MolecularEntityCategory::Chain, chain_index}, {MolecularEntityCategory::Residue, residue_iter->second});
+            topology.link_entities({EntityCategory::Chain, chain_index}, {EntityCategory::Residue, residue_iter->second});
         }
 
         if (!segment.empty())
         {
-            topology.link_entities({MolecularEntityCategory::Segment, segment_index}, {MolecularEntityCategory::Residue, residue_iter->second});
+            topology.link_entities({EntityCategory::Segment, segment_index}, {EntityCategory::Residue, residue_iter->second});
         }
     }
 
     index_t const residue_index = residue_iter->second;
-    topology.link_entities({MolecularEntityCategory::Residue, residue_index}, {MolecularEntityCategory::Atom, atom_index});
+    topology.link_entities({EntityCategory::Residue, residue_index}, {EntityCategory::Atom, atom_index});
 }
 
 void StructureDetect::update_residue_data(MolData& mol_data) const
@@ -51,17 +51,17 @@ void StructureDetect::update_residue_data(MolData& mol_data) const
     Topology& topology = mol_data.topology();
     if (!m_residues.empty())
     {
-        topology.link_categories(MolecularEntityCategory::Residue, MolecularEntityCategory::Atom);
+        topology.link_categories(EntityCategory::Residue, EntityCategory::Atom);
     }
 
     if (m_chains.size() > 1)
     {
-        topology.link_categories(MolecularEntityCategory::Chain, MolecularEntityCategory::Residue);
+        topology.link_categories(EntityCategory::Chain, EntityCategory::Residue);
     }
 
     if (m_segments.size() > 1)
     {
-        topology.link_categories(MolecularEntityCategory::Segment, MolecularEntityCategory::Residue);
+        topology.link_categories(EntityCategory::Segment, EntityCategory::Residue);
     }
 
     ChainData& chain_data = mol_data.chains();

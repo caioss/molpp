@@ -31,7 +31,7 @@ TEST_F(StructureDetectTest, register_same_residue)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "AA", "A");
-    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
+    std::vector<index_t> const residue_0 = topology.all_links({EntityCategory::Residue, 0}, EntityCategory::Atom);
 
     EXPECT_THAT(residue_0, UnorderedElementsAre(0, 1));
 }
@@ -41,8 +41,8 @@ TEST_F(StructureDetectTest, register_different_resid)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 2, "ALA", "AA", "A");
-    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
-    std::vector<index_t> const residue_1 = topology.all_links({MolecularEntityCategory::Residue, 1}, MolecularEntityCategory::Atom);
+    std::vector<index_t> const residue_0 = topology.all_links({EntityCategory::Residue, 0}, EntityCategory::Atom);
+    std::vector<index_t> const residue_1 = topology.all_links({EntityCategory::Residue, 1}, EntityCategory::Atom);
 
     EXPECT_THAT(residue_0, UnorderedElementsAre(0));
     EXPECT_THAT(residue_1, UnorderedElementsAre(1));
@@ -53,10 +53,10 @@ TEST_F(StructureDetectTest, register_different_chain)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "AA", "B");
-    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
-    std::vector<index_t> const residue_1 = topology.all_links({MolecularEntityCategory::Residue, 1}, MolecularEntityCategory::Atom);
-    std::vector<index_t> const chain_0 = topology.all_links({MolecularEntityCategory::Chain, 0}, MolecularEntityCategory::Residue);
-    std::vector<index_t> const chain_1 = topology.all_links({MolecularEntityCategory::Chain, 1}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const residue_0 = topology.all_links({EntityCategory::Residue, 0}, EntityCategory::Atom);
+    std::vector<index_t> const residue_1 = topology.all_links({EntityCategory::Residue, 1}, EntityCategory::Atom);
+    std::vector<index_t> const chain_0 = topology.all_links({EntityCategory::Chain, 0}, EntityCategory::Residue);
+    std::vector<index_t> const chain_1 = topology.all_links({EntityCategory::Chain, 1}, EntityCategory::Residue);
 
     EXPECT_THAT(residue_0, UnorderedElementsAre(0));
     EXPECT_THAT(residue_1, UnorderedElementsAre(1));
@@ -69,8 +69,8 @@ TEST_F(StructureDetectTest, register_different_resname)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "LYS", "AA", "A");
-    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
-    std::vector<index_t> const residue_1 = topology.all_links({MolecularEntityCategory::Residue, 1}, MolecularEntityCategory::Atom);
+    std::vector<index_t> const residue_0 = topology.all_links({EntityCategory::Residue, 0}, EntityCategory::Atom);
+    std::vector<index_t> const residue_1 = topology.all_links({EntityCategory::Residue, 1}, EntityCategory::Atom);
 
     EXPECT_THAT(residue_0, UnorderedElementsAre(0));
     EXPECT_THAT(residue_1, UnorderedElementsAre(1));
@@ -81,10 +81,10 @@ TEST_F(StructureDetectTest, register_different_segment)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "BB", "A");
-    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
-    std::vector<index_t> const residue_1 = topology.all_links({MolecularEntityCategory::Residue, 1}, MolecularEntityCategory::Atom);
-    std::vector<index_t> const segment_0 = topology.all_links({MolecularEntityCategory::Segment, 0}, MolecularEntityCategory::Residue);
-    std::vector<index_t> const segment_1 = topology.all_links({MolecularEntityCategory::Segment, 1}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const residue_0 = topology.all_links({EntityCategory::Residue, 0}, EntityCategory::Atom);
+    std::vector<index_t> const residue_1 = topology.all_links({EntityCategory::Residue, 1}, EntityCategory::Atom);
+    std::vector<index_t> const segment_0 = topology.all_links({EntityCategory::Segment, 0}, EntityCategory::Residue);
+    std::vector<index_t> const segment_1 = topology.all_links({EntityCategory::Segment, 1}, EntityCategory::Residue);
 
     EXPECT_THAT(residue_0, UnorderedElementsAre(0));
     EXPECT_THAT(residue_1, UnorderedElementsAre(1));
@@ -97,7 +97,7 @@ TEST_F(StructureDetectTest, register_chain)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
 
-    std::vector<index_t> const chain_0 = topology.all_links({MolecularEntityCategory::Chain, 0}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const chain_0 = topology.all_links({EntityCategory::Chain, 0}, EntityCategory::Residue);
 
     EXPECT_THAT(chain_0, UnorderedElementsAre(0));
 }
@@ -108,8 +108,8 @@ TEST_F(StructureDetectTest, register_same_residue_different_chain)
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "AA", "B");
 
-    std::vector<index_t> const chain_0 = topology.all_links({MolecularEntityCategory::Chain, 0}, MolecularEntityCategory::Residue);
-    std::vector<index_t> const chain_1 = topology.all_links({MolecularEntityCategory::Chain, 1}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const chain_0 = topology.all_links({EntityCategory::Chain, 0}, EntityCategory::Residue);
+    std::vector<index_t> const chain_1 = topology.all_links({EntityCategory::Chain, 1}, EntityCategory::Residue);
 
     EXPECT_THAT(chain_0, UnorderedElementsAre(0));
     EXPECT_THAT(chain_1, UnorderedElementsAre(1));
@@ -121,7 +121,7 @@ TEST_F(StructureDetectTest, register_same_chain)
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "AA", "A");
 
-    std::vector<index_t> const chain_0 = topology.all_links({MolecularEntityCategory::Chain, 0}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const chain_0 = topology.all_links({EntityCategory::Chain, 0}, EntityCategory::Residue);
 
     EXPECT_THAT(chain_0, UnorderedElementsAre(0));
 }
@@ -131,7 +131,7 @@ TEST_F(StructureDetectTest, register_empty_chain)
 {
     detect.register_atom(0, 1, "ALA", "AA", "");
 
-    std::vector<index_t> const chain_0 = topology.all_links({MolecularEntityCategory::Chain, 0}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const chain_0 = topology.all_links({EntityCategory::Chain, 0}, EntityCategory::Residue);
 
     EXPECT_THAT(chain_0, IsEmpty());
 }
@@ -141,7 +141,7 @@ TEST_F(StructureDetectTest, register_segment)
 {
     detect.register_atom(0, 1, "ALA", "AA", "A");
 
-    std::vector<index_t> const segment_0 = topology.all_links({MolecularEntityCategory::Segment, 0}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const segment_0 = topology.all_links({EntityCategory::Segment, 0}, EntityCategory::Residue);
 
     EXPECT_THAT(segment_0, UnorderedElementsAre(0));
 }
@@ -152,8 +152,8 @@ TEST_F(StructureDetectTest, register_same_residue_different_segment)
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "BB", "A");
 
-    std::vector<index_t> const segment_0 = topology.all_links({MolecularEntityCategory::Segment, 0}, MolecularEntityCategory::Residue);
-    std::vector<index_t> const segment_1 = topology.all_links({MolecularEntityCategory::Segment, 1}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const segment_0 = topology.all_links({EntityCategory::Segment, 0}, EntityCategory::Residue);
+    std::vector<index_t> const segment_1 = topology.all_links({EntityCategory::Segment, 1}, EntityCategory::Residue);
 
     EXPECT_THAT(segment_0, UnorderedElementsAre(0));
     EXPECT_THAT(segment_1, UnorderedElementsAre(1));
@@ -165,7 +165,7 @@ TEST_F(StructureDetectTest, register_same_segment)
     detect.register_atom(0, 1, "ALA", "AA", "A");
     detect.register_atom(1, 1, "ALA", "AA", "A");
 
-    std::vector<index_t> const segment_0 = topology.all_links({MolecularEntityCategory::Segment, 0}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const segment_0 = topology.all_links({EntityCategory::Segment, 0}, EntityCategory::Residue);
 
     EXPECT_THAT(segment_0, UnorderedElementsAre(0));
 }
@@ -175,7 +175,7 @@ TEST_F(StructureDetectTest, register_empty_segment)
 {
     detect.register_atom(0, 1, "ALA", "", "A");
 
-    std::vector<index_t> const segment_0 = topology.all_links({MolecularEntityCategory::Segment, 0}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const segment_0 = topology.all_links({EntityCategory::Segment, 0}, EntityCategory::Residue);
 
     EXPECT_THAT(segment_0, IsEmpty());
 }
@@ -190,9 +190,9 @@ TEST_F(StructureDetectTest, register_residues_out_of_order)
     detect.register_atom(4, 1, "PRO", "AA", "A");
     detect.register_atom(5, 1, "ALA", "AA", "A");
 
-    std::vector<index_t> const residue_0 = topology.all_links({MolecularEntityCategory::Residue, 0}, MolecularEntityCategory::Atom);
-    std::vector<index_t> const residue_1 = topology.all_links({MolecularEntityCategory::Residue, 1}, MolecularEntityCategory::Atom);
-    std::vector<index_t> const residue_2 = topology.all_links({MolecularEntityCategory::Residue, 2}, MolecularEntityCategory::Atom);
+    std::vector<index_t> const residue_0 = topology.all_links({EntityCategory::Residue, 0}, EntityCategory::Atom);
+    std::vector<index_t> const residue_1 = topology.all_links({EntityCategory::Residue, 1}, EntityCategory::Atom);
+    std::vector<index_t> const residue_2 = topology.all_links({EntityCategory::Residue, 2}, EntityCategory::Atom);
 
     EXPECT_THAT(residue_0, UnorderedElementsAre(0, 5));
     EXPECT_THAT(residue_1, UnorderedElementsAre(1, 3));
@@ -209,9 +209,9 @@ TEST_F(StructureDetectTest, register_chains_out_of_order)
     detect.register_atom(4, 1, "ALA", "AA", "C");
     detect.register_atom(5, 1, "ALA", "AA", "A");
 
-    std::vector<index_t> const chain_0 = topology.all_links({MolecularEntityCategory::Chain, 0}, MolecularEntityCategory::Residue);
-    std::vector<index_t> const chain_1 = topology.all_links({MolecularEntityCategory::Chain, 1}, MolecularEntityCategory::Residue);
-    std::vector<index_t> const chain_2 = topology.all_links({MolecularEntityCategory::Chain, 2}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const chain_0 = topology.all_links({EntityCategory::Chain, 0}, EntityCategory::Residue);
+    std::vector<index_t> const chain_1 = topology.all_links({EntityCategory::Chain, 1}, EntityCategory::Residue);
+    std::vector<index_t> const chain_2 = topology.all_links({EntityCategory::Chain, 2}, EntityCategory::Residue);
 
     EXPECT_THAT(chain_0, UnorderedElementsAre(0));
     EXPECT_THAT(chain_1, UnorderedElementsAre(1));
@@ -228,9 +228,9 @@ TEST_F(StructureDetectTest, register_segments_out_of_order)
     detect.register_atom(4, 1, "ALA", "CC", "A");
     detect.register_atom(5, 1, "ALA", "AA", "A");
 
-    std::vector<index_t> const segment_0 = topology.all_links({MolecularEntityCategory::Segment, 0}, MolecularEntityCategory::Residue);
-    std::vector<index_t> const segment_1 = topology.all_links({MolecularEntityCategory::Segment, 1}, MolecularEntityCategory::Residue);
-    std::vector<index_t> const segment_2 = topology.all_links({MolecularEntityCategory::Segment, 2}, MolecularEntityCategory::Residue);
+    std::vector<index_t> const segment_0 = topology.all_links({EntityCategory::Segment, 0}, EntityCategory::Residue);
+    std::vector<index_t> const segment_1 = topology.all_links({EntityCategory::Segment, 1}, EntityCategory::Residue);
+    std::vector<index_t> const segment_2 = topology.all_links({EntityCategory::Segment, 2}, EntityCategory::Residue);
 
     EXPECT_THAT(segment_0, UnorderedElementsAre(0));
     EXPECT_THAT(segment_1, UnorderedElementsAre(1));

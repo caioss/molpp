@@ -1,5 +1,5 @@
-#ifndef MOLPP_INTERNAL_MOLECULARENTITY_HPP
-#define MOLPP_INTERNAL_MOLECULARENTITY_HPP
+#ifndef MOLPP_INTERNAL_ENTITY_HPP
+#define MOLPP_INTERNAL_ENTITY_HPP
 
 #include <molpp/Common.hpp>
 #include <molpp/internal/MolData.hpp>
@@ -13,12 +13,12 @@ namespace mol::internal
 
 class MolData;
 
-class MolecularEntity
+class Entity
 {
 public:
-    MolecularEntity() = delete;
-    MolecularEntity(index_t const index, Frame const frame, internal::MolData& data);
-    bool operator==(MolecularEntity const& other) const;
+    Entity() = delete;
+    Entity(index_t const index, Frame const frame, internal::MolData& data);
+    bool operator==(Entity const& other) const;
     //! Index is always read-only
     index_t index() const;
     std::vector<index_t> indices() const;
@@ -40,4 +40,4 @@ private:
 
 } // namespace mol::internal
 
-#endif // MOLPP_INTERNAL_MOLECULARENTITY_HPP
+#endif // MOLPP_INTERNAL_ENTITY_HPP

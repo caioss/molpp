@@ -7,9 +7,9 @@
 namespace mol
 {
 
-MolecularEntityCategory Residue::category()
+EntityCategory Residue::category()
 {
-    return MolecularEntityCategory::Residue;
+    return EntityCategory::Residue;
 }
 
 std::optional<Chain> Residue::chain()
@@ -26,7 +26,7 @@ std::optional<Chain> Residue::chain()
 std::optional<index_t> Residue::chain_index() const
 {
     internal::Topology const& topology = data().topology();
-    return topology.find_link({category(), index()}, MolecularEntityCategory::Chain);
+    return topology.find_link({category(), index()}, EntityCategory::Chain);
 }
 
 std::optional<Segment> Residue::segment()
@@ -43,7 +43,7 @@ std::optional<Segment> Residue::segment()
 std::optional<index_t> Residue::segment_index() const
 {
     internal::Topology const& topology = data().topology();
-    return topology.find_link({category(), index()}, MolecularEntityCategory::Segment);
+    return topology.find_link({category(), index()}, EntityCategory::Segment);
 }
 
 int Residue::id() const
@@ -69,7 +69,7 @@ void Residue::set_name(std::string const& resname)
 void Residue::add_atom(index_t atom_index)
 {
     internal::Topology& topology = data().topology();
-    internal::Topology::MolecularEntityId const atom_id{MolecularEntityCategory::Atom, atom_index};
+    internal::Topology::EntityId const atom_id{EntityCategory::Atom, atom_index};
 
     std::optional<index_t> const old_residue = topology.find_link(atom_id, category());
     if (old_residue)
@@ -87,7 +87,7 @@ void Residue::add_atom(Atom const& atom)
 
 size_t Residue::size() const
 {
-    return data().topology().count_links({category(), index()}, MolecularEntityCategory::Atom);
+    return data().topology().count_links({category(), index()}, EntityCategory::Atom);
 }
 
 } // namespace mol

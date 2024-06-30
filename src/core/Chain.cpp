@@ -5,14 +5,14 @@
 namespace mol
 {
 
-MolecularEntityCategory Chain::category()
+EntityCategory Chain::category()
 {
-    return MolecularEntityCategory::Chain;
+    return EntityCategory::Chain;
 }
 
 size_t Chain::size() const
 {
-    return data().topology().count_links({category(), index()}, MolecularEntityCategory::Residue);
+    return data().topology().count_links({category(), index()}, EntityCategory::Residue);
 }
 
 std::string const& Chain::name() const
@@ -28,7 +28,7 @@ void Chain::set_name(std::string const& resname)
 void Chain::add_residue(index_t residue_index)
 {
     internal::Topology& topology = data().topology();
-    internal::Topology::MolecularEntityId const residue_id{MolecularEntityCategory::Residue, residue_index};
+    internal::Topology::EntityId const residue_id{EntityCategory::Residue, residue_index};
 
     std::optional<index_t> const old_chain = topology.find_link(residue_id, category());
     if (old_chain)
