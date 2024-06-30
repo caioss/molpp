@@ -1,6 +1,6 @@
 #include "files.hpp"
 #include "matchers.hpp"
-#include "auxiliary.hpp"
+#include "utils.hpp"
 #include <molpp/internal/AtomData.hpp>
 #include <molpp/internal/MolData.hpp>
 #include <molpp/Atom.hpp>

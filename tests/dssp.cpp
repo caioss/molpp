@@ -1,6 +1,6 @@
 #include "analysis/dssp/DSSP.hpp"
 #include "matchers.hpp"
-#include "auxiliary.hpp"
+#include "utils.hpp"
 #include "molpp/MolError.hpp"
 #include "molpp/AtomSel.hpp"
 #include "molpp/Residue.hpp"

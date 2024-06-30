@@ -24,6 +24,7 @@ add_executable(tests
     test_Segment.cpp
     test_SegmentData.cpp
     test_SegmentSel.cpp
+    test_utils.cpp
     atoms.cpp
     selectors.cpp
     system.cpp
@@ -32,7 +33,7 @@ add_executable(tests
     tables.cpp
     dssp.cpp
     files.cpp
-    auxiliary.cpp
+    utils.cpp
 )
 
 target_include_directories(tests

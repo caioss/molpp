@@ -1,4 +1,4 @@
-#include "auxiliary.hpp"
+#include "utils.hpp"
 
 #include "readers/StructureDetect.hpp"
 #include <molpp/MolppCore.hpp>

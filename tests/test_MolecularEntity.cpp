@@ -1,5 +1,5 @@
 #include "matchers.hpp"
-#include "auxiliary.hpp"
+#include "utils.hpp"
 
 #include <molpp/Residue.hpp>
 #include <molpp/AtomSel.hpp>

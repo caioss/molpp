@@ -1,4 +1,4 @@
-#include "auxiliary.hpp"
+#include "utils.hpp"
 #include <molpp/tools/iterators.hpp>
 #include "tools/algorithms.hpp"
 #include "tools/math.hpp"

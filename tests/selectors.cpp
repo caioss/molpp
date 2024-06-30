@@ -3,7 +3,7 @@
 #include "selections/properties.hpp"
 #include "selections/SelectionStack.hpp"
 #include "selections/SelectionParser.hpp"
-#include "auxiliary.hpp"
+#include "utils.hpp"
 #include "files.hpp"
 #include <molpp/MolError.hpp>
 #include <gtest/gtest.h>

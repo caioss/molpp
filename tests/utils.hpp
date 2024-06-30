@@ -1,5 +1,5 @@
-#ifndef AUXILIARY_HPP
-#define AUXILIARY_HPP
+#ifndef TESTS_UTILS_HPP
+#define TESTS_UTILS_HPP
 
 #include <molpp/internal/MolData.hpp>
 
@@ -79,4 +79,4 @@ void test_property(Property property, std::array<ArrayType, Size> const expected
     }
 }
 
-#endif // AUXILIARY_HPP
+#endif // TESTS_UTILS_HPP

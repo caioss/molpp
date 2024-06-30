@@ -1,4 +1,4 @@
-#include "auxiliary.hpp"
+#include "utils.hpp"
 
 #include "readers/MolfileReader.hpp"
 #include <molpp/Atom.hpp>

@@ -1,14 +1,5 @@
-#include "auxiliary.hpp"
-#include "matchers.hpp"
-#include <molpp/Atom.hpp>
-#include <molpp/Residue.hpp>
+#include "utils.hpp"
 
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-
-#include <optional>
-
-using namespace testing;
 using namespace mol;
 using namespace mol::internal;
 
@@ -98,67 +89,4 @@ MolData create_moldata(size_t const num_res, size_t const num_res_atoms, size_t 
     }
 
     return data;
-}
-
-TEST(Auxiliary, create_moldata) {
-    MolData data = create_moldata(3, 2, 2, 1, 2);
-    ASSERT_EQ(data.size<Atom>(), 6);
-
-    // Atoms
-    ASSERT_EQ(data.size<Atom>(), 6);
-    std::vector<mol::Atom> atoms;
-    for (index_t i = 0; i < data.size<Atom>(); ++i)
-    {
-        atoms.push_back(Atom(i, std::nullopt, data));
-    }
-
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::residue_index),
-                                 {0, 0, 1, 1, 2, 2}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::atomic_number),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::occupancy, 1e-5),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::temperature_factor, 1e-5),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::mass, 1e-5),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::charge, 1e-5),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(PropFloat(&Atom::radius, 1e-5),
-                                 {0, 1, 2, 3, 4, 5}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::name),
-                                 {"A", "B", "C", "D", "E", "F"}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::type),
-                                 {"A", "B", "C", "D", "E", "F"}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::alternate_location),
-                                 {"A", "B", "C", "D", "E", "F"}));
-    EXPECT_THAT(atoms, Pointwise(Prop(&Atom::insertion_code),
-                                 {"A", "B", "C", "D", "E", "F"}));
-
-    // Residues
-    ASSERT_EQ(data.size<Residue>(), 3);
-    std::vector<mol::Residue> residues;
-    for (index_t i = 0; i < data.size<Residue>(); ++i)
-    {
-        residues.push_back(mol::Residue(i, std::nullopt, data));
-    }
-    EXPECT_THAT(residues, Pointwise(Prop(&Residue::id),
-                                 {0, 1, 2}));
-    EXPECT_THAT(residues, Pointwise(Prop(&Residue::name),
-                                 {"A", "B", "C"}));
-
-    // Bonds
-    BondData const& bond_data = data.bonds();
-    EXPECT_THAT(bond_data.bonded(0), UnorderedElementsAre(0, 2));
-    EXPECT_THAT(bond_data.bonded(1), UnorderedElementsAre());
-    EXPECT_THAT(bond_data.bonded(2), UnorderedElementsAre(0, 2, 4));
-    EXPECT_THAT(bond_data.bonded(3), UnorderedElementsAre());
-    EXPECT_THAT(bond_data.bonded(4), UnorderedElementsAre(2, 4));
-    EXPECT_THAT(bond_data.bonded(5), UnorderedElementsAre());
-
-    // Trajectory
-    Trajectory const& traj_data = data.trajectory();
-    EXPECT_EQ(traj_data.num_frames(), 2);
-    EXPECT_THAT(traj_data.timestep(0).coords().reshaped(), ElementsAre(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5));
-    EXPECT_THAT(traj_data.timestep(1).coords().reshaped(), ElementsAre(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5));
 }

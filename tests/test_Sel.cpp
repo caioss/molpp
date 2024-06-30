@@ -1,4 +1,4 @@
-#include "auxiliary.hpp"
+#include "utils.hpp"
 
 #include <molpp/internal/Sel.hpp>
 #include <molpp/internal/MolData.hpp>

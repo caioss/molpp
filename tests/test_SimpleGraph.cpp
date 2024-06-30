@@ -1,4 +1,4 @@
-#include "auxiliary.hpp"
+#include "utils.hpp"
 #include <molpp/tools/SimpleGraph.hpp>
 
 #include <gtest/gtest.h>

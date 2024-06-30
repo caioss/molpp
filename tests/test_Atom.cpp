@@ -1,4 +1,4 @@
-#include "auxiliary.hpp"
+#include "utils.hpp"
 #include <molpp/Atom.hpp>
 #include <molpp/Residue.hpp>
 #include <molpp/MolError.hpp>
