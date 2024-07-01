@@ -2,6 +2,7 @@
 #define MOLPP_TOOLS_SPATIALSEARCH_HPP
 
 #include <molpp/Common.hpp>
+
 #include <vector>
 #include <utility>
 #include <cstdlib>
