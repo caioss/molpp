@@ -1,11 +1,9 @@
 #include "utils.hpp"
-#include <molpp/tools/iterators.hpp>
 #include "tools/algorithms.hpp"
 #include "tools/math.hpp"
 #include "tools/SpatialSearch.hpp"
 #include <molpp/Common.hpp>
 #include <molpp/internal/SelIndices.hpp>
-#include <molpp/internal/VectorView.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <vector>
@@ -13,27 +11,6 @@
 
 using namespace mol::internal;
 using namespace testing;
-
-TEST(Iterators, IteratorWrapper) {
-    using iter_type = typename std::vector<int>::iterator;
-    std::vector<int> values(2);
-
-    class Wrapper : public IteratorWrapper<iter_type>
-    {
-        using base = IteratorWrapper<iter_type>;
-        using base::IteratorWrapper;
-    };
-
-    Wrapper iter1(values.begin());
-    Wrapper iter2(values.begin());
-    Wrapper end(values.end());
-
-    EXPECT_EQ(iter1, iter2);
-    EXPECT_EQ(iter1++, iter2);
-    EXPECT_TRUE(iter1 != iter2);
-    EXPECT_EQ(++iter1, end);
-    EXPECT_EQ(iter1 - iter2, 2);
-}
 
 TEST(DataStructures, SpatialSearch) {
     Eigen::Matrix3Xf points(3, 10);
@@ -86,34 +63,4 @@ TEST(Math, Comparison) {
 
     EXPECT_FALSE(definitely_less(105.1, 100.0, 0.05));
     EXPECT_TRUE(definitely_less(94.9, 100.0, 0.05));
-}
-
-TEST(Views, SequenceView) {
-    // Supporting data
-    std::vector<int> vec(5);
-    std::iota(vec.begin(), vec.end(), 10);
-    std::vector<mol::index_t> indices{1, 3, 4};
-
-    // Only vectors
-    mol::SequenceView view(vec, indices);
-    EXPECT_THAT(view, ElementsAre(11, 13, 14));
-    EXPECT_EQ(view.size(), 3);
-    EXPECT_EQ(view[0], 11);
-    EXPECT_EQ(view[1], 13);
-    EXPECT_EQ(view[2], 14);
-    EXPECT_EQ(view.at(0), 11);
-    EXPECT_EQ(view.at(1), 13);
-    EXPECT_EQ(view.at(2), 14);
-
-    // Vector from SelIndices
-    mol::internal::SelIndices sel_indices(indices);
-    mol::SequenceView sel_view(vec, sel_indices.indices());
-    EXPECT_THAT(sel_view, ElementsAre(11, 13, 14));
-    EXPECT_EQ(view.size(), 3);
-    EXPECT_EQ(sel_view[0], 11);
-    EXPECT_EQ(sel_view[1], 13);
-    EXPECT_EQ(sel_view[2], 14);
-    EXPECT_EQ(sel_view.at(0), 11);
-    EXPECT_EQ(sel_view.at(1), 13);
-    EXPECT_EQ(sel_view.at(2), 14);
 }

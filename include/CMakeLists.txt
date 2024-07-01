@@ -21,14 +21,12 @@ target_sources(molpp
             molpp/tools
             molpp/tools/Graph.hpp
             molpp/tools/SimpleGraph.hpp
-            molpp/tools/iterators.hpp
             molpp/Molpp
             molpp/Bond.hpp
             molpp/AtomSelector.hpp
             molpp/internal/SelIndices.hpp
             molpp/internal/MolData.hpp
             molpp/internal/AtomData.hpp
-            molpp/internal/VectorView.hpp
             molpp/internal/Entity.hpp
             molpp/internal/BondData.hpp
             molpp/internal/ResidueData.hpp
