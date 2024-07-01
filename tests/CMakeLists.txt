@@ -26,11 +26,11 @@ add_executable(tests
     test_SegmentSel.cpp
     test_utils.cpp
     test_SpatialSearch.cpp
+    test_math.cpp
     atoms.cpp
     selectors.cpp
     system.cpp
     bonds.cpp
-    tools.cpp
     tables.cpp
     dssp.cpp
     files.cpp
