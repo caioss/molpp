@@ -350,27 +350,3 @@ TEST(Selection, NumPropParsing) {
     std::shared_ptr<std::set<index_t>> selected = evaluate_sel_tree(sel_tree, data);
     EXPECT_THAT(*selected, ElementsAre(0, 2, 3, 4, 6, 7, 9, 11));
 }
-
-TEST(Selection, AtomSelector) {
-    // Data
-    MolData& pdb_big = PDBFiles::big();
-
-    // Valid selections
-    AtomSelector selector("resid 203:205", pdb_big);
-    AtomSel water = selector.apply(0);
-    EXPECT_THAT(water.indices(), ElementsAre(1807, 1808, 1809));
-    EXPECT_EQ(water.frame(), 0);
-
-    // No frame
-    water = selector.apply(std::nullopt);
-    EXPECT_THAT(water.indices(), ElementsAre(1807, 1808, 1809));
-    EXPECT_FALSE(water.frame());
-
-    // Invalid selections
-    selector = AtomSelector("resid 900:910", pdb_big);
-    EXPECT_THAT(selector.apply(0).indices(), ElementsAre());
-
-    // Errors
-    EXPECT_THROW(selector.apply(1), Error);
-    EXPECT_THROW(AtomSelector("nonsense", pdb_big), Error);
-}

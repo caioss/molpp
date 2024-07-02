@@ -3,6 +3,7 @@
 
 #include <molpp/Common.hpp>
 #include <molpp/AtomSel.hpp>
+
 #include <memory>
 
 namespace mol
@@ -24,7 +25,7 @@ public:
 private:
     void parse(std::string const& selection);
 
-    internal::MolData* m_data;
+    internal::MolData& m_data;
     std::shared_ptr<internal::SelectionNode> m_tree;
 };
 
