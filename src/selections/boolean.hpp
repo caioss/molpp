@@ -24,6 +24,12 @@ public:
     void evaluate(SelectionStack& stack, MolData const& /*data*/, Frame frame) const override;
 };
 
+class AllSelection : public SelectionNode
+{
+public:
+    void evaluate(SelectionStack& stack, MolData const& data, Frame frame) const override;
+};
+
 } // namespace mol::internal
 
 #endif // BOOLEAN_HPP

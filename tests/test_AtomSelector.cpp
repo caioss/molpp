@@ -154,3 +154,11 @@ INSTANTIATE_TEST_SUITE_P(Parentheses, SelectionTest, Values(
     SelectionTestData{"(resid 0 and resid 1) and (not resid 2 or resid 3)", {}}
 ));
 
+// All selector
+INSTANTIATE_TEST_SUITE_P(All, SelectionTest, Values(
+    SelectionTestData{"all", {0, 1, 2, 3}},
+    SelectionTestData{"not all", {}},
+    SelectionTestData{"resid 1 and all", {1}},
+    SelectionTestData{"resid 1 and not all", {}},
+    SelectionTestData{"resid 1 or all", {0, 1, 2, 3}}
+));

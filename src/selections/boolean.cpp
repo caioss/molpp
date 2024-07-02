@@ -40,5 +40,10 @@ void NotSelection::evaluate(SelectionStack& stack, MolData const& /*data*/, Fram
     // Process selection separetely and then combine inside NotImpl
     stack.push(std::make_shared<NotImpl>(), flags);
     stack.push_flags(inverted);
-    stack.push(left, inverted);
+}
+
+void AllSelection::evaluate(SelectionStack& stack, MolData const& /*data*/, Frame /*frame*/) const
+{
+    SelectionFlags flags = stack.pop_flags();
+    *flags.selected = *flags.mask;
 }

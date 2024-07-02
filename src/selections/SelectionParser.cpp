@@ -80,6 +80,11 @@ std::shared_ptr<SelectionNode> make_numprop_node(std::shared_ptr<peg::Ast> const
     return num_prop;
 }
 
+std::shared_ptr<SelectionNode> make_all_node(std::shared_ptr<peg::Ast> const /*ast*/)
+{
+    return std::make_shared<AllSelection>();
+}
+
 std::shared_ptr<SelectionNode> make_node(std::shared_ptr<peg::Ast> const ast)
 {
     /* Boolean binary operators */
@@ -98,6 +103,12 @@ std::shared_ptr<SelectionNode> make_node(std::shared_ptr<peg::Ast> const ast)
     else if (ast->name == "NumPropExp")
     {
         return make_numprop_node(ast);
+    }
+
+    /* All */
+    else if (ast->name == "All")
+    {
+        return make_all_node(ast);
     }
 
     return nullptr;
