@@ -6,6 +6,7 @@ target_sources(molpp
             SelectionNode.hpp
             SelectionParser.hpp
             SelectionStack.hpp
+            SelectionIndices.hpp
             boolean.hpp
             properties.hpp
             numbers.hpp

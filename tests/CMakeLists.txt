@@ -28,6 +28,8 @@ add_executable(tests
     test_SpatialSearch.cpp
     test_math.cpp
     test_AtomSelector.cpp
+    test_SelectionStack.cpp
+    test_SelectionIndices.cpp
     atoms.cpp
     selectors.cpp
     system.cpp

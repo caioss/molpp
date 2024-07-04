@@ -1,5 +1,6 @@
 #include "selections/properties.hpp"
 #include "selections/SelectionStack.hpp"
+#include "selections/SelectionIndices.hpp"
 #include <molpp/Common.hpp>
 #include <molpp/internal/MolData.hpp>
 
@@ -8,13 +9,13 @@ namespace mol::internal
 
 void PropSelection::evaluate(SelectionStack& stack, MolData const& data, Frame /*frame*/) const
 {
-    SelectionFlags flags = stack.pop_flags();
+    SelectionIndices indices = stack.pop_indices();
 
-    for (index_t atom_index : *(flags.mask))
+    for (index_t atom_index : *(indices.available))
     {
         if (selected(atom_index, data))
         {
-            flags.selected->insert(atom_index);
+            indices.selected->insert(atom_index);
         }
     }
 }

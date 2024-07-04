@@ -1,43 +1,46 @@
-#include "selections/SelectionStack.hpp"
-#include "selections/SelectionNode.hpp"
+#include "SelectionStack.hpp"
 
-using namespace mol;
-using namespace mol::internal;
-
-SelectionStack::SelectionStack(std::shared_ptr<SelectionNode> root)
-: m_root(root)
+namespace mol::internal
 {
+
+void mol::internal::SelectionStack::clear()
+{
+    m_nodes.clear();
+    m_indices.clear();
 }
 
-void SelectionStack::push_flags(SelectionFlags const& flags)
+bool mol::internal::SelectionStack::empty_nodes() const
 {
-    m_flags.push_front(flags);
+    return m_nodes.empty();
 }
 
-void SelectionStack::push(std::shared_ptr<SelectionNode> node, SelectionFlags const& flags)
+bool mol::internal::SelectionStack::empty_indices() const
 {
-    m_callers.push_front(node);
-    push_flags(flags);
+    return m_indices.empty();
 }
 
-SelectionFlags SelectionStack::pop_flags()
+void SelectionStack::push_indices(SelectionIndices const& indices)
 {
-    SelectionFlags flags = m_flags.front();
-    m_flags.pop_front();
-    return flags;
+    m_indices.push_back(indices);
 }
 
-void SelectionStack::evaluate(MolData const& data, SelectionFlags& flags, Frame frame)
+void SelectionStack::push_node(std::shared_ptr<SelectionNode> node)
 {
-    // We use an explicit stack to allow arbitrarily sized selections
-    m_callers.clear();
-    m_flags.clear();
-    push(m_root, flags);
-
-    while (!m_callers.empty())
-    {
-        std::shared_ptr<SelectionNode> node = m_callers.front();
-        m_callers.pop_front();
-        node->evaluate(*this, data, frame);
-    }
+    m_nodes.push_back(node);
 }
+
+SelectionIndices SelectionStack::pop_indices()
+{
+    SelectionIndices indices = m_indices.back();
+    m_indices.pop_back();
+    return indices;
+}
+
+std::shared_ptr<SelectionNode> mol::internal::SelectionStack::pop_node()
+{
+    std::shared_ptr<SelectionNode> node = m_nodes.back();
+    m_nodes.pop_back();
+    return node;
+}
+
+} // namespace mol::internal

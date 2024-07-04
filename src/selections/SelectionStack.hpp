@@ -1,51 +1,32 @@
-#ifndef SELECTIONSTACK_HPP
-#define SELECTIONSTACK_HPP
+#ifndef MOLPP_SELECTIONS_SELECTIONSTACK_HPP
+#define MOLPP_SELECTIONS_SELECTIONSTACK_HPP
 
-#include <molpp/Common.hpp>
-#include <set>
+#include "selections/SelectionIndices.hpp"
+
 #include <memory>
-#include <forward_list>
+#include <deque>
 
 namespace mol::internal
 {
 
-class MolData;
 class SelectionNode;
-
-struct SelectionFlags
-{
-    SelectionFlags(std::shared_ptr<std::set<index_t>> prev_mask, std::shared_ptr<std::set<index_t>> prev_selected)
-    : mask{prev_mask}
-    , selected{prev_selected}
-    {
-    }
-
-    SelectionFlags()
-    : mask{std::make_shared<std::set<index_t>>()}
-    , selected{std::make_shared<std::set<index_t>>()}
-    {
-    }
-
-    // Flags must be ordered
-    std::shared_ptr<std::set<index_t>> mask;
-    std::shared_ptr<std::set<index_t>> selected;
-};
 
 class SelectionStack
 {
 public:
-    SelectionStack(std::shared_ptr<SelectionNode> root);
-    void push_flags(SelectionFlags const& flags);
-    void push(std::shared_ptr<SelectionNode> node, SelectionFlags const& flags);
-    SelectionFlags pop_flags();
-    void evaluate(MolData const& data, SelectionFlags& flags, Frame frame);
+    void clear();
+    bool empty_nodes() const;
+    bool empty_indices() const;
+    void push_indices(SelectionIndices const& indices);
+    void push_node(std::shared_ptr<SelectionNode> node);
+    SelectionIndices pop_indices();
+    std::shared_ptr<SelectionNode> pop_node();
 
 private:
-    std::shared_ptr<SelectionNode> m_root;
-    std::forward_list<std::shared_ptr<SelectionNode>> m_callers;
-    std::forward_list<SelectionFlags> m_flags;
+    std::deque<std::shared_ptr<SelectionNode>> m_nodes;
+    std::deque<SelectionIndices> m_indices;
 };
 
 } // namespace mol::internal
 
-#endif // SELECTIONSTACK_HPP
+#endif // MOLPP_SELECTIONS_SELECTIONSTACK_HPP
