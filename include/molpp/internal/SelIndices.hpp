@@ -19,16 +19,25 @@ public:
     SelIndices() = delete;
     explicit SelIndices(size_t const max_size);
 
-    SelIndices(IndexRange auto const& indices)
+    SelIndices(IndexRange auto const& indices, bool const keep)
+    : m_sorted(!keep)
     {
-        // Remove duplicates and sort
-        std::unordered_set<value_type> unique;
-        for (value_type index : indices)
+        if (keep)
         {
-            unique.insert(index);
+            // Keep indices as is
+            m_indices.assign(indices.begin(), indices.end());
         }
-        m_indices.assign(unique.begin(), unique.end());
-        std::sort(m_indices.begin(), m_indices.end());
+        else
+        {
+            // Remove duplicates and sort
+            std::unordered_set<value_type> unique;
+            for (value_type index : indices)
+            {
+                unique.insert(index);
+            }
+            m_indices.assign(unique.begin(), unique.end());
+            std::sort(m_indices.begin(), m_indices.end());
+        }
     }
 
     indices_type const& indices() const;
@@ -38,6 +47,7 @@ public:
     bool contains(index_t const index) const;
 
 private:
+    bool m_sorted;
     indices_type m_indices;
 };
 

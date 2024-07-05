@@ -65,13 +65,13 @@ public:
     template<class RHS>
     explicit Sel(RHS&& rhs)
     requires SelConvertible<RHS>
-    : Sel(SelIndices(rhs.data().topology().convert(rhs.indices(), rhs.category(), category())), rhs.data())
+    : Sel(SelIndices(rhs.data().topology().convert(rhs.indices(), rhs.category(), category()), false), rhs.data())
     {
         set_frame(rhs.frame());
     }
 
-    explicit Sel(IndexRange auto const& indices, MolData& data)
-    : Sel(SelIndices(indices), data)
+    explicit Sel(IndexRange auto const& indices, MolData& data, bool const keep = false)
+    : Sel(SelIndices(indices, keep), data)
     {}
 
     explicit Sel(MolData& data)
