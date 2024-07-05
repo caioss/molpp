@@ -1,5 +1,5 @@
-#ifndef BOOLEAN_HPP
-#define BOOLEAN_HPP
+#ifndef MOLPP_SELECTIONS_BOOLEAN_HPP
+#define MOLPP_SELECTIONS_BOOLEAN_HPP
 
 #include "selections/SelectionNode.hpp"
 
@@ -32,4 +32,4 @@ public:
 
 } // namespace mol::internal
 
-#endif // BOOLEAN_HPP
+#endif // MOLPP_SELECTIONS_BOOLEAN_HPP

@@ -2,11 +2,12 @@
 #include "selections/SelectionStack.hpp"
 #include "selections/SelectionIndices.hpp"
 
-using namespace mol;
-using namespace mol::internal;
+namespace mol::internal
+{
 
 void OrSelection::evaluate(SelectionStack& stack, MolData const& /*data*/, Frame /*frame*/) const
 {
+    // Just merge the results of the two operands
     SelectionIndices indices = stack.pop_indices();
     stack.push_node(right);
     stack.push_indices(indices);
@@ -18,42 +19,49 @@ void OrSelection::evaluate(SelectionStack& stack, MolData const& /*data*/, Frame
 void AndSelection::evaluate(SelectionStack& stack, MolData const& /*data*/, Frame /*frame*/) const
 {
     SelectionIndices indices = stack.pop_indices();
-    std::shared_ptr<std::unordered_set<index_t>> parcial = std::make_shared<std::unordered_set<index_t>>();
 
-    // Short-circuit
+    // Short-circuit is implemented by using the results of one operand as the available set for the other
+    SelectionIndices::IndexSet merged = SelectionIndices::make_index_set();
+
     stack.push_node(right);
-    stack.push_indices({parcial, indices.selected});
+    stack.push_indices({merged, indices.selected});
 
     stack.push_node(left);
-    stack.push_indices({indices.available, parcial});
+    stack.push_indices({indices.available, merged});
 }
 
-class NotImpl : public SelectionNode
+class InvertSelection : public SelectionNode
 {
 public:
     void evaluate(SelectionStack& stack, MolData const& /*data*/, Frame /*frame*/) const override
     {
-        SelectionIndices inverted = stack.pop_indices();
+        SelectionIndices source = stack.pop_indices();
         SelectionIndices result = stack.pop_indices();
 
-        std::copy_if(inverted.available->begin(), inverted.available->end(), std::inserter(*result.selected, result.selected->end()), [&](index_t const index) {
-            return !inverted.selected->contains(index);
-        });
+        for (index_t const index : *result.available)
+        {
+            if (!source.selected->contains(index))
+            {
+                result.selected->insert(index);
+            }
+        }
     }
 };
 
 void NotSelection::evaluate(SelectionStack& stack, MolData const& /*data*/, Frame /*frame*/) const
 {
     SelectionIndices indices = stack.pop_indices();
-    SelectionIndices inverted(indices.available, std::make_shared<std::unordered_set<index_t>>());
 
-    // Process selection separetely and then combine inside NotImpl
-    stack.push_node(std::make_shared<NotImpl>());
+    // These will contain the inverse of the desired selection
+    SelectionIndices inverse(indices.available, SelectionIndices::make_index_set());
+
+    // Process the operand and then invert the results using InvertSelection
+    stack.push_node(std::make_shared<InvertSelection>());
     stack.push_indices(indices);
-    stack.push_indices(inverted);
+    stack.push_indices(inverse);
 
     stack.push_node(left);
-    stack.push_indices(inverted);
+    stack.push_indices(inverse);
 }
 
 void AllSelection::evaluate(SelectionStack& stack, MolData const& /*data*/, Frame /*frame*/) const
@@ -61,3 +69,5 @@ void AllSelection::evaluate(SelectionStack& stack, MolData const& /*data*/, Fram
     SelectionIndices indices = stack.pop_indices();
     *indices.selected = *indices.available;
 }
+
+} // namespace mol::internal

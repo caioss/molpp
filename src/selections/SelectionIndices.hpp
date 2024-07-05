@@ -11,18 +11,25 @@ namespace mol::internal
 
 struct SelectionIndices
 {
-    SelectionIndices(std::shared_ptr<std::unordered_set<index_t>> in_available, std::shared_ptr<std::unordered_set<index_t>> in_selected)
+    using IndexSet = std::shared_ptr<std::unordered_set<index_t>>;
+
+    SelectionIndices(IndexSet in_available, IndexSet in_selected)
     : available{in_available}
     , selected{in_selected}
     {}
 
     SelectionIndices()
-    : available{std::make_shared<std::unordered_set<index_t>>()}
-    , selected{std::make_shared<std::unordered_set<index_t>>()}
+    : available{make_index_set()}
+    , selected{make_index_set()}
     {}
 
-    std::shared_ptr<std::unordered_set<index_t>> available;
-    std::shared_ptr<std::unordered_set<index_t>> selected;
+    static IndexSet make_index_set()
+    {
+        return std::make_shared<std::unordered_set<index_t>>();
+    }
+
+    IndexSet available;
+    IndexSet selected;
 
     friend bool operator==(SelectionIndices const& lhs, SelectionIndices const& rhs)
     {

@@ -12,12 +12,12 @@ class SelectionIndicesTest : public testing::Test
 {
 public:
     SelectionIndicesTest()
-    : available{std::make_shared<std::unordered_set<index_t>>()}
-    , selected{std::make_shared<std::unordered_set<index_t>>()}
+    : available{SelectionIndices::make_index_set()}
+    , selected{SelectionIndices::make_index_set()}
     {}
 
-    std::shared_ptr<std::unordered_set<index_t>> available;
-    std::shared_ptr<std::unordered_set<index_t>> selected;
+    SelectionIndices::IndexSet available;
+    SelectionIndices::IndexSet selected;
 };
 
 // Default constructor should create empty available and selected sets
@@ -40,6 +40,19 @@ TEST_F(SelectionIndicesTest, constructor_with_sets)
     EXPECT_EQ(indices.selected, selected);
 }
 
+// make_index_set should return a new empty indices set
+TEST_F(SelectionIndicesTest, make_index_set)
+{
+    SelectionIndices::IndexSet indices1 = SelectionIndices::make_index_set();
+    SelectionIndices::IndexSet indices2 = SelectionIndices::make_index_set();
+
+    ASSERT_TRUE(indices1);
+    ASSERT_TRUE(indices2);
+    EXPECT_TRUE(indices1->empty());
+    EXPECT_TRUE(indices2->empty());
+    EXPECT_NE(indices1, indices2);
+}
+
 // Equality operator should return true for equal SelectionIndices
 TEST_F(SelectionIndicesTest, equality_operator)
 {
@@ -52,7 +65,7 @@ TEST_F(SelectionIndicesTest, equality_operator)
 // Equality operator should return false for different available sets
 TEST_F(SelectionIndicesTest, equality_operator_available)
 {
-    std::shared_ptr<std::unordered_set<index_t>> available2 = std::make_shared<std::unordered_set<index_t>>();
+    SelectionIndices::IndexSet available2 = SelectionIndices::make_index_set();
 
     SelectionIndices indices1(available, selected);
     SelectionIndices indices2(available2, selected);
@@ -63,8 +76,8 @@ TEST_F(SelectionIndicesTest, equality_operator_available)
 // Equality operator should return false for different selected sets
 TEST_F(SelectionIndicesTest, equality_operator_selected)
 {
-    std::shared_ptr<std::unordered_set<index_t>> available = std::make_shared<std::unordered_set<index_t>>();
-    std::shared_ptr<std::unordered_set<index_t>> selected2 = std::make_shared<std::unordered_set<index_t>>();
+    SelectionIndices::IndexSet available = SelectionIndices::make_index_set();
+    SelectionIndices::IndexSet selected2 = SelectionIndices::make_index_set();
 
     SelectionIndices indices1(available, selected);
     SelectionIndices indices2(available, selected2);

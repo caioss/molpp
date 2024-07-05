@@ -1,7 +1,8 @@
-#ifndef SELECTIONNODE_HPP
-#define SELECTIONNODE_HPP
+#ifndef MOLPP_SELECTIONS_SELECTIONNODE_HPP
+#define MOLPP_SELECTIONS_SELECTIONNODE_HPP
 
 #include <molpp/Common.hpp>
+
 #include <memory>
 
 namespace mol::internal
@@ -14,8 +15,7 @@ class SelectionNode
 {
 public:
     virtual ~SelectionNode()
-    {
-    }
+    {}
 
     virtual void evaluate(SelectionStack& stack, MolData const& data, Frame frame) const = 0;
 
@@ -25,4 +25,4 @@ public:
 
 } // namespace mol::internal
 
-#endif // SELECTIONNODE_HPP
+#endif // MOLPP_SELECTIONS_SELECTIONNODE_HPP

@@ -12,7 +12,6 @@ using namespace testing;
 namespace mol::internal
 {
 class MolData;
-class SelectionStack;
 } // namespace mol::internal
 
 //! Dummy SelectionNode for testing purposes.

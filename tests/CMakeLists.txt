@@ -30,6 +30,7 @@ add_executable(tests
     test_AtomSelector.cpp
     test_SelectionStack.cpp
     test_SelectionIndices.cpp
+    test_boolean.cpp
     atoms.cpp
     selectors.cpp
     system.cpp
