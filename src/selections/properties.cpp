@@ -1,26 +1,15 @@
 #include "selections/properties.hpp"
-#include "selections/SelectionStack.hpp"
-#include "selections/SelectionIndices.hpp"
-#include <molpp/Common.hpp>
 #include <molpp/internal/MolData.hpp>
 
 namespace mol::internal
 {
 
-void PropSelection::evaluate(SelectionStack& stack, MolData const& data, Frame /*frame*/) const
+mol::internal::ResidSelection::ResidSelection(NumberSet&& resids)
+: m_resids{resids}
 {
-    SelectionIndices indices = stack.pop_indices();
-
-    for (index_t atom_index : *(indices.available))
-    {
-        if (selected(atom_index, data))
-        {
-            indices.selected->insert(atom_index);
-        }
-    }
 }
 
-bool ResidSelection::selected(index_t atom_index, MolData const& data) const
+bool ResidSelection::evaluate_atom(index_t const atom_index, MolData const& data) const
 {
     Topology const& topology = data.topology();
     std::optional<index_t> const residue_index = topology.find_link({EntityCategory::Atom, atom_index}, EntityCategory::Residue);
@@ -30,7 +19,7 @@ bool ResidSelection::selected(index_t atom_index, MolData const& data) const
     }
 
     int const resid = data.residues().id(*residue_index);
-    return has(resid);
+    return m_resids.has(resid);
 }
 
 } // namespace mol::internal

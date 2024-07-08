@@ -10,6 +10,8 @@ target_sources(molpp
             boolean.hpp
             properties.hpp
             numbers.hpp
+            NumberSet.hpp
+            PropertySelection.hpp
 
     PRIVATE
         AtomSelector.cpp

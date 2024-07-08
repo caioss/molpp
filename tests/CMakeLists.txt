@@ -31,6 +31,9 @@ add_executable(tests
     test_SelectionStack.cpp
     test_SelectionIndices.cpp
     test_boolean.cpp
+    test_NumberSet.cpp
+    test_PropertySelection.cpp
+    test_ResidSelection.cpp
     atoms.cpp
     selectors.cpp
     system.cpp

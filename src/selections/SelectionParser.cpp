@@ -2,6 +2,8 @@
 #include "selections/boolean.hpp"
 #include "selections/properties.hpp"
 #include "selections/SelectionStack.hpp"
+#include "selections/NumberSet.hpp"
+
 #include <stack>
 #include <string_view>
 #include <molpp/Error.hpp>
@@ -48,36 +50,42 @@ std::shared_ptr<SelectionNode> make_boolunary_node(std::shared_ptr<peg::Ast> con
     return node;
 }
 
+template<class Type>
+std::shared_ptr<SelectionNode> make_numprop_node_impl(std::vector<std::shared_ptr<peg::Ast>> const& numbers)
+{
+    NumberSet number_set;
+
+    for (std::shared_ptr<const peg::Ast> child : numbers)
+    {
+        if (child->name == "Number")
+        {
+            std::string_view const& token = child->token;
+            number_set.add_number(SelNumber({token.data(), token.size()}));
+        }
+        else if (child->name == "NumRange")
+        {
+            std::string_view const& token1 = child->nodes[0]->token;
+            std::string_view const& token2 = child->nodes[1]->token;
+            number_set.add_range(SelNumberRange({token1.data(), token1.size()}, {token2.data(), token2.size()}));
+        }
+    }
+
+    std::shared_ptr<ResidSelection> node = std::make_shared<Type>(std::move(number_set));
+    return node;
+}
+
 std::shared_ptr<SelectionNode> make_numprop_node(std::shared_ptr<peg::Ast> const ast)
 {
-    std::shared_ptr<NumPropSelection> num_prop;
     auto const& type = ast->nodes[0]->token;
     if (type == "resid")
     {
-        num_prop = std::make_shared<ResidSelection>();
+        return make_numprop_node_impl<ResidSelection>(ast->nodes);
     }
     else
     {
         // We should never get here
         throw mol::Error("Unknown NumProp node: " + std::string(type));
     }
-
-    for (std::shared_ptr<peg::Ast> child : ast->nodes)
-    {
-        if (child->name == "Number")
-        {
-            std::string_view const& token = child->token;
-            num_prop->add_number(SelNumber({token.data(), token.size()}));
-        }
-        else if (child->name == "NumRange")
-        {
-            std::string_view const& token1 = child->nodes[0]->token;
-            std::string_view const& token2 = child->nodes[1]->token;
-            num_prop->add_range(SelNumberRange({token1.data(), token1.size()}, {token2.data(), token2.size()}));
-        }
-    }
-
-    return num_prop;
 }
 
 std::shared_ptr<SelectionNode> make_all_node(std::shared_ptr<peg::Ast> const /*ast*/)
