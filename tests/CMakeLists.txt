@@ -34,6 +34,7 @@ add_executable(tests
     test_NumberSet.cpp
     test_PropertySelection.cpp
     test_ResidSelection.cpp
+    test_SelectionParser.cpp
     atoms.cpp
     selectors.cpp
     system.cpp

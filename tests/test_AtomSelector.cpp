@@ -104,7 +104,13 @@ INSTANTIATE_TEST_SUITE_P(Resid, SelectionTest, Values(
     SelectionTestData{"resid 1", {1}},
     SelectionTestData{"resid 2", {2}},
     SelectionTestData{"resid 3", {3}},
-    SelectionTestData{"resid 4", {}}
+    SelectionTestData{"resid 4", {}},
+    SelectionTestData{"resid 1:3", {1, 2, 3}},
+    SelectionTestData{"resid 0 1:3", {0, 1, 2, 3}},
+    SelectionTestData{"resid 0:2 3", {0, 1, 2, 3}},
+    SelectionTestData{"resid 0 2 3", {0, 2, 3}},
+    SelectionTestData{"resid 0 1 2:3", {0, 1, 2, 3}},
+    SelectionTestData{"resid 0:1 2 3", {0, 1, 2, 3}}
 ));
 
 // Boolean operators
@@ -151,7 +157,8 @@ INSTANTIATE_TEST_SUITE_P(Parentheses, SelectionTest, Values(
     SelectionTestData{"(resid 0 or resid 1) or not (resid 2 or resid 3)", {0, 1}},
     SelectionTestData{"(not resid 0 or resid 1) and not (resid 2 or resid 3)", {1}},
     SelectionTestData{"(resid 0 and not resid 1) or (resid 2 and resid 3)", {0}},
-    SelectionTestData{"(resid 0 and resid 1) and (not resid 2 or resid 3)", {}}
+    SelectionTestData{"(resid 0 and resid 1) and (not resid 2 or resid 3)", {}},
+    SelectionTestData{"not ((resid 0 and resid 1) and (resid 2 or resid 3))", {0, 1, 2, 3}}
 ));
 
 // All selector

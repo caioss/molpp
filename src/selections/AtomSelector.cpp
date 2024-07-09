@@ -41,7 +41,7 @@ AtomSel AtomSelector::apply(Frame frame)
 
 void AtomSelector::parse(std::string const& selection)
 {
-    m_tree = internal::SEL_PARSER.parse(selection);
+    m_tree = internal::default_parser().parse(selection);
 }
 
 } // namespace mol

@@ -1,16 +1,19 @@
 #include "SelectionParser.hpp"
 #include "selections/boolean.hpp"
 #include "selections/properties.hpp"
-#include "selections/SelectionStack.hpp"
 #include "selections/NumberSet.hpp"
-
-#include <stack>
-#include <string_view>
 #include <molpp/Error.hpp>
 
-using namespace mol;
-using namespace mol::internal;
+#include <stack>
+#include <ranges>
+#include <string_view>
 
+namespace mol::internal
+{
+
+class SelectionStack;
+
+//! Helper node that holds a copy of the AST node for later use.
 struct CopyNode : public SelectionNode
 {
     CopyNode(std::shared_ptr<peg::Ast> const& node)
@@ -23,29 +26,35 @@ struct CopyNode : public SelectionNode
     std::shared_ptr<peg::Ast> ast;
 };
 
-std::shared_ptr<SelectionNode> make_boolbinary_node(std::shared_ptr<peg::Ast> const ast)
+std::shared_ptr<SelectionNode> make_boolbinary_node(std::shared_ptr<peg::Ast const> const ast)
 {
     std::shared_ptr<SelectionNode> node;
-    if (ast->nodes[1]->token == "and")
+    std::string_view const type = ast->nodes[1]->token;
+    if (type == "and")
     {
         node = std::make_shared<AndSelection>();
     }
-    else if (ast->nodes[1]->token == "or")
+    else if (type == "or")
     {
         node = std::make_shared<OrSelection>();
     }
+    else
+    {
+        // We should never get here
+        throw mol::Error("Unknown boolean node: " + std::string(type));
+    }
 
-    // Set temporary children holding the Ast nodes
+    // Set temporary children holding the AST nodes
     node->left = std::make_shared<CopyNode>(ast->nodes[0]);
     node->right = std::make_shared<CopyNode>(ast->nodes[2]);
 
     return node;
 }
 
-std::shared_ptr<SelectionNode> make_boolunary_node(std::shared_ptr<peg::Ast> const ast)
+std::shared_ptr<SelectionNode> make_boolunary_node(std::shared_ptr<peg::Ast const> const ast)
 {
     std::shared_ptr<SelectionNode> node = std::make_shared<NotSelection>();
-    // Set temporary children holding the Ast nodes
+    // Set temporary children holding the AST nodes
     node->left = std::make_shared<CopyNode>(ast->nodes[1]);
     return node;
 }
@@ -55,28 +64,35 @@ std::shared_ptr<SelectionNode> make_numprop_node_impl(std::vector<std::shared_pt
 {
     NumberSet number_set;
 
-    for (std::shared_ptr<const peg::Ast> child : numbers)
+    // Skip the first node, which is the property node
+    for (std::shared_ptr<const peg::Ast> child : numbers | std::views::drop(1))
     {
-        if (child->name == "Number")
+        std::string const& type = child->name;
+        if (type == "Number")
         {
-            std::string_view const& token = child->token;
-            number_set.add_number(SelNumber({token.data(), token.size()}));
+            std::string const token{child->token};
+            number_set.add_number(SelNumber(token));
         }
-        else if (child->name == "NumRange")
+        else if (type == "NumRange")
         {
-            std::string_view const& token1 = child->nodes[0]->token;
-            std::string_view const& token2 = child->nodes[1]->token;
-            number_set.add_range(SelNumberRange({token1.data(), token1.size()}, {token2.data(), token2.size()}));
+            std::string const token1{child->nodes[0]->token};
+            std::string const token2{child->nodes[1]->token};
+            number_set.add_range(SelNumberRange(token1, token2));
+        }
+        else
+        {
+            // We should never get here
+            throw mol::Error("Unknown numeric node: " + std::string(type));
         }
     }
 
-    std::shared_ptr<ResidSelection> node = std::make_shared<Type>(std::move(number_set));
+    std::shared_ptr<SelectionNode> node = std::make_shared<Type>(std::move(number_set));
     return node;
 }
 
-std::shared_ptr<SelectionNode> make_numprop_node(std::shared_ptr<peg::Ast> const ast)
+std::shared_ptr<SelectionNode> make_numprop_node(std::shared_ptr<peg::Ast const> const ast)
 {
-    auto const& type = ast->nodes[0]->token;
+    std::string_view const type = ast->nodes[0]->token;
     if (type == "resid")
     {
         return make_numprop_node_impl<ResidSelection>(ast->nodes);
@@ -88,12 +104,12 @@ std::shared_ptr<SelectionNode> make_numprop_node(std::shared_ptr<peg::Ast> const
     }
 }
 
-std::shared_ptr<SelectionNode> make_all_node(std::shared_ptr<peg::Ast> const /*ast*/)
+std::shared_ptr<SelectionNode> make_all_node(std::shared_ptr<peg::Ast const> const /*ast*/)
 {
     return std::make_shared<AllSelection>();
 }
 
-std::shared_ptr<SelectionNode> make_node(std::shared_ptr<peg::Ast> const ast)
+std::shared_ptr<SelectionNode> make_node(std::shared_ptr<peg::Ast const> const ast)
 {
     /* Boolean binary operators */
     if (ast->name == "BoolBinaryExp")
@@ -122,32 +138,77 @@ std::shared_ptr<SelectionNode> make_node(std::shared_ptr<peg::Ast> const ast)
     return nullptr;
 }
 
+std::shared_ptr<SelectionNode> make_child(std::shared_ptr<SelectionNode> const node)
+{
+    std::shared_ptr<peg::Ast> ast = std::static_pointer_cast<CopyNode>(node)->ast;
+    std::shared_ptr<SelectionNode> child = make_node(ast);
+    if (!child)
+    {
+        throw mol::Error("Error while building the selection tree.");
+    }
+
+    return child;
+}
+
+class ParserError
+{
+public:
+    ParserError(std::string const& expression)
+    : m_expression{expression}
+    {}
+
+    void set_error(size_t column, std::string const& message)
+    {
+        m_error_column = column;
+        m_error_message = message;
+    }
+
+    std::string message() const
+    {
+        std::string error = m_error_message + "\n" + m_expression + "\n";
+        for (size_t i = 1; i < m_error_column; i++)
+        {
+            error += " ";
+        }
+        error += "^";
+
+        return error;
+    }
+
+private:
+    std::size_t m_error_column;
+    std::string m_error_message;
+    std::string const& m_expression;
+};
+
 SelectionParser::SelectionParser(std::string const& grammar)
 : m_grammar{grammar}
 {
     if (!m_parser.load_grammar(m_grammar))
     {
-        throw mol::Error("Error loading selection grammar.");
+        throw mol::Error("Error loading grammar.");
     }
 
-    m_parser.set_logger([&](size_t /*line*/, size_t column, std::string const& message) {
-        m_error_column = column;
-        m_error_message = message;
-    });
     m_parser.enable_ast();
 }
 
-std::shared_ptr<SelectionNode> SelectionParser::parse(std::string const& expression) const
+std::shared_ptr<SelectionNode> SelectionParser::parse(std::string const& expression)
 {
     // Parsing
+    ParserError error(expression);
+    m_parser.set_logger([&](size_t /*line*/, size_t column, std::string const& message) {
+        error.set_error(column, message);
+    });
+
     std::shared_ptr<peg::Ast> ast;
     if (!m_parser.parse(expression, ast))
     {
-        throw mol::Error(error_message(expression));
+        throw mol::Error(error.message());
     }
     ast = m_parser.optimize_ast(ast);
 
-    // Convertion into selection tree
+    // Convert AST into a selection tree.
+    // We don't use recursion to allow huge expressions.
     std::stack<std::shared_ptr<SelectionNode>> node_stack;
     std::shared_ptr<SelectionNode> root = make_node(ast);
     if (!root)
@@ -161,49 +222,25 @@ std::shared_ptr<SelectionNode> SelectionParser::parse(std::string const& express
         std::shared_ptr<SelectionNode> current = node_stack.top();
         node_stack.pop();
 
-        // Right child
         if (current->right)
         {
-            std::shared_ptr<peg::Ast> right_ast = std::static_pointer_cast<CopyNode>(current->right)->ast;
-            std::shared_ptr<SelectionNode> right = make_node(right_ast);
-            if (!right)
-            {
-                throw mol::Error("Error while building the selection tree.");
-            }
-            current->right = right;
-            node_stack.push(right);
+            current->right = make_child(current->right);
+            node_stack.push(current->right);
         }
 
-        // Left child
         if (current->left)
         {
-            std::shared_ptr<peg::Ast> left_ast = std::static_pointer_cast<CopyNode>(current->left)->ast;
-            std::shared_ptr<SelectionNode> left = make_node(left_ast);
-            if (!left)
-            {
-                throw mol::Error("Error while building the selection tree.");
-            }
-            current->left = left;
-            node_stack.push(left);
+            current->left = make_child(current->left);
+            node_stack.push(current->left);
         }
     }
 
     return root;
 }
 
-std::string SelectionParser::error_message(std::string const& expression) const
+SelectionParser& default_parser()
 {
-    std::string error = m_error_message + "\n" + expression + "\n";
-    for (size_t i = 1; i < m_error_column; i++)
-    {
-        error += " ";
-    }
-    error += "^";
-
-    return error;
-}
-
-extern SelectionParser const mol::internal::SEL_PARSER(R"(
+    static SelectionParser parser(R"(
     BoolBinaryExp <- Operand (BoolBinaryOp Operand)* {
                        precedence
                          L and or
@@ -244,4 +281,9 @@ extern SelectionParser const mol::internal::SEL_PARSER(R"(
     Vector        <- '(' Number{3} ')' / CenterExp
 
     %whitespace   <- [ \t\n]*
-)");
+    )");
+
+    return parser;
+}
+
+} // namespace mol::internal
