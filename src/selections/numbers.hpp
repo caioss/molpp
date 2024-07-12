@@ -1,8 +1,9 @@
-#ifndef NUMBERS_HPP
-#define NUMBERS_HPP
+#ifndef MOLPP_SELECTIONS_NUMBERS_HPP
+#define MOLPP_SELECTIONS_NUMBERS_HPP
 
 #include <string>
 #include <concepts>
+
 #include "tools/math.hpp"
 
 namespace mol::internal
@@ -63,4 +64,4 @@ private:
 
 } // namespace mol::internal
 
-#endif // NUMBERS_HPP
+#endif // MOLPP_SELECTIONS_NUMBERS_HPP

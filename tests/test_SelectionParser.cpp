@@ -3,7 +3,6 @@
 #include "selections/SelectionParser.hpp"
 #include "selections/boolean.hpp"
 #include "selections/properties.hpp"
-#include <molpp/internal/MolData.hpp>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -12,7 +11,7 @@ using namespace mol;
 using namespace mol::internal;
 using namespace testing;
 
-//! Test fixture for SelectionParser selection nodes.
+//! Test fixture for SelectionParser.
 class SelectionParserTest : public testing::Test
 {
 public:
