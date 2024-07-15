@@ -3,16 +3,8 @@
 using namespace mol::internal;
 
 ResiduesTable::ResiduesTable(std::initializer_list<std::pair<std::string, ResiduesTable::Residue>> data)
-: m_max_atoms{0}
-, m_residues(data.begin(), data.end())
+: m_residues{data.begin(), data.end()}
 {
-    for (auto& [resname, residue] : m_residues)
-    {
-        if (residue.atoms.size() > m_max_atoms)
-        {
-            m_max_atoms = residue.atoms.size();
-        }
-    }
 }
 
 // The following lines are generated automatically.

@@ -36,6 +36,7 @@ add_executable(tests
     test_ResidSelection.cpp
     test_SelectionParser.cpp
     test_numbers.cpp
+    test_ResidueBondGuesser.cpp
     atoms.cpp
     system.cpp
     bonds.cpp

@@ -12,7 +12,7 @@ namespace internal
 class ResidueBondGuesser
 {
 public:
-    void apply(ResidueSel& residues) const;
+    void apply(ResidueSel& residue_sel) const;
 
 private:
 };

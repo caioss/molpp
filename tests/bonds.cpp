@@ -103,50 +103,6 @@ TEST(Bonds, Guessers) {
     ASSERT_THAT(reader, NotNull());
 
     /*
-     * Residue-based guesser
-     */
-    auto res_data = reader->read_topology("4lad.pdb");
-    ASSERT_THAT(res_data, NotNull());
-
-    AtomSel res_atoms(*res_data);
-    ResidueSel res(*res_data);
-    ResidueBondGuesser res_guesser;
-    res_guesser.apply(res);
-
-    auto res_bond = res_atoms[650].bond(648); // TYR80A-CZ-CE1
-    ASSERT_THAT(res_bond, NotNull());
-    EXPECT_EQ(res_bond->order(), 2);
-    EXPECT_TRUE(res_bond->aromatic());
-    EXPECT_TRUE(res_bond->guessed());
-    EXPECT_TRUE(res_bond->guessed_order());
-    res_bond = res_atoms[1117].bond(1118); // PHE151A-CE3-CZ
-    ASSERT_THAT(res_bond, NotNull());
-    EXPECT_EQ(res_bond->order(), 1);
-    EXPECT_TRUE(res_bond->aromatic());
-    EXPECT_TRUE(res_bond->guessed());
-    EXPECT_TRUE(res_bond->guessed_order());
-    res_bond = res_atoms[1109].bond(1112); // PHE151A-CA-CB
-    ASSERT_THAT(res_bond, NotNull());
-    EXPECT_EQ(res_bond->order(), 1);
-    EXPECT_FALSE(res_bond->aromatic());
-    EXPECT_TRUE(res_bond->guessed());
-    EXPECT_TRUE(res_bond->guessed_order());
-    res_bond = res_atoms[1493].bond(1494); // GLN371B-CD-OE1
-    ASSERT_THAT(res_bond, NotNull());
-    EXPECT_EQ(res_bond->order(), 2);
-    EXPECT_FALSE(res_bond->aromatic());
-    EXPECT_TRUE(res_bond->guessed());
-    EXPECT_TRUE(res_bond->guessed_order());
-    res_bond = res_atoms[1429].bond(1430); // CYS364B-CB-SG
-    ASSERT_THAT(res_bond, NotNull());
-    EXPECT_EQ(res_bond->order(), 1);
-    EXPECT_FALSE(res_bond->aromatic());
-    EXPECT_TRUE(res_bond->guessed());
-    EXPECT_TRUE(res_bond->guessed_order());
-    res_bond = res_atoms[1108].bond(1101); // PHE151A-N-GLN150A-C
-    ASSERT_THAT(res_bond, IsNull());
-
-    /*
      * Atom-based guesser
      */
     auto atom_data = reader->read_topology("4lad.pdb");
@@ -216,13 +172,4 @@ TEST(Bonds, Guessers) {
     // Water
     atom_bond = atoms_sel[978].bond(1830); // GLY135A-N-HOH226
     EXPECT_THAT(atom_bond, IsNull());
-
-    // Compare against tabulated residues and PDB's CONECT records
-    for (auto ref_bond : res_atoms.bonds())
-    {
-        index_t const atom1 = ref_bond->atom1();
-        index_t const atom2 = ref_bond->atom2();
-        auto bonded = atoms_sel[atom1].bond(atom2);
-        ASSERT_THAT(bonded, NotNull()) << atom1 << "-" << atom2;
-    }
 }

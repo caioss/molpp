@@ -3,48 +3,64 @@
 #include <molpp/Bond.hpp>
 #include <molpp/AtomSel.hpp>
 #include <molpp/ResidueSel.hpp>
+
+#include <optional>
 #include <algorithm>
 
-using namespace mol::internal;
+namespace mol::internal
+{
 
-void ResidueBondGuesser::apply(ResidueSel& residues) const
+std::optional<int> find_atom(ResiduesTable::Residue const& residue_info, std::string const& name)
+{
+    auto const atom_it = residue_info.atoms.find(name);
+    if (atom_it == residue_info.atoms.end())
+    {
+        return std::nullopt;
+    }
+    return atom_it->second;
+}
+
+void ResidueBondGuesser::apply(ResidueSel& residue_sel) const
 {
     ResiduesTable const& residues_table = RESIDUES_TABLE();
-    std::vector<int> bonds_map(residues_table.max_atoms());
+    std::vector<int> bonds_map;
 
-    for (Residue res : residues)
+    for (Residue residue : residue_sel)
     {
-        if (!residues_table.contains(res.name()))
+        if (!residues_table.contains(residue.name()))
         {
             continue;
         }
 
-        auto const& res_info = residues_table[res.name()];
-        std::fill(bonds_map.begin(), bonds_map.end(), -1);
+        ResiduesTable::Residue const& residue_info = residues_table[residue.name()];
 
-        AtomSel atoms(res);
+        // Clear bonds map
+        std::fill(bonds_map.begin(), bonds_map.end(), -1);
+        bonds_map.resize(residue_info.atoms.size(), -1);
+
+        AtomSel atoms(residue);
         for (index_t i = 0; i < atoms.size(); i++)
         {
             Atom const atom = atoms[i];
-            int const atom_index = res_info.atom_index(atom.name());
-            if (atom_index >= 0)
+            std::optional<int> const atom_index = find_atom(residue_info, atom.name());
+            if (atom_index)
             {
-                bonds_map[atom_index] = i;
+                bonds_map[*atom_index] = i;
             }
         }
 
-        for (auto const& bond_info : res_info.bonds)
+        for (auto const& bond_info : residue_info.bonds)
         {
             int const atom1 = bonds_map[bond_info.atom1];
             int const atom2 = bonds_map[bond_info.atom2];
 
             if (atom1 < 0 || atom2 < 0)
             {
-                // Bond's atoms not present
+                // Bonded atoms not present
                 continue;
             }
 
-            auto bond = atoms[atom1].bond(atoms[atom2]);
+            std::shared_ptr<mol::Bond> bond = atoms[atom1].bond(atoms[atom2]);
             if (!bond)
             {
                 // Add a guessed bond
@@ -66,3 +82,5 @@ void ResidueBondGuesser::apply(ResidueSel& residues) const
         }
     }
 }
+
+} // namespace mol::internal

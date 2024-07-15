@@ -2,6 +2,7 @@
 #define MOLPP_TABLES_RESIDUESTABLE_HPP
 
 #include <molpp/Common.hpp>
+
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -25,24 +26,9 @@ public:
     {
         std::unordered_map<std::string, index_t> atoms;
         std::vector<Bond> bonds;
-
-        int atom_index(std::string const& name) const
-        {
-            auto const atom_it = atoms.find(name);
-            if (atom_it == atoms.end())
-            {
-                return -1;
-            }
-            return atom_it->second;
-        }
     };
 
     ResiduesTable(std::initializer_list<std::pair<std::string, Residue>> data);
-
-    size_t max_atoms() const
-    {
-        return m_max_atoms;
-    }
 
     bool contains(std::string const& resname) const
     {
@@ -55,7 +41,6 @@ public:
     }
 
 private:
-    size_t m_max_atoms;
     std::unordered_map<std::string, Residue> m_residues;
 };
 

@@ -52,13 +52,10 @@ TEST(Tables, Residues) {
 
     EXPECT_FALSE(table.contains("UNX"));
     EXPECT_TRUE(table.contains("PHE"));
-    EXPECT_THAT(table.max_atoms(), Gt(0));
 
     EXPECT_EQ(table["GLY"].atoms.size(), 10);
     auto const &glycine = table["GLY"];
     EXPECT_EQ(glycine.atoms.size(), 10);
-    EXPECT_EQ(glycine.atom_index("H2"), 6);
-    EXPECT_EQ(glycine.atom_index("UNK"), -1);
     EXPECT_EQ(glycine.bonds.size(), 9);
 
     auto const &bond = glycine.bonds[0];
